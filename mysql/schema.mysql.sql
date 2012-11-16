@@ -1,164 +1,191 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL';
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-DROP SCHEMA IF EXISTS `confdb` ;
-CREATE SCHEMA IF NOT EXISTS `confdb` DEFAULT CHARACTER SET latin1 COLLATE latin1_swedish_ci ;
-USE `confdb` ;
+DROP SCHEMA IF EXISTS `triggerdb` ;
+CREATE SCHEMA IF NOT EXISTS `triggerdb` DEFAULT CHARACTER SET latin1 ;
+USE `triggerdb` ;
 
 -- -----------------------------------------------------
--- Table `confdb`.`boards`
+-- Table `triggerdb`.`boards`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`boards` ;
+DROP TABLE IF EXISTS `triggerdb`.`boards` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`boards` (
-  `id` INT NOT NULL ,
-  `boardtype` VARCHAR(45) NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`boards` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `board_type` VARCHAR(45) NOT NULL ,
   `name` VARCHAR(1024) NOT NULL ,
   `serial` VARCHAR(512) NOT NULL ,
   `description` VARCHAR(1024) NULL ,
   `modified` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  `firmware` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`pedestals`
+-- Table `triggerdb`.`pedestal_presets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`pedestals` ;
+DROP TABLE IF EXISTS `triggerdb`.`pedestal_presets` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`pedestals` (
-  `id` INT NOT NULL ,
-  `values` VARCHAR(1045) NULL ,
-  `version` INT NULL ,
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`pedestal_presets` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `values` VARCHAR(1045) NOT NULL ,
+  `version` INT NOT NULL ,
   `board_id` INT NOT NULL ,
-  PRIMARY KEY (`id`, `board_id`) ,
-  INDEX `fk_pedestals_boards1` (`board_id` ASC) ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_pedestals_boards1_idx` (`board_id` ASC) ,
   CONSTRAINT `fk_pedestals_boards1`
     FOREIGN KEY (`board_id` )
-    REFERENCES `confdb`.`boards` (`id` )
+    REFERENCES `triggerdb`.`boards` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`base_lines`
+-- Table `triggerdb`.`baseline_presets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`base_lines` ;
+DROP TABLE IF EXISTS `triggerdb`.`baseline_presets` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`base_lines` (
-  `id` INT NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`baseline_presets` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `version` INT NOT NULL ,
+  `values` VARCHAR(1024) NOT NULL ,
   `board_id` INT NOT NULL ,
-  `values` VARCHAR(45) NULL ,
-  `version` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`, `board_id`) ,
-  INDEX `fk_base_lines_boards1` (`board_id` ASC) ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_base_lines_boards1_idx` (`board_id` ASC) ,
   CONSTRAINT `fk_base_lines_boards1`
     FOREIGN KEY (`board_id` )
-    REFERENCES `confdb`.`boards` (`id` )
+    REFERENCES `triggerdb`.`boards` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`trigger_configuration`
+-- Table `triggerdb`.`trigger_configurations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`trigger_configuration` ;
+DROP TABLE IF EXISTS `triggerdb`.`trigger_configurations` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`trigger_configuration` (
-  `id` INT NOT NULL ,
-  `trigger_type` VARCHAR(45) NULL ,
-  `loob_back` VARCHAR(45) NULL ,
-  `window_size` VARCHAR(45) NULL ,
-  PRIMARY KEY (`id`) )
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`trigger_configurations` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `type` VARCHAR(45) NOT NULL ,
+  `parameters` INT NULL ,
+  `prescale` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) )
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`boards_configuration`
+-- Table `triggerdb`.`threshold_presets`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`boards_configuration` ;
+DROP TABLE IF EXISTS `triggerdb`.`threshold_presets` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`boards_configuration` (
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`threshold_presets` (
   `id` INT NOT NULL ,
-  `boards_id` INT NOT NULL ,
-  `pedestals_id` INT NOT NULL ,
-  `pedestals_board_id` INT NOT NULL ,
-  `base_lines_id` INT NOT NULL ,
-  `base_lines_board_id` INT NOT NULL ,
-  PRIMARY KEY (`id`, `boards_id`, `pedestals_id`, `pedestals_board_id`, `base_lines_id`, `base_lines_board_id`) ,
-  INDEX `fk_boards_configuration_boards1` (`boards_id` ASC) ,
-  INDEX `fk_boards_configuration_pedestals1` (`pedestals_id` ASC, `pedestals_board_id` ASC) ,
-  INDEX `fk_boards_configuration_base_lines1` (`base_lines_id` ASC, `base_lines_board_id` ASC) ,
+  `version` INT NOT NULL ,
+  `values` VARCHAR(1024) NOT NULL ,
+  `board_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_thresholds_boards1_idx` (`board_id` ASC) ,
+  CONSTRAINT `fk_thresholds_boards1`
+    FOREIGN KEY (`board_id` )
+    REFERENCES `triggerdb`.`boards` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `triggerdb`.`board_configurations`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `triggerdb`.`board_configurations` ;
+
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`board_configurations` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `board_id` INT NOT NULL ,
+  `crait` INT NULL ,
+  `slot` INT NULL ,
+  `board_configurationscol` VARCHAR(45) NULL ,
+  `board_configurationscol1` VARCHAR(45) NULL ,
+  `threshold_presets_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_boards_configuration_boards1_idx` (`board_id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `fk_board_configurations_threshold_presets1_idx` (`threshold_presets_id` ASC) ,
   CONSTRAINT `fk_boards_configuration_boards1`
-    FOREIGN KEY (`boards_id` )
-    REFERENCES `confdb`.`boards` (`id` )
+    FOREIGN KEY (`board_id` )
+    REFERENCES `triggerdb`.`boards` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_boards_configuration_pedestals1`
-    FOREIGN KEY (`pedestals_id` )
-    REFERENCES `confdb`.`pedestals` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_boards_configuration_base_lines1`
-    FOREIGN KEY (`base_lines_id` , `base_lines_board_id` )
-    REFERENCES `confdb`.`base_lines` (`id` , `board_id` )
+  CONSTRAINT `fk_board_configurations_threshold_presets1`
+    FOREIGN KEY (`threshold_presets_id` )
+    REFERENCES `triggerdb`.`threshold_presets` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`run_configuration`
+-- Table `triggerdb`.`run_configurations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`run_configuration` ;
+DROP TABLE IF EXISTS `triggerdb`.`run_configurations` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`run_configuration` (
-  `id` INT NOT NULL ,
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`run_configurations` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `run` INT NOT NULL DEFAULT 0 ,
   `trigger_configuration_id` INT NOT NULL ,
-  `boards_configuration_id` INT NOT NULL ,
-  `boards_configuration_boards_id` INT NOT NULL ,
-  `boards_configuration_pedestals_id` INT NOT NULL ,
-  `boards_configuration_pedestals_board_id` INT NOT NULL ,
-  `boards_configuration_base_lines_id` INT NOT NULL ,
-  `boards_configuration_base_lines_board_id` INT NOT NULL ,
-  PRIMARY KEY (`id`, `trigger_configuration_id`, `boards_configuration_id`, `boards_configuration_boards_id`, `boards_configuration_pedestals_id`, `boards_configuration_pedestals_board_id`, `boards_configuration_base_lines_id`, `boards_configuration_base_lines_board_id`) ,
-  INDEX `fk_run_configuration_trigger_configuration1` (`trigger_configuration_id` ASC) ,
-  INDEX `fk_run_configuration_boards_configuration1` (`boards_configuration_id` ASC, `boards_configuration_boards_id` ASC, `boards_configuration_pedestals_id` ASC, `boards_configuration_pedestals_board_id` ASC, `boards_configuration_base_lines_id` ASC, `boards_configuration_base_lines_board_id` ASC) ,
+  `board_configuration_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_run_configuration_trigger_configuration1_idx` (`trigger_configuration_id` ASC) ,
+  INDEX `fk_run_configuration_board_configurations1_idx` (`board_configuration_id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   CONSTRAINT `fk_run_configuration_trigger_configuration1`
     FOREIGN KEY (`trigger_configuration_id` )
-    REFERENCES `confdb`.`trigger_configuration` (`id` )
+    REFERENCES `triggerdb`.`trigger_configurations` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_run_configuration_boards_configuration1`
-    FOREIGN KEY (`boards_configuration_id` , `boards_configuration_boards_id` , `boards_configuration_pedestals_id` , `boards_configuration_pedestals_board_id` , `boards_configuration_base_lines_id` , `boards_configuration_base_lines_board_id` )
-    REFERENCES `confdb`.`boards_configuration` (`id` , `boards_id` , `pedestals_id` , `pedestals_board_id` , `base_lines_id` , `base_lines_board_id` )
+  CONSTRAINT `fk_run_configuration_board_configurations1`
+    FOREIGN KEY (`board_configuration_id` )
+    REFERENCES `triggerdb`.`board_configurations` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `confdb`.`triggers`
+-- Table `triggerdb`.`daq`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `confdb`.`triggers` ;
+DROP TABLE IF EXISTS `triggerdb`.`daq` ;
 
-CREATE  TABLE IF NOT EXISTS `confdb`.`triggers` (
-  `id` INT NOT NULL ,
-  `type` VARCHAR(45) NULL ,
-  `prescaling` VARCHAR(45) NULL ,
-  `trigger_configuration_id` INT NOT NULL ,
-  PRIMARY KEY (`id`, `trigger_configuration_id`) ,
-  INDEX `fk_triggers_trigger_configuration1` (`trigger_configuration_id` ASC) ,
-  CONSTRAINT `fk_triggers_trigger_configuration1`
-    FOREIGN KEY (`trigger_configuration_id` )
-    REFERENCES `confdb`.`trigger_configuration` (`id` )
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`daq` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `readout_mode` VARCHAR(45) NULL ,
+  `window_size` INT NULL ,
+  `nsa_nsb` VARCHAR(45) NULL ,
+  `pulses_num` VARCHAR(45) NULL ,
+  `block_readout` VARCHAR(45) NULL ,
+  `loob_back` VARCHAR(45) NULL ,
+  `chanel_mask` INT NULL ,
+  `board_configuration_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  INDEX `fk_daq_config_board_configurations1_idx` (`board_configuration_id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  CONSTRAINT `fk_daq_config_board_configurations1`
+    FOREIGN KEY (`board_configuration_id` )
+    REFERENCES `triggerdb`.`board_configurations` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+SET SQL_MODE = '';
+GRANT USAGE ON *.* TO triggerdb;
+ DROP USER triggerdb;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+CREATE USER `triggerdb`;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -166,28 +193,29 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Data for table `confdb`.`boards`
+-- Data for table `triggerdb`.`boards`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `confdb`;
-INSERT INTO `confdb`.`boards` (`id`, `boardtype`, `name`, `serial`, `description`, `modified`) VALUES (1, 'FADC', 'one', '11', 'test one', NULL);
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`boards` (`id`, `board_type`, `name`, `serial`, `description`, `modified`, `firmware`) VALUES (1, 'FADC', 'test_one', '11', 'test board one', NULL, NULL);
+INSERT INTO `triggerdb`.`boards` (`id`, `board_type`, `name`, `serial`, `description`, `modified`, `firmware`) VALUES (2, 'FADC', 'test_two', '12', 'test board two', NULL, NULL);
 
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `confdb`.`pedestals`
+-- Data for table `triggerdb`.`pedestal_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `confdb`;
-INSERT INTO `confdb`.`pedestals` (`id`, `values`, `version`, `board_id`) VALUES (1, '10;20;30', 1, 1);
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`pedestal_presets` (`id`, `values`, `version`, `board_id`) VALUES (1, '10;20;30', 1, 1);
 
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `confdb`.`base_lines`
+-- Data for table `triggerdb`.`baseline_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
-USE `confdb`;
-INSERT INTO `confdb`.`base_lines` (`id`, `board_id`, `values`, `version`) VALUES (1, 1, '50;60;70', '1');
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`baseline_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 1, '50;60;70', 1);
 
 COMMIT;
