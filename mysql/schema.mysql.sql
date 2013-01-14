@@ -156,6 +156,7 @@ CREATE  TABLE IF NOT EXISTS `triggerdb`.`board_configurations` (
   `crait` INT NOT NULL DEFAULT 0 ,
   `slot` INT NOT NULL DEFAULT 0 ,
   `threshold_presets_id` INT NOT NULL ,
+  `board_configurationscol` VARCHAR(45) NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_boards_configuration_boards1_idx` (`board_id` ASC) ,
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
@@ -211,6 +212,7 @@ grant ALL on TABLE `triggerdb`.`pedestal_presets` to triggerdb;
 grant ALL on TABLE `triggerdb`.`run_configurations` to triggerdb;
 grant ALL on TABLE `triggerdb`.`threshold_presets` to triggerdb;
 grant ALL on TABLE `triggerdb`.`trigger_configurations` to triggerdb;
+grant ALL on TABLE `triggerdb`.`board_configurations_has_run_configurations` to triggerdb;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -291,8 +293,8 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `triggerdb`;
-INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`) VALUES (1, 1, 5, 5, 1);
-INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`) VALUES (2, 2, 5, 6, 3);
+INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`, `board_configurationscol`) VALUES (1, 1, 5, 5, 1, NULL);
+INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`, `board_configurationscol`) VALUES (2, 2, 5, 6, 3, NULL);
 
 COMMIT;
 
@@ -302,5 +304,6 @@ COMMIT;
 START TRANSACTION;
 USE `triggerdb`;
 INSERT INTO `triggerdb`.`board_configurations_has_run_configurations` (`board_configurations_id`, `run_configurations_id`) VALUES (1, 1);
+INSERT INTO `triggerdb`.`board_configurations_has_run_configurations` (`board_configurations_id`, `run_configurations_id`) VALUES (2, 1);
 
 COMMIT;
