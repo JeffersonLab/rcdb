@@ -35,6 +35,7 @@ CREATE  TABLE IF NOT EXISTS `triggerdb`.`pedestal_presets` (
   `board_id` INT NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_pedestals_boards1_idx` (`board_id` ASC) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
   CONSTRAINT `fk_pedestals_boards1`
     FOREIGN KEY (`board_id` )
     REFERENCES `triggerdb`.`boards` (`id` )
@@ -79,12 +80,58 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
+-- Table `triggerdb`.`daq`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `triggerdb`.`daq` ;
+
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`daq` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `readout_mode` VARCHAR(45) NULL ,
+  `window_size` INT NULL ,
+  `nsa_nsb` VARCHAR(45) NULL ,
+  `pulses_num` VARCHAR(45) NULL ,
+  `block_readout` VARCHAR(45) NULL ,
+  `loob_back` VARCHAR(45) NULL ,
+  `chanel_mask` INT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `triggerdb`.`run_configurations`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `triggerdb`.`run_configurations` ;
+
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`run_configurations` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `run_number` INT UNSIGNED NOT NULL DEFAULT 0 ,
+  `trigger_configurations_id` INT NOT NULL ,
+  `daq_id` INT NOT NULL ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
+  INDEX `fk_run_configurations_trigger_configurations1_idx` (`trigger_configurations_id` ASC) ,
+  INDEX `fk_run_configurations_daq1_idx` (`daq_id` ASC) ,
+  CONSTRAINT `fk_run_configurations_trigger_configurations1`
+    FOREIGN KEY (`trigger_configurations_id` )
+    REFERENCES `triggerdb`.`trigger_configurations` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_run_configurations_daq1`
+    FOREIGN KEY (`daq_id` )
+    REFERENCES `triggerdb`.`daq` (`id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
 -- Table `triggerdb`.`threshold_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `triggerdb`.`threshold_presets` ;
 
 CREATE  TABLE IF NOT EXISTS `triggerdb`.`threshold_presets` (
-  `id` INT NOT NULL ,
+  `id` INT NOT NULL AUTO_INCREMENT ,
   `version` INT NOT NULL ,
   `values` VARCHAR(1024) NOT NULL ,
   `board_id` INT NOT NULL ,
@@ -106,10 +153,8 @@ DROP TABLE IF EXISTS `triggerdb`.`board_configurations` ;
 CREATE  TABLE IF NOT EXISTS `triggerdb`.`board_configurations` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `board_id` INT NOT NULL ,
-  `crait` INT NULL ,
-  `slot` INT NULL ,
-  `board_configurationscol` VARCHAR(45) NULL ,
-  `board_configurationscol1` VARCHAR(45) NULL ,
+  `crait` INT NOT NULL DEFAULT 0 ,
+  `slot` INT NOT NULL DEFAULT 0 ,
   `threshold_presets_id` INT NOT NULL ,
   PRIMARY KEY (`id`) ,
   INDEX `fk_boards_configuration_boards1_idx` (`board_id` ASC) ,
@@ -129,53 +174,24 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `triggerdb`.`run_configurations`
+-- Table `triggerdb`.`board_configurations_has_run_configurations`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `triggerdb`.`run_configurations` ;
+DROP TABLE IF EXISTS `triggerdb`.`board_configurations_has_run_configurations` ;
 
-CREATE  TABLE IF NOT EXISTS `triggerdb`.`run_configurations` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `run` INT NOT NULL DEFAULT 0 ,
-  `trigger_configuration_id` INT NOT NULL ,
-  `board_configuration_id` INT NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_run_configuration_trigger_configuration1_idx` (`trigger_configuration_id` ASC) ,
-  INDEX `fk_run_configuration_board_configurations1_idx` (`board_configuration_id` ASC) ,
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
-  CONSTRAINT `fk_run_configuration_trigger_configuration1`
-    FOREIGN KEY (`trigger_configuration_id` )
-    REFERENCES `triggerdb`.`trigger_configurations` (`id` )
+CREATE  TABLE IF NOT EXISTS `triggerdb`.`board_configurations_has_run_configurations` (
+  `board_configurations_id` INT NOT NULL ,
+  `run_configurations_id` INT NOT NULL ,
+  PRIMARY KEY (`board_configurations_id`, `run_configurations_id`) ,
+  INDEX `fk_board_configurations_has_run_configurations_run_configur_idx` (`run_configurations_id` ASC) ,
+  INDEX `fk_board_configurations_has_run_configurations_board_config_idx` (`board_configurations_id` ASC) ,
+  CONSTRAINT `fk_board_configurations_has_run_configurations_board_configur1`
+    FOREIGN KEY (`board_configurations_id` )
+    REFERENCES `triggerdb`.`board_configurations` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_run_configuration_board_configurations1`
-    FOREIGN KEY (`board_configuration_id` )
-    REFERENCES `triggerdb`.`board_configurations` (`id` )
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `triggerdb`.`daq`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `triggerdb`.`daq` ;
-
-CREATE  TABLE IF NOT EXISTS `triggerdb`.`daq` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `readout_mode` VARCHAR(45) NULL ,
-  `window_size` INT NULL ,
-  `nsa_nsb` VARCHAR(45) NULL ,
-  `pulses_num` VARCHAR(45) NULL ,
-  `block_readout` VARCHAR(45) NULL ,
-  `loob_back` VARCHAR(45) NULL ,
-  `chanel_mask` INT NULL ,
-  `board_configuration_id` INT NOT NULL ,
-  PRIMARY KEY (`id`) ,
-  INDEX `fk_daq_config_board_configurations1_idx` (`board_configuration_id` ASC) ,
-  UNIQUE INDEX `id_UNIQUE` (`id` ASC) ,
-  CONSTRAINT `fk_daq_config_board_configurations1`
-    FOREIGN KEY (`board_configuration_id` )
-    REFERENCES `triggerdb`.`board_configurations` (`id` )
+  CONSTRAINT `fk_board_configurations_has_run_configurations_run_configurat1`
+    FOREIGN KEY (`run_configurations_id` )
+    REFERENCES `triggerdb`.`run_configurations` (`id` )
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -187,6 +203,14 @@ GRANT USAGE ON *.* TO triggerdb;
 SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 CREATE USER `triggerdb`;
 
+grant ALL on TABLE `triggerdb`.`baseline_presets` to triggerdb;
+grant ALL on TABLE `triggerdb`.`board_configurations` to triggerdb;
+grant ALL on TABLE `triggerdb`.`boards` to triggerdb;
+grant ALL on TABLE `triggerdb`.`daq` to triggerdb;
+grant ALL on TABLE `triggerdb`.`pedestal_presets` to triggerdb;
+grant ALL on TABLE `triggerdb`.`run_configurations` to triggerdb;
+grant ALL on TABLE `triggerdb`.`threshold_presets` to triggerdb;
+grant ALL on TABLE `triggerdb`.`trigger_configurations` to triggerdb;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -207,7 +231,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `triggerdb`;
-INSERT INTO `triggerdb`.`pedestal_presets` (`id`, `values`, `version`, `board_id`) VALUES (1, '10;20;30', 1, 1);
+INSERT INTO `triggerdb`.`pedestal_presets` (`id`, `values`, `version`, `board_id`) VALUES (1, '10 20 30 40 50 60 70 80 90 100 110 120 130 140 150 160', 0, 1);
+INSERT INTO `triggerdb`.`pedestal_presets` (`id`, `values`, `version`, `board_id`) VALUES (2, '1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6', 1, 1);
+INSERT INTO `triggerdb`.`pedestal_presets` (`id`, `values`, `version`, `board_id`) VALUES (3, '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0', 0, 2);
 
 COMMIT;
 
@@ -216,6 +242,65 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `triggerdb`;
-INSERT INTO `triggerdb`.`baseline_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 1, '50;60;70', 1);
+INSERT INTO `triggerdb`.`baseline_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 0, '1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1', 1);
+INSERT INTO `triggerdb`.`baseline_presets` (`id`, `version`, `values`, `board_id`) VALUES (2, 1, '2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2 2', 1);
+INSERT INTO `triggerdb`.`baseline_presets` (`id`, `version`, `values`, `board_id`) VALUES (3, 0, '1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6', 2);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`trigger_configurations`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`trigger_configurations` (`id`, `type`, `parameters`, `prescale`) VALUES (1, 'ASD', 1, '1 2 3');
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`daq`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`daq` (`id`, `readout_mode`, `window_size`, `nsa_nsb`, `pulses_num`, `block_readout`, `loob_back`, `chanel_mask`) VALUES (1, 'asd', 1, 'asd', 'asd', 'asd', '123', 255);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`run_configurations`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`run_configurations` (`id`, `run_number`, `trigger_configurations_id`, `daq_id`) VALUES (1, 1000, 1, 1);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`threshold_presets`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`threshold_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 0, '1.01 1.02 1.03 1.04 1.1 1.11 1.12 1.13 2.0 2.1 2.3 5.123 6.123 16.123 1.01', 1);
+INSERT INTO `triggerdb`.`threshold_presets` (`id`, `version`, `values`, `board_id`) VALUES (2, 1, '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ', 1);
+INSERT INTO `triggerdb`.`threshold_presets` (`id`, `version`, `values`, `board_id`) VALUES (3, 0, '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ', 2);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`board_configurations`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`) VALUES (1, 1, 5, 5, 1);
+INSERT INTO `triggerdb`.`board_configurations` (`id`, `board_id`, `crait`, `slot`, `threshold_presets_id`) VALUES (2, 2, 5, 6, 3);
+
+COMMIT;
+
+-- -----------------------------------------------------
+-- Data for table `triggerdb`.`board_configurations_has_run_configurations`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `triggerdb`;
+INSERT INTO `triggerdb`.`board_configurations_has_run_configurations` (`board_configurations_id`, `run_configurations_id`) VALUES (1, 1);
 
 COMMIT;
