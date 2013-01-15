@@ -507,7 +507,7 @@ class LogRecord(Base):
 #--------------------------------------------
 # function Connect to the database
 #--------------------------------------------
-def connect(connection_string="mysql://triggerdb@127.0.0.1/triggerdb"):
+def connect(connection_string="mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb"):
     """
     Connects to the database and returns SQL alchemy session object
     that allows to manipulate objects from database
@@ -573,7 +573,7 @@ def make_threshold_preset(db, board, values):
 
 
 if __name__=="__main__":
-    engine = sqlalchemy.create_engine('mysql://triggerdb@127.0.0.1/triggerdb')
+    engine = sqlalchemy.create_engine('mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb')
     Session = sessionmaker(bind=engine)
     session = Session()
     boards = session.query(Board).all()
