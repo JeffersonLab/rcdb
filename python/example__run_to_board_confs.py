@@ -3,11 +3,6 @@ from trigger_db import Board
 from trigger_db import BoardConfiguration
 from trigger_db import RunConfiguration
 
-db = trigger_db.connect()
-
-#select all runs we have
-runs = db.query(RunConfiguration).all()
-
 #define a function that prints information about run
 def print_run_information(run):
     """
@@ -19,24 +14,33 @@ def print_run_information(run):
     :return: None
     """
     assert (isinstance(run, RunConfiguration))
-    print()
+
+    print
     print("------------------------")
     print("run number: '{0}'   db_id: '{1}' ".format(run.number, run.id))
     print("boards configurations:")
     for board_config in run.board_configs:
         assert (isinstance(board_config, BoardConfiguration))
-        print("   name: '{0}'  crait: '{1}'  slot: '{2}'".format(
+        print("   name: '{0}'  crait: '{1}'  slot: '{2}' threshold_preset_version: {3}  values: '{4}'".format(
             board_config.board.board_name,
             board_config.crait,
-            board_config.slot))
+            board_config.slot,
+            board_config.threshold_preset.version,
+            board_config.threshold_preset.values
+        ))
+
+
+db = trigger_db.connect()
+
+#select all runs we have
+runs = db.query(RunConfiguration).all()
 
 #print information about each run
-print("run numbers:")
+print("runs information:")
 for run in runs:
     print_run_information(run)
 
-#check that there is no changing objects
-print(db.new)
+
 
 # To create a new run, what do we need?
 # 1) What boards?

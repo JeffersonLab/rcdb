@@ -2,237 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="141d5a49-0743-40b8-b5d1-804983b58600" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/locales/eng" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/locales" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/cextension" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/databases" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/drizzle" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/firebird" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/informix" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/oracle" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sqlite" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/declarative" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/plugin" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/.name" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/dictionaries/DmitryRa.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/sass_stdlib.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/other.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/python.iml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/testrunner.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook/adddialogwidget.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook/addressbook.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook/addresswidget.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook/newaddresstab.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/addressbook/tablemodel.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/board_browser.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/example__run_to_board_confs.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/examples.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/main_window.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/connection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/constants.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/conversion.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/cursor.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/dbapi.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/errorcode.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/errors.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/locales/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/locales/eng/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/locales/eng/client_error.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/network.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/protocol.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/utils.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mysql/connector/version.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/provider.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sasha1.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/cextension/processors.c" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/cextension/resultproxy.c" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/cextension/utils.c" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors/mxodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors/mysqldb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors/pyodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/connectors/zxJDBC.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/databases/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/drizzle/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/drizzle/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/drizzle/mysqldb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/firebird/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/firebird/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/firebird/fdb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/firebird/kinterbasdb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/informix/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/informix/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/informix/informixdb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/adodbapi.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/information_schema.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/mxodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/pymssql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/pyodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mssql/zxjdbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/gaerdbms.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/mysqlconnector.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/mysqldb.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/oursql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/pymysql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/pyodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/mysql/zxjdbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/oracle/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/oracle/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/oracle/cx_oracle.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/oracle/zxjdbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgres.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/hstore.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/pg8000.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/psycopg2.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/pypostgresql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/postgresql/zxjdbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sqlite/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sqlite/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sqlite/pysqlite.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase/mxodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase/pyodbc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/sybase/pysybase.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/dialects/type_migration_guidelines.txt" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/ddl.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/default.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/interfaces.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/reflection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/result.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/strategies.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/threadlocal.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/url.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/engine/util.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/event.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/events.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/exc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/associationproxy.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/compiler.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/declarative/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/declarative/api.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/declarative/base.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/declarative/clsregistry.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/horizontal_shard.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/hybrid.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/instrumentation.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/mutable.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/orderinglist.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/ext/serializer.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/inspection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/interfaces.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/log.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/attributes.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/collections.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/dependency.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/deprecated_interfaces.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/descriptor_props.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/dynamic.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/evaluator.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/events.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/exc.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/identity.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/instrumentation.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/interfaces.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/loading.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/mapper.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/persistence.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/properties.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/query.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/relationships.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/scoping.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/session.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/state.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/strategies.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/sync.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/unitofwork.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/orm/util.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/pool.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/processors.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/schema.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/compiler.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/expression.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/functions.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/operators.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/util.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/sql/visitors.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/assertions.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/assertsql.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/config.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/engines.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/entities.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/exclusions.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/fixtures.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/pickleable.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/plugin/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/plugin/noseplugin.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/profiling.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/requirements.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/runner.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/schema.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/test_ddl.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/test_insert.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/test_reflection.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/test_types.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/suite/test_update_delete.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/util.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/testing/warnings.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/types.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/_collections.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/compat.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/deprecations.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/langhelpers.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/queue.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/sqlalchemy/util/topological.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/trigger_db.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/example__run_to_board_confs.py" afterPath="$PROJECT_DIR$/example__run_to_board_confs.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples.py" afterPath="$PROJECT_DIR$/examples.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/trigger_db.py" afterPath="$PROJECT_DIR$/trigger_db.py" />
     </list>
     <ignored path="python.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -252,24 +26,20 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="trigger_db.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="trigger_db.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/trigger_db.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="82" column="21" selection-start="3147" selection-end="3156" vertical-scroll-proportion="0.0">
-              <folding>
-                <marker date="1358197864795" expanded="true" signature="17341:18021" placeholder="..." />
-              </folding>
+            <state line="191" column="40" selection-start="5986" selection-end="5986" vertical-scroll-proportion="0.21263482">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="example__run_to_board_confs.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="example__run_to_board_confs.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/example__run_to_board_confs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="6" column="0" selection-start="156" selection-end="156" vertical-scroll-proportion="-1.6795253">
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
-              </folding>
+            <state line="24" column="14" selection-start="735" selection-end="846" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -277,10 +47,8 @@
       <file leaf-file-name="sasha1.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sasha1.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="5" column="0" selection-start="88" selection-end="113" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#1#18#0" expanded="true" />
-              </folding>
+            <state line="1" column="17" selection-start="8" selection-end="18" vertical-scroll-proportion="0.0">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -297,7 +65,16 @@
       <file leaf-file-name="examples.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/examples.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="23" column="2" selection-start="565" selection-end="612" vertical-scroll-proportion="0.0">
+            <state line="15" column="19" selection-start="308" selection-end="308" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main_window.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main_window.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="0" selection-start="267" selection-end="267" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -327,18 +104,18 @@
         <option value="$PROJECT_DIR$/main_window.py" />
         <option value="$PROJECT_DIR$/model_examples.py" />
         <option value="$PROJECT_DIR$/model.py" />
-        <option value="$PROJECT_DIR$/examples.py" />
         <option value="$PROJECT_DIR$/sasha1.py" />
-        <option value="$PROJECT_DIR$/trigger_db.py" />
+        <option value="$PROJECT_DIR$/examples.py" />
         <option value="$PROJECT_DIR$/example__run_to_board_confs.py" />
+        <option value="$PROJECT_DIR$/trigger_db.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1382" />
-    <option name="height" value="744" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -409,6 +186,118 @@
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Science\TriggerDb\trunk\python" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree">
+    <UpdateInfo date="Moments ago" ActionInfo="_Update">
+      <UpdatedFiles>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated from server" />
+          <option name="myStatusName" value="Changed on server" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CHANGED_ON_SERVER" />
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Updated" />
+            <option name="myStatusName" value="Changed" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="UPDATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Created" />
+            <option name="myStatusName" value="Created" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="CREATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Deleted" />
+            <option name="myStatusName" value="Deleted" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="true" />
+            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Restored" />
+            <option name="myStatusName" value="Will be restored" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="RESTORED" />
+          </FILE-GROUP>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Modified" />
+          <option name="myStatusName" value="Modified" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MODIFIED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Skipped" />
+          <option name="myStatusName" value="Skipped" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SKIPPED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with conflicts" />
+          <option name="myStatusName" value="Will be merged with conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_CONFLICTS" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with tree conflicts" />
+          <option name="myStatusName" value="Merged with tree conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged" />
+          <option name="myStatusName" value="Will be merged" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED" />
+          <PATH vcs="svn" revision="10270">D:\Science\TriggerDb\trunk\python\trigger_db.py</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Not in repository" />
+          <option name="myStatusName" value="Not in repository" />
+          <option name="mySupportsDeletion" value="true" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UNKNOWN" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally added" />
+          <option name="myStatusName" value="Locally added" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_ADDED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally removed" />
+          <option name="myStatusName" value="Locally removed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_REMOVED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Switched" />
+          <option name="myStatusName" value="Switched" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SWITCHED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with property conflicts" />
+          <option name="myStatusName" value="Will be merged with property conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+        </FILE-GROUP>
+      </UpdatedFiles>
+    </UpdateInfo>
   </component>
   <component name="RunManager" selected="Python.example__run_to_board_confs">
     <configuration default="false" name="addresswidget" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -560,8 +449,8 @@
     <recent_temporary>
       <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.example__run_to_board_confs" />
-        <item index="1" class="java.lang.String" itemvalue="Python.sasha1" />
-        <item index="2" class="java.lang.String" itemvalue="Python.examples" />
+        <item index="1" class="java.lang.String" itemvalue="Python.examples" />
+        <item index="2" class="java.lang.String" itemvalue="Python.sasha1" />
         <item index="3" class="java.lang.String" itemvalue="Python.main_window" />
         <item index="4" class="java.lang.String" itemvalue="Python.addresswidget" />
       </list>
@@ -615,21 +504,22 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35139093" sideWeight="0.33990148" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35139093" sideWeight="0.24302134" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3995657" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.31161782" order="1" side_tool="true" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.412595" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="DB Browser" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.26818675" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="DB Execution Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.40558293" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -674,7 +564,7 @@
     <option name="SHOW_VCS_ERROR_NOTIFICATIONS" value="true" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -714,11 +604,6 @@
         <state line="194" column="41" selection-start="8214" selection-end="8214" vertical-scroll-proportion="0.6796875" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main_window.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="10" column="0" selection-start="267" selection-end="267" vertical-scroll-proportion="0.234375" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/board_browser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="132" column="0" selection-start="5219" selection-end="5389" vertical-scroll-proportion="0.0" />
@@ -748,27 +633,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/examples.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="2" selection-start="565" selection-end="612" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/addressbook/tablemodel.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sasha1.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="0" selection-start="88" selection-end="113" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#1#18#0" expanded="true" />
-          </folding>
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sqlalchemy/schema.py">
@@ -778,21 +645,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/trigger_db.py">
+    <entry file="file://$PROJECT_DIR$/sasha1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="82" column="21" selection-start="3147" selection-end="3156" vertical-scroll-proportion="0.0">
-          <folding>
-            <marker date="1358197864795" expanded="true" signature="17341:18021" placeholder="..." />
-          </folding>
+        <state line="1" column="17" selection-start="8" selection-end="18" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="0" selection-start="267" selection-end="267" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="19" selection-start="308" selection-end="308" vertical-scroll-proportion="0.0">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/example__run_to_board_confs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="6" column="0" selection-start="156" selection-end="156" vertical-scroll-proportion="-1.6795253">
-          <folding>
-            <element signature="e#0#17#0" expanded="true" />
-          </folding>
+        <state line="24" column="14" selection-start="735" selection-end="846" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/trigger_db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="191" column="40" selection-start="5986" selection-end="5986" vertical-scroll-proportion="0.21263482">
+          <folding />
         </state>
       </provider>
     </entry>

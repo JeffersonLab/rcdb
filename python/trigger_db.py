@@ -84,7 +84,7 @@ class ThresholdPreset(Base):
     id = Column(Integer, primary_key=True)
     text_values = Column('values', String(1024))
     board_id = Column(Integer, ForeignKey('boards.id'))
-    #board_configuration_id = Column(Integer, ForeignKey('boards_configurations.id'))
+
     board = relationship("Board")
     version = Column(Integer, default=_count_threshold_presets)
 
@@ -200,7 +200,8 @@ class BoardConfiguration(Base):
     id = Column(Integer, primary_key=True)
     crait = Column(Integer,nullable=False, default=0)
     slot = Column(Integer,nullable=False, default=0)
-    #threshold_presets = relationship("ThresholdPreset")
+    threshold_preset_id = Column("threshold_presets_id",Integer, ForeignKey('threshold_presets.id'))
+    threshold_preset = relationship("ThresholdPreset")
     board_id = Column(Integer, ForeignKey('boards.id'))
     board = relationship("Board")
     run_configs = relationship("RunConfiguration", secondary=_board_conf_has_run_conf_association)
