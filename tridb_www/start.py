@@ -75,6 +75,12 @@ def login():
             return redirect(url_for('show_entries'))
     return render_template('login.html', error=error)
 
+
+@app.route('/sample')
+def sample():
+    return render_template('index.html')
+
+
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     session['logged_in'] = False

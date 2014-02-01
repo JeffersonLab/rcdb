@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/admin" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/boards" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/boards" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/errors" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/favicon.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/footers" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/img/glyphicons-halflings-white.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/img/glyphicons-halflings.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/img" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/layouts" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/img/logo.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/settings" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/user" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/.name" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/404.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/boards/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros/_ask_user_to_update_ie.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros/_form.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros/_google_analytics.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros/_misc.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/macros/_reset_password.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor/bootstrap-alert.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor/bootstrap-datepicker.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor/bootstrap-dropdown.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/bootstrap-responsive.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/bootstrap-responsive.min.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/bootstrap.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor/bootstrap.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/bootstrap.min.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/vendor/bootstrap.min.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/constants.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/create_profile.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/datepicker.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/error.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/errors/forbidden_page.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/footers/help.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/humans.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/admin/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/boards/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/user/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/admin/layout.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/errors/layout.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/settings/layout.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/login.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/login_openid.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/main.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/main.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/normalize.css" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/errors/page_not_found.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/settings/password.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/js/plugins.js" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/settings/profile.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/user/profile.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/reauth.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/reset_password.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/robots.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/scopes/scope_settings.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/search.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/errors/server_error.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/frontend/signup.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/start_tdb_www.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/trunk.iml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/admin/user.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/admin/users.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/boards/views.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/dataSources.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/dictionaries/Dmitry.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/dictionaries/Dmitry.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/encodings.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/encodings.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/misc.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/misc.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/modules.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/modules.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/scopes/scope_settings.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/scopes/scope_settings.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/sqldialects.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/sqldialects.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/vagrant.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/vagrant.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/vcs.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/vcs.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/workspace.xml" afterPath="$PROJECT_DIR$/tridb_www/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/schema.sql" afterPath="$PROJECT_DIR$/tridb_www/schema.sql" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/start.py" afterPath="$PROJECT_DIR$/tridb_www/start.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/static/style.css" afterPath="$PROJECT_DIR$/tridb_www/static/style.css" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/templates/layout.html" afterPath="$PROJECT_DIR$/tridb_www/templates/layout.html" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/templates/login.html" afterPath="$PROJECT_DIR$/tridb_www/templates/login.html" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/templates/show_entries.html" afterPath="$PROJECT_DIR$/tridb_www/templates/show_entries.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/applypatch-msg.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/applypatch-msg.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/commit-msg.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/commit-msg.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/fbone/static/favicon.png" afterPath="$PROJECT_DIR$/fbone/fbone/static/favicon.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/screenshots/flask-bone-homepage-screenshot.png" afterPath="$PROJECT_DIR$/fbone/screenshots/flask-bone-homepage-screenshot.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/fbone/static/img/glyphicons-halflings-white.png" afterPath="$PROJECT_DIR$/fbone/fbone/static/img/glyphicons-halflings-white.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/fbone/static/img/glyphicons-halflings.png" afterPath="$PROJECT_DIR$/fbone/fbone/static/img/glyphicons-halflings.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/index" afterPath="$PROJECT_DIR$/fbone/.git/index" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/fbone/static/img/logo.png" afterPath="$PROJECT_DIR$/fbone/fbone/static/img/logo.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/objects/pack/pack-af7486971ec03eb1806d943d05515652ab8572a1.idx" afterPath="$PROJECT_DIR$/fbone/.git/objects/pack/pack-af7486971ec03eb1806d943d05515652ab8572a1.idx" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/objects/pack/pack-af7486971ec03eb1806d943d05515652ab8572a1.pack" afterPath="$PROJECT_DIR$/fbone/.git/objects/pack/pack-af7486971ec03eb1806d943d05515652ab8572a1.pack" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/post-update.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/post-update.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/pre-applypatch.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/pre-applypatch.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/pre-commit.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/pre-commit.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/pre-push.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/pre-push.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/pre-rebase.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/pre-rebase.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/prepare-commit-msg.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/prepare-commit-msg.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbone/.git/hooks/update.sample" afterPath="$PROJECT_DIR$/fbone/.git/hooks/update.sample" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db.py" afterPath="$PROJECT_DIR$/python/trigger_db.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea" afterPath="$PROJECT_DIR$/tridb_www/.idea" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/.name" afterPath="$PROJECT_DIR$/tridb_www/.idea/.name" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/dataSources.ids" afterPath="$PROJECT_DIR$/tridb_www/.idea/dataSources.ids" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/dictionaries" afterPath="$PROJECT_DIR$/tridb_www/.idea/dictionaries" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/flask.iml" afterPath="$PROJECT_DIR$/tridb_www/.idea/flask.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/flaskr.db" afterPath="$PROJECT_DIR$/tridb_www/flaskr.db" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/.idea/scopes" afterPath="$PROJECT_DIR$/tridb_www/.idea/scopes" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/static" afterPath="$PROJECT_DIR$/tridb_www/static" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web/templates" afterPath="$PROJECT_DIR$/tridb_www/templates" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/web" afterPath="$PROJECT_DIR$/tridb_www" />
+    </list>
+    <ignored path="trunk.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CoverageDataManager">
+    <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1391212766832" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+  </component>
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="DaemonCodeAnalyzer">
+    <disable_hints />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="trunk" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="start.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/start.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="35" column="0" selection-start="695" selection-end="890" vertical-scroll-proportion="0.0" vertical-offset="216" max-vertical-offset="1728">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="4" column="0" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="954">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1386">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="2106">
+              <folding>
+                <marker date="1390597938651" expanded="true" signature="110:4287" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="138:358" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="380:1262" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="408:599" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="456:584" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="627:1075" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="671:1060" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1103:1251" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1148:1236" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1303:4186" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1325:1580" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1346:1557" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1602:4165" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1623:1936" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="1957:2258" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="2279:2582" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="2595:2900" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="2916:3219" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="3233:3688" placeholder="..." />
+                <marker date="1390597938651" expanded="true" signature="3705:4142" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/layouts/base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="37" column="71" selection-start="1707" selection-end="1707" vertical-scroll-proportion="-14.666667" vertical-offset="270" max-vertical-offset="2232">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="environment.bash" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/environment.bash">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="24" column="33" selection-start="889" selection-end="889" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="trigger_db.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/trigger_db.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="11" column="27" selection-start="284" selection-end="310" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="12348">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sasha1.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/sasha1.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="5" column="22" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="882">
+              <folding>
+                <element signature="e#1#18#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="start_tdb_www.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/start_tdb_www.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="15" column="4" selection-start="434" selection-end="434" vertical-scroll-proportion="0.50373137" vertical-offset="0" max-vertical-offset="536">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindManager">
+    <FindUsagesManager>
+      <setting name="OPEN_NEW_TAB" value="false" />
+    </FindUsagesManager>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="changedFiles">
+      <list>
+        <option value="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
+        <option value="$PROJECT_DIR$/python/trigger_db.py" />
+        <option value="$PROJECT_DIR$/tridb_www/__init__.py" />
+        <option value="$PROJECT_DIR$/start_tdb_www.py" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="width" value="1680" />
+    <option name="height" value="1025" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectReloadState">
+    <option name="STATE" value="0" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1" splitterProportion="0.5">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="python" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="recentsLimit" value="5" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings />
+    </option>
+  </component>
+  <component name="RunManager" selected="Python.start_tdb_www">
+    <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="TARGET" value="" />
+      <option name="SETTINGS_FILE" value="" />
+      <option name="CUSTOM_SETTINGS" value="false" />
+      <option name="USE_OPTIONS" value="false" />
+      <option name="OPTIONS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="py.test">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="testToRun" value="" />
+      <option name="keywords" value="" />
+      <option name="params" value="" />
+      <option name="USE_PARAM" value="false" />
+      <option name="USE_KEYWORD" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Nosetests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Unittests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Attests">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="trunk" type="PythonConfigurationType" factoryName="Python" singleton="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/tridb_www/start.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <configuration default="false" name="start_tdb_www" type="PythonConfigurationType" factoryName="Python">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/start_tdb_www.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
+    <list size="2">
+      <item index="0" class="java.lang.String" itemvalue="Python.trunk" />
+      <item index="1" class="java.lang.String" itemvalue="Python.start_tdb_www" />
+    </list>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="true" SSL_PROTOCOLS="all">
+    <option name="USER" value="" />
+    <option name="PASSWORD" value="" />
+    <option name="mySSHConnectionTimeout" value="30000" />
+    <option name="mySSHReadTimeout" value="30000" />
+    <option name="LAST_MERGED_REVISION" />
+    <option name="MERGE_DRY_RUN" value="false" />
+    <option name="MERGE_DIFF_USE_ANCESTRY" value="true" />
+    <option name="UPDATE_LOCK_ON_DEMAND" value="false" />
+    <option name="IGNORE_SPACES_IN_MERGE" value="false" />
+    <option name="CHECK_NESTED_FOR_QUICK_MERGE" value="false" />
+    <option name="IGNORE_SPACES_IN_ANNOTATE" value="true" />
+    <option name="SHOW_MERGE_SOURCES_IN_ANNOTATE" value="true" />
+    <option name="FORCE_UPDATE" value="false" />
+    <option name="IGNORE_EXTERNALS" value="false" />
+    <configuration useDefault="false">$USER_HOME$/.subversion</configuration>
+    <myIsUseDefaultProxy>false</myIsUseDefaultProxy>
+  </component>
+  <component name="SvnFileUrlMappingImpl">
+    <option name="myMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+    <option name="myMoreRealMappingRoots">
+      <list>
+        <SvnCopyRootSimple>
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+        </SvnCopyRootSimple>
+      </list>
+    </option>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="" />
+      <created>1391208446699</created>
+      <updated>1391208446699</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="0" y="0" width="1680" height="1025" extended-state="0" />
+    <editor active="false" />
+    <layout>
+      <window_info id="Messages" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32992035" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.67007965" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992035" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+    </layout>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="myTodoPanelSettings">
+      <TodoPanelSettings />
+    </option>
+    <MESSAGE value="TDB code gardening" />
+    <option name="LAST_COMMIT_MESSAGE" value="TDB code gardening" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106">
+          <folding>
+            <marker date="1390597938651" expanded="true" signature="110:4287" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="138:358" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="380:1262" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="408:599" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="456:584" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="627:1075" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="671:1060" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1103:1251" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1148:1236" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1303:4186" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1325:1580" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1346:1557" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1602:4165" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1623:1936" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="1957:2258" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="2279:2582" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="2595:2900" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="2916:3219" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="3233:3688" placeholder="..." />
+            <marker date="1390597938651" expanded="true" signature="3705:4142" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1386">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/layouts/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="71" selection-start="1707" selection-end="1707" vertical-scroll-proportion="-14.666667" vertical-offset="270" max-vertical-offset="2232">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environment.bash">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="33" selection-start="889" selection-end="889" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/sasha1.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="22" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="882">
+          <folding>
+            <element signature="e#1#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/trigger_db.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="27" selection-start="284" selection-end="310" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="12348">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="0" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="954">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/start.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="35" column="0" selection-start="695" selection-end="890" vertical-scroll-proportion="0.0" vertical-offset="250" max-vertical-offset="1728">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/start_tdb_www.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="15" column="4" selection-start="434" selection-end="434" vertical-scroll-proportion="0.50373137" vertical-offset="0" max-vertical-offset="536">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>
+

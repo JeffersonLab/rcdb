@@ -517,9 +517,10 @@ def connect(connection_string="mysql+mysqlconnector://triggerdb@127.0.0.1/trigge
                               By default it is mysql://triggerdb@127.0.0.1/triggerdb
     :return: SQLAlchemy session
     """
-    engine = sqlalchemy.create_engine(connection_string)
-    Session = sessionmaker(bind=engine)
-    return Session()
+    tdb_engine = sqlalchemy.create_engine(connection_string)
+    TdbSession = sessionmaker(bind=tdb_engine)
+    return TdbSession()
+
 
 
 class database(object):
@@ -573,7 +574,7 @@ def make_threshold_preset(db, board, values):
 
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     engine = sqlalchemy.create_engine('mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb')
     Session = sessionmaker(bind=engine)
     session = Session()
