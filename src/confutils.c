@@ -27,6 +27,18 @@ if(strcmp(keyword,(BKEYWORD)) == 0){  	\
 		       &msk[ 8], &msk[ 9], &msk[10], &msk[11], \
 		       &msk[12], &msk[13], &msk[14], &msk[15])
 
+#define SCAN_MSK_CH \
+  args = sscanf (str_tmp, "%*s %s %s %s %s %s %s %s %s   \                                                                                                                                
+                                %s %s %s %s %s %s %s %s \
+                                     %s %s %s %s %s", \
+                       &msk_ch[ 0], &msk_ch[ 1], &msk_ch[ 2], &msk_ch[ 3], \
+                       &msk_ch[ 4], &msk_ch[ 5], &msk_ch[ 6], &msk_ch[ 7], \
+                       &msk_ch[ 8], &msk_ch[ 9], &msk_ch[10], &msk_ch[11], \
+                       &msk_ch[12], &msk_ch[13], &msk_ch[14], &msk_ch[15], \
+                       &msk_ch[16], &msk_ch[17], &msk_ch[18], &msk_ch[19], &msk_ch[20]) 
+
+
+
 #define GET_READ_MSK \
 	SCAN_MSK; \
 	ui1 = 0; \
@@ -95,9 +107,21 @@ if(strcmp(keyword,(BKEYWORD)) == 0){  	\
   for(ii=0; ii<NCHAN; ii++)   (TDP3_S)[ii] = msk[ii]; \
       }
 
+#define SCAN_SN_ALLCH(TDP4_K,TDP4_S) \
+  else if(strcmp(keyword,(TDP4_K)) == 0) \
+      { \
+	SCAN_MSK_CH; \
+	if(args != 21) \
+        { \
+	   printf("\nReadConfigFile: Read Serial Number:  Wrong number of slots %d, should be 21   %s\n\n",args,msk_ch[3]); \
+	   return(-8); \
+	 } \
+	for(jj=3; jj<Nfa250; jj++) (TDP4_S)[jj] = msk_ch[jj]; \
+      }
 
-int
-fadc250ReadConfigFile(char *filename)
+
+
+int fadc250ReadConfigFile(char *filename)
 {
   FILE   *fd;
   char   fname[FNLEN] = { "" };  /* config file name */
@@ -105,6 +129,9 @@ fadc250ReadConfigFile(char *filename)
   char   str_tmp[STRLEN], str2[STRLEN], keyword[ROCLEN];
   char   host[ROCLEN], ROC_name[ROCLEN];
   int    args, i1, i2, msk[16];
+
+  char   msk_ch[21][12];
+
   int    slot, chan, gr = 0;
   unsigned int  ui1, ui2;
 
@@ -220,7 +247,10 @@ fadc250ReadConfigFile(char *filename)
 
       SCAN_TDP_ALLCH("FADC250_ALLCH_PED",fa250[jj].ped)
 	
+      SCAN_SN_ALLCH("FADC250_ALLSN",fa250[jj].SerNum)
+
       SCAN_TI_SOFT("TI_SOFT_TRIG",ti_bd.ti_soft_trig)
+
     }
   }
   fclose(fd);
