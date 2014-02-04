@@ -1,0 +1,85 @@
+# 
+#  EVENT readout list
+#    Example of a Secondary readout list responsible for 
+#    getting data from the primary readout list and then
+#    passing it to the Output queue.
+#
+#    David Abbott, CEBAF 1996
+
+readout list ROL2
+maximum 20480,100
+polling
+event readout
+
+begin download
+
+  log inform "User Download 2 Executed"
+
+end download
+    
+begin prestart
+
+  variable jj, adc_id
+
+  log inform "Entering User Prestart 2"
+
+  init trig source EVENT
+  link sync trig source EVENT 1 to davetrig and davetrig_done
+  event type 1 then read EVENT 1
+
+  rol->poll = 1;
+
+  log inform "User Prestart 2 executed"
+
+end prestart
+
+begin end
+
+  log inform "User End 2 Executed"
+
+end end
+
+begin pause
+
+  log inform "User Pause 2 Executed"
+
+end pause
+
+begin go
+  
+  log inform "Entering User Go 2"
+  
+end go
+
+begin trigger davetrig
+
+int ii;
+
+#copy event
+get event
+    
+%%
+ if (rol->dabufp != NULL) {          /* Output Pointer should be set by CODA 2.1 ROC */
+   for (ii=-2;ii<EVENT_LENGTH;ii++)  /* Copy event, including Header from Input to Output */
+       *rol->dabufp++ = INPUT[ii];
+ }else{
+   printf("ROL2: ERROR rol->dabufp is NULL -- Event lost\n");
+ }
+%%
+
+end trigger
+
+begin done davetrig
+
+
+end done
+
+begin done
+
+end done
+
+begin status
+
+end status
+
+
