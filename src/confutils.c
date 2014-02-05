@@ -170,11 +170,11 @@ int fadc250ReadConfigFile(char *filename)
       /* Start parsing real config inputs */
       if(strcmp(keyword,"CRATE") == 0)
       {
-	if(strcmp(ROC_name,host) != 0)
-        {
-	  printf(BOLDRED "\nReadConfigFile: Wrong crate name in config file, %s\n" RESET, str_tmp);
-          return(-3);
-        }
+	//if(strcmp(ROC_name,host) != 0)
+      //  {
+	  //printf(BOLDRED "\nReadConfigFile: Wrong crate name in config file, %s\n" RESET, str_tmp);
+      //    return(-3);
+      //  }
 	printf(BOLDBLUE "\nReadConfigFile: conf_CRATE_name = %s  host = %s\n" RESET, ROC_name, host);
       }
 
