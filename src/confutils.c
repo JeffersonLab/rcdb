@@ -1,7 +1,6 @@
-extern int          nfadc;                         /* Number of FADC250s verified with the library */
-extern int          fadcID[FA_MAX_BOARDS];         /* Array of slot numbers, discovered by the library */
-extern unsigned int fadcAddrList[FA_MAX_BOARDS];   /* Array of a24 addresses for FADCs */
-extern volatile struct fadc_struct *FAp[(FA_MAX_BOARDS+1)];  /* pointers to FADC memory map */
+#include "confutils.h"
+#include "stdio.h"
+#include <string.h>
 
 int iFlag;
 int Naddr;
@@ -261,10 +260,10 @@ int fadc250ReadConfigFile(char *filename)
     for(jj=3; jj<Nfa250; jj++)
       if(fa250[jj].group > 0)
       {
-	fadcAddrList[Naddr] = jj<<19;
+	//fadcAddrList[Naddr] = jj<<19;
 	Naddr++;
-	printf("\nReadConfigFile:  ...fadcAddrList[%d] = 0x%08x  group=%d\n",
-	       (Naddr-1),fadcAddrList[Naddr-1], fa250[jj].group);
+	//printf("\nReadConfigFile:  ...fadcAddrList[%d] = 0x%08x  group=%d\n",
+	       //(Naddr-1),fadcAddrList[Naddr-1], fa250[jj].group);
       }
 
   gr--;
@@ -276,7 +275,7 @@ fadc250InitGlobals()
 {
   int ii, jj;
 
-  nfadc = 0;
+  //nfadc = 0;
 
   for(jj=0; jj<Nfa250; jj++)
   {
@@ -315,66 +314,3 @@ fadc250InitGlobals()
   iFlag |= (0<<5);    /* self*/
 }
 
-
-int 
-fadc250DownloadAll()
-{
-  int FA_SLOT, gg, ii, jj;
-
-  
-  printf(BOLDRED " fadc250DownloadAll: Nfa250 = %d  AllSl = %d\n " RESET, Nfa250, AllSl );
-
-  /* download setting into all found fadc250 if FADC250_ALLSLOTS was not called */
-  if(AllSl == 1)
-  {
-    gg = 5000;
-    for(jj=0; jj<nfadc; jj++)
-      fa250[fadcID[jj]].group = 5005;
-  }
-  else  gg = 0;
-
-  for(jj=3; jj<Nfa250; jj++)
-  {
-
-    printf(BOLDRED "\n fa250[jj].group %d \n" RESET, fa250[jj].group );
-
-    if(fa250[jj].group > gg)
-    {
-      FA_SLOT = jj;
-
-      printf("\nfadc250DownloadAll:  FA_SLOT=%d   fa250[%d].group=%d   mode=%d  nsb=%d \n",
-	     FA_SLOT,jj,fa250[jj].group, fa250[jj].mode, fa250[jj].nsb);
-
-      faSetProcMode(FA_SLOT,
-		    fa250[jj].mode,
-		    fa250[jj].winOffset,
-		    fa250[jj].winWidth,
-		    fa250[jj].nsb,
-		    fa250[jj].nsa,
-		    fa250[jj].npeak, 0);
-      faChanDisable(  FA_SLOT, fa250[jj].chDisMask);
-      for(ii=0; ii<NCHAN; ii++)
-      {
-	faSetDAC(             FA_SLOT, fa250[jj].dac[ii], (1<<ii));
-	faSetThreshold(       FA_SLOT, fa250[jj].thr[ii],(1<<ii));
-	faSetChannelPedestal( FA_SLOT, ii, fa250[jj].ped[ii]);
-      }
-      
-      printf(" PRINT PEDESTALS = %d \n ",faGetChannelPedestal(FA_SLOT, 0));
-
-      faPrintThreshold(FA_SLOT);
-      faPrintDAC(FA_SLOT);
-      
-      /* Bus errors to terminate block transfers (preferred) */
-      faEnableBusError(FA_SLOT);
-      /* Set the Block level */
-      faSetBlockLevel(FA_SLOT,1);
-      
-      
-      faStatus(FA_SLOT, 0);
-      
-    }
-  }
-
-  return(0);
-}

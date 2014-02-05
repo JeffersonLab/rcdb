@@ -1,0 +1,3 @@
+env = Environment()
+lib = Library("confutils.c")
+#lib.Install()
