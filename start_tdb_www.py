@@ -1,7 +1,12 @@
-#
-import os, sys, inspect
+import os
+import sys
+import inspect
 
-    #sys.path.insert(0, cmd_folder)
+
+def get_this_folder():
+    """Returns the folder of
+
+    """
 
 if __name__ == '__main__':
 

@@ -1,5 +1,5 @@
 # mysql/pymysql.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -22,15 +22,23 @@ the pymysql driver as well.
 """
 
 from .mysqldb import MySQLDialect_mysqldb
-
+from ...util import py3k
 
 class MySQLDialect_pymysql(MySQLDialect_mysqldb):
     driver = 'pymysql'
 
     description_encoding = None
+    if py3k:
+        supports_unicode_statements = True
 
     @classmethod
     def dbapi(cls):
         return __import__('pymysql')
+
+    if py3k:
+        def _extract_error_code(self, exception):
+            if isinstance(exception.args[0], Exception):
+                exception = exception.args[0]
+            return exception.args[0]
 
 dialect = MySQLDialect_pymysql

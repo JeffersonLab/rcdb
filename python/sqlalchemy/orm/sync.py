@@ -1,5 +1,5 @@
 # orm/sync.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -94,7 +94,8 @@ def source_modified(uowcommit, source, source_mapper, synchronize_pairs):
             _raise_col_to_prop(False, source_mapper, l, None, r)
         history = uowcommit.get_attribute_history(source, prop.key,
                                         attributes.PASSIVE_NO_INITIALIZE)
-        return bool(history.deleted)
+        if bool(history.deleted):
+            return True
     else:
         return False
 

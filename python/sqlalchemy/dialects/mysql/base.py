@@ -1,5 +1,5 @@
 # mysql/base.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -12,31 +12,15 @@
 Supported Versions and Features
 -------------------------------
 
-SQLAlchemy supports 6 major MySQL versions: 3.23, 4.0, 4.1, 5.0, 5.1 and 6.0,
-with capabilities increasing with more modern servers.
-
-Versions 4.1 and higher support the basic SQL functionality that SQLAlchemy
-uses in the ORM and SQL expressions.  These versions pass the applicable tests
-in the suite 100%.  No heroic measures are taken to work around major missing
-SQL features- if your server version does not support sub-selects, for
+SQLAlchemy supports MySQL starting with version 4.1 through modern releases.
+However, no heroic measures are taken to work around major missing
+SQL features - if your server version does not support sub-selects, for
 example, they won't work in SQLAlchemy either.
-
-Most available DBAPI drivers are supported; see below.
-
-=====================================  ===============
-Feature                                Minimum Version
-=====================================  ===============
-sqlalchemy.orm                         4.1.1
-Table Reflection                       3.23.x
-DDL Generation                         4.1.1
-utf8/Full Unicode Connections          4.1.1
-Transactions                           3.23.15
-Two-Phase Transactions                 5.0.3
-Nested Transactions                    5.0.3
-=====================================  ===============
 
 See the official MySQL documentation for detailed information about features
 supported in any given server release.
+
+.. _mysql_connection_timeouts:
 
 Connection Timeouts
 -------------------
@@ -71,7 +55,9 @@ creation option can be specified in this syntax::
 
 .. seealso::
 
-    `The InnoDB Storage Engine <http://dev.mysql.com/doc/refman/5.0/en/innodb-storage-engine.html>`_ - on the MySQL website.
+    `The InnoDB Storage Engine
+    <http://dev.mysql.com/doc/refman/5.0/en/innodb-storage-engine.html>`_ -
+    on the MySQL website.
 
 Case Sensitivity and Table Reflection
 -------------------------------------
@@ -141,32 +127,20 @@ engines::
         Column('id', Integer, primary_key=True)
        )
 
-SQL Mode
---------
+Ansi Quoting Style
+------------------
 
-MySQL SQL modes are supported.  Modes that enable ``ANSI_QUOTES`` (such as
-``ANSI``) require an engine option to modify SQLAlchemy's quoting style.
-When using an ANSI-quoting mode, supply ``use_ansiquotes=True`` when
-creating your ``Engine``::
+MySQL features two varieties of identifier "quoting style", one using
+backticks and the other using quotes, e.g. ```some_identifier```  vs.
+``"some_identifier"``.   All MySQL dialects detect which version
+is in use by checking the value of ``sql_mode`` when a connection is first
+established with a particular :class:`.Engine`.  This quoting style comes
+into play when rendering table and column names as well as when reflecting
+existing database structures.  The detection is entirely automatic and
+no special configuration is needed to use either quoting style.
 
-  create_engine('mysql://localhost/test', use_ansiquotes=True)
-
-This is an engine-wide option and is not toggleable on a per-connection basis.
-SQLAlchemy does not presume to ``SET sql_mode`` for you with this option.  For
-the best performance, set the quoting style server-wide in ``my.cnf`` or by
-supplying ``--sql-mode`` to ``mysqld``.  You can also use a
-:class:`sqlalchemy.pool.Pool` listener hook to issue a ``SET SESSION
-sql_mode='...'`` on connect to configure each connection.
-
-If you do not specify ``use_ansiquotes``, the regular MySQL quoting style is
-used by default.
-
-If you do issue a ``SET sql_mode`` through SQLAlchemy, the dialect must be
-updated if the quoting style is changed.  Again, this change will affect all
-connections::
-
-  connection.execute('SET sql_mode="ansi"')
-  connection.dialect.use_ansiquotes = True
+.. versionchanged:: 0.6 detection of ANSI quoting style is entirely automatic,
+   there's no longer any end-user ``create_engine()`` options in this regard.
 
 MySQL SQL Extensions
 --------------------
@@ -218,8 +192,8 @@ detection, instead rendering the internal expression directly.
 
 CAST may still not be desirable on an early MySQL version post-4.0.2, as it didn't
 add all datatype support until 4.1.1.   If your application falls into this
-narrow area, the behavior of CAST can be controlled using the :ref:`sqlalchemy.ext.compiler_toplevel`
-system, as per the recipe below::
+narrow area, the behavior of CAST can be controlled using the
+:ref:`sqlalchemy.ext.compiler_toplevel` system, as per the recipe below::
 
     from sqlalchemy.sql.expression import Cast
     from sqlalchemy.ext.compiler import compiles
@@ -255,11 +229,18 @@ become part of the index. SQLAlchemy provides this feature via the
 
     Index('my_index', my_table.c.data, mysql_length=10)
 
+    Index('a_b_idx', my_table.c.a, my_table.c.b, mysql_length={'a': 4, 'b': 9})
+
 Prefix lengths are given in characters for nonbinary string types and in bytes
-for binary string types. The value passed to the keyword argument will be
-simply passed through to the underlying CREATE INDEX command, so it *must* be
-an integer. MySQL only allows a length for an index if it is for a CHAR,
-VARCHAR, TEXT, BINARY, VARBINARY and BLOB.
+for binary string types. The value passed to the keyword argument *must* be
+either an integer (and, thus, specify the same prefix length value for all
+columns of the index) or a dict in which keys are column names and values are
+prefix length values for corresponding columns. MySQL only allows a length for
+a column of an index if it is for a CHAR, VARCHAR, TEXT, BINARY, VARBINARY and
+BLOB.
+
+.. versionadded:: 0.8.2 ``mysql_length`` may now be specified as a dictionary
+   for use with composite indexes.
 
 Index Types
 ~~~~~~~~~~~~~
@@ -283,6 +264,41 @@ More information can be found at:
 http://dev.mysql.com/doc/refman/5.0/en/create-index.html
 
 http://dev.mysql.com/doc/refman/5.0/en/create-table.html
+
+.. _mysql_foreign_keys:
+
+MySQL Foreign Key Options
+-------------------------
+
+MySQL does not support the foreign key arguments "DEFERRABLE", "INITIALLY",
+or "MATCH".  Using the ``deferrable`` or ``initially`` keyword argument with
+:class:`.ForeignKeyConstraint` or :class:`.ForeignKey` will have the effect of these keywords being
+rendered in a DDL expression, which will then raise an error on MySQL.
+In order to use these keywords on a foreign key while having them ignored
+on a MySQL backend, use a custom compile rule::
+
+    from sqlalchemy.ext.compiler import compiles
+    from sqlalchemy.schema import ForeignKeyConstraint
+
+    @compiles(ForeignKeyConstraint, "mysql")
+    def process(element, compiler, **kw):
+        element.deferrable = element.initially = None
+        return compiler.visit_foreign_key_constraint(element, **kw)
+
+.. versionchanged:: 0.9.0 - the MySQL backend no longer silently ignores
+   the ``deferrable`` or ``initially`` keyword arguments of :class:`.ForeignKeyConstraint`
+   and :class:`.ForeignKey`.
+
+The "MATCH" keyword is in fact more insidious, and is explicitly disallowed
+by SQLAlchemy in conjunction with the MySQL backend.  This argument is silently
+ignored by MySQL, but in addition has the effect of ON UPDATE and ON DELETE options
+also being ignored by the backend.   Therefore MATCH should never be used with the
+MySQL backend; as is the case with DEFERRABLE and INITIALLY, custom compilation
+rules can be used to correct a MySQL ForeignKeyConstraint at DDL definition time.
+
+.. versionadded:: 0.9.0 - the MySQL backend will raise a :class:`.CompileError`
+   when the ``match`` keyword is used with :class:`.ForeignKeyConstraint`
+   or :class:`.ForeignKey`.
 
 """
 
@@ -339,10 +355,20 @@ RESERVED_WORDS = set(
      'union', 'unique', 'unlock', 'unsigned', 'update', 'usage', 'use',
      'using', 'utc_date', 'utc_time', 'utc_timestamp', 'values', 'varbinary',
      'varchar', 'varcharacter', 'varying', 'when', 'where', 'while', 'with',
+
      'write', 'x509', 'xor', 'year_month', 'zerofill',  # 5.0
+
      'columns', 'fields', 'privileges', 'soname', 'tables',  # 4.1
+
      'accessible', 'linear', 'master_ssl_verify_server_cert', 'range',
      'read_only', 'read_write',  # 5.1
+
+     'general', 'ignore_server_ids', 'master_heartbeat_period', 'maxvalue',
+     'resignal', 'signal', 'slow', # 5.5
+
+      'get', 'io_after_gtids', 'io_before_gtids', 'master_bind', 'one_shot',
+        'partition', 'sql_after_gtids', 'sql_before_gtids',  # 5.6
+
      ])
 
 AUTOCOMMIT_RE = re.compile(
@@ -354,13 +380,21 @@ SET_RE = re.compile(
 
 
 class _NumericType(object):
-    """Base for MySQL numeric types."""
+    """Base for MySQL numeric types.
+
+    This is the base both for NUMERIC as well as INTEGER, hence
+    it's a mixin.
+
+    """
 
     def __init__(self, unsigned=False, zerofill=False, **kw):
         self.unsigned = unsigned
         self.zerofill = zerofill
         super(_NumericType, self).__init__(**kw)
 
+    def __repr__(self):
+        return util.generic_repr(self,
+                to_inspect=[_NumericType, sqltypes.Numeric])
 
 class _FloatType(_NumericType, sqltypes.Float):
     def __init__(self, precision=None, scale=None, asdecimal=True, **kw):
@@ -372,22 +406,27 @@ class _FloatType(_NumericType, sqltypes.Float):
             raise exc.ArgumentError(
                 "You must specify both precision and scale or omit "
                 "both altogether.")
-
         super(_FloatType, self).__init__(precision=precision, asdecimal=asdecimal, **kw)
         self.scale = scale
 
+    def __repr__(self):
+        return util.generic_repr(self,
+                to_inspect=[_FloatType, _NumericType, sqltypes.Float])
 
 class _IntegerType(_NumericType, sqltypes.Integer):
     def __init__(self, display_width=None, **kw):
         self.display_width = display_width
         super(_IntegerType, self).__init__(**kw)
 
+    def __repr__(self):
+        return util.generic_repr(self,
+                to_inspect=[_IntegerType, _NumericType, sqltypes.Integer])
 
 class _StringType(sqltypes.String):
     """Base for MySQL string types."""
 
     def __init__(self, charset=None, collation=None,
-                 ascii=False, binary=False,
+                 ascii=False, binary=False, unicode=False,
                  national=False, **kw):
         self.charset = charset
 
@@ -395,16 +434,14 @@ class _StringType(sqltypes.String):
         kw.setdefault('collation', kw.pop('collate', collation))
 
         self.ascii = ascii
-        # We have to munge the 'unicode' param strictly as a dict
-        # otherwise 2to3 will turn it into str.
-        self.__dict__['unicode'] = kw.get('unicode', False)
-        # sqltypes.String does not accept the 'unicode' arg at all.
-        if 'unicode' in kw:
-            del kw['unicode']
+        self.unicode = unicode
         self.binary = binary
         self.national = national
         super(_StringType, self).__init__(**kw)
 
+    def __repr__(self):
+        return util.generic_repr(self,
+                to_inspect=[_StringType, sqltypes.String])
 
 class NUMERIC(_NumericType, sqltypes.NUMERIC):
     """MySQL NUMERIC type."""
@@ -427,7 +464,8 @@ class NUMERIC(_NumericType, sqltypes.NUMERIC):
           numeric.
 
         """
-        super(NUMERIC, self).__init__(precision=precision, scale=scale, asdecimal=asdecimal, **kw)
+        super(NUMERIC, self).__init__(precision=precision,
+                                scale=scale, asdecimal=asdecimal, **kw)
 
 
 class DECIMAL(_NumericType, sqltypes.DECIMAL):
@@ -463,6 +501,14 @@ class DOUBLE(_FloatType):
     def __init__(self, precision=None, scale=None, asdecimal=True, **kw):
         """Construct a DOUBLE.
 
+        .. note::
+
+            The :class:`.DOUBLE` type by default converts from float
+            to Decimal, using a truncation that defaults to 10 digits.  Specify
+            either ``scale=n`` or ``decimal_return_scale=n`` in order to change
+            this scale, or ``asdecimal=False`` to return values directly as
+            Python floating points.
+
         :param precision: Total digits in this number.  If scale and precision
           are both None, values are stored to limits allowed by the server.
 
@@ -487,6 +533,14 @@ class REAL(_FloatType, sqltypes.REAL):
 
     def __init__(self, precision=None, scale=None, asdecimal=True, **kw):
         """Construct a REAL.
+
+        .. note::
+
+            The :class:`.REAL` type by default converts from float
+            to Decimal, using a truncation that defaults to 10 digits.  Specify
+            either ``scale=n`` or ``decimal_return_scale=n`` in order to change
+            this scale, or ``asdecimal=False`` to return values directly as
+            Python floating points.
 
         :param precision: Total digits in this number.  If scale and precision
           are both None, values are stored to limits allowed by the server.
@@ -667,7 +721,7 @@ class BIT(sqltypes.TypeEngine):
 
         def process(value):
             if value is not None:
-                v = 0L
+                v = 0
                 for i in map(ord, value):
                     v = v << 8 | i
                 return v
@@ -922,6 +976,25 @@ class CHAR(_StringType, sqltypes.CHAR):
         """
         super(CHAR, self).__init__(length=length, **kwargs)
 
+    @classmethod
+    def _adapt_string_for_cast(self, type_):
+        # copy the given string type into a CHAR
+        # for the purposes of rendering a CAST expression
+        type_ = sqltypes.to_instance(type_)
+        if isinstance(type_, sqltypes.CHAR):
+            return type_
+        elif isinstance(type_, _StringType):
+            return CHAR(
+                length=type_.length,
+                charset=type_.charset,
+                collation=type_.collation,
+                ascii=type_.ascii,
+                binary=type_.binary,
+                unicode=type_.unicode,
+                national=False # not supported in CAST
+            )
+        else:
+            return CHAR(length=type_.length)
 
 class NVARCHAR(_StringType, sqltypes.NVARCHAR):
     """MySQL NVARCHAR type.
@@ -992,8 +1065,49 @@ class LONGBLOB(sqltypes._Binary):
 
     __visit_name__ = 'LONGBLOB'
 
+class _EnumeratedValues(_StringType):
+    def _init_values(self, values, kw):
+        self.quoting = kw.pop('quoting', 'auto')
 
-class ENUM(sqltypes.Enum, _StringType):
+        if self.quoting == 'auto' and len(values):
+            # What quoting character are we using?
+            q = None
+            for e in values:
+                if len(e) == 0:
+                    self.quoting = 'unquoted'
+                    break
+                elif q is None:
+                    q = e[0]
+
+                if len(e) == 1 or e[0] != q or e[-1] != q:
+                    self.quoting = 'unquoted'
+                    break
+            else:
+                self.quoting = 'quoted'
+
+        if self.quoting == 'quoted':
+            util.warn_deprecated(
+                'Manually quoting %s value literals is deprecated.  Supply '
+                'unquoted values and use the quoting= option in cases of '
+                'ambiguity.' % self.__class__.__name__)
+
+            values = self._strip_values(values)
+
+        self._enumerated_values = values
+        length = max([len(v) for v in values] + [0])
+        return values, length
+
+    @classmethod
+    def _strip_values(cls, values):
+        strip_values = []
+        for a in values:
+            if a[0:1] == '"' or a[0:1] == "'":
+                # strip enclosing quotes and unquote interior
+                a = a[1:-1].replace(a[0] * 2, a[0])
+            strip_values.append(a)
+        return strip_values
+
+class ENUM(sqltypes.Enum, _EnumeratedValues):
     """MySQL ENUM type."""
 
     __visit_name__ = 'ENUM'
@@ -1001,9 +1115,9 @@ class ENUM(sqltypes.Enum, _StringType):
     def __init__(self, *enums, **kw):
         """Construct an ENUM.
 
-        Example:
+        E.g.::
 
-          Column('myenum', MSEnum("foo", "bar", "baz"))
+          Column('myenum', ENUM("foo", "bar", "baz"))
 
         :param enums: The range of valid values for this ENUM.  Values will be
           quoted when generating the schema according to the quoting flag (see
@@ -1047,50 +1161,20 @@ class ENUM(sqltypes.Enum, _StringType):
           literals for you.  This is a transitional option.
 
         """
-        self.quoting = kw.pop('quoting', 'auto')
-
-        if self.quoting == 'auto' and len(enums):
-            # What quoting character are we using?
-            q = None
-            for e in enums:
-                if len(e) == 0:
-                    self.quoting = 'unquoted'
-                    break
-                elif q is None:
-                    q = e[0]
-
-                if e[0] != q or e[-1] != q:
-                    self.quoting = 'unquoted'
-                    break
-            else:
-                self.quoting = 'quoted'
-
-        if self.quoting == 'quoted':
-            util.warn_deprecated(
-                'Manually quoting ENUM value literals is deprecated.  Supply '
-                'unquoted values and use the quoting= option in cases of '
-                'ambiguity.')
-            enums = self._strip_enums(enums)
-
+        values, length = self._init_values(enums, kw)
         self.strict = kw.pop('strict', False)
-        length = max([len(v) for v in enums] + [0])
         kw.pop('metadata', None)
         kw.pop('schema', None)
         kw.pop('name', None)
         kw.pop('quote', None)
         kw.pop('native_enum', None)
+        kw.pop('inherit_schema', None)
         _StringType.__init__(self, length=length, **kw)
-        sqltypes.Enum.__init__(self, *enums)
+        sqltypes.Enum.__init__(self, *values)
 
-    @classmethod
-    def _strip_enums(cls, enums):
-        strip_enums = []
-        for a in enums:
-            if a[0:1] == '"' or a[0:1] == "'":
-                # strip enclosing quotes and unquote interior
-                a = a[1:-1].replace(a[0] * 2, a[0])
-            strip_enums.append(a)
-        return strip_enums
+    def __repr__(self):
+        return util.generic_repr(self,
+                to_inspect=[ENUM, _StringType, sqltypes.Enum])
 
     def bind_processor(self, dialect):
         super_convert = super(ENUM, self).bind_processor(dialect)
@@ -1105,12 +1189,13 @@ class ENUM(sqltypes.Enum, _StringType):
                 return value
         return process
 
-    def adapt(self, impltype, **kw):
-        kw['strict'] = self.strict
-        return sqltypes.Enum.adapt(self, impltype, **kw)
+    def adapt(self, cls, **kw):
+        if issubclass(cls, ENUM):
+            kw['strict'] = self.strict
+        return sqltypes.Enum.adapt(self, cls, **kw)
 
 
-class SET(_StringType):
+class SET(_EnumeratedValues):
     """MySQL SET type."""
 
     __visit_name__ = 'SET'
@@ -1118,15 +1203,16 @@ class SET(_StringType):
     def __init__(self, *values, **kw):
         """Construct a SET.
 
-        Example::
+        E.g.::
 
-          Column('myset', MSSet("'foo'", "'bar'", "'baz'"))
+          Column('myset', SET("foo", "bar", "baz"))
 
         :param values: The range of valid values for this SET.  Values will be
-          used exactly as they appear when generating schemas.  Strings must
-          be quoted, as in the example above.  Single-quotes are suggested for
-          ANSI compatibility and are required for portability to servers with
-          ANSI_QUOTES enabled.
+          quoted when generating the schema according to the quoting flag (see
+          below).
+
+          .. versionchanged:: 0.9.0 quoting is applied automatically to
+             :class:`.mysql.SET` in the same way as for :class:`.mysql.ENUM`.
 
         :param charset: Optional, a column-level character set for this string
           value.  Takes precedence to 'ascii' or 'unicode' short-hand.
@@ -1145,18 +1231,27 @@ class SET(_StringType):
           BINARY in schema.  This does not affect the type of data stored,
           only the collation of character data.
 
+        :param quoting: Defaults to 'auto': automatically determine enum value
+          quoting.  If all enum values are surrounded by the same quoting
+          character, then use 'quoted' mode.  Otherwise, use 'unquoted' mode.
+
+          'quoted': values in enums are already quoted, they will be used
+          directly when generating the schema - this usage is deprecated.
+
+          'unquoted': values in enums are not quoted, they will be escaped and
+          surrounded by single quotes when generating the schema.
+
+          Previous versions of this type always required manually quoted
+          values to be supplied; future versions will always quote the string
+          literals for you.  This is a transitional option.
+
+          .. versionadded:: 0.9.0
+
         """
-        self._ddl_values = values
+        values, length = self._init_values(values, kw)
+        self.values = tuple(values)
 
-        strip_values = []
-        for a in values:
-            if a[0:1] == '"' or a[0:1] == "'":
-                # strip enclosing quotes and unquote interior
-                a = a[1:-1].replace(a[0] * 2, a[0])
-            strip_values.append(a)
-
-        self.values = strip_values
-        kw.setdefault('length', max([len(v) for v in strip_values] + [0]))
+        kw.setdefault('length', length)
         super(SET, self).__init__(**kw)
 
     def result_processor(self, dialect, coltype):
@@ -1165,13 +1260,10 @@ class SET(_StringType):
             #   No ',' quoting issues- commas aren't allowed in SET values
             # The bad news:
             #   Plenty of driver inconsistencies here.
-            if isinstance(value, util.set_types):
+            if isinstance(value, set):
                 # ..some versions convert '' to an empty set
                 if not value:
                     value.add('')
-                # ..some return sets.Set, even for pythons that have __builtin__.set
-                if not isinstance(value, set):
-                    value = set(value)
                 return value
             # ...and some versions return strings
             if value is not None:
@@ -1184,7 +1276,7 @@ class SET(_StringType):
         super_convert = super(SET, self).bind_processor(dialect)
 
         def process(value):
-            if value is None or isinstance(value, (int, long, basestring)):
+            if value is None or isinstance(value, util.int_types + util.string_types):
                 pass
             else:
                 if None in value:
@@ -1231,6 +1323,9 @@ MSFloat = FLOAT
 MSInteger = INTEGER
 
 colspecs = {
+    _IntegerType: _IntegerType,
+    _NumericType: _NumericType,
+    _FloatType: _FloatType,
     sqltypes.Numeric: NUMERIC,
     sqltypes.Float: FLOAT,
     sqltypes.Time: TIME,
@@ -1319,20 +1414,17 @@ class MySQLCompiler(compiler.SQLCompiler):
                 return 'SIGNED INTEGER'
         elif isinstance(type_, sqltypes.TIMESTAMP):
             return 'DATETIME'
-        elif isinstance(type_, (sqltypes.DECIMAL, sqltypes.DateTime, sqltypes.Date, sqltypes.Time)):
+        elif isinstance(type_, (sqltypes.DECIMAL, sqltypes.DateTime,
+                                            sqltypes.Date, sqltypes.Time)):
             return self.dialect.type_compiler.process(type_)
-        elif isinstance(type_, sqltypes.Text):
-            return 'CHAR'
-        elif (isinstance(type_, sqltypes.String) and not
-              isinstance(type_, (ENUM, SET))):
-            if getattr(type_, 'length'):
-                return 'CHAR(%s)' % type_.length
-            else:
-                return 'CHAR'
+        elif isinstance(type_, sqltypes.String) and not isinstance(type_, (ENUM, SET)):
+            adapted = CHAR._adapt_string_for_cast(type_)
+            return self.dialect.type_compiler.process(adapted)
         elif isinstance(type_, sqltypes._Binary):
             return 'BINARY'
         elif isinstance(type_, sqltypes.NUMERIC):
-            return self.dialect.type_compiler.process(type_).replace('NUMERIC', 'DECIMAL')
+            return self.dialect.type_compiler.process(
+                                        type_).replace('NUMERIC', 'DECIMAL')
         else:
             return None
 
@@ -1363,7 +1455,7 @@ class MySQLCompiler(compiler.SQLCompiler):
           of a SELECT.
 
         """
-        if isinstance(select._distinct, basestring):
+        if isinstance(select._distinct, util.string_types):
             return select._distinct.upper() + " "
         elif select._distinct:
             return "DISTINCT "
@@ -1371,11 +1463,6 @@ class MySQLCompiler(compiler.SQLCompiler):
             return ""
 
     def visit_join(self, join, asfrom=False, **kwargs):
-        # 'JOIN ... ON ...' for inner joins isn't available until 4.0.
-        # Apparently < 3.23.17 requires theta joins for inner joins
-        # (but not outer).  Not generating these currently, but
-        # support can be added, preferably after dialects are
-        # refactored to be version-sensitive.
         return ''.join(
             (self.process(join.left, asfrom=True, **kwargs),
              (join.isouter and " LEFT OUTER JOIN " or " INNER JOIN "),
@@ -1384,10 +1471,10 @@ class MySQLCompiler(compiler.SQLCompiler):
              self.process(join.onclause, **kwargs)))
 
     def for_update_clause(self, select):
-        if select.for_update == 'read':
-            return ' LOCK IN SHARE MODE'
+        if select._for_update_arg.read:
+            return " LOCK IN SHARE MODE"
         else:
-            return super(MySQLCompiler, self).for_update_clause(select)
+            return " FOR UPDATE"
 
     def limit_clause(self, select):
         # MySQL supports:
@@ -1448,11 +1535,12 @@ class MySQLCompiler(compiler.SQLCompiler):
 class MySQLDDLCompiler(compiler.DDLCompiler):
     def create_table_constraints(self, table):
         """Get table constraints."""
-        constraint_string = super(MySQLDDLCompiler, self).create_table_constraints(table)
+        constraint_string = super(
+                        MySQLDDLCompiler, self).create_table_constraints(table)
 
-        engine_key = '%s_engine' % self.dialect.name
-        is_innodb = table.kwargs.has_key(engine_key) and \
-                    table.kwargs[engine_key].lower() == 'innodb'
+        # why self.dialect.name and not 'mysql'?  because of drizzle
+        is_innodb = 'engine' in table.dialect_options[self.dialect.name] and \
+                    table.dialect_options[self.dialect.name]['engine'].lower() == 'innodb'
 
         auto_inc_column = table._autoincrement_column
 
@@ -1463,7 +1551,7 @@ class MySQLDDLCompiler(compiler.DDLCompiler):
                 constraint_string += ", \n\t"
             constraint_string += "KEY %s (%s)" % (
                         self.preparer.quote(
-                            "idx_autoinc_%s" % auto_inc_column.name, None
+                            "idx_autoinc_%s" % auto_inc_column.name
                         ),
                         self.preparer.format_column(auto_inc_column)
                     )
@@ -1488,7 +1576,8 @@ class MySQLDDLCompiler(compiler.DDLCompiler):
         elif column.nullable and is_timestamp and default is None:
             colspec.append('NULL')
 
-        if column is column.table._autoincrement_column and column.server_default is None:
+        if column is column.table._autoincrement_column and \
+                    column.server_default is None:
             colspec.append('AUTO_INCREMENT')
 
         return ' '.join(colspec)
@@ -1531,47 +1620,62 @@ class MySQLDDLCompiler(compiler.DDLCompiler):
 
     def visit_create_index(self, create):
         index = create.element
+        self._verify_index_table(index)
         preparer = self.preparer
         table = preparer.format_table(index.table)
-        columns = [preparer.quote(c.name, c.quote) for c in index.columns]
-        name = preparer.quote(
-                    self._index_identifier(index.name),
-                    index.quote)
+        columns = [self.sql_compiler.process(expr, include_table=False,
+                        literal_binds=True)
+                for expr in index.expressions]
+
+        name = self._prepared_index_name(index)
 
         text = "CREATE "
         if index.unique:
             text += "UNIQUE "
         text += "INDEX %s ON %s " % (name, table)
 
-        columns = ', '.join(columns)
-        if 'mysql_length' in index.kwargs:
-            length = index.kwargs['mysql_length']
-            text += "(%s(%d))" % (columns, length)
-        else:
-            text += "(%s)" % (columns)
+        length = index.dialect_options['mysql']['length']
+        if length is not None:
 
-        if 'mysql_using' in index.kwargs:
-            using = index.kwargs['mysql_using']
-            text += " USING %s" % (preparer.quote(using, index.quote))
+            if isinstance(length, dict):
+                # length value can be a (column_name --> integer value) mapping
+                # specifying the prefix length for each column of the index
+                columns = ', '.join(
+                    ('%s(%d)' % (col, length[col])
+                     if col in length else '%s' % col)
+                    for col in columns
+                )
+            else:
+                # or can be an integer value specifying the same
+                # prefix length for all columns of the index
+                columns = ', '.join(
+                    '%s(%d)' % (col, length)
+                    for col in columns
+                )
+        else:
+            columns = ', '.join(columns)
+        text += '(%s)' % columns
+
+        using = index.dialect_options['mysql']['using']
+        if using is not None:
+            text += " USING %s" % (preparer.quote(using))
 
         return text
 
     def visit_primary_key_constraint(self, constraint):
         text = super(MySQLDDLCompiler, self).\
             visit_primary_key_constraint(constraint)
-        if "mysql_using" in constraint.kwargs:
-            using = constraint.kwargs['mysql_using']
-            text += " USING %s" % (
-                self.preparer.quote(using, constraint.quote))
+        using = constraint.dialect_options['mysql']['using']
+        if using:
+            text += " USING %s" % (self.preparer.quote(using))
         return text
 
     def visit_drop_index(self, drop):
         index = drop.element
 
-        return "\nDROP INDEX %s ON %s" % \
-                    (self.preparer.quote(
-                        self._index_identifier(index.name), index.quote
-                    ),
+        return "\nDROP INDEX %s ON %s" % (
+                    self._prepared_index_name(index,
+                                        include_schema=False),
                      self.preparer.format_table(index.table))
 
     def visit_drop_constraint(self, drop):
@@ -1592,6 +1696,12 @@ class MySQLDDLCompiler(compiler.DDLCompiler):
                     (self.preparer.format_table(constraint.table),
                     qual, const)
 
+    def define_constraint_match(self, constraint):
+        if constraint.match is not None:
+            raise exc.CompileError(
+                    "MySQL ignores the 'MATCH' keyword while at the same time "
+                    "causes ON UPDATE/ON DELETE clauses to be ignored.")
+        return ""
 
 class MySQLTypeCompiler(compiler.GenericTypeCompiler):
     def _extend_numeric(self, type_, spec):
@@ -1651,7 +1761,8 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
         else:
             return self._extend_numeric(type_,
                             "NUMERIC(%(precision)s, %(scale)s)" %
-                            {'precision': type_.precision, 'scale': type_.scale})
+                            {'precision': type_.precision,
+                            'scale': type_.scale})
 
     def visit_DECIMAL(self, type_):
         if type_.precision is None:
@@ -1663,11 +1774,13 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
         else:
             return self._extend_numeric(type_,
                             "DECIMAL(%(precision)s, %(scale)s)" %
-                            {'precision': type_.precision, 'scale': type_.scale})
+                            {'precision': type_.precision,
+                            'scale': type_.scale})
 
     def visit_DOUBLE(self, type_):
         if type_.precision is not None and type_.scale is not None:
-            return self._extend_numeric(type_, "DOUBLE(%(precision)s, %(scale)s)" %
+            return self._extend_numeric(type_,
+                                "DOUBLE(%(precision)s, %(scale)s)" %
                                 {'precision': type_.precision,
                                  'scale': type_.scale})
         else:
@@ -1675,7 +1788,8 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_REAL(self, type_):
         if type_.precision is not None and type_.scale is not None:
-            return self._extend_numeric(type_, "REAL(%(precision)s, %(scale)s)" %
+            return self._extend_numeric(type_,
+                                "REAL(%(precision)s, %(scale)s)" %
                                 {'precision': type_.precision,
                                  'scale': type_.scale})
         else:
@@ -1688,7 +1802,8 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
             return self._extend_numeric(type_,
                             "FLOAT(%s, %s)" % (type_.precision, type_.scale))
         elif type_.precision is not None:
-            return self._extend_numeric(type_, "FLOAT(%s)" % (type_.precision,))
+            return self._extend_numeric(type_,
+                                            "FLOAT(%s)" % (type_.precision,))
         else:
             return self._extend_numeric(type_, "FLOAT")
 
@@ -1718,7 +1833,8 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
 
     def visit_TINYINT(self, type_):
         if self._mysql_type(type_) and type_.display_width is not None:
-            return self._extend_numeric(type_, "TINYINT(%s)" % type_.display_width)
+            return self._extend_numeric(type_,
+                                        "TINYINT(%s)" % type_.display_width)
         else:
             return self._extend_numeric(type_, "TINYINT")
 
@@ -1800,7 +1916,8 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
                     self.dialect.name)
 
     def visit_NCHAR(self, type_):
-        # We'll actually generate the equiv. "NATIONAL CHAR" instead of "NCHAR".
+        # We'll actually generate the equiv.
+        # "NATIONAL CHAR" instead of "NCHAR".
         if type_.length:
             return self._extend_string(type_, {'national': True},
                         "CHAR(%(length)s)" % {'length': type_.length})
@@ -1817,7 +1934,7 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
         if not type_.native_enum:
             return super(MySQLTypeCompiler, self).visit_enum(type_)
         else:
-            return self.visit_ENUM(type_)
+            return self._visit_enumerated_values("ENUM", type_, type_.enums)
 
     def visit_BLOB(self, type_):
         if type_.length:
@@ -1834,14 +1951,21 @@ class MySQLTypeCompiler(compiler.GenericTypeCompiler):
     def visit_LONGBLOB(self, type_):
         return "LONGBLOB"
 
-    def visit_ENUM(self, type_):
+    def _visit_enumerated_values(self, name, type_, enumerated_values):
         quoted_enums = []
-        for e in type_.enums:
+        for e in enumerated_values:
             quoted_enums.append("'%s'" % e.replace("'", "''"))
-        return self._extend_string(type_, {}, "ENUM(%s)" % ",".join(quoted_enums))
+        return self._extend_string(type_, {}, "%s(%s)" % (
+                                    name, ",".join(quoted_enums))
+                                        )
+
+    def visit_ENUM(self, type_):
+        return self._visit_enumerated_values("ENUM", type_,
+                                                    type_._enumerated_values)
 
     def visit_SET(self, type_):
-        return self._extend_string(type_, {}, "SET(%s)" % ",".join(type_._ddl_values))
+        return self._visit_enumerated_values("SET", type_,
+                                                    type_._enumerated_values)
 
     def visit_BOOLEAN(self, type):
         return "BOOL"
@@ -1868,6 +1992,7 @@ class MySQLIdentifierPreparer(compiler.IdentifierPreparer):
         return tuple([self.quote_identifier(i) for i in ids if i is not None])
 
 
+@log.class_logger
 class MySQLDialect(default.DefaultDialect):
     """Details of the MySQL dialect.  Not used directly in application code."""
 
@@ -1899,7 +2024,24 @@ class MySQLDialect(default.DefaultDialect):
     _backslash_escapes = True
     _server_ansiquotes = False
 
-    def __init__(self, use_ansiquotes=None, isolation_level=None, **kwargs):
+    construct_arguments = [
+        (sa_schema.Table, {
+            "*": None
+        }),
+        (sql.Update, {
+            "limit": None
+        }),
+        (sa_schema.PrimaryKeyConstraint, {
+            "using": None
+        }),
+        (sa_schema.Index, {
+            "using": None,
+            "length": None,
+        })
+    ]
+
+    def __init__(self, isolation_level=None, **kwargs):
+        kwargs.pop('use_ansiquotes', None)   # legacy
         default.DefaultDialect.__init__(self, **kwargs)
         self.isolation_level = isolation_level
 
@@ -1932,6 +2074,8 @@ class MySQLDialect(default.DefaultDialect):
         cursor.execute('SELECT @@tx_isolation')
         val = cursor.fetchone()[0]
         cursor.close()
+        if util.py3k and isinstance(val, bytes):
+            val = val.decode()
         return val.upper().replace("-", " ")
 
     def do_commit(self, dbapi_connection):
@@ -1998,17 +2142,20 @@ class MySQLDialect(default.DefaultDialect):
             return False
 
     def _compat_fetchall(self, rp, charset=None):
-        """Proxy result rows to smooth over MySQL-Python driver inconsistencies."""
+        """Proxy result rows to smooth over MySQL-Python driver
+        inconsistencies."""
 
         return [_DecodingRowProxy(row, charset) for row in rp.fetchall()]
 
     def _compat_fetchone(self, rp, charset=None):
-        """Proxy a result row to smooth over MySQL-Python driver inconsistencies."""
+        """Proxy a result row to smooth over MySQL-Python driver
+        inconsistencies."""
 
         return _DecodingRowProxy(rp.fetchone(), charset)
 
     def _compat_first(self, rp, charset=None):
-        """Proxy a result row to smooth over MySQL-Python driver inconsistencies."""
+        """Proxy a result row to smooth over MySQL-Python driver
+        inconsistencies."""
 
         return _DecodingRowProxy(rp.first(), charset)
 
@@ -2037,10 +2184,10 @@ class MySQLDialect(default.DefaultDialect):
         try:
             try:
                 rs = connection.execute(st)
-                have = rs.rowcount > 0
+                have = rs.fetchone() is not None
                 rs.close()
                 return have
-            except exc.DBAPIError, e:
+            except exc.DBAPIError as e:
                 if self._extract_error_code(e.orig) == 1146:
                     return False
                 raise
@@ -2049,14 +2196,15 @@ class MySQLDialect(default.DefaultDialect):
                 rs.close()
 
     def initialize(self, connection):
-        default.DefaultDialect.initialize(self, connection)
         self._connection_charset = self._detect_charset(connection)
         self._detect_ansiquotes(connection)
         if self._server_ansiquotes:
             # if ansiquotes == True, build a new IdentifierPreparer
             # with the new setting
             self.identifier_preparer = self.preparer(self,
-                                                    server_ansiquotes=self._server_ansiquotes)
+                                server_ansiquotes=self._server_ansiquotes)
+
+        default.DefaultDialect.initialize(self, connection)
 
     @property
     def _supports_cast(self):
@@ -2080,13 +2228,15 @@ class MySQLDialect(default.DefaultDialect):
         if self.server_version_info < (5, 0, 2):
             rp = connection.execute("SHOW TABLES FROM %s" %
                 self.identifier_preparer.quote_identifier(current_schema))
-            return [row[0] for row in self._compat_fetchall(rp, charset=charset)]
+            return [row[0] for
+                        row in self._compat_fetchall(rp, charset=charset)]
         else:
             rp = connection.execute("SHOW FULL TABLES FROM %s" %
                     self.identifier_preparer.quote_identifier(current_schema))
 
-            return [row[0] for row in self._compat_fetchall(rp, charset=charset)\
-                                                        if row[1] == 'BASE TABLE']
+            return [row[0]
+                        for row in self._compat_fetchall(rp, charset=charset)
+                                                if row[1] == 'BASE TABLE']
 
     @reflection.cache
     def get_view_names(self, connection, schema=None, **kw):
@@ -2099,23 +2249,27 @@ class MySQLDialect(default.DefaultDialect):
         charset = self._connection_charset
         rp = connection.execute("SHOW FULL TABLES FROM %s" %
                 self.identifier_preparer.quote_identifier(schema))
-        return [row[0] for row in self._compat_fetchall(rp, charset=charset)\
-                                                    if row[1] in ('VIEW', 'SYSTEM VIEW')]
+        return [row[0]
+                    for row in self._compat_fetchall(rp, charset=charset)
+                                    if row[1] in ('VIEW', 'SYSTEM VIEW')]
 
     @reflection.cache
     def get_table_options(self, connection, table_name, schema=None, **kw):
 
-        parsed_state = self._parsed_state_or_create(connection, table_name, schema, **kw)
+        parsed_state = self._parsed_state_or_create(
+                                        connection, table_name, schema, **kw)
         return parsed_state.table_options
 
     @reflection.cache
     def get_columns(self, connection, table_name, schema=None, **kw):
-        parsed_state = self._parsed_state_or_create(connection, table_name, schema, **kw)
+        parsed_state = self._parsed_state_or_create(
+                                        connection, table_name, schema, **kw)
         return parsed_state.columns
 
     @reflection.cache
     def get_pk_constraint(self, connection, table_name, schema=None, **kw):
-        parsed_state = self._parsed_state_or_create(connection, table_name, schema, **kw)
+        parsed_state = self._parsed_state_or_create(
+                                        connection, table_name, schema, **kw)
         for key in parsed_state.keys:
             if key['type'] == 'PRIMARY':
                 # There can be only one.
@@ -2126,7 +2280,8 @@ class MySQLDialect(default.DefaultDialect):
     @reflection.cache
     def get_foreign_keys(self, connection, table_name, schema=None, **kw):
 
-        parsed_state = self._parsed_state_or_create(connection, table_name, schema, **kw)
+        parsed_state = self._parsed_state_or_create(
+                                        connection, table_name, schema, **kw)
         default_schema = None
 
         fkeys = []
@@ -2147,7 +2302,7 @@ class MySQLDialect(default.DefaultDialect):
             ref_names = spec['foreign']
 
             con_kw = {}
-            for opt in ('name', 'onupdate', 'ondelete'):
+            for opt in ('onupdate', 'ondelete'):
                 if spec.get(opt, False):
                     con_kw[opt] = spec[opt]
 
@@ -2165,7 +2320,8 @@ class MySQLDialect(default.DefaultDialect):
     @reflection.cache
     def get_indexes(self, connection, table_name, schema=None, **kw):
 
-        parsed_state = self._parsed_state_or_create(connection, table_name, schema, **kw)
+        parsed_state = self._parsed_state_or_create(
+                                        connection, table_name, schema, **kw)
 
         indexes = []
         for spec in parsed_state.keys:
@@ -2190,6 +2346,21 @@ class MySQLDialect(default.DefaultDialect):
         return indexes
 
     @reflection.cache
+    def get_unique_constraints(self, connection, table_name,
+                               schema=None, **kw):
+        parsed_state = self._parsed_state_or_create(
+            connection, table_name, schema, **kw)
+
+        return [
+            {
+                'name': key['name'],
+                'column_names': [col[0] for col in key['columns']]
+            }
+            for key in parsed_state.keys
+            if key['type'] == 'UNIQUE'
+        ]
+
+    @reflection.cache
     def get_view_definition(self, connection, view_name, schema=None, **kw):
 
         charset = self._connection_charset
@@ -2199,7 +2370,8 @@ class MySQLDialect(default.DefaultDialect):
                                       full_name=full_name)
         return sql
 
-    def _parsed_state_or_create(self, connection, table_name, schema=None, **kw):
+    def _parsed_state_or_create(self, connection, table_name,
+                                                            schema=None, **kw):
         return self._setup_parser(
                         connection,
                         table_name,
@@ -2287,7 +2459,7 @@ class MySQLDialect(default.DefaultDialect):
 
         row = self._compat_first(
             connection.execute("SHOW VARIABLES LIKE 'sql_mode'"),
-                               charset=self._connection_charset)
+                                charset=self._connection_charset)
 
         if not row:
             mode = ''
@@ -2303,6 +2475,7 @@ class MySQLDialect(default.DefaultDialect):
         # as of MySQL 5.0.1
         self._backslash_escapes = 'NO_BACKSLASH_ESCAPES' not in mode
 
+
     def _show_create_table(self, connection, table, charset=None,
                            full_name=None):
         """Run SHOW CREATE TABLE for a ``Table``."""
@@ -2314,7 +2487,7 @@ class MySQLDialect(default.DefaultDialect):
         rp = None
         try:
             rp = connection.execute(st)
-        except exc.DBAPIError, e:
+        except exc.DBAPIError as e:
             if self._extract_error_code(e.orig) == 1146:
                 raise exc.NoSuchTableError(full_name)
             else:
@@ -2338,7 +2511,7 @@ class MySQLDialect(default.DefaultDialect):
         try:
             try:
                 rp = connection.execute(st)
-            except exc.DBAPIError, e:
+            except exc.DBAPIError as e:
                 if self._extract_error_code(e.orig) == 1146:
                     raise exc.NoSuchTableError(full_name)
                 else:
@@ -2361,6 +2534,7 @@ class ReflectedState(object):
         self.constraints = []
 
 
+@log.class_logger
 class MySQLTableDefinitionParser(object):
     """Parses the results of a SHOW CREATE TABLE statement."""
 
@@ -2383,7 +2557,8 @@ class MySQLTableDefinitionParser(object):
                 pass
             elif line.startswith('CREATE '):
                 self._parse_table_name(line, state)
-            # Not present in real reflection, but may be if loading from a file.
+            # Not present in real reflection, but may be if
+            # loading from a file.
             elif not line:
                 pass
             else:
@@ -2396,7 +2571,6 @@ class MySQLTableDefinitionParser(object):
                     state.constraints.append(spec)
                 else:
                     pass
-
         return state
 
     def _parse_constraints(self, line):
@@ -2525,8 +2699,8 @@ class MySQLTableDefinitionParser(object):
             if spec.get(kw, False):
                 type_kw[kw] = spec[kw]
 
-        if type_ == 'enum':
-            type_args = ENUM._strip_enums(type_args)
+        if issubclass(col_type, _EnumeratedValues):
+            type_args = _EnumeratedValues._strip_values(type_args)
 
         type_instance = col_type(*type_args, **type_kw)
 
@@ -2700,7 +2874,7 @@ class MySQLTableDefinitionParser(object):
         #
         # unique constraints come back as KEYs
         kw = quotes.copy()
-        kw['on'] = 'RESTRICT|CASCASDE|SET NULL|NOACTION'
+        kw['on'] = 'RESTRICT|CASCADE|SET NULL|NOACTION'
         self._re_constraint = _re_compile(
             r'  '
             r'CONSTRAINT +'
@@ -2721,7 +2895,8 @@ class MySQLTableDefinitionParser(object):
         self._re_partition = _re_compile(r'(?:.*)(?:SUB)?PARTITION(?:.*)')
 
         # Table-level options (COLLATE, ENGINE, etc.)
-        # Do the string options first, since they have quoted strings we need to get rid of.
+        # Do the string options first, since they have quoted
+        # strings we need to get rid of.
         for option in _options_of_type_string:
             self._add_option_string(option)
 
@@ -2744,8 +2919,8 @@ class MySQLTableDefinitionParser(object):
         regex = (r'(?P<directive>%s)%s'
                  r"'(?P<val>(?:[^']|'')*?)'(?!')" %
                  (re.escape(directive), self._optional_equals))
-        self._pr_options.append(
-            _pr_compile(regex, lambda v: v.replace("\\\\", "\\").replace("''", "'")))
+        self._pr_options.append(_pr_compile(regex, lambda v:
+                                v.replace("\\\\", "\\").replace("''", "'")))
 
     def _add_option_word(self, directive):
         regex = (r'(?P<directive>%s)%s'
@@ -2762,8 +2937,6 @@ class MySQLTableDefinitionParser(object):
 _options_of_type_string = ('COMMENT', 'DATA DIRECTORY', 'INDEX DIRECTORY',
                            'PASSWORD', 'CONNECTION')
 
-log.class_logger(MySQLTableDefinitionParser)
-log.class_logger(MySQLDialect)
 
 
 class _DecodingRowProxy(object):
@@ -2787,11 +2960,8 @@ class _DecodingRowProxy(object):
         item = self.rowproxy[index]
         if isinstance(item, _array):
             item = item.tostring()
-        # Py2K
-        if self.charset and isinstance(item, str):
-        # end Py2K
-        # Py3K
-        #if self.charset and isinstance(item, bytes):
+
+        if self.charset and isinstance(item, util.binary_type):
             return item.decode(self.charset)
         else:
             return item
@@ -2800,11 +2970,7 @@ class _DecodingRowProxy(object):
         item = getattr(self.rowproxy, attr)
         if isinstance(item, _array):
             item = item.tostring()
-        # Py2K
-        if self.charset and isinstance(item, str):
-        # end Py2K
-        # Py3K
-        #if self.charset and isinstance(item, bytes):
+        if self.charset and isinstance(item, util.binary_type):
             return item.decode(self.charset)
         else:
             return item

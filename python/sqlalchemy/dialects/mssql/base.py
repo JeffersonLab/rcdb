@@ -1,5 +1,5 @@
 # mssql/base.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -45,19 +45,19 @@ does in other dialects and results in an ``IDENTITY`` column.
 Collation Support
 -----------------
 
-MSSQL specific string types support a collation parameter that
-creates a column-level specific collation for the column. The
-collation parameter accepts a Windows Collation Name or a SQL
-Collation Name. Supported types are MSChar, MSNChar, MSString,
-MSNVarchar, MSText, and MSNText. For example::
+Character collations are supported by the base string types,
+specified by the string argument "collation"::
 
-    from sqlalchemy.dialects.mssql import VARCHAR
+    from sqlalchemy import VARCHAR
     Column('login', VARCHAR(32, collation='Latin1_General_CI_AS'))
 
 When such a column is associated with a :class:`.Table`, the
 CREATE TABLE statement for this column will yield::
 
     login VARCHAR(32) COLLATE Latin1_General_CI_AS NULL
+
+.. versionadded:: 0.8 Character collations are now part of the base string
+   types.
 
 LIMIT/OFFSET Support
 --------------------
@@ -100,6 +100,77 @@ and results are processed from strings if needed.
 The DATE and TIME types are not available for MSSQL 2005 and
 previous - if a server version below 2008 is detected, DDL
 for these types will be issued as DATETIME.
+
+.. _mssql_indexes:
+
+Clustered Index Support
+-----------------------
+
+The MSSQL dialect supports clustered indexes (and primary keys) via the
+``mssql_clustered`` option.  This option is available to :class:`.Index`,
+:class:`.UniqueConstraint`. and :class:`.PrimaryKeyConstraint`.
+
+To generate a clustered index::
+
+    Index("my_index", table.c.x, mssql_clustered=True)
+
+which renders the index as ``CREATE CLUSTERED INDEX my_index ON table (x)``.
+
+.. versionadded:: 0.8
+
+To generate a clustered primary key use::
+
+    Table('my_table', metadata,
+          Column('x', ...),
+          Column('y', ...),
+          PrimaryKeyConstraint("x", "y", mssql_clustered=True))
+
+which will render the table, for example, as::
+
+  CREATE TABLE my_table (x INTEGER NOT NULL, y INTEGER NOT NULL, PRIMARY KEY CLUSTERED (x, y))
+
+Similarly, we can generate a clustered unique constraint using::
+
+    Table('my_table', metadata,
+          Column('x', ...),
+          Column('y', ...),
+          PrimaryKeyConstraint("x"),
+          UniqueConstraint("y", mssql_clustered=True),
+          )
+
+  .. versionadded:: 0.9.2
+
+MSSQL-Specific Index Options
+-----------------------------
+
+In addition to clustering, the MSSQL dialect supports other special options
+for :class:`.Index`.
+
+INCLUDE
+^^^^^^^
+
+The ``mssql_include`` option renders INCLUDE(colname) for the given string names::
+
+    Index("my_index", table.c.x, mssql_include=['y'])
+
+would render the index as ``CREATE INDEX my_index ON table (x) INCLUDE (y)``
+
+.. versionadded:: 0.8
+
+Index ordering
+^^^^^^^^^^^^^^
+
+Index ordering is available via functional expressions, such as::
+
+    Index("my_index", table.c.x.desc())
+
+would render the index as ``CREATE INDEX my_index ON table (x DESC)``
+
+.. versionadded:: 0.8
+
+.. seealso::
+
+    :ref:`schema_indexes_functional`
 
 Compatibility Levels
 --------------------
@@ -176,7 +247,8 @@ from ...engine import reflection, default
 from ... import types as sqltypes
 from ...types import INTEGER, BIGINT, SMALLINT, DECIMAL, NUMERIC, \
                                 FLOAT, TIMESTAMP, DATETIME, DATE, BINARY,\
-                                VARBINARY
+                                VARBINARY, TEXT, VARCHAR, NVARCHAR, CHAR, NCHAR
+
 
 from ...util import update_wrapper
 from . import information_schema as ischema
@@ -250,7 +322,7 @@ class _MSDate(sqltypes.Date):
         def process(value):
             if isinstance(value, datetime.datetime):
                 return value.date()
-            elif isinstance(value, basestring):
+            elif isinstance(value, util.string_types):
                 return datetime.date(*[
                         int(x or 0)
                         for x in self._reg.match(value).groups()
@@ -283,7 +355,7 @@ class TIME(sqltypes.TIME):
         def process(value):
             if isinstance(value, datetime.datetime):
                 return value.time()
-            elif isinstance(value, basestring):
+            elif isinstance(value, util.string_types):
                 return datetime.time(*[
                         int(x or 0)
                         for x in self._reg.match(value).groups()])
@@ -331,132 +403,17 @@ class _StringType(object):
     """Base for MSSQL string types."""
 
     def __init__(self, collation=None):
-        self.collation = collation
+        super(_StringType, self).__init__(collation=collation)
 
 
-class TEXT(_StringType, sqltypes.TEXT):
-    """MSSQL TEXT type, for variable-length text up to 2^31 characters."""
-
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct a TEXT.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.Text.__init__(self, length, **kw)
 
 
-class NTEXT(_StringType, sqltypes.UnicodeText):
+class NTEXT(sqltypes.UnicodeText):
     """MSSQL NTEXT type, for variable-length unicode text up to 2^30
     characters."""
 
     __visit_name__ = 'NTEXT'
 
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct a NTEXT.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.UnicodeText.__init__(self, length, **kw)
-
-
-class VARCHAR(_StringType, sqltypes.VARCHAR):
-    """MSSQL VARCHAR type, for variable-length non-Unicode data with a maximum
-    of 8,000 characters."""
-
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct a VARCHAR.
-
-        :param length: Optinal, maximum data length, in characters.
-
-        :param convert_unicode: defaults to False.  If True, convert
-          ``unicode`` data sent to the database to a ``str``
-          bytestring, and convert bytestrings coming back from the
-          database into ``unicode``.
-
-          Bytestrings are encoded using the dialect's
-          :attr:`~sqlalchemy.engine.Dialect.encoding`, which
-          defaults to `utf-8`.
-
-          If False, may be overridden by
-          :attr:`sqlalchemy.engine.Dialect.convert_unicode`.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.VARCHAR.__init__(self, length, **kw)
-
-
-class NVARCHAR(_StringType, sqltypes.NVARCHAR):
-    """MSSQL NVARCHAR type.
-
-    For variable-length unicode character data up to 4,000 characters."""
-
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct a NVARCHAR.
-
-        :param length: Optional, Maximum data length, in characters.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.NVARCHAR.__init__(self, length, **kw)
-
-
-class CHAR(_StringType, sqltypes.CHAR):
-    """MSSQL CHAR type, for fixed-length non-Unicode data with a maximum
-    of 8,000 characters."""
-
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct a CHAR.
-
-        :param length: Optinal, maximum data length, in characters.
-
-        :param convert_unicode: defaults to False.  If True, convert
-          ``unicode`` data sent to the database to a ``str``
-          bytestring, and convert bytestrings coming back from the
-          database into ``unicode``.
-
-          Bytestrings are encoded using the dialect's
-          :attr:`~sqlalchemy.engine.Dialect.encoding`, which
-          defaults to `utf-8`.
-
-          If False, may be overridden by
-          :attr:`sqlalchemy.engine.Dialect.convert_unicode`.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.CHAR.__init__(self, length, **kw)
-
-
-class NCHAR(_StringType, sqltypes.NCHAR):
-    """MSSQL NCHAR type.
-
-    For fixed-length unicode character data up to 4,000 characters."""
-
-    def __init__(self, length=None, collation=None, **kw):
-        """Construct an NCHAR.
-
-        :param length: Optional, Maximum data length, in characters.
-
-        :param collation: Optional, a column-level collation for this string
-          value. Accepts a Windows Collation Name or a SQL Collation Name.
-
-        """
-        _StringType.__init__(self, collation)
-        sqltypes.NCHAR.__init__(self, length, **kw)
 
 
 class IMAGE(sqltypes.LargeBinary):
@@ -771,6 +728,12 @@ class MSSQLCompiler(compiler.SQLCompiler):
                 (self.process(binary.left, **kw),
                 self.process(binary.right, **kw))
 
+    def visit_true(self, expr, **kw):
+        return '1'
+
+    def visit_false(self, expr, **kw):
+        return '0'
+
     def visit_match_op_binary(self, binary, operator, **kw):
         return "CONTAINS (%s, %s)" % (
                                         self.process(binary.left, **kw),
@@ -1018,7 +981,8 @@ class MSDDLCompiler(compiler.DDLCompiler):
                    + self.dialect.type_compiler.process(column.type))
 
         if column.nullable is not None:
-            if not column.nullable or column.primary_key:
+            if not column.nullable or column.primary_key or \
+                    isinstance(column.default, sa_schema.Sequence):
                 colspec += " NOT NULL"
             else:
                 colspec += " NULL"
@@ -1028,18 +992,16 @@ class MSDDLCompiler(compiler.DDLCompiler):
                             "mssql requires Table-bound columns "
                             "in order to generate DDL")
 
-        seq_col = column.table._autoincrement_column
-
-        # install a IDENTITY Sequence if we have an implicit IDENTITY column
-        if seq_col is column:
-            sequence = isinstance(column.default, sa_schema.Sequence) and \
-                            column.default
-            if sequence:
-                start, increment = sequence.start or 1, \
-                                    sequence.increment or 1
+        # install an IDENTITY Sequence if we either a sequence or an implicit IDENTITY column
+        if isinstance(column.default, sa_schema.Sequence):
+            if column.default.start == 0:
+                start = 0
             else:
-                start, increment = 1, 1
-            colspec += " IDENTITY(%s,%s)" % (start, increment)
+                start = column.default.start or 1
+
+            colspec += " IDENTITY(%s,%s)" % (start, column.default.increment or 1)
+        elif column is column.table._autoincrement_column:
+            colspec += " IDENTITY(1,1)"
         else:
             default = self.get_column_default_string(column)
             if default is not None:
@@ -1047,14 +1009,80 @@ class MSDDLCompiler(compiler.DDLCompiler):
 
         return colspec
 
+    def visit_create_index(self, create, include_schema=False):
+        index = create.element
+        self._verify_index_table(index)
+        preparer = self.preparer
+        text = "CREATE "
+        if index.unique:
+            text += "UNIQUE "
+
+        # handle clustering option
+        if index.dialect_options['mssql']['clustered']:
+            text += "CLUSTERED "
+
+        text += "INDEX %s ON %s (%s)" \
+                    % (
+                        self._prepared_index_name(index,
+                                include_schema=include_schema),
+                        preparer.format_table(index.table),
+                       ', '.join(
+                            self.sql_compiler.process(expr,
+                                include_table=False, literal_binds=True) for
+                                expr in index.expressions)
+                        )
+
+        # handle other included columns
+        if index.dialect_options['mssql']['include']:
+            inclusions = [index.table.c[col]
+                            if isinstance(col, util.string_types) else col
+                          for col in index.dialect_options['mssql']['include']]
+
+            text += " INCLUDE (%s)" \
+                % ', '.join([preparer.quote(c.name)
+                             for c in inclusions])
+
+        return text
+
     def visit_drop_index(self, drop):
-        return "\nDROP INDEX %s.%s" % (
-            self.preparer.quote_identifier(drop.element.table.name),
-            self.preparer.quote(
-                        self._index_identifier(drop.element.name),
-                        drop.element.quote)
+        return "\nDROP INDEX %s ON %s" % (
+            self._prepared_index_name(drop.element, include_schema=False),
+            self.preparer.format_table(drop.element.table)
             )
 
+    def visit_primary_key_constraint(self, constraint):
+        if len(constraint) == 0:
+            return ''
+        text = ""
+        if constraint.name is not None:
+            text += "CONSTRAINT %s " % \
+                    self.preparer.format_constraint(constraint)
+        text += "PRIMARY KEY "
+
+        if constraint.dialect_options['mssql']['clustered']:
+            text += "CLUSTERED "
+
+        text += "(%s)" % ', '.join(self.preparer.quote(c.name)
+                                   for c in constraint)
+        text += self.define_constraint_deferrability(constraint)
+        return text
+
+    def visit_unique_constraint(self, constraint):
+        if len(constraint) == 0:
+            return ''
+        text = ""
+        if constraint.name is not None:
+            text += "CONSTRAINT %s " % \
+                    self.preparer.format_constraint(constraint)
+        text += "UNIQUE "
+
+        if constraint.dialect_options['mssql']['clustered']:
+            text += "CLUSTERED "
+
+        text += "(%s)" % ', '.join(self.preparer.quote(c.name)
+                                   for c in constraint)
+        text += self.define_constraint_deferrability(constraint)
+        return text
 
 class MSIdentifierPreparer(compiler.IdentifierPreparer):
     reserved_words = RESERVED_WORDS
@@ -1066,7 +1094,7 @@ class MSIdentifierPreparer(compiler.IdentifierPreparer):
     def _escape_identifier(self, value):
         return value
 
-    def quote_schema(self, schema, force=True):
+    def quote_schema(self, schema, force=None):
         """Prepare a quoted table and schema name."""
         result = '.'.join([self.quote(x, force) for x in schema.split('.')])
         return result
@@ -1136,11 +1164,24 @@ class MSDialect(default.DefaultDialect):
     type_compiler = MSTypeCompiler
     preparer = MSIdentifierPreparer
 
+    construct_arguments = [
+        (sa_schema.PrimaryKeyConstraint, {
+            "clustered": False
+        }),
+        (sa_schema.UniqueConstraint, {
+            "clustered": False
+        }),
+        (sa_schema.Index, {
+            "clustered": False,
+            "include": None
+        })
+    ]
+
     def __init__(self,
                  query_timeout=None,
                  use_scope_identity=True,
                  max_identifier_length=None,
-                 schema_name=u"dbo", **opts):
+                 schema_name="dbo", **opts):
         self.query_timeout = int(query_timeout or 0)
         self.schema_name = schema_name
 
@@ -1160,7 +1201,7 @@ class MSDialect(default.DefaultDialect):
 
     def initialize(self, connection):
         super(MSDialect, self).initialize(connection)
-        if self.server_version_info[0] not in range(8, 17):
+        if self.server_version_info[0] not in list(range(8, 17)):
             # FreeTDS with version 4.2 seems to report here
             # a number like "95.10.255".  Don't know what
             # that is.  So emit warning.
@@ -1187,22 +1228,17 @@ class MSDialect(default.DefaultDialect):
             try:
                 default_schema_name = connection.scalar(query, name=user_name)
                 if default_schema_name is not None:
-                    return unicode(default_schema_name)
+                    return util.text_type(default_schema_name)
             except:
                 pass
         return self.schema_name
-
-    def _unicode_cast(self, column):
-        if self.server_version_info >= MS_2005_VERSION:
-            return cast(column, NVARCHAR(_warn_on_bytestring=False))
-        else:
-            return column
 
     @_db_plus_owner
     def has_table(self, connection, tablename, dbname, owner, schema):
         columns = ischema.columns
 
-        whereclause = self._unicode_cast(columns.c.table_name) == tablename
+        whereclause = columns.c.table_name == tablename
+
         if owner:
             whereclause = sql.and_(whereclause,
                                    columns.c.table_schema == owner)
@@ -1225,7 +1261,7 @@ class MSDialect(default.DefaultDialect):
         s = sql.select([tables.c.table_name],
             sql.and_(
                 tables.c.table_schema == owner,
-                tables.c.table_type == u'BASE TABLE'
+                tables.c.table_type == 'BASE TABLE'
             ),
             order_by=[tables.c.table_name]
         )
@@ -1239,7 +1275,7 @@ class MSDialect(default.DefaultDialect):
         s = sql.select([tables.c.table_name],
             sql.and_(
                 tables.c.table_schema == owner,
-                tables.c.table_type == u'VIEW'
+                tables.c.table_type == 'VIEW'
             ),
             order_by=[tables.c.table_name]
         )
@@ -1304,7 +1340,7 @@ class MSDialect(default.DefaultDialect):
             if row['index_id'] in indexes:
                 indexes[row['index_id']]['column_names'].append(row['name'])
 
-        return indexes.values()
+        return list(indexes.values())
 
     @reflection.cache
     @_db_plus_owner
@@ -1511,4 +1547,4 @@ class MSDialect(default.DefaultDialect):
             local_cols.append(scol)
             remote_cols.append(rcol)
 
-        return fkeys.values()
+        return list(fkeys.values())

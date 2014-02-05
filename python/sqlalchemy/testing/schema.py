@@ -1,3 +1,8 @@
+# testing/schema.py
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
+#
+# This module is part of SQLAlchemy and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 from . import exclusions
 from .. import schema, event
@@ -11,7 +16,7 @@ table_options = {}
 def Table(*args, **kw):
     """A schema.Table wrapper/hook for dialect-specific tweaks."""
 
-    test_opts = dict([(k, kw.pop(k)) for k in kw.keys()
+    test_opts = dict([(k, kw.pop(k)) for k in list(kw)
                       if k.startswith('test_')])
 
     kw.update(table_options)
@@ -58,7 +63,7 @@ def Table(*args, **kw):
 def Column(*args, **kw):
     """A schema.Column wrapper/hook for dialect-specific tweaks."""
 
-    test_opts = dict([(k, kw.pop(k)) for k in kw.keys()
+    test_opts = dict([(k, kw.pop(k)) for k in list(kw)
                       if k.startswith('test_')])
 
     if not config.requirements.foreign_key_ddl.enabled:
@@ -66,16 +71,25 @@ def Column(*args, **kw):
 
     col = schema.Column(*args, **kw)
     if 'test_needs_autoincrement' in test_opts and \
-        kw.get('primary_key', False) and \
-        exclusions.against('firebird', 'oracle'):
-        def add_seq(c, tbl):
-            c._init_items(
-                schema.Sequence(_truncate_name(
-                        config.db.dialect, tbl.name + '_' + c.name + '_seq'),
-                    optional=True)
-            )
-        event.listen(col, 'after_parent_attach', add_seq, propagate=True)
+        kw.get('primary_key', False):
+
+        # allow any test suite to pick up on this
+        col.info['test_needs_autoincrement'] = True
+
+        # hardcoded rule for firebird, oracle; this should
+        # be moved out
+        if exclusions.against('firebird', 'oracle'):
+            def add_seq(c, tbl):
+                c._init_items(
+                    schema.Sequence(_truncate_name(
+                            config.db.dialect, tbl.name + '_' + c.name + '_seq'),
+                        optional=True)
+                )
+            event.listen(col, 'after_parent_attach', add_seq, propagate=True)
     return col
+
+
+
 
 
 def _truncate_name(dialect, name):

@@ -1,5 +1,5 @@
 # orm/unitofwork.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -16,8 +16,6 @@ from .. import util, event
 from ..util import topological
 from . import attributes, persistence, util as orm_util
 
-sessionlib = util.importlater("sqlalchemy.orm", "session")
-
 
 def track_cascade_events(descriptor, prop):
     """Establish event listeners on object attributes which handle
@@ -33,16 +31,16 @@ def track_cascade_events(descriptor, prop):
         if item is None:
             return
 
-        sess = sessionlib._state_session(state)
+        sess = state.session
         if sess:
             if sess._warn_on_events:
                 sess._flush_warning("collection append")
 
             prop = state.manager.mapper._props[key]
             item_state = attributes.instance_state(item)
-            if prop.cascade.save_update and \
+            if prop._cascade.save_update and \
                 (prop.cascade_backrefs or key == initiator.key) and \
-                not sess._contains_state(item_state):
+                    not sess._contains_state(item_state):
                 sess._save_or_update_state(item_state)
         return item
 
@@ -50,7 +48,7 @@ def track_cascade_events(descriptor, prop):
         if item is None:
             return
 
-        sess = sessionlib._state_session(state)
+        sess = state.session
         if sess:
 
             prop = state.manager.mapper._props[key]
@@ -63,9 +61,9 @@ def track_cascade_events(descriptor, prop):
 
             # expunge pending orphans
             item_state = attributes.instance_state(item)
-            if prop.cascade.delete_orphan and \
+            if prop._cascade.delete_orphan and \
                 item_state in sess._new and \
-                prop.mapper._is_orphan(item_state):
+                    prop.mapper._is_orphan(item_state):
                     sess.expunge(item)
 
     def set_(state, newvalue, oldvalue, initiator):
@@ -74,7 +72,7 @@ def track_cascade_events(descriptor, prop):
         if oldvalue is newvalue:
             return newvalue
 
-        sess = sessionlib._state_session(state)
+        sess = state.session
         if sess:
 
             if sess._warn_on_events:
@@ -83,14 +81,14 @@ def track_cascade_events(descriptor, prop):
             prop = state.manager.mapper._props[key]
             if newvalue is not None:
                 newvalue_state = attributes.instance_state(newvalue)
-                if prop.cascade.save_update and \
+                if prop._cascade.save_update and \
                     (prop.cascade_backrefs or key == initiator.key) and \
                     not sess._contains_state(newvalue_state):
                     sess._save_or_update_state(newvalue_state)
 
             if oldvalue is not None and \
                 oldvalue is not attributes.PASSIVE_NO_RESULT and \
-                prop.cascade.delete_orphan:
+                prop._cascade.delete_orphan:
                 # possible to reach here with attributes.NEVER_SET ?
                 oldvalue_state = attributes.instance_state(oldvalue)
 
@@ -315,7 +313,7 @@ class UOWTransaction(object):
         # see if the graph of mapper dependencies has cycles.
         self.cycles = cycles = topological.find_cycles(
                                         self.dependencies,
-                                        self.postsort_actions.values())
+                                        list(self.postsort_actions.values()))
 
         if cycles:
             # if yes, break the per-mapper actions into
@@ -381,7 +379,7 @@ class UOWTransaction(object):
         """
         states = set(self.states)
         isdel = set(
-            s for (s, (isdelete, listonly)) in self.states.iteritems()
+            s for (s, (isdelete, listonly)) in self.states.items()
             if isdelete
         )
         other = states.difference(isdel)

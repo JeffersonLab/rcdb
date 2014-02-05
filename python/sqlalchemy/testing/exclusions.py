@@ -1,4 +1,9 @@
-from __future__ import with_statement
+# testing/exclusions.py
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
+#
+# This module is part of SQLAlchemy and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 
 import operator
 from nose import SkipTest
@@ -19,14 +24,19 @@ class skip_if(object):
     def enabled(self):
         return not self.predicate()
 
+    def __add__(self, other):
+        def decorate(fn):
+            return other(self(fn))
+        return decorate
+
     @contextlib.contextmanager
     def fail_if(self, name='block'):
         try:
             yield
-        except Exception, ex:
+        except Exception as ex:
             if self.predicate():
-                print ("%s failed as expected (%s): %s " % (
-                    name, self.predicate, str(ex)))
+                print(("%s failed as expected (%s): %s " % (
+                    name, self.predicate, str(ex))))
             else:
                 raise
         else:
@@ -84,14 +94,23 @@ def succeeds_if(predicate, reason=None):
 class Predicate(object):
     @classmethod
     def as_predicate(cls, predicate):
-        if isinstance(predicate, Predicate):
+        if isinstance(predicate, skip_if):
+            return predicate.predicate
+        elif isinstance(predicate, Predicate):
             return predicate
         elif isinstance(predicate, list):
             return OrPredicate([cls.as_predicate(pred) for pred in predicate])
         elif isinstance(predicate, tuple):
             return SpecPredicate(*predicate)
-        elif isinstance(predicate, basestring):
-            return SpecPredicate(predicate, None, None)
+        elif isinstance(predicate, util.string_types):
+            tokens = predicate.split(" ", 2)
+            op = spec = None
+            db = tokens.pop(0)
+            if tokens:
+                op = tokens.pop(0)
+            if tokens:
+                spec = tuple(int(d) for d in tokens.pop(0).split("."))
+            return SpecPredicate(db, op, spec)
         elif util.callable(predicate):
             return LambdaPredicate(predicate)
         else:

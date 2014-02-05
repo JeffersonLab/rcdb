@@ -111,7 +111,7 @@ typedef struct {
   unsigned int block_bflevel;         /* block buffer level: 0-65535 */
   unsigned int out_port_mask;         /* output port mask: bits: 3-0 (p4,p3,p2,p1) */ 
   unsigned int clk_src;               /* clock source: 0 = internal, 1 = external */
-  unsigned int ti_soft_trig[4]     /* enable software trigger: [0] - trigger type 1 or 2 (playback)
+  unsigned int ti_soft_trig[4];     /* enable software trigger: [0] - trigger type 1 or 2 (playback)
                                                                   [1] - number of events to trigger
                                                                   [2] - period multiplier, depends on range (0-0x7FFF)
                                                                   [3] - small (0) or large (1)

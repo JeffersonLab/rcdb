@@ -1,5 +1,5 @@
 # ext/hybrid.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
@@ -229,7 +229,7 @@ mapping which relates a ``User`` to a ``SavingsAccount``::
                 account = Account(owner=self)
             else:
                 account = self.accounts[0]
-            account.balance = balance
+            account.balance = value
 
         @balance.expression
         def balance(cls):
@@ -269,7 +269,7 @@ Correlated Subquery Relationship Hybrid
 
 We can, of course, forego being dependent on the enclosing query's usage
 of joins in favor of the correlated subquery, which can portably be packed
-into a single colunn expression. A correlated subquery is more portable, but
+into a single column expression. A correlated subquery is more portable, but
 often performs more poorly at the SQL level. Using the same technique
 illustrated at :ref:`mapper_column_property_sql_expressions`,
 we can adjust our ``SavingsAccount`` example to aggregate the balances for
@@ -470,11 +470,15 @@ The Hybrid Value pattern is very useful for any kind of value that may
 have multiple representations, such as timestamps, time deltas, units
 of measurement, currencies and encrypted passwords.
 
-See Also:
+.. seealso::
 
-`Hybrids and Value Agnostic Types <http://techspot.zzzeek.org/2011/10/21/hybrids-and-value-agnostic-types/>`_ - on the techspot.zzzeek.org blog
+    `Hybrids and Value Agnostic Types
+    <http://techspot.zzzeek.org/2011/10/21/hybrids-and-value-agnostic-types/>`_ -
+    on the techspot.zzzeek.org blog
 
-`Value Agnostic Types, Part II <http://techspot.zzzeek.org/2011/10/29/value-agnostic-types-part-ii/>`_ - on the techspot.zzzeek.org blog
+    `Value Agnostic Types, Part II
+    <http://techspot.zzzeek.org/2011/10/29/value-agnostic-types-part-ii/>`_ -
+    on the techspot.zzzeek.org blog
 
 .. _hybrid_transformers:
 
@@ -628,12 +632,40 @@ there's probably a whole lot of amazing things it can be used for.
 from .. import util
 from ..orm import attributes, interfaces
 
+HYBRID_METHOD = util.symbol('HYBRID_METHOD')
+"""Symbol indicating an :class:`_InspectionAttr` that's
+   of type :class:`.hybrid_method`.
 
-class hybrid_method(object):
+   Is assigned to the :attr:`._InspectionAttr.extension_type`
+   attibute.
+
+   .. seealso::
+
+    :attr:`.Mapper.all_orm_attributes`
+
+"""
+
+HYBRID_PROPERTY = util.symbol('HYBRID_PROPERTY')
+"""Symbol indicating an :class:`_InspectionAttr` that's
+    of type :class:`.hybrid_method`.
+
+   Is assigned to the :attr:`._InspectionAttr.extension_type`
+   attibute.
+
+   .. seealso::
+
+    :attr:`.Mapper.all_orm_attributes`
+
+"""
+
+class hybrid_method(interfaces._InspectionAttr):
     """A decorator which allows definition of a Python object method with both
     instance-level and class-level behavior.
 
     """
+
+    is_attribute = True
+    extension_type = HYBRID_METHOD
 
     def __init__(self, func, expr=None):
         """Create a new :class:`.hybrid_method`.
@@ -669,11 +701,14 @@ class hybrid_method(object):
         return self
 
 
-class hybrid_property(object):
+class hybrid_property(interfaces._InspectionAttr):
     """A decorator which allows definition of a Python descriptor with both
     instance-level and class-level behavior.
 
     """
+
+    is_attribute = True
+    extension_type = HYBRID_PROPERTY
 
     def __init__(self, fget, fset=None, fdel=None, expr=None):
         """Create a new :class:`.hybrid_property`.
@@ -768,6 +803,6 @@ class Comparator(interfaces.PropComparator):
             expr = expr.__clause_element__()
         return expr
 
-    def adapted(self, adapter):
+    def adapt_to_entity(self, adapt_to_entity):
         # interesting....
         return self

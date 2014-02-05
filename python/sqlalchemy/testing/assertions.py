@@ -1,8 +1,14 @@
+# testing/assertions.py
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
+#
+# This module is part of SQLAlchemy and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 from __future__ import absolute_import
 
 from . import util as testutil
 from sqlalchemy import pool, orm, util
-from sqlalchemy.engine import default, create_engine
+from sqlalchemy.engine import default, create_engine, url
 from sqlalchemy import exc as sa_exc
 from sqlalchemy.util import decorator
 from sqlalchemy import types as sqltypes, schema
@@ -63,7 +69,7 @@ def emits_warning_on(db, *warnings):
 
     @decorator
     def decorate(fn, *args, **kw):
-        if isinstance(db, basestring):
+        if isinstance(db, util.string_types):
             if not spec(config.db):
                 return fn(*args, **kw)
             else:
@@ -92,29 +98,35 @@ def uses_deprecated(*messages):
 
     @decorator
     def decorate(fn, *args, **kw):
-        # todo: should probably be strict about this, too
-        filters = [dict(action='ignore',
-                        category=sa_exc.SAPendingDeprecationWarning)]
-        if not messages:
-            filters.append(dict(action='ignore',
-                                category=sa_exc.SADeprecationWarning))
-        else:
-            filters.extend(
-                [dict(action='ignore',
-                      message=message,
-                      category=sa_exc.SADeprecationWarning)
-                 for message in
-                 [(m.startswith('//') and
-                    ('Call to deprecated function ' + m[2:]) or m)
-                   for m in messages]])
-
-        for f in filters:
-            warnings.filterwarnings(**f)
-        try:
+        with expect_deprecated(*messages):
             return fn(*args, **kw)
-        finally:
-            resetwarnings()
     return decorate
+
+@contextlib.contextmanager
+def expect_deprecated(*messages):
+    # todo: should probably be strict about this, too
+    filters = [dict(action='ignore',
+                    category=sa_exc.SAPendingDeprecationWarning)]
+    if not messages:
+        filters.append(dict(action='ignore',
+                            category=sa_exc.SADeprecationWarning))
+    else:
+        filters.extend(
+            [dict(action='ignore',
+                  message=message,
+                  category=sa_exc.SADeprecationWarning)
+             for message in
+             [(m.startswith('//') and
+                ('Call to deprecated function ' + m[2:]) or m)
+               for m in messages]])
+
+    for f in filters:
+        warnings.filterwarnings(**f)
+    try:
+        yield
+    finally:
+        resetwarnings()
+
 
 
 def global_cleanup_assertions():
@@ -171,9 +183,9 @@ def assert_raises_message(except_cls, msg, callable_, *args, **kwargs):
     try:
         callable_(*args, **kwargs)
         assert False, "Callable did not raise an exception"
-    except except_cls, e:
-        assert re.search(msg, unicode(e), re.UNICODE), u"%r !~ %s" % (msg, e)
-        print unicode(e).encode('utf-8')
+    except except_cls as e:
+        assert re.search(msg, util.text_type(e), re.UNICODE), "%r !~ %s" % (msg, e)
+        print(util.text_type(e).encode('utf-8'))
 
 
 class AssertsCompiledSQL(object):
@@ -181,36 +193,53 @@ class AssertsCompiledSQL(object):
                         checkparams=None, dialect=None,
                         checkpositional=None,
                         use_default_dialect=False,
-                        allow_dialect_select=False):
+                        allow_dialect_select=False,
+                        literal_binds=False):
         if use_default_dialect:
             dialect = default.DefaultDialect()
-        elif dialect == None and not allow_dialect_select:
-            dialect = getattr(self, '__dialect__', None)
-            if dialect == 'default':
-                dialect = default.DefaultDialect()
-            elif dialect is None:
+        elif allow_dialect_select:
+            dialect = None
+        else:
+            if dialect is None:
+                dialect = getattr(self, '__dialect__', None)
+
+            if dialect is None:
                 dialect = config.db.dialect
-            elif isinstance(dialect, basestring):
-                dialect = create_engine("%s://" % dialect).dialect
+            elif dialect == 'default':
+                dialect = default.DefaultDialect()
+            elif isinstance(dialect, util.string_types):
+                dialect = url.URL(dialect).get_dialect()()
+
 
         kw = {}
+        compile_kwargs = {}
+
         if params is not None:
-            kw['column_keys'] = params.keys()
+            kw['column_keys'] = list(params)
+
+        if literal_binds:
+            compile_kwargs['literal_binds'] = True
 
         if isinstance(clause, orm.Query):
             context = clause._compile_context()
             context.statement.use_labels = True
             clause = context.statement
 
+        if compile_kwargs:
+            kw['compile_kwargs'] = compile_kwargs
+
         c = clause.compile(dialect=dialect, **kw)
 
         param_str = repr(getattr(c, 'params', {}))
-        # Py3K
-        #param_str = param_str.encode('utf-8').decode('ascii', 'ignore')
 
-        print "\nSQL String:\n" + str(c) + param_str
+        if util.py3k:
+            param_str = param_str.encode('utf-8').decode('ascii', 'ignore')
+            print(("\nSQL String:\n" + util.text_type(c) + param_str).encode('utf-8'))
+        else:
+            print("\nSQL String:\n" + util.text_type(c).encode('utf-8') + param_str)
 
-        cc = re.sub(r'[\n\t]', '', str(c))
+
+        cc = re.sub(r'[\n\t]', '', util.text_type(c))
 
         eq_(cc, result, "%r != %r on dialect %r" % (cc, result, dialect))
 
@@ -262,7 +291,7 @@ class ComparesTables(object):
 class AssertsExecutionResults(object):
     def assert_result(self, result, class_, *objects):
         result = list(result)
-        print repr(result)
+        print(repr(result))
         self.assert_list(result, class_, objects)
 
     def assert_list(self, result, class_, list):
@@ -275,7 +304,7 @@ class AssertsExecutionResults(object):
     def assert_row(self, class_, rowobj, desc):
         self.assert_(rowobj.__class__ is class_,
                      "item class is not " + repr(class_))
-        for key, value in desc.iteritems():
+        for key, value in desc.items():
             if isinstance(value, tuple):
                 if isinstance(value[1], list):
                     self.assert_list(getattr(rowobj, key), value[0], value[1])
@@ -300,7 +329,7 @@ class AssertsExecutionResults(object):
         found = util.IdentitySet(result)
         expected = set([immutabledict(e) for e in expected])
 
-        for wrong in itertools.ifilterfalse(lambda o: type(o) == cls, found):
+        for wrong in util.itertools_filterfalse(lambda o: type(o) == cls, found):
             fail('Unexpected type "%s", expected "%s"' % (
                 type(wrong).__name__, cls.__name__))
 
@@ -311,7 +340,7 @@ class AssertsExecutionResults(object):
         NOVALUE = object()
 
         def _compare_item(obj, spec):
-            for key, value in spec.iteritems():
+            for key, value in spec.items():
                 if isinstance(value, tuple):
                     try:
                         self.assert_unordered_result(
@@ -352,7 +381,7 @@ class AssertsExecutionResults(object):
         for rule in rules:
             if isinstance(rule, dict):
                 newrule = assertsql.AllOf(*[
-                    assertsql.ExactSQL(k, v) for k, v in rule.iteritems()
+                    assertsql.ExactSQL(k, v) for k, v in rule.items()
                 ])
             else:
                 newrule = assertsql.ExactSQL(*rule)

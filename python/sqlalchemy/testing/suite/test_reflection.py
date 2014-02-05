@@ -1,9 +1,8 @@
-from __future__ import with_statement
+
 
 import sqlalchemy as sa
 from sqlalchemy import exc as sa_exc
 from sqlalchemy import types as sql_types
-from sqlalchemy import schema
 from sqlalchemy import inspect
 from sqlalchemy import MetaData, Integer, String
 from sqlalchemy.engine.reflection import Inspector
@@ -12,7 +11,7 @@ from sqlalchemy.testing.schema import Table, Column
 from sqlalchemy.testing import eq_, assert_raises_message
 from sqlalchemy import testing
 from .. import config
-
+import operator
 from sqlalchemy.schema import DDL, Index
 from sqlalchemy import event
 
@@ -32,45 +31,6 @@ class HasTableTest(fixtures.TablesTest):
             assert config.db.dialect.has_table(conn, "test_table")
             assert not config.db.dialect.has_table(conn, "nonexistent_table")
 
-
-class HasSequenceTest(fixtures.TestBase):
-    __requires__ = 'sequences',
-
-    def test_has_sequence(self):
-        metadata = MetaData()
-        Table('users', metadata, Column('user_id', sa.Integer,
-                      sa.Sequence('user_id_seq'), primary_key=True),
-                      Column('user_name', sa.String(40)))
-        metadata.create_all(bind=testing.db)
-        try:
-            eq_(testing.db.dialect.has_sequence(testing.db,
-                'user_id_seq'), True)
-        finally:
-            metadata.drop_all(bind=testing.db)
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq'),
-            False)
-
-    @testing.requires.schemas
-    def test_has_sequence_schema(self):
-        test_schema = 'test_schema'
-        s1 = sa.Sequence('user_id_seq', schema=test_schema)
-        s2 = sa.Sequence('user_id_seq')
-        testing.db.execute(schema.CreateSequence(s1))
-        testing.db.execute(schema.CreateSequence(s2))
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq',
-            schema=test_schema), True)
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq'),
-            True)
-        testing.db.execute(schema.DropSequence(s1))
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq',
-            schema=test_schema), False)
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq'),
-            True)
-        testing.db.execute(schema.DropSequence(s2))
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq',
-            schema=test_schema), False)
-        eq_(testing.db.dialect.has_sequence(testing.db, 'user_id_seq'),
-            False)
 
 
 class ComponentReflectionTest(fixtures.TablesTest):
@@ -127,12 +87,15 @@ class ComponentReflectionTest(fixtures.TablesTest):
             test_needs_fk=True,
         )
 
-        cls.define_index(metadata, users)
-        cls.define_views(metadata, schema)
+        if testing.requires.index_reflection.enabled:
+            cls.define_index(metadata, users)
+        if testing.requires.view_reflection.enabled:
+            cls.define_views(metadata, schema)
 
     @classmethod
     def define_index(cls, metadata, users):
         Index("users_t_idx", users.c.test1, users.c.test2)
+        Index("users_all_idx", users.c.user_id, users.c.test2, users.c.test1)
 
     @classmethod
     def define_views(cls, metadata, schema):
@@ -161,12 +124,14 @@ class ComponentReflectionTest(fixtures.TablesTest):
 
         self.assert_('test_schema' in insp.get_schema_names())
 
+    @testing.requires.schema_reflection
     def test_dialect_initialize(self):
         engine = engines.testing_engine()
         assert not hasattr(engine.dialect, 'default_schema_name')
         inspect(engine)
         assert hasattr(engine.dialect, 'default_schema_name')
 
+    @testing.requires.schema_reflection
     def test_get_default_schema_name(self):
         insp = inspect(testing.db)
         eq_(insp.default_schema_name, testing.db.dialect.default_schema_name)
@@ -182,6 +147,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
             table_names = insp.get_view_names(schema)
             table_names.sort()
             answer = ['email_addresses_v', 'users_v']
+            eq_(sorted(table_names), answer)
         else:
             table_names = insp.get_table_names(schema,
                                                order_by=order_by)
@@ -197,6 +163,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         self._test_get_table_names()
 
     @testing.requires.table_reflection
+    @testing.requires.foreign_key_constraint_reflection
     def test_get_table_names_fks(self):
         self._test_get_table_names(order_by='foreign_key')
 
@@ -213,6 +180,12 @@ class ComponentReflectionTest(fixtures.TablesTest):
     @testing.requires.schemas
     def test_get_view_names_with_schema(self):
         self._test_get_table_names('test_schema', table_type='view')
+
+    @testing.requires.table_reflection
+    @testing.requires.view_reflection
+    def test_get_tables_and_views(self):
+        self._test_get_table_names()
+        self._test_get_table_names(table_type='view')
 
     def _test_get_columns(self, schema=None, table_type='table'):
         meta = MetaData(testing.db)
@@ -258,6 +231,9 @@ class ComponentReflectionTest(fixtures.TablesTest):
                     ])) > 0, '%s(%s), %s(%s)' % (col.name,
                             col.type, cols[i]['name'], ctype))
 
+                if not col.primary_key:
+                    assert cols[i]['default'] is None
+
     @testing.requires.table_reflection
     def test_get_columns(self):
         self._test_get_columns()
@@ -298,6 +274,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
         self._test_get_pk_constraint()
 
     @testing.requires.table_reflection
+    @testing.requires.primary_key_constraint_reflection
     @testing.requires.schemas
     def test_get_pk_constraint_with_schema(self):
         self._test_get_pk_constraint(schema='test_schema')
@@ -370,7 +347,11 @@ class ComponentReflectionTest(fixtures.TablesTest):
         expected_indexes = [
             {'unique': False,
              'column_names': ['test1', 'test2'],
-             'name': 'users_t_idx'}]
+             'name': 'users_t_idx'},
+            {'unique': False,
+             'column_names': ['user_id', 'test2', 'test1'],
+             'name': 'users_all_idx'}
+        ]
         index_names = [d['name'] for d in indexes]
         for e_index in expected_indexes:
             assert e_index['name'] in index_names
@@ -386,6 +367,54 @@ class ComponentReflectionTest(fixtures.TablesTest):
     @testing.requires.schemas
     def test_get_indexes_with_schema(self):
         self._test_get_indexes(schema='test_schema')
+
+
+    @testing.requires.unique_constraint_reflection
+    def test_get_unique_constraints(self):
+        self._test_get_unique_constraints()
+
+    @testing.requires.unique_constraint_reflection
+    @testing.requires.schemas
+    def test_get_unique_constraints_with_schema(self):
+        self._test_get_unique_constraints(schema='test_schema')
+
+    @testing.provide_metadata
+    def _test_get_unique_constraints(self, schema=None):
+        uniques = sorted(
+            [
+                {'name': 'unique_a', 'column_names': ['a']},
+                {'name': 'unique_a_b_c', 'column_names': ['a', 'b', 'c']},
+                {'name': 'unique_c_a_b', 'column_names': ['c', 'a', 'b']},
+                {'name': 'unique_asc_key', 'column_names': ['asc', 'key']},
+            ],
+            key=operator.itemgetter('name')
+        )
+        orig_meta = self.metadata
+        table = Table(
+            'testtbl', orig_meta,
+            Column('a', sa.String(20)),
+            Column('b', sa.String(30)),
+            Column('c', sa.Integer),
+            # reserved identifiers
+            Column('asc', sa.String(30)),
+            Column('key', sa.String(30)),
+            schema=schema
+        )
+        for uc in uniques:
+            table.append_constraint(
+                sa.UniqueConstraint(*uc['column_names'], name=uc['name'])
+            )
+        orig_meta.create_all()
+
+        inspector = inspect(orig_meta.bind)
+        reflected = sorted(
+            inspector.get_unique_constraints('testtbl', schema=schema),
+            key=operator.itemgetter('name')
+        )
+
+        for orig, refl in zip(uniques, reflected):
+            eq_(orig, refl)
+
 
     @testing.provide_metadata
     def _test_get_view_definition(self, schema=None):
@@ -417,7 +446,7 @@ class ComponentReflectionTest(fixtures.TablesTest):
                     self.tables.email_addresses, self.tables.dingalings
         insp = inspect(meta.bind)
         oid = insp.get_table_oid(table_name, schema)
-        self.assert_(isinstance(oid, (int, long)))
+        self.assert_(isinstance(oid, int))
 
     def test_get_table_oid(self):
         self._test_get_table_oid('users')
@@ -426,5 +455,33 @@ class ComponentReflectionTest(fixtures.TablesTest):
     def test_get_table_oid_with_schema(self):
         self._test_get_table_oid('users', schema='test_schema')
 
+    @testing.requires.table_reflection
+    @testing.provide_metadata
+    def test_autoincrement_col(self):
+        """test that 'autoincrement' is reflected according to sqla's policy.
 
-__all__ = ('ComponentReflectionTest', 'HasSequenceTest', 'HasTableTest')
+        Don't mark this test as unsupported for any backend !
+
+        (technically it fails with MySQL InnoDB since "id" comes before "id2")
+
+        A backend is better off not returning "autoincrement" at all,
+        instead of potentially returning "False" for an auto-incrementing
+        primary key column.
+
+        """
+
+        meta = self.metadata
+        insp = inspect(meta.bind)
+
+        for tname, cname in [
+                ('users', 'user_id'),
+                ('email_addresses', 'address_id'),
+                ('dingalings', 'dingaling_id'),
+            ]:
+            cols = insp.get_columns(tname)
+            id_ = dict((c['name'], c) for c in cols)[cname]
+            assert id_.get('autoincrement', True)
+
+
+
+__all__ = ('ComponentReflectionTest', 'HasTableTest')

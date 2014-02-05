@@ -1,3 +1,9 @@
+# plugin/noseplugin.py
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
+#
+# This module is part of SQLAlchemy and is released under
+# the MIT License: http://www.opensource.org/licenses/mit-license.php
+
 """Enhance nose with extra options and behaviors for running SQLAlchemy tests.
 
 When running ./sqla_nose.py, this module is imported relative to the
@@ -9,14 +15,20 @@ When third party libraries use this plugin, it can be imported
 normally as "from sqlalchemy.testing.plugin import noseplugin".
 
 """
+
 from __future__ import absolute_import
 
 import os
-import ConfigParser
+import sys
+py3k = sys.version_info >= (3, 0)
+
+if py3k:
+    import configparser
+else:
+    import ConfigParser as configparser
 
 from nose.plugins import Plugin
 from nose import SkipTest
-import time
 import sys
 import re
 
@@ -55,9 +67,9 @@ def _log(option, opt_str, value, parser):
 
 
 def _list_dbs(*args):
-    print "Available --db options (use --dburi to override)"
+    print("Available --db options (use --dburi to override)")
     for macro in sorted(file_config.options('db')):
-        print "%20s\t%s" % (macro, file_config.get('db', macro))
+        print("%20s\t%s" % (macro, file_config.get('db', macro)))
     sys.exit(0)
 
 
@@ -215,20 +227,27 @@ def _set_table_options(options, file_config):
 @post
 def _reverse_topological(options, file_config):
     if options.reversetop:
-        from sqlalchemy.orm import unitofwork, session, mapper, dependency
-        from sqlalchemy.util import topological
-        from sqlalchemy.testing.util import RandomSet
-        topological.set = unitofwork.set = session.set = mapper.set = \
-                dependency.set = RandomSet
+        from sqlalchemy.orm.util import randomize_unitofwork
+        randomize_unitofwork()
 
+
+def _requirements_opt(options, opt_str, value, parser):
+    _setup_requirements(value)
 
 @post
 def _requirements(options, file_config):
+
+    requirement_cls = file_config.get('sqla_testing', "requirement_cls")
+    _setup_requirements(requirement_cls)
+
+def _setup_requirements(argument):
     from sqlalchemy.testing import config
     from sqlalchemy import testing
-    requirement_cls = file_config.get('sqla_testing', "requirement_cls")
 
-    modname, clsname = requirement_cls.split(":")
+    if config.requirements is not None:
+        return
+
+    modname, clsname = argument.split(":")
 
     # importlib.import_module() only introduced in 2.7, a little
     # late
@@ -236,7 +255,7 @@ def _requirements(options, file_config):
     for component in modname.split(".")[1:]:
         mod = getattr(mod, component)
     req_cls = getattr(mod, clsname)
-    config.requirements = testing.requires = req_cls(db, config)
+    config.requirements = testing.requires = req_cls(config)
 
 
 @post
@@ -290,6 +309,9 @@ class NoseSQLAlchemy(Plugin):
         opt("--reversetop", action="store_true", dest="reversetop", default=False,
             help="Use a random-ordering set implementation in the ORM (helps "
                   "reveal dependency issues)")
+        opt("--requirements", action="callback", type="string",
+            callback=_requirements_opt,
+            help="requirements class for testing, overrides setup.cfg")
         opt("--with-cdecimal", action="store_true", dest="cdecimal", default=False,
             help="Monkeypatch the cdecimal library into Python 'decimal' for all tests")
         opt("--unhashable", action="store_true", dest="unhashable", default=False,
@@ -308,7 +330,7 @@ class NoseSQLAlchemy(Plugin):
         opt("--write-profiles", action="store_true", dest="write_profiles", default=False,
                 help="Write/update profiling data.")
         global file_config
-        file_config = ConfigParser.ConfigParser()
+        file_config = configparser.ConfigParser()
         file_config.read(['setup.cfg', 'test.cfg'])
 
     def configure(self, options, conf):
@@ -335,6 +357,8 @@ class NoseSQLAlchemy(Plugin):
         return ""
 
     def wantFunction(self, fn):
+        if fn.__module__ is None:
+            return False
         if fn.__module__.startswith('sqlalchemy.testing'):
             return False
 
@@ -348,7 +372,6 @@ class NoseSQLAlchemy(Plugin):
              The class being examined by the selector
 
         """
-
         if not issubclass(cls, fixtures.TestBase):
             return False
         elif cls.__name__.startswith('_'):
@@ -370,8 +393,9 @@ class NoseSQLAlchemy(Plugin):
                         check.reason if check.reason
                         else
                         (
-                            "'%s' unsupported on DB implementation '%s'" % (
-                                cls.__name__, config.db.name
+                            "'%s' unsupported on DB implementation '%s' == %s" % (
+                                cls.__name__, config.db.name,
+                                config.db.dialect.server_version_info
                             )
                         )
                     )
@@ -380,16 +404,18 @@ class NoseSQLAlchemy(Plugin):
             spec = exclusions.db_spec(*cls.__unsupported_on__)
             if spec(config.db):
                 raise SkipTest(
-                    "'%s' unsupported on DB implementation '%s'" % (
-                     cls.__name__, config.db.name)
+                    "'%s' unsupported on DB implementation '%s' == %s" % (
+                     cls.__name__, config.db.name,
+                        config.db.dialect.server_version_info)
                     )
 
         if getattr(cls, '__only_on__', None):
             spec = exclusions.db_spec(*util.to_list(cls.__only_on__))
             if not spec(config.db):
                 raise SkipTest(
-                    "'%s' unsupported on DB implementation '%s'" % (
-                     cls.__name__, config.db.name)
+                    "'%s' unsupported on DB implementation '%s' == %s" % (
+                     cls.__name__, config.db.name,
+                        config.db.dialect.server_version_info)
                     )
 
         if getattr(cls, '__skip_if__', False):

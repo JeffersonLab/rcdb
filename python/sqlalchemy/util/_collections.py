@@ -1,16 +1,17 @@
 # util/_collections.py
-# Copyright (C) 2005-2012 the SQLAlchemy authors and contributors <see AUTHORS file>
+# Copyright (C) 2005-2014 the SQLAlchemy authors and contributors <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
 """Collection classes and helpers."""
 
-import sys
-import itertools
+from __future__ import absolute_import
 import weakref
 import operator
-from .compat import threading
+from .compat import threading, itertools_filterfalse
+from . import py2k
+import types
 
 EMPTY_SET = frozenset()
 
@@ -143,7 +144,7 @@ class Properties(object):
         return len(self._data)
 
     def __iter__(self):
-        return self._data.itervalues()
+        return iter(list(self._data.values()))
 
     def __add__(self, other):
         return list(self) + list(other)
@@ -190,13 +191,13 @@ class Properties(object):
             return default
 
     def keys(self):
-        return self._data.keys()
+        return list(self._data)
 
     def values(self):
-        return self._data.values()
+        return list(self._data.values())
 
     def items(self):
-        return self._data.items()
+        return list(self._data.items())
 
     def has_key(self, key):
         return key in self._data
@@ -261,23 +262,55 @@ class OrderedDict(dict):
     def __iter__(self):
         return iter(self._list)
 
-    def values(self):
-        return [self[key] for key in self._list]
 
-    def itervalues(self):
-        return iter([self[key] for key in self._list])
+    if py2k:
+        def values(self):
+            return [self[key] for key in self._list]
 
-    def keys(self):
-        return list(self._list)
+        def keys(self):
+            return self._list
 
-    def iterkeys(self):
-        return iter(self.keys())
+        def itervalues(self):
+            return iter([self[key] for key in self._list])
 
-    def items(self):
-        return [(key, self[key]) for key in self.keys()]
+        def iterkeys(self):
+            return iter(self)
 
-    def iteritems(self):
-        return iter(self.items())
+        def iteritems(self):
+            return iter(self.items())
+
+        def items(self):
+            return [(key, self[key]) for key in self._list]
+    else:
+        def values(self):
+            #return (self[key] for key in self)
+            return (self[key] for key in self._list)
+
+        def keys(self):
+            #return iter(self)
+            return iter(self._list)
+
+        def items(self):
+            #return ((key, self[key]) for key in self)
+            return ((key, self[key]) for key in self._list)
+
+    _debug_iter = False
+    if _debug_iter:
+        # normally disabled to reduce function call
+        # overhead
+        def __iter__(self):
+            len_ = len(self._list)
+            for item in self._list:
+                yield item
+                assert len_ == len(self._list), \
+                   "Dictionary changed size during iteration"
+        def values(self):
+            return (self[key] for key in self)
+        def keys(self):
+            return iter(self)
+        def items(self):
+            return ((key, self[key]) for key in self)
+
 
     def __setitem__(self, key, object):
         if key not in self:
@@ -471,8 +504,8 @@ class IdentitySet(object):
 
         if len(self) > len(other):
             return False
-        for m in itertools.ifilterfalse(other._members.__contains__,
-                                        self._members.iterkeys()):
+        for m in itertools_filterfalse(other._members.__contains__,
+                                        iter(self._members.keys())):
             return False
         return True
 
@@ -492,8 +525,8 @@ class IdentitySet(object):
         if len(self) < len(other):
             return False
 
-        for m in itertools.ifilterfalse(self._members.__contains__,
-                                        other._members.iterkeys()):
+        for m in itertools_filterfalse(self._members.__contains__,
+                                        iter(other._members.keys())):
             return False
         return True
 
@@ -583,7 +616,7 @@ class IdentitySet(object):
         return result
 
     def _member_id_tuples(self):
-        return ((id(v), v) for v in self._members.itervalues())
+        return ((id(v), v) for v in self._members.values())
 
     def __xor__(self, other):
         if not isinstance(other, IdentitySet):
@@ -600,7 +633,7 @@ class IdentitySet(object):
         return self
 
     def copy(self):
-        return type(self)(self._members.itervalues())
+        return type(self)(iter(self._members.values()))
 
     __copy__ = copy
 
@@ -608,29 +641,41 @@ class IdentitySet(object):
         return len(self._members)
 
     def __iter__(self):
-        return self._members.itervalues()
+        return iter(self._members.values())
 
     def __hash__(self):
         raise TypeError('set objects are unhashable')
 
     def __repr__(self):
-        return '%s(%r)' % (type(self).__name__, self._members.values())
+        return '%s(%r)' % (type(self).__name__, list(self._members.values()))
 
 
 class WeakSequence(object):
-    def __init__(self, elements):
-        self._storage = weakref.WeakValueDictionary(
-            (idx, element) for idx, element in enumerate(elements)
-        )
+    def __init__(self, __elements=()):
+        self._storage = [
+            weakref.ref(element, self._remove) for element in __elements
+        ]
+
+    def append(self, item):
+        self._storage.append(weakref.ref(item, self._remove))
+
+    def _remove(self, ref):
+        self._storage.remove(ref)
+
+    def __len__(self):
+        return len(self._storage)
 
     def __iter__(self):
-        return self._storage.itervalues()
+        return (obj for obj in
+                    (ref() for ref in self._storage) if obj is not None)
 
     def __getitem__(self, index):
         try:
-            return self._storage[index]
+            obj = self._storage[index]
         except KeyError:
             raise IndexError("Index %s out of range" % index)
+        else:
+            return obj()
 
 
 class OrderedIdentitySet(IdentitySet):
@@ -649,42 +694,29 @@ class OrderedIdentitySet(IdentitySet):
                 self.add(o)
 
 
-if sys.version_info >= (2, 5):
-    class PopulateDict(dict):
-        """A dict which populates missing values via a creation function.
+class PopulateDict(dict):
+    """A dict which populates missing values via a creation function.
 
-        Note the creation function takes a key, unlike
-        collections.defaultdict.
+    Note the creation function takes a key, unlike
+    collections.defaultdict.
 
-        """
+    """
 
-        def __init__(self, creator):
-            self.creator = creator
+    def __init__(self, creator):
+        self.creator = creator
 
-        def __missing__(self, key):
-            self[key] = val = self.creator(key)
-            return val
-else:
-    class PopulateDict(dict):
-        """A dict which populates missing values via a creation function."""
+    def __missing__(self, key):
+        self[key] = val = self.creator(key)
+        return val
 
-        def __init__(self, creator):
-            self.creator = creator
-
-        def __getitem__(self, key):
-            try:
-                return dict.__getitem__(self, key)
-            except KeyError:
-                self[key] = value = self.creator(key)
-                return value
-
-# define collections that are capable of storing
+# Define collections that are capable of storing
 # ColumnElement objects as hashable keys/elements.
+# At this point, these are mostly historical, things
+# used to be more complicated.
 column_set = set
 column_dict = dict
 ordered_column_set = OrderedSet
 populate_column_dict = PopulateDict
-
 
 def unique_list(seq, hashfunc=None):
     seen = {}
@@ -724,6 +756,11 @@ class UniqueAppender(object):
     def __iter__(self):
         return iter(self.data)
 
+def coerce_generator_arg(arg):
+    if len(arg) == 1 and isinstance(arg[0], types.GeneratorType):
+        return list(arg[0])
+    else:
+        return arg
 
 def to_list(x, default=None):
     if x is None:
@@ -768,7 +805,7 @@ def flatten_iterator(x):
 
     """
     for elem in x:
-        if not isinstance(elem, basestring) and hasattr(elem, '__iter__'):
+        if not isinstance(elem, str) and hasattr(elem, '__iter__'):
             for y in flatten_iterator(elem):
                 yield y
         else:
