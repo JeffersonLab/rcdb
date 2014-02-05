@@ -107,16 +107,16 @@ if(strcmp(keyword,(BKEYWORD)) == 0){  	\
       }
 
 #define SCAN_SN_ALLCH(TDP4_K,TDP4_S) \
-  else if(strcmp(keyword,(TDP4_K)) == 0) \
-      { \
-	SCAN_MSK_CH; \
-	if(args != 21) \
-        { \
-	   printf("\nReadConfigFile: Read Serial Number:  Wrong number of slots %d, should be 21   %s\n\n",args,msk_ch[3]); \
-	   return(-8); \
-	 } \
-	for(jj=3; jj<Nfa250; jj++) (TDP4_S)[jj] = msk_ch[jj]; \
-      }
+   else if(strcmp(keyword,(TDP4_K)) == 0) \
+       { \
+         SCAN_MSK_CH; \
+         if(args != 21) \
+         { \
+            printf("\nReadConfigFile: Read Serial Number:  Wrong number of slots %d, should be 21   %s\n\n",args,msk_ch[3]); \
+            return(-8); \
+          } \
+         for(jj=3; jj<Nfa250; jj++){ printf("\n SERIAL NUMBER%s\n",msk_ch[jj]); sprintf( TDP4_S,"%s", msk_ch[jj]); } \
+       }
 
 
 
