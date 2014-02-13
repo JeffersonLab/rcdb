@@ -54,7 +54,7 @@ class Board(Base):
     serial = Column(String(512))
     board_type = Column(String(45))
     description = Column(String(1024))
-    firmware = name = Column(String(45))
+    firmware = Column(String(45))
     modified = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     threshold_presets = relationship("ThresholdPreset", cascade="all, delete, delete-orphan")
     pedestal_presets = relationship("PedestalPreset", cascade="all, delete, delete-orphan")

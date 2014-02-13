@@ -45,8 +45,8 @@
 # FADC250_ALLCH_PED 210  220  210  215  215  220  220  210  210  215  215  220  220  210  215  220  <- 16 PEDs
 
 #                                      slots 
-#                 1  2        3        4        5        6        7        8        9       10  11  12       13       14       15       16       17       18       19       20  21
-#FADC250_ALLSN     0  0  CQV2-13  CQV2-14  CQV2-15  CQV2-16  CQV2-17  CQV2-18  CQV2-19  CQV2-20   0   0  CQV2-23  CQV2-24  CQV2-25  CQV2-26  CQV2-27  CQV2-37  CQV2-38  CQV2-43   0
+#                   1   2        3        4        5        6        7        8        9       10  11  12       13       14       15       16       17       18       19       20  21
+FADC250_ALLSN       0   0  CQV2-13  CQV2-14  CQV2-15  CQV2-16  CQV2-17  CQV2-18  CQV2-19  CQV2-20   0   0  CQV2-23  CQV2-24  CQV2-25  CQV2-26  CQV2-27  CQV2-37  CQV2-38  CQV2-43   0
 #FADC250_SN        CQV2-13     <- single board Serial Number
 
 

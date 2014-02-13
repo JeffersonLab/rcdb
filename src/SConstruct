@@ -1,3 +1,4 @@
 env = Environment()
 lib = Library("confutils.c")
+slib = SharedLibrary("confutils.c")
 #lib.Install()

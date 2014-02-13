@@ -8,6 +8,7 @@ int AllSl;
 
 FADC250_CONF  fa250[Nfa250+1];
 board_ti ti_bd;
+char rocName[255];
 
 #define SCAN_TI_SOFT(BKEYWORD,TI_SOFT)  \ 
 if(strcmp(keyword,(BKEYWORD)) == 0){  	\
@@ -175,7 +176,8 @@ int fadc250ReadConfigFile(char *filename)
 	  //printf(BOLDRED "\nReadConfigFile: Wrong crate name in config file, %s\n" RESET, str_tmp);
       //    return(-3);
       //  }
-	printf(BOLDBLUE "\nReadConfigFile: conf_CRATE_name = %s  host = %s\n" RESET, ROC_name, host);
+      strcpy(rocName, ROC_name);
+	printf(BOLDBLUE "\nReadConfigFile: conf_CRATE_name = %s  host = %s\n" RESET, rocName, host);
       }
 
       else if(strcmp(keyword,"FADC250_ALLSLOTS") == 0)
@@ -312,5 +314,16 @@ fadc250InitGlobals()
   /* Clock Source */
   /*iFlag |= (1<<5);*/    /* VXS */
   iFlag |= (0<<5);    /* self*/
+}
+
+FADC250_CONF getFadc250Config(unsigned int i)
+{
+	if(i<Nfa250+1) fa250[0];
+	return fa250[i];
+}
+
+unsigned int getFadc250Length()
+{
+	return Nfa250+1;
 }
 
