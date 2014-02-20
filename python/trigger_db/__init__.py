@@ -10,21 +10,28 @@ blob_delimiter = "|"
 blob_delimiter_replacement = "&delimiter;"
 
 
-#--------------------------------------------
-# function Connect to the database
-#--------------------------------------------
-def connect(connection_string="mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb"):
-    """
-    Connects to the database and returns SQL alchemy session object
-    that allows to manipulate objects from database
+class ConfigurationDB(object):
+    """Api to configuration database"""
 
-    :param connection_string: Connection string that specifies database type, user, server, etc.
-                              By default it is mysql://triggerdb@127.0.0.1/triggerdb
-    :return: SQLAlchemy session
-    """
-    tdb_engine = sqlalchemy.create_engine(connection_string)
-    tdb_session = sessionmaker(bind=tdb_engine)
-    return tdb_session()
+    session = None
+
+    def connect(self, connection_string="mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb"):
+        """Connect to the database
+
+        Connects to the database and returns SQL alchemy session object
+        that allows to manipulate objects from database
+
+        :param connection_string: Connection string that specifies database type, user, server, etc.
+                                  By default it is mysql://triggerdb@127.0.0.1/triggerdb
+        :return: SQLAlchemy session
+        """
+        tdb_engine = sqlalchemy.create_engine(connection_string)
+        self.session = sessionmaker(bind=tdb_engine)
+
+    def add_file(self, run_num, filename):
+        pass
+
+
 
 
 #-------------------------------------------------

@@ -38,8 +38,15 @@ _board_conf_has_run_conf_association = Table('board_configurations_has_run_confi
                                              Column('board_configurations_id', Integer,
                                                     ForeignKey('board_configurations.id')),
                                              Column('run_configurations_id', Integer,
-                                                    ForeignKey('run_configurations.id'))
-)
+                                                    ForeignKey('run_configurations.id')))
+
+
+_board_inst_has_run_conf_association = Table('board_installations_has_run_configurations', Base.metadata,
+                                             Column('board_installations_id', Integer,
+                                                    ForeignKey('board_installations.id')),
+                                             Column('run_configurations_id', Integer,
+                                                    ForeignKey('run_configurations.id')))
+
 
 #--------------------------------------------
 # class Board
@@ -60,9 +67,42 @@ class Board(Base):
     pedestal_presets = relationship("PedestalPreset", cascade="all, delete, delete-orphan")
     baseline_presets = relationship("BaselinePreset", cascade="all, delete, delete-orphan")
     configs = relationship("BoardConfiguration", cascade="all, delete, delete-orphan")
+    installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan")
 
     def __repr__(self):
         return "<Board id='{0}' name='{1}'>".format(self.id, self.board_name)
+
+
+#--------------------------------------------
+# class Crate
+#--------------------------------------------
+class Crate(Base):
+    """
+    Represents Crate where boards are placed
+    """
+    __tablename__ = 'crates'
+    id = Column(Integer, primary_key=True)
+    name = Column('rock_name', String(45))
+    installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan")
+
+
+#--------------------------------------------
+# class BoardInstallation
+#--------------------------------------------
+class BoardInstallation(Base):
+    """
+    Represents board installation
+    """
+    __tablename__ = 'board_installations'
+    id = Column(Integer, primary_key=True)
+
+    board_id = Column(Integer, ForeignKey('boards.id'))
+    board = relationship("Board")
+    crate_id = Column(Integer, ForeignKey('crates.id'))
+    crate = relationship("Crate")
+    run_configs = relationship("RunConfiguration", secondary=_board_inst_has_run_conf_association)
+
+
 
 
 #--------------------------------------------
@@ -209,6 +249,7 @@ class RunConfiguration(Base):
     id = Column(Integer, primary_key=True)
     number = Column('run_number', Integer, primary_key=True)
     board_configs = relationship("BoardConfiguration", secondary=_board_conf_has_run_conf_association)
+    board_installations = relationship("BoardInstallation", secondary=_board_inst_has_run_conf_association)
     configuration_files = relationship("ConfigurationFile", cascade="all, delete, delete-orphan")
     #_trigger_config_id = Column(Integer, ForeignKey('trigger_configurations.id'))
     #trigger_config = relationship("TriggerConfiguration")
@@ -230,7 +271,7 @@ class ConfigurationFile(Base):
     run_configuration = relationship("RunConfiguration")
     path = Column(String, nullable=False)
     sha256 = Column(String(44), nullable=False)
-    content = Column(UnicodeText, nullable=True)
+    content = Column(UnicodeText, nullable=False)
     description = Column(String(255), nullable=True)
 
 
