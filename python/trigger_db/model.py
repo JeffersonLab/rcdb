@@ -35,18 +35,23 @@ def _count_baseline_presets(context):
 
 
 _board_conf_has_run_conf_association = Table('board_configurations_has_run_configurations', Base.metadata,
-                                             Column('board_configurations_id', Integer,
+                                             Column('board_configuration_id', Integer,
                                                     ForeignKey('board_configurations.id')),
-                                             Column('run_configurations_id', Integer,
+                                             Column('run_configuration_id', Integer,
                                                     ForeignKey('run_configurations.id')))
 
 
 _board_inst_has_run_conf_association = Table('board_installations_has_run_configurations', Base.metadata,
-                                             Column('board_installations_id', Integer,
+                                             Column('board_installation_id', Integer,
                                                     ForeignKey('board_installations.id')),
-                                             Column('run_configurations_id', Integer,
+                                             Column('run_configuration_id', Integer,
                                                     ForeignKey('run_configurations.id')))
 
+_files_has_run_conf_association = Table('files_has_run_configurations', Base.metadata,
+                                             Column('file_id', Integer,
+                                                    ForeignKey('files.id')),
+                                             Column('run_configuration_id', Integer,
+                                                    ForeignKey('run_configurations.id')))
 
 #--------------------------------------------
 # class Board
@@ -250,9 +255,9 @@ class RunConfiguration(Base):
     number = Column('run_number', Integer, primary_key=True)
     board_configs = relationship("BoardConfiguration", secondary=_board_conf_has_run_conf_association)
     board_installations = relationship("BoardInstallation", secondary=_board_inst_has_run_conf_association)
-    configuration_files = relationship("ConfigurationFile", cascade="all, delete, delete-orphan")
-    #_trigger_config_id = Column(Integer, ForeignKey('trigger_configurations.id'))
-    #trigger_config = relationship("TriggerConfiguration")
+    files = relationship("ConfigurationFile", secondary=_files_has_run_conf_association)
+    _trigger_config_id = Column('trigger_configuration_id', Integer, ForeignKey('trigger_configurations.id'))
+    trigger_config = relationship("TriggerConfiguration")
 
     def __repr__(self):
         return "<RunConfiguration id='{0}'>".format(self.id)
@@ -265,14 +270,16 @@ class ConfigurationFile(Base):
     """
     Table contains original coda and board configuration files
     """
-    __tablename__ = 'configuration_files'
+    __tablename__ = 'files'
     id = Column(Integer, primary_key=True)
-    run_configuration_id = Column("run_configurations_id", Integer, ForeignKey('run_configurations.id'))
-    run_configuration = relationship("RunConfiguration")
     path = Column(String, nullable=False)
     sha256 = Column(String(44), nullable=False)
     content = Column(UnicodeText, nullable=False)
     description = Column(String(255), nullable=True)
+    run_configs = relationship("RunConfiguration", secondary=_files_has_run_conf_association)
+
+    def __repr__(self):
+        return "<ConfigurationFile id='{0}', path='{1}'>".format(self.id, self.path)
 
 
 #--------------------------------------------
@@ -284,6 +291,8 @@ class TriggerConfiguration(Base):
     """
     __tablename__ = 'trigger_configurations'
     id = Column(Integer, primary_key=True)
+    type = Column(String, nullable=False)
+    run_confs = relationship("RunConfiguration")
 
     def __repr__(self):
         return "<TriggerConfiguration id='{0}'>".format(self.id)

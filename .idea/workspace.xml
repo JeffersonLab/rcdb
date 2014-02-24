@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/python/__init__.py" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/python/provider.py" afterPath="$PROJECT_DIR$/python/trigger_db/provider.py" />
+    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="TDB code gardening">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/runs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/runs" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/runs/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/runs/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/runs/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mysql/configuration_database.mwb" afterPath="$PROJECT_DIR$/mysql/configuration_database.mwb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db/__init__.py" afterPath="$PROJECT_DIR$/python/trigger_db/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/__init__.py" afterPath="$PROJECT_DIR$/tridb_www/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db/file_archiver.py" afterPath="$PROJECT_DIR$/python/trigger_db/file_archiver.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db/model.py" afterPath="$PROJECT_DIR$/python/trigger_db/model.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db/provider.py" afterPath="$PROJECT_DIR$/python/trigger_db/provider.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/trunk.iml" afterPath="$PROJECT_DIR$/.idea/trunk.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vagrant.xml" afterPath="$PROJECT_DIR$/.idea/vagrant.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -20,8 +29,9 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1391458176896" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
+    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393229551870" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/trunk$fill_test_run1.coverage" NAME="fill_test_run1 Coverage Results" MODIFIED="1393227039688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -35,109 +45,73 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
+      <file leaf-file-name="model.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="2106">
-              <folding>
-                <marker date="1392058784144" expanded="true" signature="110:4287" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="138:358" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="380:1262" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="408:599" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="456:584" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="627:1075" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="671:1060" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1103:1251" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1148:1236" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1303:4186" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1325:1580" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1346:1557" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1602:4165" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1623:1936" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="1957:2258" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="2279:2582" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="2595:2900" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="2916:3219" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="3233:3688" placeholder="..." />
-                <marker date="1392058784144" expanded="true" signature="3705:4142" placeholder="..." />
-              </folding>
+            <state line="254" column="10" selection-start="8710" selection-end="8716" vertical-scroll-proportion="0.0" vertical-offset="5588" max-vertical-offset="7040">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/trigger_db/__init__.py">
+        <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="33" column="0" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.0" vertical-offset="820" max-vertical-offset="3150">
+            <state line="41" column="0" selection-start="775" selection-end="775" vertical-scroll-proportion="0.0" vertical-offset="594" max-vertical-offset="1232">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
+      <file leaf-file-name="views.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="102" column="98" selection-start="4263" selection-end="4263" vertical-scroll-proportion="0.5280899" vertical-offset="1554" max-vertical-offset="5598">
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <marker date="1392935099478" expanded="true" signature="551:610" placeholder="select count..threshold_presets..." />
-                <marker date="1392935099478" expanded="true" signature="551:611" placeholder="SELECT count..threshold_presets..." />
-                <marker date="1392935099478" expanded="true" signature="840:899" placeholder="SELECT count..pedestal_presets..." />
-                <marker date="1392935099478" expanded="true" signature="1128:1187" placeholder="SELECT count..baseline_presets..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="provider.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/trigger_db/provider.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="3780" max-vertical-offset="22626">
+            <state line="25" column="23" selection-start="780" selection-end="780" vertical-scroll-proportion="0.8292683" vertical-offset="176" max-vertical-offset="1782">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="config_parser.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/trigger_db/config_parser.py">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="8" column="29" selection-start="113" selection-end="113" vertical-scroll-proportion="0.0" vertical-offset="144" max-vertical-offset="1656">
+            <state line="9" column="5" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="484">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="file_archiver.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/trigger_db/file_archiver.py">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="17" column="0" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="522">
+            <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="example__run_to_board_confs.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/example__run_to_board_confs.py">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="26" column="30" selection-start="919" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="468" max-vertical-offset="954">
+            <state line="0" column="0" selection-start="0" selection-end="4306" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="2574">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="environment.csh" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/environment.csh">
+      <file leaf-file-name="constants.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/constants.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="396">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="style.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/static/style.css">
+      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/boards/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="414">
+            <state line="0" column="0" selection-start="0" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154">
               <folding />
             </state>
           </provider>
@@ -154,21 +128,28 @@
     <option name="changedFiles">
       <list>
         <option value="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
-        <option value="$PROJECT_DIR$/tridb_www/__init__.py" />
         <option value="$PROJECT_DIR$/start_tdb_www.py" />
         <option value="$PROJECT_DIR$/python/file_archiver.py" />
         <option value="$PROJECT_DIR$/python/trigger_db.py" />
-        <option value="$PROJECT_DIR$/python/trigger_db/file_archiver.py" />
         <option value="$PROJECT_DIR$/python/trigger_db/config_parser.py" />
-        <option value="$PROJECT_DIR$/python/trigger_db/provider.py" />
-        <option value="$PROJECT_DIR$/python/trigger_db/__init__.py" />
+        <option value="$PROJECT_DIR$/python/trigger_db/file_archiver.py" />
+        <option value="$PROJECT_DIR$/python/fill_test_run1.py" />
         <option value="$PROJECT_DIR$/python/trigger_db/model.py" />
+        <option value="$PROJECT_DIR$/python/trigger_db/__init__.py" />
+        <option value="$PROJECT_DIR$/python/trigger_db/provider.py" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/runs/views.py" />
+        <option value="$PROJECT_DIR$/tridb_www/runs/__init__.py" />
+        <option value="$PROJECT_DIR$/tridb_www/__init__.py" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/runs/index.html" />
+        <option value="$PROJECT_DIR$/tridb_www/runs/views.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="width" value="1680" />
-    <option name="height" value="1025" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1552" />
+    <option name="height" value="842" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -215,6 +196,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -257,6 +239,82 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="runs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="runs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boards" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="python" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -281,20 +339,19 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PythonSdkConfigurable" />
     <property name="recentsLimit" value="5" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ccdb/trunk/python" />
+    <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
     <property name="dynamic.classpath" value="false" />
     <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="restartRequiresConfirmation" value="true" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -314,11 +371,36 @@
     </option>
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Projects\TriggerDB\trunk\tridb_www\templates\runs" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\TriggerDB\trunk\tridb_www" />
       <recent name="$PROJECT_DIR$/python/trigger_db" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.config_parser">
+  <component name="RunManager" selected="Python.start_tdb_www">
+    <configuration default="false" name="fill_test_run1" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="trunk" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/fill_test_run1.py" />
+      <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
+      <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
+      <ConfigurationWrapper RunnerId="PythonRunner" />
+      <method />
+    </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -509,7 +591,9 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/start_tdb_www.py" />
       <option name="PARAMETERS" value="" />
+      <RunnerSettings RunnerId="PyDebugRunner" />
       <RunnerSettings RunnerId="PythonRunner" />
+      <ConfigurationWrapper RunnerId="PyDebugRunner" />
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
@@ -533,11 +617,17 @@
       <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.trunk" />
       <item index="1" class="java.lang.String" itemvalue="Python.start_tdb_www" />
       <item index="2" class="java.lang.String" itemvalue="Python.config_parser" />
+      <item index="3" class="java.lang.String" itemvalue="Python.fill_test_run1" />
     </list>
+    <recent_temporary>
+      <list size="1">
+        <item index="0" class="java.lang.String" itemvalue="Python.fill_test_run1" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration" maxAnnotateRevisions="500" myUseAcceleration="nothing" myAutoUpdateAfterCommit="false" cleanupOnStartRun="true" SSL_PROTOCOLS="all">
@@ -563,16 +653,16 @@
     <option name="myMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+          <option name="myVcsRoot" value="D:\Projects\TriggerDB\trunk" />
+          <option name="myCopyRoot" value="D:\Projects\TriggerDB\trunk" />
         </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="$PROJECT_DIR$" />
-          <option name="myCopyRoot" value="$PROJECT_DIR$" />
+          <option name="myVcsRoot" value="D:\Projects\TriggerDB\trunk" />
+          <option name="myCopyRoot" value="D:\Projects\TriggerDB\trunk" />
         </SvnCopyRootSimple>
       </list>
     </option>
@@ -599,25 +689,25 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="0" width="1680" height="1025" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1552" height="842" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32893288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291714" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992035" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3300562" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798833" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.67007965" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2622549" sideWeight="0.67121726" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2536913" sideWeight="0.67151165" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27242303" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39941692" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.41399416" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3278328" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291714" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992035" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -639,333 +729,167 @@
     <option name="LAST_COMMIT_MESSAGE" value="TDB code gardening" />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager />
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/tridb_www/runs/views.py</url>
+          <line>16</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="2" />
+    </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1386">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106">
-          <folding>
-            <marker date="1392058784144" expanded="true" signature="110:4287" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="138:358" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="380:1262" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="408:599" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="456:584" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="627:1075" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="671:1060" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1103:1251" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1148:1236" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1303:4186" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1325:1580" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1346:1557" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1602:4165" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1623:1936" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1957:2258" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2279:2582" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2595:2900" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2916:3219" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3233:3688" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3705:4142" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="1082" selection-end="1082" vertical-scroll-proportion="0.0" vertical-offset="504" max-vertical-offset="3060">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="56" column="4" selection-start="2156" selection-end="2156" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="4860">
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <marker date="1392935099478" expanded="true" signature="551:610" placeholder="select count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="551:611" placeholder="SELECT count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="840:899" placeholder="SELECT count..pedestal_presets..." />
-            <marker date="1392935099478" expanded="true" signature="1128:1187" placeholder="SELECT count..baseline_presets..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/config_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="29" selection-start="113" selection-end="113" vertical-scroll-proportion="0.0" vertical-offset="144" max-vertical-offset="1656">
+        <state line="254" column="10" selection-start="8710" selection-end="8716" vertical-scroll-proportion="0.0" vertical-offset="5588" max-vertical-offset="7040">
           <folding />
         </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/file_archiver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0" vertical-offset="306" max-vertical-offset="522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/example__run_to_board_confs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="30" selection-start="919" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="468" max-vertical-offset="954">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/environment.csh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="396">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/static/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="414">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/start.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="695" selection-end="890" vertical-scroll-proportion="0.0" vertical-offset="1190" max-vertical-offset="1728" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="954" />
+        <state line="41" column="0" selection-start="775" selection-end="775" vertical-scroll-proportion="0.0" vertical-offset="594" max-vertical-offset="1232">
+          <folding />
+        </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+    <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1386">
+        <state line="18" column="8" selection-start="628" selection-end="628" vertical-scroll-proportion="0.0" vertical-offset="308" max-vertical-offset="1782">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="5" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="484">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106">
-          <folding>
-            <marker date="1392058784144" expanded="true" signature="110:4287" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="138:358" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="380:1262" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="408:599" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="456:584" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="627:1075" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="671:1060" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1103:1251" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1148:1236" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1303:4186" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1325:1580" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1346:1557" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1602:4165" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1623:1936" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1957:2258" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2279:2582" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2595:2900" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2916:3219" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3233:3688" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3705:4142" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="28" column="0" selection-start="1082" selection-end="1082" vertical-scroll-proportion="0.0" vertical-offset="504" max-vertical-offset="3060">
+        <state line="0" column="0" selection-start="0" selection-end="4306" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="2574">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
+    <entry file="file://$PROJECT_DIR$/tridb_www/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="0" selection-start="34" selection-end="34" vertical-scroll-proportion="0.0" vertical-offset="1782" max-vertical-offset="4860">
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <marker date="1392935099478" expanded="true" signature="551:610" placeholder="select count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="551:611" placeholder="SELECT count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="840:899" placeholder="SELECT count..pedestal_presets..." />
-            <marker date="1392935099478" expanded="true" signature="1128:1187" placeholder="SELECT count..baseline_presets..." />
-          </folding>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/boards/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154">
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/trigger_db/file_archiver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="43" selection-start="102" selection-end="102" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="522">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/environment.csh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="396">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/static/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="414">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/start_tdb_www.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="15" column="4" selection-start="434" selection-end="434" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="396" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/static/style.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="414">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106">
-          <folding>
-            <marker date="1392058784144" expanded="true" signature="110:4287" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="138:358" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="380:1262" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="408:599" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="456:584" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="627:1075" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="671:1060" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1103:1251" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1148:1236" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1303:4186" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1325:1580" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1346:1557" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1602:4165" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1623:1936" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="1957:2258" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2279:2582" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2595:2900" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="2916:3219" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3233:3688" placeholder="..." />
-            <marker date="1392058784144" expanded="true" signature="3705:4142" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1386">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/layouts/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="71" selection-start="1707" selection-end="1707" vertical-scroll-proportion="0.0" vertical-offset="666" max-vertical-offset="2232" />
+        <state line="8" column="35" selection-start="165" selection-end="165" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="616" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/sasha1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="22" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="882" />
+        <state line="5" column="22" selection-start="110" selection-end="110" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1034" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/environment.bash">
+    <entry file="file://$PROJECT_DIR$/python/fill_test_run1.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="33" selection-start="889" selection-end="889" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="576" />
+        <state line="11" column="43" selection-start="322" selection-end="322" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="440" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/environment.csh">
+    <entry file="file://$PROJECT_DIR$/python/trigger_db/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="828">
+        <state line="12" column="0" selection-start="425" selection-end="425" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3366" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/trigger_db/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="16" column="0" selection-start="193" selection-end="193" vertical-scroll-proportion="0.0" vertical-offset="3077" max-vertical-offset="3960" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/start_tdb_www.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="66" max-vertical-offset="594" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/boards/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="4306" vertical-scroll-proportion="0.0" vertical-offset="2250" max-vertical-offset="2574">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="65" column="3" selection-start="0" selection-end="2529" vertical-scroll-proportion="0.0" vertical-offset="1339" max-vertical-offset="1694" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="254" column="10" selection-start="8710" selection-end="8716" vertical-scroll-proportion="0.0" vertical-offset="5312" max-vertical-offset="6842">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/runs/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="12" selection-start="12" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/constants.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="355">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="5" selection-start="145" selection-end="145" vertical-scroll-proportion="0.0" vertical-offset="198" max-vertical-offset="484">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="4" column="0" selection-start="69" selection-end="69" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="954" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/start.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="35" column="0" selection-start="695" selection-end="890" vertical-scroll-proportion="0.0" vertical-offset="250" max-vertical-offset="1728" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/start_tdb_www.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="41" selection-start="378" selection-end="412" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="486" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sqlalchemy/testing/assertsql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="302" column="8" selection-start="9333" selection-end="9333" vertical-scroll-proportion="2.1394053" vertical-offset="4249" max-vertical-offset="5850" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/config_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="29" selection-start="113" selection-end="113" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1656">
+        <state line="41" column="0" selection-start="775" selection-end="775" vertical-scroll-proportion="0.0" vertical-offset="792" max-vertical-offset="1232">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/static/style.css">
+    <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="536">
+        <state line="25" column="23" selection-start="780" selection-end="780" vertical-scroll-proportion="0.8292683" vertical-offset="176" max-vertical-offset="1782">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/file_archiver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="17" column="0" selection-start="358" selection-end="358" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="504">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/example__run_to_board_confs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="26" column="30" selection-start="919" selection-end="937" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="954">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/provider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="22626">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../ccdb/prod/python/sqlalchemy/orm/session.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="2275" column="25" selection-start="90750" selection-end="90757" vertical-scroll-proportion="2.4188948" vertical-offset="39323" max-vertical-offset="42732">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="0" selection-start="1150" selection-end="1150" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="3150">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="102" column="98" selection-start="4263" selection-end="4263" vertical-scroll-proportion="0.5280899" vertical-offset="1554" max-vertical-offset="5598">
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <marker date="1392935099478" expanded="true" signature="551:610" placeholder="select count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="551:611" placeholder="SELECT count..threshold_presets..." />
-            <marker date="1392935099478" expanded="true" signature="840:899" placeholder="SELECT count..pedestal_presets..." />
-            <marker date="1392935099478" expanded="true" signature="1128:1187" placeholder="SELECT count..baseline_presets..." />
-          </folding>
         </state>
       </provider>
     </entry>

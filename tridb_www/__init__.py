@@ -19,7 +19,8 @@ app.config.from_object(__name__)
 
 @app.before_request
 def before_request():
-    g.tdb = trigger_db.connect()
+    g.tdb = trigger_db.ConfigurationProvider()
+    g.tdb.connect()
 
 @app.teardown_request
 def teardown_request(exception):
@@ -41,8 +42,10 @@ def index():
 
 #from  import mod as boardsModule
 from boards.views import mod as boards_module
+from runs.views import mod as runs_module
 
 app.register_blueprint(boards_module)
+app.register_blueprint(runs_module)
 
 if __name__ == '__main__':
     app.run()

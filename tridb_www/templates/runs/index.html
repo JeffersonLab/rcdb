@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Home' %}
+
+{% block container %}
+<div class="container">
+
+<ul>
+{% for run in runs %}
+  <li>{{ run.number }}</li>
+{% endfor %}
+</ul>
+</div>
+
+
+{% endblock %}

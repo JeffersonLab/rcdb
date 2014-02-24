@@ -1,6 +1,7 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 from .model import Board
+from .provider import ConfigurationProvider
 
 #This thing separates cells in data blob
 blob_delimiter = "|"
@@ -8,31 +9,6 @@ blob_delimiter = "|"
 # if cell of data table is a string and the string already contains blob_delimiter
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
-
-
-class ConfigurationDB(object):
-    """Api to configuration database"""
-
-    session = None
-
-    def connect(self, connection_string="mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb"):
-        """Connect to the database
-
-        Connects to the database and returns SQL alchemy session object
-        that allows to manipulate objects from database
-
-        :param connection_string: Connection string that specifies database type, user, server, etc.
-                                  By default it is mysql://triggerdb@127.0.0.1/triggerdb
-        :return: SQLAlchemy session
-        """
-        tdb_engine = sqlalchemy.create_engine(connection_string)
-        self.session = sessionmaker(bind=tdb_engine)
-
-    def add_file(self, run_num, filename):
-        pass
-
-
-
 
 #-------------------------------------------------
 # function Convert list to DB text representation
