@@ -7,8 +7,9 @@
 
     <div class="container">
       <div class="blog-header">
-        <h1 class="blog-title">1002</h1>
-        <p class="lead blog-description">Run information for run {{ run_number }}</p>
+        <h1 class="blog-title">{{ run_number }}</h1>
+        <p class="lead blog-description">Run start 13:23:31 February 24, 2014</p>
+        <p class="lead blog-description">Run ended 13:26:47 February 24, 2014</p>
       </div>
 
       <div class="row">
@@ -16,7 +17,84 @@
         <div class="col-sm-8 blog-main">
 
           <div class="blog-post">
-            <h2 class="blog-post-title">Sample blog post</h2>
+            <h2 class="blog-post-title">Files</h2>
+              <table class="table table-striped">
+                  <tr>
+                      <td><a href="#">/home/romanov/halld/tdb/trunk/src/master_samle1.cnf</a></td>
+                  </tr>
+                  <tr>
+                      <td><a href="#">/home/romanov/halld/tdb/trunk/src/FADC_250_samle1.cnf</a></td>
+                  </tr>
+                  <tr>
+                      <td><a href="#">/home/romanov/halld/tdb/trunk/src/FADC_250_samle2.cnf</a></td>
+                  </tr>
+                  <tr>
+                      <td><a href="#">/home/romanov/halld/tdb/trunk/src/FADC_250_samle3.cnf</a></td>
+                  </tr>
+              </table>
+
+              <h2 class="blog-post-title">Configuration</h2>
+              <div class="panel panel-default">
+                  <div class="panel-heading"><h3>rocfcal2</h3></div>
+                  <table class="table table-striped">
+                      <tr class="small">
+                          <th>Slot</th>
+                          <th style="width: 100%">Board</th>
+                          <th>Firmware</th>
+                      </tr>
+                      <tr>
+                          <td>4</td>
+                          <td>FADC250_CQV2-13</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>6</td>
+                          <td>FADC250_CQV2-14</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>8</td>
+                          <td>FADC250_CQV2-15</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>13</td>
+                          <td>FADC250_CQV2-16</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                  </table>
+              </div>
+              <div class="panel panel-default">
+                  <div class="panel-heading"><h3>rocfcal3</h3></div>
+                  <table class="table table-striped">
+                      <tr class="small">
+                          <th>Slot</th>
+                          <th style="width: 100%">Board</th>
+                          <th>Firmware</th>
+                      </tr>
+                      <tr>
+                          <td>1</td>
+                          <td>FADC250_CQV2-20</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>6</td>
+                          <td>FADC250_CQV2-13</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>8</td>
+                          <td>FADC250_CQV2-13</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                      <tr>
+                          <td>13</td>
+                          <td>FADC250_CQV2-13</td>
+                          <td><span class="badge">rt-v 1</span> </td>
+                      </tr>
+                  </table>
+              </div>
+
             <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
 
             <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
@@ -83,32 +161,33 @@
 
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
           <div class="sidebar-module sidebar-module-inset">
-            <h4>About</h4>
+            <h4>Start comment</h4>
             <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
           </div>
+            <div class="sidebar-module sidebar-module-inset">
+            <h4>End comment</h4>
+            <p> Calibration run</p>
+          </div>
           <div class="sidebar-module">
-            <h4>Archives</h4>
+            <h4>Trigger: sample_v1</h4>
             <ol class="list-unstyled">
-              <li><a href="#">January 2014</a></li>
-              <li><a href="#">December 2013</a></li>
-              <li><a href="#">November 2013</a></li>
-              <li><a href="#">October 2013</a></li>
-              <li><a href="#">September 2013</a></li>
-              <li><a href="#">August 2013</a></li>
-              <li><a href="#">July 2013</a></li>
-              <li><a href="#">June 2013</a></li>
-              <li><a href="#">May 2013</a></li>
-              <li><a href="#">April 2013</a></li>
-              <li><a href="#">March 2013</a></li>
-              <li><a href="#">February 2013</a></li>
+              <li><a href="#">name1 value1</a></li>
+              <li><a href="#">name2 value2</a></li>
+              <li><a href="#">name3 value3</a></li>
+              <li><a href="#">name4 value4</a></li>
+              <li><a href="#">name5 value5</a></li>
+              <li><a href="#">name6 value6</a></li>
+              <li><a href="#">name7 value7</a></li>
+              <li><a href="#">name8 value8</a></li>
+              <li><a href="#">name9 value9</a></li>
             </ol>
           </div>
           <div class="sidebar-module">
-            <h4>Elsewhere</h4>
+            <h4>Statistics</h4>
             <ol class="list-unstyled">
-              <li><a href="#">GitHub</a></li>
-              <li><a href="#">Twitter</a></li>
-              <li><a href="#">Facebook</a></li>
+              <li><a href="#">name1 value1</a></li>
+              <li><a href="#">name2 value2</a></li>
+              <li><a href="#">name3 value3</a></li>
             </ol>
           </div>
         </div><!-- /.blog-sidebar -->

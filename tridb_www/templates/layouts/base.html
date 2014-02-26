@@ -58,6 +58,11 @@
                     <li {% if request.endpoint == 'logs.index' %} class="active"{% endif %}>
                         <a href="{{ url_for('logs.index') }}">Logs</a>
                     </li>
+
+                    <!-- Logs -->
+                    <li >
+                        <a href="#">Statistics</a>
+                    </li>
                 </ul>
             </div>
         </div>
@@ -106,9 +111,7 @@
 
     <!-- FOOTER -->
     <div class="footer navbar-fixed-bottom">
-        <div class="container">
             For help contact romanov at jlab.org
-        </div>
     </div>
 
     {% block js_btm %}

@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="TDB code gardening">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/logs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/logs" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/logs/__init__.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/logs/index.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/runs/info.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/static/css/main.css" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/logs/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mysql/configuration_database.mwb" afterPath="$PROJECT_DIR$/mysql/configuration_database.mwb" />
+    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/files" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/files" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/files/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/templates/files/index.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/tridb_www/files/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/__init__.py" afterPath="$PROJECT_DIR$/tridb_www/__init__.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" afterPath="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/trigger_db/model.py" afterPath="$PROJECT_DIR$/python/trigger_db/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/runs/views.py" afterPath="$PROJECT_DIR$/tridb_www/runs/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/templates/boards/index.html" afterPath="$PROJECT_DIR$/tridb_www/templates/boards/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/tridb_www/templates/runs/info.html" afterPath="$PROJECT_DIR$/tridb_www/templates/runs/info.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -27,7 +24,7 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393381264081" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393438767644" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$fill_test_run1.coverage" NAME="fill_test_run1 Coverage Results" MODIFIED="1393227039688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
   </component>
@@ -43,46 +40,28 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="main.css" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/static/css/main.css">
+      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/files/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="44" column="9" selection-start="563" selection-end="566" vertical-scroll-proportion="-29.333334" vertical-offset="0" max-vertical-offset="3060">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/templates/layouts/base.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="58" column="60" selection-start="2508" selection-end="2535" vertical-scroll-proportion="-7.740741" vertical-offset="835" max-vertical-offset="2322">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="126">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
       <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
+        <entry file="file://$PROJECT_DIR$/tridb_www/logs/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="49" column="34" selection-start="1049" selection-end="1049" vertical-scroll-proportion="-12.04" vertical-offset="509" max-vertical-offset="990">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.0" vertical-offset="0" max-vertical-offset="126">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tridb_www/templates/logs/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="13" column="97" selection-start="375" selection-end="375" vertical-scroll-proportion="0.37124464" vertical-offset="61" max-vertical-offset="1728">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="8" selection-start="676" selection-end="676" vertical-scroll-proportion="-15.84" vertical-offset="0" max-vertical-offset="1602">
+            <state line="13" column="97" selection-start="375" selection-end="375" vertical-scroll-proportion="-6.4074073" vertical-offset="61" max-vertical-offset="1728">
               <folding />
             </state>
           </provider>
@@ -91,7 +70,57 @@
       <file leaf-file-name="info.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/info.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="12" selection-start="129" selection-end="324" vertical-scroll-proportion="-7.3333335" vertical-offset="0" max-vertical-offset="2286">
+            <state line="25" column="91" selection-start="825" selection-end="878" vertical-scroll-proportion="-6.6666665" vertical-offset="270" max-vertical-offset="3708">
+              <folding>
+                <element signature="n#style#0;n#th#1;n#tr#0;n#table#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#th#1;n#tr#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="59" column="30" selection-start="2086" selection-end="2086" vertical-scroll-proportion="-42.48" vertical-offset="0" max-vertical-offset="1386">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/templates/files/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="12" selection-start="375" selection-end="375" vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="2286">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="example__run_to_board_confs.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/example__run_to_board_confs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="19.88" vertical-offset="497" max-vertical-offset="954">
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="69" column="48" selection-start="3095" selection-end="3103" vertical-scroll-proportion="-6.5776806" vertical-offset="4086" max-vertical-offset="5598">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/tridb_www/files/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="13" column="33" selection-start="437" selection-end="437" vertical-scroll-proportion="-9.36" vertical-offset="0" max-vertical-offset="378">
               <folding />
             </state>
           </provider>
@@ -128,13 +157,16 @@
         <option value="$PROJECT_DIR$/tridb_www/runs/__init__.py" />
         <option value="$PROJECT_DIR$/tridb_www/templates/runs/index.html" />
         <option value="$PROJECT_DIR$/python/trigger_db/model.py" />
-        <option value="$PROJECT_DIR$/tridb_www/templates/runs/info.html" />
         <option value="$PROJECT_DIR$/tridb_www/static/css/main.css" />
         <option value="$PROJECT_DIR$/tridb_www/logs/views.py" />
-        <option value="$PROJECT_DIR$/tridb_www/__init__.py" />
-        <option value="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
         <option value="$PROJECT_DIR$/tridb_www/runs/views.py" />
         <option value="$PROJECT_DIR$/tridb_www/templates/logs/index.html" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/runs/info.html" />
+        <option value="$PROJECT_DIR$/tridb_www/files/views.py" />
+        <option value="$PROJECT_DIR$/tridb_www/__init__.py" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/boards/index.html" />
+        <option value="$PROJECT_DIR$/tridb_www/templates/files/index.html" />
       </list>
     </option>
   </component>
@@ -318,6 +350,50 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boards" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="runs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -337,6 +413,42 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="logs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="files" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="tridb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boards" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -408,8 +520,10 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/tridb_www/templates/logs" />
+      <recent name="$PROJECT_DIR$/tridb_www/files" />
       <recent name="$PROJECT_DIR$/tridb_www/logs" />
+      <recent name="$PROJECT_DIR$/tridb_www/templates/files" />
+      <recent name="$PROJECT_DIR$/tridb_www/templates/logs" />
       <recent name="D:\Projects\TriggerDB\trunk\tridb_www\templates\runs" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
@@ -723,13 +837,18 @@
       <created>1392252172105</created>
       <updated>1392252172105</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="TDB code gardening">
+      <created>1393383088108</created>
+      <updated>1393383088109</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1025" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992035" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.330033" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32798833" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -739,13 +858,12 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39941692" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41364136" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41455346" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3278328" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3291714" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32992035" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -779,39 +897,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="4306" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2106">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="126" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/boards/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="126" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="254" column="10" selection-start="8710" selection-end="8716" vertical-scroll-proportion="0.0" vertical-offset="4572" max-vertical-offset="5760">
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="41" column="0" selection-start="775" selection-end="775" vertical-scroll-proportion="0.0" vertical-offset="738" max-vertical-offset="1008">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="23" selection-start="780" selection-end="780" vertical-scroll-proportion="0.0" vertical-offset="450" max-vertical-offset="1458">
@@ -828,7 +913,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="216" />
+        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="90" max-vertical-offset="216">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
@@ -880,7 +967,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264" />
+        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/index.html">
@@ -930,16 +1019,6 @@
         <state line="0" column="0" selection-start="0" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="18" selection-start="92" selection-end="106" vertical-scroll-proportion="0.0" vertical-offset="110" max-vertical-offset="264" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="65" column="3" selection-start="0" selection-end="2529" vertical-scroll-proportion="0.0" vertical-offset="1339" max-vertical-offset="1694" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/runs/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="12" selection-start="12" selection-end="12" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="154" />
@@ -953,15 +1032,6 @@
     <entry file="file://$PROJECT_DIR$/python/trigger_db/config_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="108" max-vertical-offset="1656" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="69" column="48" selection-start="3095" selection-end="3103" vertical-scroll-proportion="-5.173077" vertical-offset="973" max-vertical-offset="5760">
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/index.html">
@@ -1061,16 +1131,23 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="22" column="8" selection-start="676" selection-end="676" vertical-scroll-proportion="-15.84" vertical-offset="0" max-vertical-offset="1602">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/layouts/base.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="58" column="60" selection-start="2508" selection-end="2535" vertical-scroll-proportion="-7.740741" vertical-offset="835" max-vertical-offset="2322">
+        <state line="63" column="46" selection-start="2679" selection-end="2679" vertical-scroll-proportion="-16.0" vertical-offset="702" max-vertical-offset="2376">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="49" column="34" selection-start="1049" selection-end="1049" vertical-scroll-proportion="-12.04" vertical-offset="509" max-vertical-offset="990">
+        <state line="51" column="35" selection-start="1130" selection-end="1130" vertical-scroll-proportion="0.73741794" vertical-offset="509" max-vertical-offset="1026">
           <folding />
         </state>
       </provider>
@@ -1082,23 +1159,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/info.html">
+    <entry file="file://$PROJECT_DIR$/tridb_www/logs/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="12" selection-start="129" selection-end="324" vertical-scroll-proportion="-7.3333335" vertical-offset="0" max-vertical-offset="2286">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="482">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tridb_www/runs/views.py">
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/boards/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="8" selection-start="676" selection-end="676" vertical-scroll-proportion="-15.84" vertical-offset="0" max-vertical-offset="1602">
+        <state line="7" column="9" selection-start="0" selection-end="5174" vertical-scroll-proportion="-4.6666665" vertical-offset="0" max-vertical-offset="2214">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/tridb_www/templates/logs/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="13" column="97" selection-start="375" selection-end="375" vertical-scroll-proportion="0.37124464" vertical-offset="61" max-vertical-offset="1728">
+        <state line="13" column="97" selection-start="375" selection-end="375" vertical-scroll-proportion="-6.4074073" vertical-offset="61" max-vertical-offset="1728">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/boards/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="59" column="30" selection-start="2086" selection-end="2086" vertical-scroll-proportion="-42.48" vertical-offset="0" max-vertical-offset="1386">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/runs/info.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="25" column="91" selection-start="825" selection-end="878" vertical-scroll-proportion="-6.6666665" vertical-offset="270" max-vertical-offset="3708">
+          <folding>
+            <element signature="n#style#0;n#th#1;n#tr#0;n#table#0;n#div#0;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#th#1;n#tr#0;n#table#0;n#div#1;n#div#0;n#div#0;n#div#1;n#div#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/files/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="482">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/files/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="13" column="33" selection-start="437" selection-end="437" vertical-scroll-proportion="-9.36" vertical-offset="0" max-vertical-offset="378">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tridb_www/templates/files/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="12" selection-start="375" selection-end="375" vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="2286">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/example__run_to_board_confs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="19.88" vertical-offset="497" max-vertical-offset="954">
+          <folding>
+            <element signature="e#0#17#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/trigger_db/model.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="69" column="48" selection-start="3095" selection-end="3103" vertical-scroll-proportion="-6.5776806" vertical-offset="4086" max-vertical-offset="5598">
           <folding />
         </state>
       </provider>
