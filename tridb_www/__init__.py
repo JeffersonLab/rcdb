@@ -43,9 +43,12 @@ def index():
 #from  import mod as boardsModule
 from boards.views import mod as boards_module
 from runs.views import mod as runs_module
+from logs.views import mod as logs_module
 
 app.register_blueprint(boards_module)
 app.register_blueprint(runs_module)
+app.register_blueprint(logs_module)
+
 
 if __name__ == '__main__':
     app.run()

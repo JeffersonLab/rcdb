@@ -18,6 +18,14 @@ def index():
     return render_template("runs/index.html", runs=runs)
     pass
 
+
+@mod.route('/info/<int:run_number>')
+def info(run_number):
+    """Shows run information and statistics"""
+    return render_template("runs/info.html", run_number=run_number)
+
+
+
   # @mod.route('/me/')
   # @requires_login
   # def home():

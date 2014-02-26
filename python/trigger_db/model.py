@@ -87,7 +87,7 @@ class Crate(Base):
     """
     __tablename__ = 'crates'
     id = Column(Integer, primary_key=True)
-    name = Column('rock_name', String(45))
+    name = Column(String(45))
     installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan")
 
 
