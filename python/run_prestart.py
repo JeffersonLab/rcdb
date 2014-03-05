@@ -38,7 +38,7 @@ if __name__ == "__main__":
     #add everything to run number
 
     db = ConfigurationProvider()
-    db.connect("mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db")
+    db.connect()
     db.add_run_start_time(run_number, start_time)
     db.add_run_record(run_number, "Start comment", start_comment, start_time)
     db.add_configuration_file(run_number, sys.argv[1])

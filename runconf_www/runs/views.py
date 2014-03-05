@@ -1,13 +1,13 @@
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 #from werkzeug import check_password_hash, generate_password_hash
-import trigger_db
+import runconf_db
 
 #from app import db
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from trigger_db.model import RunConfiguration
+from runconf_db.model import RunConfiguration
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 

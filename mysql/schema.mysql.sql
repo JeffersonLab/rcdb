@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS `trigger_db` DEFAULT CHARACTER SET latin1 ;
 USE `trigger_db` ;
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`boards`
+-- Table `runconf_db`.`boards`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`boards` ;
 
@@ -24,7 +24,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`pedestal_presets`
+-- Table `runconf_db`.`pedestal_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`pedestal_presets` ;
 
@@ -45,7 +45,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`baseline_presets`
+-- Table `runconf_db`.`baseline_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`baseline_presets` ;
 
@@ -65,7 +65,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`trigger_configurations`
+-- Table `runconf_db`.`trigger_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`trigger_configurations` ;
 
@@ -80,7 +80,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`daq`
+-- Table `runconf_db`.`daq`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`daq` ;
 
@@ -99,7 +99,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`run_configurations`
+-- Table `runconf_db`.`run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`run_configurations` ;
 
@@ -128,7 +128,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`threshold_presets`
+-- Table `runconf_db`.`threshold_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`threshold_presets` ;
 
@@ -148,7 +148,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`board_configurations`
+-- Table `runconf_db`.`board_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`board_configurations` ;
 
@@ -176,7 +176,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`board_configurations_has_run_configurations`
+-- Table `runconf_db`.`board_configurations_has_run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`board_configurations_has_run_configurations` ;
 
@@ -200,7 +200,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `trigger_db`.`configuration_files`
+-- Table `runconf_db`.`configuration_files`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `trigger_db`.`configuration_files` ;
 
@@ -236,7 +236,7 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`boards`
+-- Data for table `runconf_db`.`boards`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -246,7 +246,7 @@ INSERT INTO `trigger_db`.`boards` (`id`, `board_type`, `name`, `serial`, `descri
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`pedestal_presets`
+-- Data for table `runconf_db`.`pedestal_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -257,7 +257,7 @@ INSERT INTO `trigger_db`.`pedestal_presets` (`id`, `values`, `version`, `board_i
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`baseline_presets`
+-- Data for table `runconf_db`.`baseline_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -268,7 +268,7 @@ INSERT INTO `trigger_db`.`baseline_presets` (`id`, `version`, `values`, `board_i
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`trigger_configurations`
+-- Data for table `runconf_db`.`trigger_configurations`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -277,7 +277,7 @@ INSERT INTO `trigger_db`.`trigger_configurations` (`id`, `type`, `parameters`, `
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`daq`
+-- Data for table `runconf_db`.`daq`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -286,7 +286,7 @@ INSERT INTO `trigger_db`.`daq` (`id`, `readout_mode`, `window_size`, `nsa_nsb`, 
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`run_configurations`
+-- Data for table `runconf_db`.`run_configurations`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -295,7 +295,7 @@ INSERT INTO `trigger_db`.`run_configurations` (`id`, `run_number`, `trigger_conf
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`threshold_presets`
+-- Data for table `runconf_db`.`threshold_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -306,7 +306,7 @@ INSERT INTO `trigger_db`.`threshold_presets` (`id`, `version`, `values`, `board_
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`board_configurations`
+-- Data for table `runconf_db`.`board_configurations`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;
@@ -316,7 +316,7 @@ INSERT INTO `trigger_db`.`board_configurations` (`id`, `board_id`, `crate`, `slo
 COMMIT;
 
 -- -----------------------------------------------------
--- Data for table `trigger_db`.`board_configurations_has_run_configurations`
+-- Data for table `runconf_db`.`board_configurations_has_run_configurations`
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `trigger_db`;

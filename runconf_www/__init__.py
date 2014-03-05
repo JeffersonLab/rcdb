@@ -2,8 +2,8 @@ __author__ = 'romanov'
 from flask import Flask, render_template, g
 
 
-import trigger_db
-from trigger_db import Board
+import runconf_db
+#from runconf_db import Board
 
 # configuration
 DATABASE = 'flaskr.db'
@@ -19,7 +19,8 @@ app.config.from_object(__name__)
 
 @app.before_request
 def before_request():
-    g.tdb = trigger_db.ConfigurationProvider()
+
+    g.tdb = runconf_db.ConfigurationProvider()
     g.tdb.connect()
 
 @app.teardown_request
