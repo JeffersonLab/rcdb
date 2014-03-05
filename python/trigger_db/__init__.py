@@ -1,6 +1,6 @@
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
-from .model import Board
+#from .model import Board
 from .provider import ConfigurationProvider
 
 #This thing separates cells in data blob
@@ -39,12 +39,11 @@ def make_threshold_preset(db, board, values):
 
 
 
-
 if __name__ == "__main__":
     engine = sqlalchemy.create_engine('mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb')
     Session = sessionmaker(bind=engine)
     session = Session()
-    boards = session.query(Board).all()
+    #boards = session.query(Board).all()
 
 
 

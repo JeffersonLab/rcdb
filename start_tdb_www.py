@@ -17,5 +17,5 @@ if __name__ == '__main__':
         sys.path.insert(0, python_folder)
 
     #import and start web site
-    import tridb_www
-    tridb_www.app.run()
+    import runconf_www
+    runconf_www.app.run()
