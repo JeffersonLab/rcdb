@@ -1,8 +1,8 @@
 import sys, os
 import xml.etree.ElementTree as ET
 import logging
-from trigger_db.log_format import BraceMessage as lf
-from trigger_db import ConfigurationProvider
+from runconf_db.log_format import BraceMessage as lf
+from runconf_db import ConfigurationProvider
 from datetime import datetime
 
 #setup logger
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     #add everything to run number
 
     db = ConfigurationProvider()
-    db.connect("mysql+mysqlconnector://trigger_db@127.0.0.1/trigger_db")
+    db.connect("mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db")
     db.add_run_start_time(run_number, start_time)
     db.add_run_record(run_number, "Start comment", start_comment, start_time)
     db.add_configuration_file(run_number, sys.argv[1])

@@ -1,9 +1,9 @@
 
-import trigger_db
-from trigger_db import Board
-from trigger_db import ThresholdPreset
+import runconf_db
+from runconf_db import Board
+from runconf_db import ThresholdPreset
 
-db = trigger_db.connect()
+db = runconf_db.connect()
 
 boards = db.query(Board).all()
 

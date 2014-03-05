@@ -1,7 +1,7 @@
-import trigger_db
-from trigger_db import Board
-from trigger_db import BoardConfiguration
-from trigger_db import RunConfiguration
+import runconf_db
+from runconf_db import Board
+from runconf_db import BoardConfiguration
+from runconf_db import RunConfiguration
 
 #define a function that prints information about run
 def print_run_information(run):
@@ -30,7 +30,7 @@ def print_run_information(run):
         ))
 
 
-db = trigger_db.connect()
+db = runconf_db.connect()
 
 #select all runs we have
 runs = db.query(RunConfiguration).all()

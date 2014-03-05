@@ -41,7 +41,7 @@ class ConfigurationProvider(object):
     #------------------------------------------------
     #  Connects to database using connection string
     #------------------------------------------------
-    def connect(self, connection_string="mysql+mysqlconnector://trigger_db@127.0.0.1/trigger_db"):
+    def connect(self, connection_string="mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"):
         """
         Connects to database using connection string
 

@@ -1,11 +1,11 @@
 __author__ = 'DmitryRa'
 
-import trigger_db
-from trigger_db import Board           #Board class represents each physical board
-from trigger_db import ThresholdPreset #Threshold values
+import runconf_db
+from runconf_db import Board           #Board class represents each physical board
+from runconf_db import ThresholdPreset #Threshold values
 
 
-db = trigger_db.connect()
+db = runconf_db.connect()
 boards = db.query(Board).all()
 print(boards)
 
