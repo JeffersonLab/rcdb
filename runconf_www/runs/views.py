@@ -22,7 +22,14 @@ def index():
 @mod.route('/info/<int:run_number>')
 def info(run_number):
     """Shows run information and statistics"""
-    return render_template("runs/info.html", run_number=run_number)
+    run = g.tdb.session.query(RunConfiguration).filter(RunConfiguration.number==run_number).first()
+    assert (isinstance(run, RunConfiguration))
+
+    return render_template("runs/info.html",
+                           run=run,
+                           records_map=run.records_map,
+                           start_comment_key = runconf_db.START_COMMENT_RECORD_KEY,
+                           end_comment_key = runconf_db.END_COMMENT_RECORD_KEY)
 
 
 

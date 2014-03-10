@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+from runconf_db.model import ConfigurationFile
 #from werkzeug import check_password_hash, generate_password_hash
 
 #from app import db
@@ -13,3 +14,12 @@ mod = Blueprint('files', __name__, url_prefix='/files')
 def index():
     return render_template("files/index.html", parm="hahaha")
     pass
+
+@mod.route('/info/<int:file_db_id>')
+def info(file_db_id):
+    #try:
+        file = g.tdb.session.query(ConfigurationFile).filter(ConfigurationFile.id == file_db_id).one()
+        return render_template("files/info.html", file=file)
+    # except:
+    #     return render_template("files/not_found.html", id=file_db_id)
+    # pass

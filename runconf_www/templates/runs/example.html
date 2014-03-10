@@ -164,46 +164,41 @@
 
         </div><!-- /.blog-main -->
 
-        <!-- SIDE BAR -->
         <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
-            <!-- START COMMENT -->
-            {% if start_comment_key in records_map.keys() %}
+          <div class="sidebar-module sidebar-module-inset">
+            <h4>Start comment</h4>
+            <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+          </div>
             <div class="sidebar-module sidebar-module-inset">
-                <h4>{{ start_comment_key }}</h4>
-                <p>{{ records_map[start_comment_key].value }}</p>
-            </div>
-            {% endif %}
-
-            <!-- END COMMENT -->
-            {% if end_comment_key in records_map.keys() %}
-            <div class="sidebar-module sidebar-module-inset">
-                <h4>{{ end_comment_key }}</h4>
-                <p>{{ records_map[end_comment_key].value }}</p>
-            </div>
-            {% endif %}
-
-            <!-- -->
-            <div class="sidebar-module">
-                <h4>Trigger: sample_v1</h4>
-                <ol class="list-unstyled">
-                    <li><a href="#">name1 value1</a></li>
-                    <li><a href="#">name2 value2</a></li>
-                    <li><a href="#">name3 value3</a></li>
-                    <li><a href="#">name4 value4</a></li>
-                </ol>
-            </div>
-
-            <!-- -->
-            <div class="sidebar-module">
-                <h4>Statistics</h4>
-                <ol class="list-unstyled">
-                    <li><a href="#">name1 value1</a></li>
-                    <li><a href="#">name2 value2</a></li>
-                    <li><a href="#">name3 value3</a></li>
-                </ol>
-            </div>
+            <h4>End comment</h4>
+            <p> Calibration run</p>
+          </div>
+          <div class="sidebar-module">
+            <h4>Trigger: sample_v1</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">name1 value1</a></li>
+              <li><a href="#">name2 value2</a></li>
+              <li><a href="#">name3 value3</a></li>
+              <li><a href="#">name4 value4</a></li>
+              <li><a href="#">name5 value5</a></li>
+              <li><a href="#">name6 value6</a></li>
+              <li><a href="#">name7 value7</a></li>
+              <li><a href="#">name8 value8</a></li>
+              <li><a href="#">name9 value9</a></li>
+            </ol>
+          </div>
+          <div class="sidebar-module">
+            <h4>Statistics</h4>
+            <ol class="list-unstyled">
+              <li><a href="#">name1 value1</a></li>
+              <li><a href="#">name2 value2</a></li>
+              <li><a href="#">name3 value3</a></li>
+            </ol>
+          </div>
         </div><!-- /.blog-sidebar -->
-    </div><!-- /.row -->
+
+      </div><!-- /.row -->
+
 </div><!-- /.container -->
 
 

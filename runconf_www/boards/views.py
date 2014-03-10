@@ -5,14 +5,27 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
-#from app.users.models import User
+from runconf_db.model import Board
+
 mod = Blueprint('boards', __name__, url_prefix='/boards')
 
 
 @mod.route('/')
 def index():
-    return render_template("boards/index.html", parm="hahaha")
-    pass
+    query = g.tdb.session.query(Board).order_by(Board.board_type)
+    boards=query.all()
+    last_type=None
+    boards_by_types ={}
+    for board in boards:
+        assert (isinstance(board, Board))
+        #add new key if there is no one
+        if board.board_type not in boards_by_types.keys():
+            boards_by_types[board.board_type] = []
+        #add board to type
+        boards_by_types[board.board_type].append(board)
+
+    return render_template("boards/index.html", boards_by_types=boards_by_types)
+
 
   # @mod.route('/me/')
   # @requires_login
