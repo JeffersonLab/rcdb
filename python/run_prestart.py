@@ -1,8 +1,10 @@
 import sys, os
 import xml.etree.ElementTree as ET
 import logging
+import runconf_db
 from runconf_db.log_format import BraceMessage as lf
 from runconf_db import ConfigurationProvider
+
 from datetime import datetime
 
 #setup logger
@@ -34,13 +36,11 @@ if __name__ == "__main__":
     log.info(lf("Start time '{}'", start_time))
     log.info(lf("Start comment text: {}...", start_comment[0:100]))
 
-
     #add everything to run number
-
     db = ConfigurationProvider()
     db.connect()
     db.add_run_start_time(run_number, start_time)
-    db.add_run_record(run_number, "Start comment", start_comment, start_time)
+    db.add_run_record(run_number, runconf_db.START_COMMENT_RECORD_KEY, start_comment, start_time)
     db.add_configuration_file(run_number, sys.argv[1])
     for file in files:
-        db.add_configuration_file(run_number, file)
+        db.add_configuration_file(run_number, os.path.abspath(file))

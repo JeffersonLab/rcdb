@@ -1,5 +1,5 @@
 # MySQL Connector/Python - MySQL driver written in Python.
-# Copyright (c) 2009, 2012, Oracle and/or its affiliates. All rights reserved.
+# Copyright (c) 2009, 2013, Oracle and/or its affiliates. All rights reserved.
 
 # MySQL Connector/Python is licensed under the terms of the GPLv2
 # <http://www.gnu.org/licenses/old-licenses/gpl-2.0.html>, like most
@@ -19,12 +19,17 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+# Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 
 """
 This module implements some constructors and singletons as required by the
 DB API v2.0 (PEP-249).
 """
+
+# Python Db API v2
+apilevel = '2.0'
+threadsafety = 1
+paramstyle = 'pyformat'
 
 import time
 import datetime
@@ -32,10 +37,10 @@ import datetime
 from mysql.connector import constants
 
 class _DBAPITypeObject:
-    
+
     def __init__(self, *values):
         self.values = values
-        
+
     def __cmp__(self, other):
         if other in self.values:
             return 0

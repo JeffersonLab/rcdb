@@ -251,7 +251,7 @@ DROP TABLE IF EXISTS `runconf_db`.`board_configurations` ;
 CREATE TABLE IF NOT EXISTS `runconf_db`.`board_configurations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `board_id` INT NOT NULL,
-  `dacs_id` INT NULL,
+  `dac_preset_id` INT NULL,
   `readout_mask_id` INT NULL,
   `trigger_mask_id` INT NULL,
   `readout_threshold_id` INT NULL,
@@ -268,7 +268,7 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`board_configurations` (
   INDEX `fk_board_configurations_trigger_thresholds1_idx` (`trigger_threshold_id` ASC),
   INDEX `fk_board_configurations_trigger_baselines1_idx` (`trigger_baseline_id` ASC),
   INDEX `fk_board_configurations_readout_baselines1_idx` (`readout_baseline_id` ASC),
-  INDEX `fk_board_configurations_dacs1_idx` (`dacs_id` ASC),
+  INDEX `fk_board_configurations_dacs1_idx` (`dac_preset_id` ASC),
   INDEX `fk_board_configurations_board_parameters1_idx` (`board_parameter_id` ASC),
   CONSTRAINT `fk_boards_configuration_boards1`
     FOREIGN KEY (`board_id`)
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`board_configurations` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_board_configurations_dacs1`
-    FOREIGN KEY (`dacs_id`)
+    FOREIGN KEY (`dac_preset_id`)
     REFERENCES `runconf_db`.`dac_presets` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -555,8 +555,8 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `runconf_db`;
-INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dacs_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dacs_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (2, 2, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dac_preset_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dac_preset_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (2, 2, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL);
 
 COMMIT;
 

@@ -10,6 +10,10 @@ blob_delimiter = "|"
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
 
+START_COMMENT_RECORD_KEY = "Start comment"    # title for
+END_COMMENT_RECORD_KEY = "End comment"
+
+FADC250_KEY = "fadc250"
 #-------------------------------------------------
 # function Convert list to DB text representation
 #-------------------------------------------------
