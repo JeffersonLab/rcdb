@@ -38,67 +38,53 @@
                     {% endfor %}
                 </table>
 
-              <h2 class="blog-post-title">Configuration</h2>
-              <div class="panel panel-default">
-                  <div class="panel-heading"><h3>rocfcal2</h3></div>
-                  <table class="table table-striped">
-                      <tr class="small">
-                          <th>Slot</th>
-                          <th style="width: 100%">Board</th>
-                          <th>Firmware</th>
-                      </tr>
-                      <tr>
-                          <td>4</td>
-                          <td>FADC250_CQV2-13</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>6</td>
-                          <td>FADC250_CQV2-14</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>8</td>
-                          <td>FADC250_CQV2-15</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>13</td>
-                          <td>FADC250_CQV2-16</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                  </table>
-              </div>
-              <div class="panel panel-default">
-                  <div class="panel-heading"><h3>rocfcal3</h3></div>
-                  <table class="table table-striped">
-                      <tr class="small">
-                          <th>Slot</th>
-                          <th style="width: 100%">Board</th>
-                          <th>Firmware</th>
-                      </tr>
-                      <tr>
-                          <td>1</td>
-                          <td>FADC250_CQV2-20</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>6</td>
-                          <td>FADC250_CQV2-13</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>8</td>
-                          <td>FADC250_CQV2-13</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                      <tr>
-                          <td>13</td>
-                          <td>FADC250_CQV2-13</td>
-                          <td><span class="badge">rt-v 1</span> </td>
-                      </tr>
-                  </table>
-              </div>
+                <h2 class="blog-post-title">Configuration</h2>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>Boards</h3></div>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Type</th>
+                            <th>Serial</th>
+                            <th>Crate</th>
+                        </tr>
+                        {% for bi in run.board_installations %}
+                        <tr>
+                            <td>{{ bi.board.board_type }}</td>
+                            <td>{{ bi.board.serial }}</td>
+                            <td>{{ bi.crate.name }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+
+                <!-- CRATES ITERATION -->
+                {% for crate in board_installs_by_crate.keys() %}
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{{ crate.name }}</h3></div>
+                    <table class="table table-striped">
+                        <tr class="small">
+                            <th>Slot</th>
+                            <th style="width: 100%">Board</th>
+                            <th>Firmware</th>
+                        </tr>
+                        {% for board_install in board_installs_by_crate[crate] %}
+                        <tr>
+                            <td>{{ board_install.slot }}</td>
+                            <td>{{ board_install.board.board_type }} {{ board_install.board.serial }}</td>
+                            <td>
+                                <span class="badge">
+                                    <a href="{{ url_for("boards.board_in_run", board_id=board_install.board_id, run_number=run.number) }}">
+                                        <i class="icon-eye-open"></i> see
+                                    </a>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endfor %}
+
+
 
             <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
 

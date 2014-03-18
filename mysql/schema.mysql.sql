@@ -484,13 +484,6 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`logs` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
 
-SET SQL_MODE = '';
-GRANT USAGE ON *.* TO runconf_db;
- DROP USER runconf_db;
-SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-CREATE USER 'runconf_db';
-
-GRANT ALL ON TABLE trigger_db.* TO 'runconf_db';
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
@@ -529,16 +522,6 @@ COMMIT;
 
 
 -- -----------------------------------------------------
--- Data for table `runconf_db`.`run_configurations`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`run_configurations` (`id`, `run_number`, `trigger_configuration_id`, `daq_id`, `started`, `finished`) VALUES (1, 1000, 1, 1, NULL, NULL);
-
-COMMIT;
-
-
--- -----------------------------------------------------
 -- Data for table `runconf_db`.`readout_mask_presets`
 -- -----------------------------------------------------
 START TRANSACTION;
@@ -546,37 +529,6 @@ USE `runconf_db`;
 INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 0, '1.01 1.02 1.03 1.04 1.1 1.11 1.12 1.13 2.0 2.1 2.3 5.123 6.123 16.123 1.01', 1);
 INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (2, 1, '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ', 1);
 INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (3, 0, '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ', 2);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`board_configurations`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dac_preset_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (1, 1, NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `runconf_db`.`board_configurations` (`id`, `board_id`, `dac_preset_id`, `readout_mask_id`, `trigger_mask_id`, `readout_threshold_id`, `trigger_threshold_id`, `trigger_baseline_id`, `readout_baseline_id`, `board_parameter_id`) VALUES (2, 2, NULL, 3, NULL, NULL, NULL, NULL, NULL, NULL);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`board_configurations_has_run_configurations`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`board_configurations_has_run_configurations` (`board_configuration_id`, `run_configuration_id`) VALUES (1, 1);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`crates`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`crates` (`id`, `name`, `created`) VALUES (1, 'test_rock', NULL);
 
 COMMIT;
 

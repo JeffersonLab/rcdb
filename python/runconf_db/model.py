@@ -387,7 +387,8 @@ class RunConfiguration(Base):
     id = Column(Integer, primary_key=True)
     number = Column('run_number', Integer, primary_key=True)
     board_configs = relationship("BoardConfiguration", secondary=_board_conf_has_run_conf_association, back_populates="runs")
-    board_installations = relationship("BoardInstallation", secondary=_board_inst_has_run_conf_association, back_populates="runs")
+    board_installations = relationship("BoardInstallation", secondary=_board_inst_has_run_conf_association,
+                                       order_by=lambda: BoardInstallation.crate_id, back_populates="runs")
     files = relationship("ConfigurationFile", secondary=_files_has_run_conf_association,  back_populates="runs")
     #_trigger_config_id = Column('trigger_configuration_id', Integer, ForeignKey('trigger_configurations.id'), nullable=True)
     #trigger = relationship("TriggerConfiguration",  back_populates="runs")

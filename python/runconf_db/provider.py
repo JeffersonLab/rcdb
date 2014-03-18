@@ -214,11 +214,37 @@ class ConfigurationProvider(object):
         if not isinstance(dac_preset, DacPreset):
             dac_preset = self.obtain_dac_preset(board, dac_preset)
 
-        query = self.session.query(BoardConfiguration).join(BoardConfiguration.runs) \
-            .filter(RunConfiguration.id == run.id)
+        #query = self.session.query(BoardConfiguration).join(BoardConfiguration.runs) \
+        #    .filter(RunConfiguration.id == run.id,
+        #            BoardConfiguration.board_id == board.id,
+        #            BoardConfiguration.dac_preset_id == dac_preset.id)
 
-        pass
+        query = self.session.query(BoardConfiguration)\
+                .filter(BoardConfiguration.board_id == board.id,
+                        BoardConfiguration.dac_preset_id == dac_preset.id)
 
+        #Get or create board configuration
+        if not query.count():
+            log.debug(Lf("Board configuration for board.id='{}', dac_preset.id='{}' not found",
+                         board.id, dac_preset.id))
+            board_config = BoardConfiguration()
+            board_config.board = board
+            board_config.dac_preset = dac_preset
+            self.session.add(board_config)
+            self.session.commit()
+            log.info(Lf("Board configuration created for board.id='{}', dac_preset.id='{}'",
+                        board.id, dac_preset.id))
+        else:
+            board_config = query.first()
+
+        #check for run!
+        if run not in board_config.runs:
+            log.debug(Lf("Board configuration id='{}' not found in run='{}'", board_config.id, run.number))
+            board_config.runs.append(run)
+            self.session.commit()
+            log.info(Lf("Board configuration id='{}' added to run='{}'", board_config.id, run.number))
+        else:
+            log.debug(Lf("Board configuration id='{}' is already in run='{}'", board_config.id, run.number))
 
     def add_board_installation_to_run(self, run, board_installation):
         """Adds board installation to run using crate, board, slot
@@ -243,7 +269,6 @@ class ConfigurationProvider(object):
         else:
             log.debug(Lf("Board installation id='{}' already associated with run='{}'",
                          board_installation.id, run.number))
-
 
     def add_run_start_time(self, run_num, dtm):
         """
@@ -284,6 +309,8 @@ class ConfigurationProvider(object):
                     RunRecord._run_conf_id == run.id)
 
         if query.count():
+            log.debug(Lf("Run record key='{}', actual_time='{}' is already added to run='{}'",
+                         key, actual_time, run.number))
             return  # such record already in database. Quit
 
         #Create a new record
@@ -305,7 +332,7 @@ class ConfigurationProvider(object):
                 Adds configuration file to run configuration.
                 If such file exists
             """
-        log.debug("Adding configuration file")
+        log.debug("Processing configuration file")
         check_sum = file_archiver.get_file_sha256(path)
         run_conf = self.obtain_run_configuration(run_num)
 
@@ -345,3 +372,5 @@ class ConfigurationProvider(object):
             #run_conf.files.append(conf_file)
             self.session.commit()  # save and exit
             log.info(Lf("File associated with run. Path: '{}'. Run: '{}'", path, run_num))
+        else:
+            log.debug(Lf("|- File already associated with run'{}'", run_num))

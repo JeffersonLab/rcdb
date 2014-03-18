@@ -1,13 +1,15 @@
+from operator import attrgetter
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 #from werkzeug import check_password_hash, generate_password_hash
 import runconf_db
+from collections import defaultdict
 
 #from app import db
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from runconf_db.model import RunConfiguration
+from runconf_db.model import RunConfiguration, BoardInstallation
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
@@ -25,11 +27,23 @@ def info(run_number):
     run = g.tdb.session.query(RunConfiguration).filter(RunConfiguration.number==run_number).first()
     assert (isinstance(run, RunConfiguration))
 
+    #create board by crate list
+    bi_by_crate = defaultdict(list)
+    for bi in run.board_installations:
+        bi_by_crate[bi.crate].append(bi)
+
+    #sort by slot
+    for bis in bi_by_crate.values():
+        bis.sort(key = lambda x: x.slot)
+
+
+
     return render_template("runs/info.html",
                            run=run,
                            records_map=run.records_map,
-                           start_comment_key = runconf_db.START_COMMENT_RECORD_KEY,
-                           end_comment_key = runconf_db.END_COMMENT_RECORD_KEY)
+                           board_installs_by_crate=bi_by_crate,
+                           start_comment_key=runconf_db.START_COMMENT_RECORD_KEY,
+                           end_comment_key=runconf_db.END_COMMENT_RECORD_KEY)
 
 
 

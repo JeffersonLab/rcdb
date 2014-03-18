@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
-from runconf_db.model import Board
+from runconf_db.model import Board, BoardConfiguration, RunConfiguration
 
 mod = Blueprint('boards', __name__, url_prefix='/boards')
 
@@ -25,6 +25,22 @@ def index():
         boards_by_types[board.board_type].append(board)
 
     return render_template("boards/index.html", boards_by_types=boards_by_types)
+
+@mod.route('/<int:board_id>/in_run/<int:run_number>')
+def board_in_run(board_id, run_number):
+    """Shows board configuration in urn number"""
+
+    #board = g.tdb.session.query(Board).filter(Board.id == board_id).one()
+    # board_config = g.tdb.session.query(BoardConfiguration)\
+    #                             .join(BoardConfiguration.runs)\
+    #                             .filter(BoardConfiguration.board_id == board_id,
+    #                                     RunConfiguration.number == run_number)\
+    #                             .one()
+
+    board_config = g.tdb.session.query(BoardConfiguration).all()
+    return render_template("boards/board_in_run.html", board_config=board_config)
+
+
 
 
   # @mod.route('/me/')
