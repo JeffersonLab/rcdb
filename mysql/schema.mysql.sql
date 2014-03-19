@@ -480,6 +480,7 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`logs` (
   `table_ids` VARCHAR(255) NOT NULL,
   `description` TEXT NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `related_run` INT NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
