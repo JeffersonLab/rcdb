@@ -58,7 +58,9 @@
                 </div>
 
                 <!-- CRATES ITERATION -->
+
                 {% for crate in board_installs_by_crate.keys() %}
+                <a name="crate_{{ crate.name }}"></a>
                 <div class="panel panel-default">
                     <div class="panel-heading"><h3>{{ crate.name }}</h3></div>
                     <table class="table table-striped">
