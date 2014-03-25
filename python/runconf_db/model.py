@@ -460,6 +460,21 @@ class RunRecord(Base):
     _run_conf_id = Column('run_configuration_id', Integer, ForeignKey('run_configurations.id'))
     run = relationship("RunConfiguration", back_populates="records")
 
+class LogRecord(Base):
+    """
+    RunInfo:
+    Holds information attached to particular run. Such as start comments,
+    end comments, statistics, etc...
+    """
+    __tablename__ = 'logs'
+    id = Column(Integer, primary_key=True)
+    table_ids = Column(String(255))
+    description = Column(String)
+    related_run_number = Column('related_run', Integer, nullable=True)
+    created = Column(DateTime, default=datetime.datetime.now)
+
+    def __repr__(self):
+        return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)
 
 #-------------------------------------------------
 # function Convert list to DB text representation

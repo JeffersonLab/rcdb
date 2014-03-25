@@ -110,6 +110,7 @@ class ConfigurationProvider(object):
         query = self.session.query(Board).filter(Board.board_type == board_type, Board.serial == serial)
         if not query.count():
             log.debug(Lf("Board type='{}' sn='{}' is not found in DB. Creating record", board_type, serial))
+            f = Lf("Board type='{}' sn='{}' is not found in DB. Creating record", board_type, serial)
             board = Board()
             board.serial = serial
             board.board_type = board_type
@@ -219,9 +220,9 @@ class ConfigurationProvider(object):
         #            BoardConfiguration.board_id == board.id,
         #            BoardConfiguration.dac_preset_id == dac_preset.id)
 
-        query = self.session.query(BoardConfiguration)\
-                .filter(BoardConfiguration.board_id == board.id,
-                        BoardConfiguration.dac_preset_id == dac_preset.id)
+        query = self.session.query(BoardConfiguration) \
+            .filter(BoardConfiguration.board_id == board.id,
+                    BoardConfiguration.dac_preset_id == dac_preset.id)
 
         #Get or create board configuration
         if not query.count():
@@ -359,7 +360,9 @@ class ConfigurationProvider(object):
 
             #save and exit
             self.session.commit()
-            log.info(Lf("File added to database. Path: '{}'. Run: '{}'", path, run_num))
+            self.add_log_record(str(conf_file.id),
+                                Lf("File added to database. Path: '{}'. Run: '{}'", path, run_num),
+                                run_num)
             return
 
         #such file already exists! Get it from database
@@ -371,6 +374,21 @@ class ConfigurationProvider(object):
             conf_file.runs.append(run_conf)
             #run_conf.files.append(conf_file)
             self.session.commit()  # save and exit
-            log.info(Lf("File associated with run. Path: '{}'. Run: '{}'", path, run_num))
+            self.add_log_record(str(conf_file.id),
+                                Lf("File associated with run. Path: '{}'. Run: '{}'", path, run_num),
+                                run_num)
         else:
             log.debug(Lf("|- File already associated with run'{}'", run_num))
+
+    def add_log_record(self, table_ids, description, related_run):
+        if isinstance(related_run, RunConfiguration):
+            related_run = related_run.number
+
+        record = LogRecord()
+        record.table_ids = table_ids
+        #description =
+        record.description = str(description)
+        record.related_run_number = related_run
+        self.session.add(record)
+        self.session.commit()
+        log.info(description)
