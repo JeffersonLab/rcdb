@@ -3,88 +3,26 @@
 {% set page_title = 'Logs' %}
 
 {% block container %}
+
 <div class="container">
 
-      <div class="blog-header">
-        <h3 class="blog-title">Logs</h3>
-      </div>
+    <div class="blog-header"><h3 class="blog-title">Logs</h3></div>
 
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Run <a href="{{ url_for('runs.info', run_number=1101) }}">1101</a>  started <span class="badge pull-right">2014-02-25 14:13:11</span></div>
-        <div class="panel-body">
-            <p>One two three</p>
-        </div>
+    <table class="table">
+        <tr>
+            <th style="width: 200px">Time</th>
+            <th style="width: 70%">Description</th>
+            <th style="width: 10%">Run</th>
+        </tr>
 
-        <!-- Table -->
-        <table class="table">
-            <tr>
-                <td>New file /home/romanov/halld/tdb/src/FDC250_sample.cnf added</td>
-                <td>2014-02-25 14:13:11</td>
-            </tr>
-            <tr>
-                <td>Files saved</td>
-                <td>2014-02-25 14:13:11</td>
-            </tr>
-            <tr>
-                <td>Configuration saved</td>
-                <td>2014-02-25 14:13:11</td>
-            </tr>
-            <tr>
-                <td>User information 'Start info' added</td>
-                <td>2014-02-25 14:13:11</td>
-            </tr>
-            <tr>
-                <td>Run end</td>
-                <td>2014-02-25 14:13:14</td>
-            </tr>
-            <tr>
-                <td>Run statistics added</td>
-                <td>2014-02-25 14:13:14</td>
-            </tr>
-            <tr>
-                <td>User information 'End info' added</td>
-                <td>2014-02-25 14:13:17</td>
-            </tr>
-        </table>
-    </div>
-    <div class="panel panel-default">
-        <!-- Default panel contents -->
-        <div class="panel-heading">Run <a href="{{ url_for('runs.info', run_number=1100) }}">1100</a> started <span class="badge pull-right">2014-02-25 14:01:53</span></div>
-
-        <!-- Table -->
-        <table class="table">
-            <tr>
-                <td>New file /home/romanov/halld/tdb/src/FDC250_sample.cnf added</td>
-                <td>2014-02-25 14:01:53</td>
-            </tr>
-            <tr>
-                <td>Files saved</td>
-                <td>2014-02-25 14:01:53</td>
-            </tr>
-            <tr>
-                <td>Configuration saved</td>
-                <td>2014-02-25 14:01:53</td>
-            </tr>
-            <tr>
-                <td>User information 'Start info' added</td>
-                <td>2014-02-25 14:01:53</td>
-            </tr>
-            <tr>
-                <td>Run end</td>
-                <td>2014-02-25 14:07:20</td>
-            </tr>
-            <tr>
-                <td>Run statistics added</td>
-                <td>2014-02-25 14:07:21</td>
-            </tr>
-            <tr>
-                <td>User information 'End info' added</td>
-                <td>2014-02-25 14:10:47</td>
-            </tr>
-        </table>
-    </div>
-
-
+        {% for record in log_records %}
+        <tr>
+            <td>{{ record.created }}</td>
+            <td>{{ record.description }}</td>
+            <td>{{ record.related_run_number }}</td>
+        </tr>
+        {% endfor %}
+    </table>
 </div>
+
 {% endblock %}

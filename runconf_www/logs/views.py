@@ -6,10 +6,14 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
+from runconf_db.model import LogRecord
+
 mod = Blueprint('logs', __name__, url_prefix='/logs')
 
 
 @mod.route('/')
 def index():
-    return render_template("logs/index.html", parm="hahaha")
+    log_records = g.tdb.session.query(LogRecord).order_by(LogRecord.id).limit(100)
+
+    return render_template("logs/index.html", log_records=log_records)
     pass
