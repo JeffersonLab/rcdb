@@ -63,20 +63,20 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`run_configurations` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `run_number` INT UNSIGNED NOT NULL DEFAULT 0,
   `trigger_configuration_id` INT NULL,
-  `daq_id` INT NULL DEFAULT 1,
+  `run_parameters_id` INT NULL,
   `started` DATETIME NULL DEFAULT NULL,
   `finished` DATETIME NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_run_configurations_trigger_configurations1_idx` (`trigger_configuration_id` ASC),
-  INDEX `fk_run_configurations_daq1_idx` (`daq_id` ASC),
+  INDEX `fk_run_configurations_daq1_idx` (`run_parameters_id` ASC),
   CONSTRAINT `fk_run_configurations_trigger_configurations1`
     FOREIGN KEY (`trigger_configuration_id`)
     REFERENCES `runconf_db`.`trigger_configurations` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_run_configurations_daq1`
-    FOREIGN KEY (`daq_id`)
+  CONSTRAINT `fk_run_configurations_run_parameters`
+    FOREIGN KEY (`run_parameters_id`)
     REFERENCES `runconf_db`.`run_parameters` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -259,6 +259,7 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`board_configurations` (
   `trigger_baseline_id` INT NULL,
   `readout_baseline_id` INT NULL,
   `board_parameter_id` INT NULL,
+  `version` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   INDEX `fk_boards_configuration_boards1_idx` (`board_id` ASC),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
@@ -489,47 +490,3 @@ ENGINE = InnoDB;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`boards`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`boards` (`id`, `board_type`, `serial`, `modified`) VALUES (1, 'FADC', '11', NULL);
-INSERT INTO `runconf_db`.`boards` (`id`, `board_type`, `serial`, `modified`) VALUES (2, 'FADC', '12', NULL);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`trigger_configurations`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`trigger_configurations` (`id`, `type`, `parameters`, `prescale`) VALUES (1, 'unknown', '1', '1 2 3');
-INSERT INTO `runconf_db`.`trigger_configurations` (`id`, `type`, `parameters`, `prescale`) VALUES (2, 'test', '2', '1 2 3');
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`run_parameters`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`run_parameters` (`id`, `fadc_readout_mode`, `fadc_window_size`, `nsa_nsb`, `pulses_num`, `block_readout`, `loob_back`, `chanel_mask`) VALUES (1, 'asd', '1', 'asd', 'asd', 'asd', '123', 255);
-
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `runconf_db`.`readout_mask_presets`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `runconf_db`;
-INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (1, 0, '1.01 1.02 1.03 1.04 1.1 1.11 1.12 1.13 2.0 2.1 2.3 5.123 6.123 16.123 1.01', 1);
-INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (2, 1, '1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 ', 1);
-INSERT INTO `runconf_db`.`readout_mask_presets` (`id`, `version`, `values`, `board_id`) VALUES (3, 0, '0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 ', 2);
-
-COMMIT;
-
