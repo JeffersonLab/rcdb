@@ -13,7 +13,7 @@ blob_delimiter_replacement = "&delimiter;"
 START_COMMENT_RECORD_KEY = "Start comment"    # title for
 END_COMMENT_RECORD_KEY = "End comment"
 
-FADC250_KEY = "fadc250"
+FADC250_KEY = "fADC250"
 #-------------------------------------------------
 # function Convert list to DB text representation
 #-------------------------------------------------

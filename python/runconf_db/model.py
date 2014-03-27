@@ -28,32 +28,8 @@ _files_has_run_conf_association = Table('files_has_run_configurations', Base.met
                                              Column('run_configuration_id', Integer, ForeignKey('run_configurations.id')))
 
 
-
-def _count_dac_presets(context):
-    return _count_version(context, "dac_presets")
-
-
-def _count_readout_thresholds(context):
-    return _count_version(context, "readout_thresholds")
-
-
-def _count_trigger_thresholds(context):
-    return _count_version(context, "trigger_thresholds")
-
-
-def _count_readout_masks(context):
-    return _count_version(context, "readout_masks")
-
-
-def _count_trigger_masks(context):
-    return _count_version(context, "trigger_masks")
-
-
-def _count_board_parameters(context):
-    return  _count_version(context, "board_parameters")
-
-
 def _count_version(context, table_name):
+    """ counts a number of previous configuration """
     assert isinstance(table_name, basestring)
     board_id = context.current_parameters["board_id"]
     result = context.engine.execute("SELECT count(*) AS n FROM "+table_name+" WHERE board_id=%s", str(board_id))
@@ -85,6 +61,7 @@ class Board(Base):
     def __repr__(self):
         return "<Board id='{0}' name='{1}'>".format(self.id, self.board_name)
 
+
 #--------------------------------------------
 # class Crate
 #--------------------------------------------
@@ -112,7 +89,9 @@ class BoardInstallation(Base):
     crate_id = Column(Integer, ForeignKey('crates.id'))
     crate = relationship("Crate",  back_populates="installations")
     slot = Column(Integer)
-    runs = relationship("RunConfiguration", secondary=_board_inst_has_run_conf_association, back_populates="board_installations")
+    runs = relationship("RunConfiguration",
+                        secondary=_board_inst_has_run_conf_association,
+                        back_populates="board_installations")
 
 #
 #
@@ -151,8 +130,8 @@ class BoardInstallation(Base):
 #     def __repr__(self):
 #         return "<DacPreset id='{0}'>".format(self.id)
 #
-#
-#
+
+
 #--------------------------------------------
 # class DacPreset
 #--------------------------------------------
@@ -167,7 +146,7 @@ class DacPreset(Base):
     board = relationship("Board",  back_populates="dac_presets")
     configs = relationship("BoardConfiguration", back_populates="dac_preset")
 
-    version = Column(Integer, default=lambda context:_count_version(context, 'dac_presets'))
+    version = Column(Integer, default=lambda context: _count_version(context, 'dac_presets'))
 
     @property
     def values(self):
@@ -370,7 +349,10 @@ class BoardConfiguration(Base):
 
     board_id = Column(Integer, ForeignKey('boards.id'))
     board = relationship("Board", back_populates="configs")
-    runs = relationship("RunConfiguration", secondary=_board_conf_has_run_conf_association, back_populates="board_configs")
+    runs = relationship("RunConfiguration",
+                        secondary=_board_conf_has_run_conf_association,
+                        back_populates="board_configs")
+    version = Column(Integer, default=lambda context:_count_version(context, 'board_configurations'))
 
     def __repr__(self):
         return "<BoardConfiguration id='{0}'>".format(self.id)
@@ -395,6 +377,7 @@ class RunConfiguration(Base):
     start_time = Column('started', DateTime, nullable=True)
     end_time = Column('finished', DateTime, nullable=True)
     records = relationship("RunRecord", back_populates="run")
+    total_events = Column(Integer, nullable=False, default=0)
 
     @property
     def records_map(self):
@@ -402,7 +385,7 @@ class RunConfiguration(Base):
         :return: map with pedestal values as strings
         :rtype:  {str:RunRecord}
         """
-        rbt = {record.key:record for record in self.records}
+        rbt = {record.key: record for record in self.records}
         return rbt
 
     def __repr__(self):
@@ -459,6 +442,7 @@ class RunRecord(Base):
     actual_time = Column(DateTime, nullable=True)
     _run_conf_id = Column('run_configuration_id', Integer, ForeignKey('run_configurations.id'))
     run = relationship("RunConfiguration", back_populates="records")
+
 
 class LogRecord(Base):
     """

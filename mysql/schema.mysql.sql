@@ -66,6 +66,7 @@ CREATE TABLE IF NOT EXISTS `runconf_db`.`run_configurations` (
   `run_parameters_id` INT NULL,
   `started` DATETIME NULL DEFAULT NULL,
   `finished` DATETIME NULL DEFAULT NULL,
+  `total_events` INT NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC),
   INDEX `fk_run_configurations_trigger_configurations1_idx` (`trigger_configuration_id` ASC),

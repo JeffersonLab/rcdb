@@ -21,7 +21,11 @@
             {% for board in boards_by_types[board_type] %}
 
             <tr>
-                <td>{{ board.serial }}</td>
+                <td>
+                    <a href="{{ url_for('boards.info', board_id=board.id) }}">
+                        {{ board.serial }}
+                    </a>
+                </td>
             </tr>
             {% endfor %}
         </table>

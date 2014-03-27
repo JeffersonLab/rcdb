@@ -55,6 +55,13 @@ if __name__ == '__main__':
     db.add_board_installation_to_run(1, (roc2, boards[4], 7))
     db.add_board_installation_to_run(1, (roc2, boards[5], 9))
 
+    db.add_run_record(1,
+                      runconf_db.END_COMMENT_RECORD_KEY,
+                      "Finished OK",
+                      dt_run1_end
+                      )
+
+
     dac_values = [0, 1, 2, 3, 3, 2, 1, 0, 4, 5, 6, 7, 7, 6, 5, 4]
 
     for i, board in enumerate(boards):
@@ -62,3 +69,98 @@ if __name__ == '__main__':
         dac_preset = db.obtain_dac_preset(board, unique_values)
         db.add_board_config_to_run(1, board, dac_preset)
 
+    # --------------------------------------------------------------------------------------
+    #            R U N   2
+    #---------------------------------------------------------------------------------------
+    #get run configuration for run #1
+    #run = db.obtain_run_configuration(1)
+    db.add_run_start_time(2, dt_run2_start)
+    db.add_run_record(2,
+                      runconf_db.START_COMMENT_RECORD_KEY,
+                      "This is 2nd run generated as example by runconf_db software test",
+                      dt_run2_start)
+
+    db.add_configuration_file(2, "prestart_example.xml")
+    db.add_configuration_file(2, "fadc250_example1.cnf")
+    db.add_configuration_file(2, "fadc250_example2.cnf")
+
+    db.add_board_installation_to_run(2, (roc1, boards[0], 2))
+    db.add_board_installation_to_run(2, (roc1, boards[1], 3))
+    db.add_board_installation_to_run(2, (roc1, boards[2], 8))
+    db.add_board_installation_to_run(2, (roc1, boards[3], 9))
+    db.add_board_installation_to_run(2, (roc2, boards[4], 7))
+    db.add_board_installation_to_run(2, (roc2, boards[5], 9))
+    db.add_run_end_time(2, dt_run2_end)
+    db.add_run_end_time(2, dt_run2_end)
+    db.add_run_statistics(2, 104847)
+
+    dac_values = [0, 1, 2, 3, 3, 2, 1, 0, 4, 5, 6, 7, 7, 6, 5, 4]
+
+    for i, board in enumerate(boards):
+        unique_values = [dac_value + i for dac_value in dac_values]
+        dac_preset = db.obtain_dac_preset(board, unique_values)
+        db.add_board_config_to_run(2, board, dac_preset)
+
+
+    # --------------------------------------------------------------------------------------
+    #            R U N   3
+    #---------------------------------------------------------------------------------------
+    #get run configuration for run #1
+    #run = db.obtain_run_configuration(1)
+    db.add_run_start_time(3, dt_run3_start)
+    db.add_run_record(3,
+                      runconf_db.START_COMMENT_RECORD_KEY,
+                      "This is 3rd run generated as example by runconf_db software test",
+                      dt_run3_start)
+
+    db.add_configuration_file(3, "prestart_example.xml")
+    db.add_configuration_file(3, "fadc250_example1.cnf")
+    db.add_configuration_file(3, "fadc250_example2.cnf")
+
+    db.add_board_installation_to_run(3, (roc1, boards[0], 2))
+    db.add_board_installation_to_run(3, (roc1, boards[1], 3))
+    db.add_board_installation_to_run(3, (roc1, boards[2], 8))
+    db.add_board_installation_to_run(3, (roc1, boards[3], 9))
+    db.add_board_installation_to_run(3, (roc2, boards[4], 7))
+    db.add_board_installation_to_run(3, (roc2, boards[5], 9))
+
+    db.add_run_end_time(3, dt_run3_end)
+    db.add_run_statistics(3, 10000)
+
+    dac_values = [0, 1, 2, 3, 3, 2, 1, 0, 4, 5, 6, 7, 7, 6, 5, 4]
+
+    for i, board in enumerate(boards):
+        unique_values = [dac_value + i for dac_value in dac_values]
+        dac_preset = db.obtain_dac_preset(board, unique_values)
+        db.add_board_config_to_run(3, board, dac_preset)
+
+    # --------------------------------------------------------------------------------------
+    #            R U N   4
+    #---------------------------------------------------------------------------------------
+    #get run configuration for run #1
+    #run = db.obtain_run_configuration(1)
+    db.add_run_start_time(4, dt_run4_start)
+    db.add_run_record(4,
+                      runconf_db.START_COMMENT_RECORD_KEY,
+                      "This is 3rd run generated as example by runconf_db software test",
+                      dt_run4_start)
+
+    db.add_configuration_file(4, "prestart_example.xml")
+    db.add_configuration_file(4, "fadc250_example1.cnf")
+    db.add_configuration_file(4, "fadc250_example2.cnf")
+
+    db.add_board_installation_to_run(4, (roc1, boards[0], 2))
+    db.add_board_installation_to_run(4, (roc1, boards[1], 3))
+    db.add_board_installation_to_run(4, (roc2, boards[4], 7))
+    db.add_board_installation_to_run(4, (roc2, boards[5], 9))
+
+    db.add_run_end_time(4, dt_run4_end)
+    db.add_run_statistics(4, 163459)
+
+
+    dac_values = [0, 1, 2, 3, 3, 2, 1, 0, 4, 5, 6, 7, 7, 6, 5, 4]
+
+    for i, board in enumerate(boards):
+        unique_values = [dac_value + i for dac_value in dac_values]
+        dac_preset = db.obtain_dac_preset(board, unique_values)
+        db.add_board_config_to_run(4, board, dac_preset)

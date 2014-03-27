@@ -4,31 +4,33 @@
 
 {% block container %}
 
-    <div class="container">
+<div class="container">
 
-        <div class="blog-header"><h3 class="blog-title">Logs</h3></div>
+    <div class="blog-header"><h3 class="blog-title">Runs</h3></div>
 
-        <div class="panel panel-default">
-            <!-- Default panel contents -->
-            <div class="panel-heading">Last runs</div>
-            <div class="panel-body">
-                <p>One two three</p>
-            </div>
-
-            <!-- Table -->
-            <table class="table">
-                <tr>
-                    <th>Number</th>
-                    <th>Date</th>
-                </tr>
-                {% for run in runs %}
-                <tr>
-                    <td><a href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
-                    <td>{{ run.start_time }}</td>
-                </tr>
-                {% endfor %}
-            </table>
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Last runs</div>
+        <div class="panel-body">
+            <p>Last N runs</p>
         </div>
+
+        <!-- Table -->
+        <table class="table">
+            <tr>
+                <th>Number</th>
+                <th>Date</th>
+                <th>Events</th>
+            </tr>
+            {% for run in runs %}
+            <tr>
+                <td><a class="btn btn-default btn-sm" href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
+                <td>{{ run.start_time }}</td>
+                <th>{{ run.total_events }}</th>
+            </tr>
+            {% endfor %}
+        </table>
     </div>
+</div>
 
 {% endblock %}

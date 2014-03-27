@@ -45,48 +45,12 @@ def board_in_run(board_id, run_number):
     assert isinstance(board_config, BoardConfiguration)
     assert isinstance(board_install, BoardInstallation)
 
-    board_config.board.board_type
-    board_config.board.serial
-    board_install.crate.name
-    board_install.slot
-
-
     #board_config = g.tdb.session.query(BoardConfiguration).all()
     return render_template("boards/board_in_run.html",
                            board_config=board_config,
                            board_install=board_install,
                            run_number=run_number)
 
-@mod.route('/crate/<int:crate_id>/in_run/<int:run_number>')
-def crate_in_run(board_id, run_number):
-    """Shows board configuration in urn number"""
-
-    #board = g.tdb.session.query(Board).filter(Board.id == board_id).one()
-    board_config = g.tdb.session.query(BoardConfiguration)\
-                                .join(BoardConfiguration.runs)\
-                                .filter(BoardConfiguration.board_id == board_id,
-                                         RunConfiguration.number == run_number)\
-                                .one()
-
-    board_install = g.tdb.session.query(BoardInstallation)\
-                                 .join(BoardInstallation.runs)\
-                                 .filter(RunConfiguration.number == run_number)\
-                                 .filter(BoardInstallation.board_id == board_config.board_id)\
-                                 .one()
-    assert isinstance(board_config, BoardConfiguration)
-    assert isinstance(board_install, BoardInstallation)
-
-    board_config.board.board_type
-    board_config.board.serial
-    board_install.crate.name
-    board_install.slot
-
-
-    #board_config = g.tdb.session.query(BoardConfiguration).all()
-    return render_template("boards/board_in_run.html",
-                           board_config=board_config,
-                           board_install=board_install,
-                           run_number=run_number)
 
 @mod.route("/info/<int:board_id>")
 def info(board_id):

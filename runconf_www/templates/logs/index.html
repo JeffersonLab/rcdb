@@ -1,5 +1,5 @@
 {% extends 'layouts/base.html' %}
-
+{% from 'render_pagination.html' import render_pagination %}
 {% set page_title = 'Logs' %}
 
 {% block container %}
@@ -23,6 +23,12 @@
         </tr>
         {% endfor %}
     </table>
-</div>
 
+    <p>
+    Log records from {{ pagination.item_limit_from }} to {{ pagination.item_limit_to }} total {{ pagination.total_count }}
+    </p>
+
+
+    {{ render_pagination(pagination) }}
+</div>
 {% endblock %}

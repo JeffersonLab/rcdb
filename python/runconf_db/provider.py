@@ -30,13 +30,7 @@ class ConfigurationProvider(object):
         self._connection_string = ""
         self.logging_enabled = True
         self.engine = None
-
-
-    #----------------------------------------------------------------------------------------
-    #	C O N N E C T I O N
-    #----------------------------------------------------------------------------------------
-
-
+        self.session = None
     #------------------------------------------------
     #  Connects to database using connection string
     #------------------------------------------------
@@ -166,9 +160,10 @@ class ConfigurationProvider(object):
             installation.slot = slot
             self.session.add(installation)
             self.session.commit()
-            log.info(Lf("Board installation for crate='{}', "
-                        "board='{}', sn='{}', slot='{}' added to DB",
-                        crate.name, board.board_type, board.serial, slot))
+            self.add_log_record(str(installation.id),
+                                Lf("Board installation for crate='{}', board='{}', sn='{}', slot='{}' added to DB",
+                                    crate.name, board.board_type, board.serial, slot),
+                                0)
             return installation
         else:
             return query.first()
@@ -233,8 +228,9 @@ class ConfigurationProvider(object):
             board_config.dac_preset = dac_preset
             self.session.add(board_config)
             self.session.commit()
-            log.info(Lf("Board configuration created for board.id='{}', dac_preset.id='{}'",
-                        board.id, dac_preset.id))
+            self.add_log_record(str(run.id),
+                                Lf("Board configuration created for board.id='{}', dac_preset.id='{}'", board.id, dac_preset.id),
+                                run.number)
         else:
             board_config = query.first()
 
@@ -243,7 +239,9 @@ class ConfigurationProvider(object):
             log.debug(Lf("Board configuration id='{}' not found in run='{}'", board_config.id, run.number))
             board_config.runs.append(run)
             self.session.commit()
-            log.info(Lf("Board configuration id='{}' added to run='{}'", board_config.id, run.number))
+            self.add_log_record(str(run.id),
+                                Lf("Board configuration id='{}' added to run='{}'", board_config.id, run.number),
+                                run.number)
         else:
             log.debug(Lf("Board configuration id='{}' is already in run='{}'", board_config.id, run.number))
 
@@ -266,23 +264,37 @@ class ConfigurationProvider(object):
                          board_installation.id, run.number))
             run.board_installations.append(board_installation)
             self.session.commit()
-            log.info(Lf("Associated board_installation='{}' with run='{}'", board_installation.id, run.number))
+            self.add_log_record(str(run.id),
+                                Lf("Add board_installation='{}' to run='{}'", board_installation.id, run.number),
+                                run.number)
         else:
             log.debug(Lf("Board installation id='{}' already associated with run='{}'",
                          board_installation.id, run.number))
 
+    def add_run_statistics(self, run, total_events):
+        """adds run statistics like total events number, etc"""
+        if not isinstance(run, RunConfiguration):
+            run = self.obtain_run_configuration(int(run))
+
+        run.total_events = total_events
+        log.debug(Lf("Updating run statistics. total_events='{}'", total_events))
+
+        self.session.commit()
+        self.add_log_record(str(run.id),
+                            Lf("Run statistics updated. total_events='{}'. Etc...", total_events),
+                            run.number)
+
     def add_run_start_time(self, run_num, dtm):
         """
             Sets staring time of run
-            """
+        """
         assert (isinstance(dtm, datetime.datetime))
 
         log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run_num))
         run = self.obtain_run_configuration(run_num)
         run.start_time = dtm
         self.session.commit()
-        log.info(Lf("Start time changed to '{}' for run '{}'", dtm, run_num))
-
+        self.add_log_record(str(run.id), Lf("Start time changed to '{}' for run '{}'", dtm, run_num), run_num)
 
     def add_run_end_time(self, run_num, dtm):
         """Adds time of run"""
@@ -293,7 +305,6 @@ class ConfigurationProvider(object):
         run.end_time = dtm
         self.session.commit()
         log.info(Lf("End time changed to '{}' for run '{}'", dtm, run_num))
-
 
     def add_run_record(self, run_number, key, value, actual_time=None, value_type="text"):
         """adds record for specified run"""

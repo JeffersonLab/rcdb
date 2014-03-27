@@ -4,108 +4,31 @@
 
 {% block container %}
 <div class="container">
-    <div class="hero-unit">
-        <h1>Flask Bone</h1>
-        <p>Fbone (Flask bone) is a Flask template/bootstrap/boilerplate application.</p>
-        <p><a href="#" class="btn btn-success btn-large"><strong>Sign up »</strong></a></p>
-    </div>
-    <div class="row">
-        <div class="span4">
-            <h2>Front End</h2>
-            <ul>
-                <li>jQuery</li>
-                <li>Bootstrap</li>
-                <li>HTML5 Boilerplate</li>
-            </ul>
+
+    <div class="blog-header"><h3 class="blog-title">Run Configuration Database</h3></div>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Last 25 runs</div>
+        <div class="panel-body">
+            <p>Last N runs</p>
         </div>
-        <div class="span4">
-            <h2>Flask</h2>
-            <ul>
-                <li>Flask</li>
-                <li>Flask-SQLAlchemy</li>
-                <li>Flask-WTF</li>
-                <li>Flask-Script</li>
-                <li>Flask-Babel</li>
-                <li>Flask-Testing</li>
-                <li>Flask-Mail</li>
-                <li>Flask-Cache</li>
-                <li>Flask-Login</li>
-                <li>aFlask-OpenID</li>
-            </ul>
-        </div>
-        <div class="span4">
-            <h2>Others</h2>
-            <ul>
-                <li>nose</li>
-                <li>MySQL / SQLite</li>
-            </ul>
-        </div>
-    </div>
-    <table class="table table-bordered">
-              <thead>
-                <tr>
-                  <th>Features</th>
-                  <th>Individual</th>
-                  <th>Small Team</th>
-                  <th>Medium Team</th>
-                  <th>Enterprise</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><h3>No. Of users</h3></td>
-                  <td><span class="badge">One</span></td>
-                  <td><span class="badge">Five</span></td>
-                  <td><span class="badge">Fifteen</span></td>
-                  <td><span class="badge">Unlimited</span></td>
-               </tr>
-                <tr>
-                  <td><h3>Pro training</h3></td>
-                  <td><span class="badge">No</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-               </tr>
-                <tr>
-                  <td><h3>Forum Support</h3></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-               </tr>
-        <tr>
-                  <td><h3>In person support</h3></td>
-                  <td><span class="badge">No</span></td>
-                  <td><span class="badge">No</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-               </tr>
-           <tr>
-                  <td><h3>Weekly webinars</h3></td>
-                  <td><span class="badge">No</span></td>
-                  <td><span class="badge">No</span></td>
-                  <td><span class="badge">Yes</span></td>
-                  <td><span class="badge">Yes</span></td>
-               </tr>
-         <tr>
-                  <td><h3>Price</h3></td>
-                  <td><button type="button" class="btn btn-info btn-lg">$9/Month</button></td>
-                  <td><button type="button" class="btn btn-warning btn-lg">$19/Month</button></td>
-                  <td><button type="button" class="btn btn-warning btn-lg">$49/Month</button></td>
-                  <td><button type="button" class="btn btn-warning btn-lg">$99/Month</button></td>
-               </tr>
+
+        <!-- Table -->
+        <table class="table">
             <tr>
-                  <td></td>
-                  <td><button type="button" class="btn btn-success btn-lg">Buy now</button></td>
-                  <td><button type="button" class="btn btn-success btn-lg">Buy now</button></td>
-                  <td><button type="button" class="btn btn-success btn-lg">Buy now</button></td>
-                  <td><button type="button" class="btn btn-success btn-lg">Buy now</button></td>
-               </tr>
-              </tbody>
-            </table>
-
-- See more at: http://www.w3resource.com/twitter-bootstrap/tutorial.php#sthash.bsvBCRLx.dpuf
+                <th>Number</th>
+                <th>Date</th>
+                <th>Events</th>
+            </tr>
+            {% for run in runs %}
+            <tr>
+                <td><a class="btn btn-default btn-sm" href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
+                <td>{{ run.start_time }}</td>
+                <th>{{ run.total_events }}</th>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
-
-
 {% endblock %}
