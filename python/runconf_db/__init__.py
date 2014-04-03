@@ -2,6 +2,8 @@ import sqlalchemy
 from sqlalchemy.orm import sessionmaker
 #from .model import Board
 from .provider import ConfigurationProvider
+from constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
+
 
 #This thing separates cells in data blob
 blob_delimiter = "|"
@@ -10,10 +12,7 @@ blob_delimiter = "|"
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
 
-START_COMMENT_RECORD_KEY = "Start comment"    # title for
-END_COMMENT_RECORD_KEY = "End comment"
 
-FADC250_KEY = "fADC250"
 #-------------------------------------------------
 # function Convert list to DB text representation
 #-------------------------------------------------

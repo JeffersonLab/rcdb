@@ -36,14 +36,13 @@ def info(run_number):
     for bis in bi_by_crate.values():
         bis.sort(key=lambda x: x.slot)
 
-
-
     return render_template("runs/info.html",
                            run=run,
                            records_map=run.records_map,
                            board_installs_by_crate=bi_by_crate,
                            start_comment_key=runconf_db.START_COMMENT_RECORD_KEY,
-                           end_comment_key=runconf_db.END_COMMENT_RECORD_KEY)
+                           end_comment_key=runconf_db.END_COMMENT_RECORD_KEY,
+                           component_stat_key=runconf_db.COMPONENT_STAT_KEY)
 
 
 

@@ -1,9 +1,53 @@
 <?xml version="1.0"?>
-<prestart_info>
-    <run number="1001">
-        <start_time>2014-02-21 15:21:20</start_time>
-    </run>
-    <file>fadc250_example1.cnf</file>
-    <file>fadc250_example2.cnf</file>
-    <start_comment>Ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</start_comment>
-</prestart_info>
+<coda runtype = "bcal_n4" session = "bcal">
+   <run-start>
+      <run-number>25</run-number>
+      <start-time>2014-03-21 18:30:22</start-time>
+      <components>
+         <component name = "ROCBCAL2" type = "ROC"/>
+         <component name = "ROCBCAL4" type = "ROC"/>
+         <component name = "ROCBCAL5" type = "ROC"/>
+         <component name = "ROCBCAL1" type = "ROC"/>
+         <component name = "BCALEBN" type = "PEB"/>
+      </components>
+      <rtvs>
+         <rtv name = "%(CODA_ROL)" value = "/home/somov/setups/fcal_pulser_ti_new/src/rol"/>
+         <rtv name = "%(config)" value = "/home/somov/setups/fcal_pulser_ti_new/parms/pulser"/>
+      </rtvs>
+      <file>fadc250_example1.cnf</file>
+      <file>fadc250_example2.cnf</file>
+
+   </run-start>
+   <run-end>
+      <end-time>2014-03-21 18:31:12</end-time>
+      <total-evt>20</total-evt>
+      <components>
+         <component name = "ROCBCAL5" type = "ROC">
+            <evt-rate>500.0</evt-rate>
+            <data-rate>100.0</data-rate>
+            <evt-number>100</evt-number>
+         </component>
+         <component name = "ROCBCAL4" type = "ROC">
+            <evt-rate>68.6</evt-rate>
+            <data-rate>76.60</data-rate>
+            <evt-number>80</evt-number>
+         </component>
+         <component name = "ROCBCAL1" type = "ROC">
+            <evt-rate>780.08</evt-rate>
+            <data-rate>109.900</data-rate>
+            <evt-number>0</evt-number>
+         </component>
+         <component name = "BCALEBN" type = "PEB">
+            <evt-rate>0.0</evt-rate>
+            <data-rate>0.0</data-rate>
+            <evt-number>0</evt-number>
+         </component>
+         <component name = "ROCBCAL2" type = "ROC">
+            <evt-rate>0.0</evt-rate>
+            <data-rate>0.0</data-rate>
+            <evt-number>0</evt-number>
+         </component>
+      </components>
+      <end-comment>End comment in the end of the end</end-comment>
+   </run-end>
+</coda>

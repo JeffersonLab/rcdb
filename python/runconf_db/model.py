@@ -437,7 +437,7 @@ class RunRecord(Base):
     __tablename__ = 'run_records'
     id = Column(Integer, primary_key=True)
     key = Column(String(255), nullable=False)
-    value_type = Column(String(32), nullable=False, default="text")
+    value_type = Column(Enum("text", "dict", "list", native_enum=False), nullable=False, default="text")
     value = Column(String, nullable=False)
     actual_time = Column(DateTime, nullable=True)
     _run_conf_id = Column('run_configuration_id', Integer, ForeignKey('run_configurations.id'))
@@ -483,7 +483,7 @@ def dic_to_db_text(values):
     Converts dictionary of str-double pairs like named parameters to ';' separated string
     that is how values are stored in the DB
     """
-    assert isinstance(values, {})
+    assert isinstance(values, dict)
     return "; ".join([str(key)+"="+str(value) for key,value in sorted(values.items())])
 
 
@@ -496,7 +496,7 @@ def db_text_to_dic(value_str):
     {"a":"5", "b":"4"}
     """
     assert isinstance(value_str, str)
-    tokens = filter(None, value_str.replace(" ",";").split(";"))   # gives like ['a=4', 'b=5.4']
+    tokens = filter(None, value_str.replace(" ", ";").split(";"))   # gives like ['a=4', 'b=5.4']
     result = {}
     for token in tokens:
         key,value = token.split("=")
@@ -505,6 +505,6 @@ def db_text_to_dic(value_str):
 
 
 def db_text_to_float_dic(value_str):
-    return { key:float(value) for key,value in db_text_to_dic(value_str).items()}
+    return {key: float(value) for key, value in db_text_to_dic(value_str).items()}
 
 

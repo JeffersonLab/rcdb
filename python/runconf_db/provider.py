@@ -14,6 +14,7 @@ from model import *
 
 import posixpath
 import file_archiver
+from runconf_db.constants import COMPONENT_STAT_KEY
 
 log = logging.getLogger("rcdb.provider")
 
@@ -313,6 +314,14 @@ class ConfigurationProvider(object):
 
         run = self.obtain_run_configuration(run_number)
 
+        #if run record could have dictionary as values
+        if isinstance(value, dict) and value_type == "dict":
+            value = dic_to_db_text(value)
+
+        #if run record could have list as values
+        if isinstance(value, list) and value_type == "list":
+            value = list_to_db_text(value)
+
         #try to find such record in DB not to duplicate it
         query = self.session.query(RunRecord) \
             .filter(RunRecord.key == key,
@@ -337,6 +346,11 @@ class ConfigurationProvider(object):
         self.session.add(record)
         self.session.commit()
         log.info(Lf("Added record of type '{}'", key))
+
+    def add_run_component_statistics(self, run_number, actual_time, comp_name, comp_type, evt_rate, data_rate, evt_number):
+        key = COMPONENT_STAT_KEY + comp_name
+        value = {"type": comp_type, "event-rate": evt_rate, "data-rate": data_rate, "event-count": evt_number}
+        self.add_run_record(run_number, key, value, actual_time, "dict")
 
 
     def add_configuration_file(self, run_num, path):

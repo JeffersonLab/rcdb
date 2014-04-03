@@ -49,6 +49,7 @@
                 <a name="crate_{{ crate.name }}"></a>
                 <div class="panel panel-default">
                     <div class="panel-heading"><h3>{{ crate.name }}</h3></div>
+                    One two three!
                     <table class="table table-striped">
                         <tr class="small">
                             <th>Slot</th>
@@ -79,6 +80,26 @@
 
         <div class="blog-post">
             <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
+
+            <p class="blog-post-meta">All run records</p>
+            <table class="table">
+                <tr class="text-info">
+                    <th>Key</th>
+                    <th>Value</th>
+                    <th>Date</th>
+                </tr>
+                {% for record in records_map.values() %}
+                    <!-- skip comment records -->
+                    {% if 1 %}
+
+                        <tr>
+                            <td>{{ record.key }}</td>
+                            <td>{{ record.value }}</td>
+                            <td>{{ record.actual_time }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
 
             <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
             <hr>
