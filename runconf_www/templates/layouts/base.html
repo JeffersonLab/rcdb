@@ -14,22 +14,21 @@
     <link rel="Shortcut Icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
 
     {% block css %}
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
-    <!-- Custom styles -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% endblock %}
-
     {% block css_style %}
     {% endblock %}
 
     {% block js_top %}
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+          <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
     {% endblock %}
 </head>
 <body>
@@ -114,8 +113,8 @@
     </div>
 
     {% block js_btm %}
-    <script src="//upcdn.b0.upaiyun.com/libs/jquery/jquery-2.0.0.min.js"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/jquery-2.1.0.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
     {% endblock %}
 
     {% block ga %}
