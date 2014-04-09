@@ -12,6 +12,7 @@ DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
+SQL_CONNECTION_STRING = "mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"
 
 
 app = Flask(__name__)
@@ -22,7 +23,7 @@ app.config.from_object(__name__)
 def before_request():
 
     g.tdb = runconf_db.ConfigurationProvider()
-    g.tdb.connect()
+    g.tdb.connect(app.config["SQL_CONNECTION_STRING"])
 
 @app.teardown_request
 def teardown_request(exception):

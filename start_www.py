@@ -18,4 +18,8 @@ if __name__ == '__main__':
 
     #import and start web site
     import runconf_www
+
+    if "RCDB_CONNECTION" in os.environ.keys():
+        runconf_www.app.config["SQL_CONNECTION_STRING"] = os.environ["RCDB_CONNECTION"]
+
     runconf_www.app.run()
