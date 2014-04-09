@@ -72,6 +72,7 @@ class Crate(Base):
     __tablename__ = 'crates'
     id = Column(Integer, primary_key=True)
     name = Column(String(45))
+    created = Column(DateTime, default=datetime.datetime.now)
     installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan",  back_populates="crate")
 
 
