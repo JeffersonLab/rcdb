@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import runconf_db
 import datetime
@@ -20,8 +21,12 @@ if __name__ == '__main__':
     dt_run4_end = dt_run4_start + datetime.timedelta(minutes=20)
 
     #create API and connect to DB
+    if "RCDB_CONNECTION" in os.environ.keys():
+        con_srt = os.environ["RCDB_CONNECTION"]
+    else:
+        con_srt = "mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"
     db = runconf_db.ConfigurationProvider()
-    db.connect("mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db")
+    db.connect(con_srt)
 
     boards = [db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1001"),
               db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1002"),

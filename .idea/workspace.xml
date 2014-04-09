@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/__init__.py" afterPath="$PROJECT_DIR$/runconf_www/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/start_www.py" afterPath="$PROJECT_DIR$/start_www.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/fill_test_runs.py" afterPath="$PROJECT_DIR$/python/fill_test_runs.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -49,10 +48,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fill_test_runs.py" pinned="true" current="false" current-in-tab="false">
+      <file leaf-file-name="fill_test_runs.py" pinned="true" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="76" column="36" selection-start="3442" selection-end="3442" vertical-scroll-proportion="0.0" vertical-offset="1368" max-vertical-offset="3078">
+            <state line="28" column="22" selection-start="1189" selection-end="1189" vertical-scroll-proportion="0.5869565" vertical-offset="0" max-vertical-offset="3096">
               <folding />
             </state>
           </provider>
@@ -88,10 +87,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runconf_www/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="11" column="30" selection-start="264" selection-end="264" vertical-scroll-proportion="0.26902175" vertical-offset="0" max-vertical-offset="1368">
+            <state line="11" column="30" selection-start="264" selection-end="264" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1368">
               <folding />
             </state>
           </provider>
@@ -100,10 +99,19 @@
       <file leaf-file-name="start_www.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/start_www.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="25" selection-start="630" selection-end="630" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="558">
+            <state line="22" column="87" selection-start="473" selection-end="603" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="558">
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="itsdangerous.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/itsdangerous.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="14132" max-vertical-offset="15624">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -124,15 +132,6 @@
           </provider>
           <provider selected="true" editor-type-id="text-editor">
             <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1998">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/runconf_www/templates/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="15" column="96" selection-start="508" selection-end="508" vertical-scroll-proportion="0.0" vertical-offset="270" max-vertical-offset="2448">
               <folding />
             </state>
           </provider>
@@ -179,7 +178,6 @@
         <option value="$PROJECT_DIR$/runconf_www/statistics/views.py" />
         <option value="$PROJECT_DIR$/runconf_www/templates/statistics/index.html" />
         <option value="$PROJECT_DIR$/runconf_www/templates/runs/index.html" />
-        <option value="$PROJECT_DIR$/python/fill_test_runs.py" />
         <option value="$PROJECT_DIR$/runconf_www/pagination.py" />
         <option value="$PROJECT_DIR$/runconf_www/logs/views.py" />
         <option value="$PROJECT_DIR$/runconf_www/templates/render_pagination.html" />
@@ -198,6 +196,7 @@
         <option value="$PROJECT_DIR$/python/run_prestart.py" />
         <option value="$PROJECT_DIR$/start_www.py" />
         <option value="$PROJECT_DIR$/runconf_www/__init__.py" />
+        <option value="$PROJECT_DIR$/python/fill_test_runs.py" />
       </list>
     </option>
   </component>
@@ -727,7 +726,11 @@
       <created>1396996637103</created>
       <updated>1396996637103</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Allow to connect site to different databases">
+      <created>1397086970115</created>
+      <updated>1397086970115</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -754,6 +757,7 @@
     <frame x="0" y="3" width="1676" height="1022" extended-state="0" />
     <editor active="true" />
     <layout>
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277311" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32614943" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -769,7 +773,6 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286517" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277311" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -789,7 +792,8 @@
     </option>
     <MESSAGE value="TDB code gardening" />
     <MESSAGE value="RunConfDB code gardening" />
-    <option name="LAST_COMMIT_MESSAGE" value="RunConfDB code gardening" />
+    <MESSAGE value="Allow to connect site to different databases" />
+    <option name="LAST_COMMIT_MESSAGE" value="Allow to connect site to different databases" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -800,16 +804,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/python/fadc250_example2.cnf">
-      <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1998">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/runconf_db/config_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2024" />
@@ -962,7 +956,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/python/runconf_db/constants.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="23" selection-start="165" selection-end="165" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="216" />
+        <state line="3" column="23" selection-start="165" selection-end="165" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="216">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runconf_www/runs/views.py">
@@ -977,7 +973,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/python/runconf_db/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="77" column="36" selection-start="2188" selection-end="2188" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2790" />
+        <state line="77" column="36" selection-start="2188" selection-end="2188" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="2790">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/runconf_www/templates/layout.html">
@@ -993,13 +991,6 @@
     <entry file="file://$PROJECT_DIR$/runconf_www/templates/layouts/base.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="114" column="22" selection-start="4252" selection-end="4252" vertical-scroll-proportion="0.0" vertical-offset="1803" max-vertical-offset="2340">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="76" column="36" selection-start="3442" selection-end="3442" vertical-scroll-proportion="0.0" vertical-offset="1368" max-vertical-offset="3078">
           <folding />
         </state>
       </provider>
@@ -1066,6 +1057,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/python/runconf_db/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="96" selection-start="954" selection-end="1010" vertical-scroll-proportion="0.0" vertical-offset="201" max-vertical-offset="7470">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/runconf_www/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="30" selection-start="264" selection-end="264" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1368">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/runconf_www/start.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="1728">
@@ -1078,23 +1083,23 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/start_www.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="25" selection-start="630" selection-end="630" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="558">
+        <state line="22" column="87" selection-start="473" selection-end="603" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="558">
           <folding>
             <element signature="e#0#9#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/provider.py">
+    <entry file="file://$PROJECT_DIR$/python/itsdangerous.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="37" column="96" selection-start="954" selection-end="1010" vertical-scroll-proportion="0.0" vertical-offset="201" max-vertical-offset="7470">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="15624">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/runconf_www/__init__.py">
+    <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="30" selection-start="264" selection-end="264" vertical-scroll-proportion="0.26902175" vertical-offset="0" max-vertical-offset="1368">
+        <state line="28" column="22" selection-start="1189" selection-end="1189" vertical-scroll-proportion="0.5869565" vertical-offset="0" max-vertical-offset="3096">
           <folding />
         </state>
       </provider>
