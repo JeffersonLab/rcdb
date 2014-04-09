@@ -1,4 +1,14 @@
 #!/bin/csh
+
+set called=($_)
+if ("$called" != "") then
+    echo "sourced $called[2]"    # the script was sourced from this location
+else
+    echo "This script is to source environment variables for run configuration database"
+    echo "So please source it"
+    exit(1)
+endif
+
 #set our environment
 if ( ! $?TDB_HOME ) then
     setenv TDB_HOME `pwd`
