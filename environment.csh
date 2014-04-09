@@ -4,7 +4,7 @@ set called=($_)
 if ("$called" != "") then
     echo "sourced $called[2]"    # the script was sourced from this location
     set name=$called[2]
-    set full_path=`readlink -f $name`
+    set full_path=`ls -d $name`
     echo $full_path
 else
     echo "This script is to source environment variables for run configuration database"
