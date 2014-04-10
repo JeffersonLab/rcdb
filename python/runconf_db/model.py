@@ -353,7 +353,7 @@ class BoardConfiguration(Base):
     runs = relationship("RunConfiguration",
                         secondary=_board_conf_has_run_conf_association,
                         back_populates="board_configs")
-    version = Column(Integer, default=lambda context:_count_version(context, 'board_configurations'))
+    version = Column(Integer, default=0)  # lambda context:_count_version(context, 'board_configurations'))
 
     def __repr__(self):
         return "<BoardConfiguration id='{0}'>".format(self.id)
