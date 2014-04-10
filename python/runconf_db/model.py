@@ -147,7 +147,7 @@ class DacPreset(Base):
     board = relationship("Board",  back_populates="dac_presets")
     configs = relationship("BoardConfiguration", back_populates="dac_preset")
 
-    version = Column(Integer, default=lambda context: _count_version(context, 'dac_presets'))
+    version = Column(Integer, default=0)  # lambda context: _count_version(context, 'dac_presets'))
 
     @property
     def values(self):
