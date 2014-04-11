@@ -139,7 +139,7 @@ int fadc250ReadConfigFile(char *filename)
 
 
   /* Obtain our hostname */
-  gethostname(host,ROCLEN);
+  //gethostname(host,ROCLEN);
   AllSl = 0;
 
   sprintf(fname, "%s", filename);
