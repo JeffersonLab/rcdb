@@ -1,11 +1,11 @@
 #!/bin/csh
 
 set called=($_)
-if ("$called" != "") then
-    echo "sourced $called[2]"    # the script was sourced from this location
+if ("$called" != "") then    
     set name=$called[2]
-    set full_path=`ls -d $name`
-    echo $full_path
+    set full_path=`readlink -f $name`
+    set full_path=`dirname $full_path`
+    
 else
     echo "This script is to source environment variables for run configuration database"
     echo "So please source it"
@@ -13,17 +13,17 @@ else
 endif
 
 #set our environment
-if ( ! $?TDB_HOME ) then
-    setenv TDB_HOME `pwd`
+if ( ! $?RCDB_HOME ) then
+    setenv RCDB_HOME $full_path
 endif
 if (! $?LD_LIBRARY_PATH) then
-    setenv LD_LIBRARY_PATH $TDB_HOME/lib
+    setenv LD_LIBRARY_PATH $RCDB_HOME/lib
 else
-    setenv LD_LIBRARY_PATH "$TDB_HOME/lib":$LD_LIBRARY_PATH
+    setenv LD_LIBRARY_PATH "$RCDB_HOME/lib":$LD_LIBRARY_PATH
 endif
 if ( ! $?PYTHONPATH ) then
-    setenv PYTHONPATH "$TDB_HOME/python"
+    setenv PYTHONPATH "$RCDB_HOME/python"
 else
-    setenv PYTHONPATH "$TDB_HOME/python":$PYTHONPATH
+    setenv PYTHONPATH "$RCDB_HOME/python":$PYTHONPATH
 endif
-setenv PATH "$TDB_HOME/bin":$PATH
+setenv PATH "$RCDB_HOME/bin":$PATH
