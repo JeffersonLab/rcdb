@@ -19,8 +19,8 @@ SCRIPT_PATH=`pwd`;
 popd  > /dev/null
 
 #set our environment
-export TDB_HOME=$SCRIPT_PATH 
-export LD_LIBRARY_PATH="$TDB_HOME/lib":$LD_LIBRARY_PATH
-export PYTHONPATH="$TDB_HOME/python":$PYTHONPATH
-export PATH="$TDB_HOME/bin":$PATH
+export RCDB_HOME=$SCRIPT_PATH 
+export LD_LIBRARY_PATH="$RCDB_HOME/lib":$LD_LIBRARY_PATH
+export PYTHONPATH="$RCDB_HOME/python":$PYTHONPATH
+export PATH="$RCDB_HOME/bin":$PATH
 
