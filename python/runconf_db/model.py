@@ -8,7 +8,7 @@ from sqlalchemy.types import Integer, String, Text, DateTime, Enum, UnicodeText
 from sqlalchemy.orm import sessionmaker, reconstructor
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.expression import desc
-
+from sqlalchemy.ext.declarative import declared_attr
 
 Base = declarative_base()
 
@@ -50,11 +50,11 @@ class Board(Base):
     serial = Column(String(512))
     board_type = Column(String(45))
     modified = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-    #readout_thresholds = relationship("ReadoutThresholdPreset", cascade="all, delete, delete-orphan")
-    #trigger_thresholds = relationship("TriggerThresholdPreset", cascade="all, delete, delete-orphan")
-    #readout_masks = relationship("ReadoutMaskPreset", cascade="all, delete, delete-orphan")
-    #trigger_masks = relationship("TriggerMaskPreset", cascade="all, delete, delete-orphan")
-    dac_presets = relationship("DacPreset", cascade="all, delete, delete-orphan", back_populates="board")
+    readout_thresholds = relationship("ReadoutThresholdPreset", cascade="all, delete, delete-orphan")
+    trigger_thresholds = relationship("TriggerThresholdPreset", cascade="all, delete, delete-orphan")
+    readout_masks = relationship("ReadoutMaskPreset", cascade="all, delete, delete-orphan")
+    trigger_masks = relationship("TriggerMaskPreset", cascade="all, delete, delete-orphan")
+    dac_presets = relationship("DacPreset", cascade="all, delete, delete-orphan")
     configs = relationship("BoardConfiguration", cascade="all, delete, delete-orphan", back_populates="board")
     installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan", back_populates="board")
 
@@ -134,18 +134,15 @@ class BoardInstallation(Base):
 
 
 #--------------------------------------------
-# class DacPreset
+# class PerChannelData
 #--------------------------------------------
-class DacPreset(Base):
-    """
-    DacPreset a preset of threshold values
-    """
-    __tablename__ = 'dac_presets'
+class PerChannelPresetMixin(object):
     id = Column(Integer, primary_key=True)
     text_values = Column('values', String(1024))
-    board_id = Column(Integer, ForeignKey('boards.id'), nullable=False)
-    board = relationship("Board",  back_populates="dac_presets")
-    configs = relationship("BoardConfiguration", back_populates="dac_preset")
+
+    @declared_attr
+    def board_id(cls):
+        return Column(Integer, ForeignKey('boards.id'), nullable=False)
 
     version = Column(Integer, default=0)  # lambda context: _count_version(context, 'dac_presets'))
 
@@ -162,152 +159,30 @@ class DacPreset(Base):
         return len(self.board.threshold_presets)
 
     def __repr__(self):
-        return "<DacPreset id='{0}'>".format(self.id)
+        return "<PerChannelPreset id='{0}' table='{1}'>".format(self.id, self.__tablename__)
 
-#
-# #--------------------------------------------
-# # class ReadoutThresholdPreset
-# #--------------------------------------------
-# class ReadoutThresholdPreset(Base):
-#     """
-#     ReadoutThresholdPreset a preset of threshold values
-#     """
-#     __tablename__ = 'readout_thresholds'
-#     id = Column(Integer, primary_key=True)
-#     text_values = Column('values', String(1024))
-#
-#     board_id = Column(Integer, ForeignKey('boards.id'), nullable=False)
-#     board = relationship("Board", backref("readout_thresholds"))
-#
-#     version = Column(Integer, default=_count_readout_thresholds)
-#
-#     @property
-#     def values(self):
-#         """
-#         :return: list with pedestal values as strings
-#         :rtype:  list
-#         """
-#         return str(self.text_values).split()
-#
-#     @values.setter
-#     def values(self, values):
-#         assert (isinstance(values, list))
-#         self.text_values = list_to_db_text(values)
-#
-#     def _get_next_version(self):
-#         return len(self.board.threshold_presets)
-#
-#     def __repr__(self):
-#         return "<ReadoutThresholdPreset id='{0}'>".format(self.id)
-#
-#
-# #--------------------------------------------
-# # class ReadoutThresholdPreset
-# #--------------------------------------------
-# class TriggerThresholdPreset(Base):
-#     """
-#     ReadoutThresholdPreset a preset of threshold values
-#     """
-#     __tablename__ = 'trigger_thresholds'
-#     id = Column(Integer, primary_key=True)
-#     text_values = Column('values', String(1024))
-#
-#     board_id = Column(Integer, ForeignKey('boards.id'), nullable=False)
-#     board = relationship("Board")
-#
-#     version = Column(Integer, default=_count_trigger_thresholds)
-#
-#     @property
-#     def values(self):
-#         """
-#         :return: list with pedestal values as strings
-#         :rtype:  list
-#         """
-#         return str(self.text_values).split()
-#
-#     @values.setter
-#     def values(self, values):
-#         assert (isinstance(values, list))
-#         self.text_values = list_to_db_text(values)
-#
-#     def _get_next_version(self):
-#         return len(self.board.threshold_presets)
-#
-#     def __repr__(self):
-#         return "<TriggerThresholdPreset id='{0}'>".format(self.id)
-#
-#
-# #--------------------------------------------
-# # class ReadoutMaskPreset
-# #--------------------------------------------
-# class ReadoutMaskPreset(Base):
-#     """
-#     ReadoutThresholdPreset a preset of threshold values
-#     """
-#     __tablename__ = 'readout_masks'
-#     id = Column(Integer, primary_key=True)
-#     text_values = Column('values', String(1024))
-#
-#     board_id = Column(Integer, ForeignKey('boards.id'), nullable=False)
-#     board = relationship("Board")
-#
-#     version = Column(Integer, default=_count_readout_masks)
-#
-#     @property
-#     def values(self):
-#         """
-#         :return: list with pedestal values as strings
-#         :rtype:  list
-#         """
-#         return str(self.text_values).split()
-#
-#     @values.setter
-#     def values(self, values):
-#         assert (isinstance(values, list))
-#         self.text_values = list_to_db_text(values)
-#
-#     def _get_next_version(self):
-#         return len(self.board.threshold_presets)
-#
-#     def __repr__(self):
-#         return "<ReadoutMaskPreset id='{0}'>".format(self.id)
-#
-#
-# #--------------------------------------------
-# # class ReadoutThresholdPreset
-# #--------------------------------------------
-# class TriggerMaskPreset(Base):
-#     """
-#     ReadoutThresholdPreset a preset of threshold values
-#     """
-#     __tablename__ = 'trigger_masks'
-#     id = Column(Integer, primary_key=True)
-#     text_values = Column('values', String(1024))
-#
-#     board_id = Column(Integer, ForeignKey('boards.id'), nullable=False)
-#     board = relationship("Board")
-#
-#     version = Column(Integer, default=_count_trigger_masks)
-#
-#     @property
-#     def values(self):
-#         """
-#         :return: list with pedestal values as strings
-#         :rtype:  list
-#         """
-#         return str(self.text_values).split()
-#
-#     @values.setter
-#     def values(self, values):
-#         assert (isinstance(values, list))
-#         self.text_values = list_to_db_text(values)
-#
-#     def _get_next_version(self):
-#         return len(self.board.threshold_presets)
-#
-#     def __repr__(self):
-#         return "<TriggerMaskPreset id='{0}'>".format(self.id)
-#
+#--------------------------------------------
+# Per channel preset classes
+#--------------------------------------------
+class DacPreset(PerChannelPresetMixin, Base):
+    __tablename__ = 'dac_presets'
+
+
+class ReadoutThresholdPreset(PerChannelPresetMixin, Base):
+    __tablename__ = 'readout_thresholds'
+
+
+class TriggerThresholdPreset(PerChannelPresetMixin, Base):
+    __tablename__ = 'trigger_thresholds'
+
+
+class ReadoutMaskPreset(PerChannelPresetMixin, Base):
+    __tablename__ = 'readout_masks'
+
+
+class TriggerMaskPreset(PerChannelPresetMixin, Base):
+    __tablename__ = 'trigger_masks'
+
 #
 # #--------------------------------------------
 # # class
@@ -332,20 +207,22 @@ class BoardConfiguration(Base):
     """
     __tablename__ = 'board_configurations'
     id = Column(Integer, primary_key=True)
-    #_readout_thresholds_id = Column("readout_thresholds_id", Integer, ForeignKey('readout_thresholds.id'), nullable=True)
-    #_trigger_thresholds_id = Column("trigger_thresholds_id", Integer, ForeignKey('trigger_thresholds.id'), nullable=True)
-    #_readout_masks_id = Column("readout_masks_id", Integer, ForeignKey('readout_masks.id'), nullable=True)
-    #_trigger_masks_id = Column("trigger_masks_id", Integer, ForeignKey('trigger_masks.id'), nullable=True)
+    readout_thresholds_id = Column("readout_threshold_id", Integer, ForeignKey('readout_thresholds.id'), nullable=True)
+    readout_threshold_preset = relationship("ReadoutThresholdPreset")
+
+    trigger_thresholds_id = Column("trigger_threshold_id", Integer, ForeignKey('trigger_thresholds.id'), nullable=True)
+    trigger_threshold_preset = relationship("TriggerThresholdPreset")
+
+    readout_masks_id = Column("readout_mask_id", Integer, ForeignKey('readout_masks.id'), nullable=True)
+    readout_mask_preset = relationship("ReadoutMaskPreset")
+
+    trigger_masks_id = Column("trigger_mask_id", Integer, ForeignKey('trigger_masks.id'), nullable=True)
+    trigger_mask_preset = relationship("TriggerMaskPreset")
+
     dac_preset_id = Column(Integer, ForeignKey('dac_presets.id'), nullable=True)
-    dac_preset = relationship("DacPreset", back_populates="configs")
+    dac_preset = relationship("DacPreset")
 
     #_parameters_id = Column("board_parameters_id", Integer, ForeignKey('board_parameters.id'), nullable=True)
-
-    #readout_threshold_preset = relationship("ReadoutThresholdPreset")
-    #trigger_threshold_preset = relationship("TriggerThresholdPreset")
-    #readout_mask_preset = relationship("ReadoutMaskPreset")
-    #trigger_mask_preset = relationship("TriggerMaskPreset")
-
     #parameter_preset = relationship("BoardParameterPreset")
 
     board_id = Column(Integer, ForeignKey('boards.id'))

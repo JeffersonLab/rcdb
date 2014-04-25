@@ -66,9 +66,6 @@ class ConfigParser(object):
             print("SerNum {0}".format(fadc250_conf.SerNum))
 
 
-
-
-
 if __name__ == "__main__":
     print("I'm here!")
     parser = ConfigParser()
