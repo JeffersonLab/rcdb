@@ -1,9 +1,9 @@
 import sys, os
 import xml.etree.ElementTree as ET
 import logging
-import runconf_db
-from runconf_db.log_format import BraceMessage as lf
-from runconf_db import ConfigurationProvider
+import rcdb
+from rcdb.log_format import BraceMessage as lf
+from rcdb import ConfigurationProvider
 
 from datetime import datetime
 
@@ -50,7 +50,7 @@ if __name__ == "__main__":
     db.connect()
     db.add_run_start_time(run_number, start_time)
     if start_comment:
-        db.add_run_record(run_number, runconf_db.START_COMMENT_RECORD_KEY, start_comment, start_time)
+        db.add_run_record(run_number, rcdb.START_COMMENT_RECORD_KEY, start_comment, start_time)
     db.add_configuration_file(run_number, sys.argv[1])
     for file in files:
         db.add_configuration_file(run_number, os.path.abspath(file))

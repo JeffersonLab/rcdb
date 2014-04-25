@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="RunConfDB csh script home determining">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/runconf_db/config_parser.py" afterPath="$PROJECT_DIR$/python/runconf_db/config_parser.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/runconf_db/model.py" afterPath="$PROJECT_DIR$/python/runconf_db/model.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/trunk.iml" afterPath="$PROJECT_DIR$/.idea/trunk.iml" />
+    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\__init__.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\config_parser.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\constants.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\file_archiver.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\log_format.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\model.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db\provider.py" afterPath="" />
+      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\python\runconf_db" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/__init__.py" afterPath="$PROJECT_DIR$/runconf_www/__init__.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/example__run_to_board_confs.py" afterPath="$PROJECT_DIR$/python/example__run_to_board_confs.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/fill_test_runs.py" afterPath="$PROJECT_DIR$/python/fill_test_runs.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/run_end.py" afterPath="$PROJECT_DIR$/python/run_end.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/run_prestart.py" afterPath="$PROJECT_DIR$/python/run_prestart.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/sasha1.py" afterPath="$PROJECT_DIR$/python/sasha1.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mysql/schema.mysql.sql" afterPath="$PROJECT_DIR$/mysql/schema.mysql.sql" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/boards/views.py" afterPath="$PROJECT_DIR$/runconf_www/boards/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/crates/views.py" afterPath="$PROJECT_DIR$/runconf_www/crates/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/files/views.py" afterPath="$PROJECT_DIR$/runconf_www/files/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/logs/views.py" afterPath="$PROJECT_DIR$/runconf_www/logs/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/runs/views.py" afterPath="$PROJECT_DIR$/runconf_www/runs/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/runconf_www/statistics/views.py" afterPath="$PROJECT_DIR$/runconf_www/statistics/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -43,7 +61,7 @@
   <component name="FileEditorManager">
     <leaf>
       <file leaf-file-name="model.py" pinned="true" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/runconf_db/model.py">
+        <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
           <provider selected="true" editor-type-id="text-editor">
             <state line="43" column="6" selection-start="2070" selection-end="2070" vertical-scroll-proportion="0.0" vertical-offset="1154" max-vertical-offset="9456">
               <folding>
@@ -64,7 +82,7 @@
         </entry>
       </file>
       <file leaf-file-name="config_parser.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/runconf_db/config_parser.py">
+        <entry file="file://$PROJECT_DIR$/python/rcdb/config_parser.py">
           <provider selected="true" editor-type-id="text-editor">
             <state line="67" column="0" selection-start="1938" selection-end="1938" vertical-scroll-proportion="0.0" vertical-offset="1296" max-vertical-offset="2136">
               <folding />
@@ -75,16 +93,27 @@
       <file leaf-file-name="fill_test_runs.py" pinned="true" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="0" selection-start="1192" selection-end="1192" vertical-scroll-proportion="0.0" vertical-offset="513" max-vertical-offset="4128">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4224">
+              <folding>
+                <element signature="e#0#14#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="run_end.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/python/run_end.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="3" column="11" selection-start="0" selection-end="759" vertical-scroll-proportion="0.1682243" vertical-offset="0" max-vertical-offset="1728">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="provider.py" pinned="true" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/python/runconf_db/provider.py">
+      <file leaf-file-name="provider.py" pinned="true" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="49" selection-start="2122" selection-end="2122" vertical-scroll-proportion="0.2948403" vertical-offset="1152" max-vertical-offset="9960">
+            <state line="9" column="0" selection-start="146" selection-end="146" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="10200">
               <folding />
             </state>
           </provider>
@@ -111,7 +140,7 @@
       <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/runconf_www/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="36" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
+            <state line="24" column="30" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
               <folding />
             </state>
           </provider>
@@ -123,18 +152,6 @@
             <state line="7" column="4" selection-start="163" selection-end="163" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="840">
               <folding />
             </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fadc250_example2.cnf" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/fadc250_example2.cnf">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="864" max-vertical-offset="2664">
-              <folding />
-            </state>
-          </provider>
-          <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
-            <state />
           </provider>
         </entry>
       </file>
@@ -198,6 +215,7 @@
         <option value="$PROJECT_DIR$/environment.csh" />
         <option value="$PROJECT_DIR$/python/runconf_db/config_parser.py" />
         <option value="$PROJECT_DIR$/python/runconf_db/model.py" />
+        <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
       </list>
     </option>
   </component>
@@ -270,6 +288,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="python" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -316,6 +348,125 @@
       <recent name="D:\Projects\TriggerDB\trunk\tridb_www" />
       <recent name="$PROJECT_DIR$/python/trigger_db" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree">
+    <UpdateInfo date="Moments ago" ActionInfo="_Update">
+      <UpdatedFiles>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated from server" />
+          <option name="myStatusName" value="Changed on server" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CHANGED_ON_SERVER" />
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Updated" />
+            <option name="myStatusName" value="Changed" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="UPDATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Created" />
+            <option name="myStatusName" value="Created" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="CREATED" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Deleted" />
+            <option name="myStatusName" value="Deleted" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="true" />
+            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+          </FILE-GROUP>
+          <FILE-GROUP>
+            <option name="myUpdateName" value="Restored" />
+            <option name="myStatusName" value="Will be restored" />
+            <option name="mySupportsDeletion" value="false" />
+            <option name="myCanBeAbsent" value="false" />
+            <option name="myId" value="RESTORED" />
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\log_format.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\provider.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\constants.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\__init__.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\model.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\config_parser.py</PATH>
+            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\python\runconf_db\file_archiver.py</PATH>
+          </FILE-GROUP>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Modified" />
+          <option name="myStatusName" value="Modified" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MODIFIED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Skipped" />
+          <option name="myStatusName" value="Skipped" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SKIPPED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with conflicts" />
+          <option name="myStatusName" value="Will be merged with conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_CONFLICTS" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with tree conflicts" />
+          <option name="myStatusName" value="Merged with tree conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged with property conflicts" />
+          <option name="myStatusName" value="Will be merged with property conflicts" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Merged" />
+          <option name="myStatusName" value="Will be merged" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="MERGED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Not in repository" />
+          <option name="myStatusName" value="Not in repository" />
+          <option name="mySupportsDeletion" value="true" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UNKNOWN" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally added" />
+          <option name="myStatusName" value="Locally added" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_ADDED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Locally removed" />
+          <option name="myStatusName" value="Locally removed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="LOCALLY_REMOVED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Switched" />
+          <option name="myStatusName" value="Switched" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="SWITCHED" />
+        </FILE-GROUP>
+      </UpdatedFiles>
+    </UpdateInfo>
   </component>
   <component name="RunManager" selected="Python.fill_test_runs">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -676,7 +827,11 @@
       <created>1397070468351</created>
       <updated>1397070468351</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="model update for per channel data">
+      <created>1398450471938</created>
+      <updated>1398450471938</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TodoView" selected-index="0">
@@ -703,22 +858,22 @@
     <frame x="-3" y="0" width="1539" height="826" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Changes" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32708934" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32614943" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32853025" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19581364" sideWeight="0.67151165" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2079676" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3968254" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32708934" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19581364" sideWeight="0.67151165" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2079676" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1757925" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3278328" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3286517" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3277311" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -739,7 +894,8 @@
     <MESSAGE value="TDB code gardening" />
     <MESSAGE value="RunConfDB code gardening" />
     <MESSAGE value="RunConfDB csh script home determining" />
-    <option name="LAST_COMMIT_MESSAGE" value="RunConfDB csh script home determining" />
+    <MESSAGE value="model update for per channel data" />
+    <option name="LAST_COMMIT_MESSAGE" value="model update for per channel data" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -770,7 +926,7 @@
         <state line="19" column="5" selection-start="587" selection-end="587" vertical-scroll-proportion="1.1338583" vertical-offset="0" max-vertical-offset="696" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/log_format.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/log_format.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="11" column="0" selection-start="334" selection-end="334" vertical-scroll-proportion="0.0" vertical-offset="39" max-vertical-offset="432" />
       </provider>
@@ -920,12 +1076,12 @@
         <state line="18" column="14" selection-start="525" selection-end="525" vertical-scroll-proportion="1.0252526" vertical-offset="26" max-vertical-offset="672" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/__init__.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="8" column="0" selection-start="275" selection-end="275" vertical-scroll-proportion="-7.456919" vertical-offset="3024" max-vertical-offset="3696" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/constants.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/constants.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="3" column="23" selection-start="165" selection-end="165" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="216" />
       </provider>
@@ -943,11 +1099,6 @@
     <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="25" column="46" selection-start="801" selection-end="843" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1464" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/run_end.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="42" selection-start="735" selection-end="759" vertical-scroll-proportion="0.0" vertical-offset="330" max-vertical-offset="1728" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
@@ -990,12 +1141,12 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/runconf_www/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="36" selection-start="557" selection-end="557" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
+        <state line="24" column="30" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/config_parser.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/config_parser.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="67" column="0" selection-start="1938" selection-end="1938" vertical-scroll-proportion="0.0" vertical-offset="1296" max-vertical-offset="2136">
           <folding />
@@ -1009,14 +1160,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="0" selection-start="1192" selection-end="1192" vertical-scroll-proportion="0.0" vertical-offset="513" max-vertical-offset="4128">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/model.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="43" column="6" selection-start="2070" selection-end="2070" vertical-scroll-proportion="0.0" vertical-offset="1154" max-vertical-offset="9456">
           <folding>
@@ -1026,9 +1170,25 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/runconf_db/provider.py">
+    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="49" selection-start="2122" selection-end="2122" vertical-scroll-proportion="0.2948403" vertical-offset="1152" max-vertical-offset="9960">
+        <state line="9" column="0" selection-start="146" selection-end="146" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="10200">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4224">
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/run_end.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="3" column="11" selection-start="0" selection-end="759" vertical-scroll-proportion="0.1682243" vertical-offset="0" max-vertical-offset="1728">
           <folding />
         </state>
       </provider>

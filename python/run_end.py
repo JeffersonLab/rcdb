@@ -1,9 +1,9 @@
 import sys, os
 import xml.etree.ElementTree as ET
 import logging
-import runconf_db
-from runconf_db.log_format import BraceMessage as lf
-from runconf_db import ConfigurationProvider
+import rcdb
+from rcdb.log_format import BraceMessage as lf
+from rcdb import ConfigurationProvider
 
 from datetime import datetime
 
@@ -47,7 +47,7 @@ def parse_end_run_data(filename):
     db = ConfigurationProvider()
     db.connect()
     db.add_run_end_time(run_number, end_time)
-    db.add_run_record(run_number, runconf_db.END_COMMENT_RECORD_KEY, end_comment, end_time)
+    db.add_run_record(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
     db.add_configuration_file(run_number, filename)
     #db.add_run_statistics(run_number, total_events)
     for name, comp_type, evt_rate, data_rate, evt_number in statistics:

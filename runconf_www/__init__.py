@@ -1,10 +1,10 @@
-from runconf_db.model import RunConfiguration
+from rcdb.model import RunConfiguration
 
 __author__ = 'romanov'
 from flask import Flask, render_template, g, request, url_for
 
-import runconf_db
-#from runconf_db import Board
+import rcdb
+#from rcdb import Board
 
 # configuration
 DATABASE = 'flaskr.db'
@@ -12,7 +12,7 @@ DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-SQL_CONNECTION_STRING = "mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"
+SQL_CONNECTION_STRING = "mysql+mysqlconnector://rcdb@127.0.0.1/rcdb"
 
 
 app = Flask(__name__)
@@ -22,7 +22,7 @@ app.config.from_object(__name__)
 @app.before_request
 def before_request():
 
-    g.tdb = runconf_db.ConfigurationProvider()
+    g.tdb = rcdb.ConfigurationProvider()
     g.tdb.connect(app.config["SQL_CONNECTION_STRING"])
 
 @app.teardown_request

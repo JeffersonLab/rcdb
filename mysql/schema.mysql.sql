@@ -7,7 +7,7 @@ CREATE SCHEMA IF NOT EXISTS `runconf_db` DEFAULT CHARACTER SET latin1 ;
 USE `runconf_db` ;
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`boards`
+-- Table `rcdb`.`boards`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`boards` ;
 
@@ -21,7 +21,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`trigger_configurations`
+-- Table `rcdb`.`trigger_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`trigger_configurations` ;
 
@@ -36,7 +36,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`run_parameters`
+-- Table `rcdb`.`run_parameters`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`run_parameters` ;
 
@@ -55,7 +55,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`run_configurations`
+-- Table `rcdb`.`run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`run_configurations` ;
 
@@ -85,7 +85,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`readout_mask_presets`
+-- Table `rcdb`.`readout_mask_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`readout_mask_presets` ;
 
@@ -105,7 +105,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`trigger_mask_presets`
+-- Table `rcdb`.`trigger_mask_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`trigger_mask_presets` ;
 
@@ -125,7 +125,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`readout_threshold_presets`
+-- Table `rcdb`.`readout_threshold_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`readout_threshold_presets` ;
 
@@ -145,7 +145,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`trigger_threshold_presets`
+-- Table `rcdb`.`trigger_threshold_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`trigger_threshold_presets` ;
 
@@ -165,7 +165,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`trigger_baseline_presets`
+-- Table `rcdb`.`trigger_baseline_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`trigger_baseline_presets` ;
 
@@ -185,7 +185,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`readout_baseline_presets`
+-- Table `rcdb`.`readout_baseline_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`readout_baseline_presets` ;
 
@@ -205,7 +205,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`dac_presets`
+-- Table `rcdb`.`dac_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`dac_presets` ;
 
@@ -225,7 +225,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`board_parameter_presets`
+-- Table `rcdb`.`board_parameter_presets`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`board_parameter_presets` ;
 
@@ -245,7 +245,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`board_configurations`
+-- Table `rcdb`.`board_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`board_configurations` ;
 
@@ -321,7 +321,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`board_configurations_has_run_configurations`
+-- Table `rcdb`.`board_configurations_has_run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`board_configurations_has_run_configurations` ;
 
@@ -346,7 +346,7 @@ PACK_KEYS = DEFAULT;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`files`
+-- Table `rcdb`.`files`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`files` ;
 
@@ -362,7 +362,7 @@ COMMENT = 'Table contains original coda and board configuration files';
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`crates`
+-- Table `rcdb`.`crates`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`crates` ;
 
@@ -375,7 +375,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`board_installations`
+-- Table `rcdb`.`board_installations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`board_installations` ;
 
@@ -402,7 +402,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`board_installations_has_run_configurations`
+-- Table `rcdb`.`board_installations_has_run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`board_installations_has_run_configurations` ;
 
@@ -426,7 +426,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`files_has_run_configurations`
+-- Table `rcdb`.`files_has_run_configurations`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`files_has_run_configurations` ;
 
@@ -449,7 +449,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`run_records`
+-- Table `rcdb`.`run_records`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`run_records` ;
 
@@ -473,7 +473,7 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `runconf_db`.`logs`
+-- Table `rcdb`.`logs`
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `runconf_db`.`logs` ;
 

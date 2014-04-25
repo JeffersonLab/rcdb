@@ -1,9 +1,9 @@
 
-import runconf_db
-from runconf_db import Board
-from runconf_db import ThresholdPreset
+import rcdb
+from rcdb import Board
+from rcdb import ThresholdPreset
 
-db = runconf_db.connect()
+db = rcdb.connect()
 
 boards = db.query(Board).all()
 

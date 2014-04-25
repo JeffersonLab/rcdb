@@ -1,7 +1,7 @@
 import logging
 import os
 import sys
-import runconf_db
+import rcdb
 import datetime
 
 #setup logger
@@ -24,16 +24,16 @@ if __name__ == '__main__':
     if "RCDB_CONNECTION" in os.environ.keys():
         con_srt = os.environ["RCDB_CONNECTION"]
     else:
-        con_srt = "mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"
-    db = runconf_db.ConfigurationProvider()
+        con_srt = "mysql+mysqlconnector://rcdb@127.0.0.1/rcdb"
+    db = rcdb.ConfigurationProvider()
     db.connect(con_srt)
 
-    boards = [db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1001"),
-              db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1002"),
-              db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1003"),
-              db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1004"),
-              db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1005"),
-              db.obtain_board(runconf_db.FADC250_KEY, "CRXFADC1006")]
+    boards = [db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1001"),
+              db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1002"),
+              db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1003"),
+              db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1004"),
+              db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1005"),
+              db.obtain_board(rcdb.FADC250_KEY, "CRXFADC1006")]
 
     roc1 = db.obtain_crate("ROC1")
     roc2 = db.obtain_crate("ROC2")
@@ -45,8 +45,8 @@ if __name__ == '__main__':
     #run = db.obtain_run_configuration(1)
     db.add_run_start_time(1, dt_run1_start)
     db.add_run_record(1,
-                      runconf_db.START_COMMENT_RECORD_KEY,
-                      "This is 1-st run generated as example by runconf_db software test",
+                      rcdb.START_COMMENT_RECORD_KEY,
+                      "This is 1-st run generated as example by rcdb software test",
                       dt_run1_start)
 
     db.add_configuration_file(1, "prestart_example.xml")
@@ -61,7 +61,7 @@ if __name__ == '__main__':
     db.add_board_installation_to_run(1, (roc2, boards[5], 9))
 
     db.add_run_record(1,
-                      runconf_db.END_COMMENT_RECORD_KEY,
+                      rcdb.END_COMMENT_RECORD_KEY,
                       "Finished OK",
                       dt_run1_end
                       )
@@ -81,8 +81,8 @@ if __name__ == '__main__':
     #run = db.obtain_run_configuration(1)
     db.add_run_start_time(2, dt_run2_start)
     db.add_run_record(2,
-                      runconf_db.START_COMMENT_RECORD_KEY,
-                      "This is 2nd run generated as example by runconf_db software test",
+                      rcdb.START_COMMENT_RECORD_KEY,
+                      "This is 2nd run generated as example by rcdb software test",
                       dt_run2_start)
 
     db.add_configuration_file(2, "prestart_example.xml")
@@ -114,8 +114,8 @@ if __name__ == '__main__':
     #run = db.obtain_run_configuration(1)
     db.add_run_start_time(3, dt_run3_start)
     db.add_run_record(3,
-                      runconf_db.START_COMMENT_RECORD_KEY,
-                      "This is 3rd run generated as example by runconf_db software test",
+                      rcdb.START_COMMENT_RECORD_KEY,
+                      "This is 3rd run generated as example by rcdb software test",
                       dt_run3_start)
 
     db.add_configuration_file(3, "prestart_example.xml")
@@ -146,8 +146,8 @@ if __name__ == '__main__':
     #run = db.obtain_run_configuration(1)
     db.add_run_start_time(4, dt_run4_start)
     db.add_run_record(4,
-                      runconf_db.START_COMMENT_RECORD_KEY,
-                      "This is 3rd run generated as example by runconf_db software test",
+                      rcdb.START_COMMENT_RECORD_KEY,
+                      "This is 3rd run generated as example by rcdb software test",
                       dt_run4_start)
 
     db.add_configuration_file(4, "prestart_example.xml")

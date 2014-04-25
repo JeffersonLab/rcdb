@@ -6,7 +6,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from runconf_db.model import LogRecord, RunConfiguration, BoardConfiguration, Crate
+from rcdb.model import LogRecord, RunConfiguration, BoardConfiguration, Crate
 from sqlalchemy.sql.expression import desc
 
 mod = Blueprint('statistics', __name__, url_prefix='/statistics')

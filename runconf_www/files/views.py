@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
-from runconf_db.model import ConfigurationFile
+from rcdb.model import ConfigurationFile
 #from werkzeug import check_password_hash, generate_password_hash
 
 #from app import db

@@ -1,7 +1,7 @@
 from operator import attrgetter
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
 #from werkzeug import check_password_hash, generate_password_hash
-import runconf_db
+import rcdb
 from collections import defaultdict
 
 #from app import db
@@ -9,7 +9,7 @@ from collections import defaultdict
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from runconf_db.model import RunConfiguration, BoardInstallation
+from rcdb.model import RunConfiguration, BoardInstallation
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
@@ -40,9 +40,9 @@ def info(run_number):
                            run=run,
                            records_map=run.records_map,
                            board_installs_by_crate=bi_by_crate,
-                           start_comment_key=runconf_db.START_COMMENT_RECORD_KEY,
-                           end_comment_key=runconf_db.END_COMMENT_RECORD_KEY,
-                           component_stat_key=runconf_db.COMPONENT_STAT_KEY)
+                           start_comment_key=rcdb.START_COMMENT_RECORD_KEY,
+                           end_comment_key=rcdb.END_COMMENT_RECORD_KEY,
+                           component_stat_key=rcdb.COMPONENT_STAT_KEY)
 
 
 

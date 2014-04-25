@@ -1,7 +1,7 @@
-import runconf_db
-from runconf_db import Board
-from runconf_db import BoardConfiguration
-from runconf_db import RunConfiguration
+import rcdb
+from rcdb import Board
+from rcdb import BoardConfiguration
+from rcdb import RunConfiguration
 
 #define a function that prints information about run
 def print_run_information(run):
@@ -30,7 +30,7 @@ def print_run_information(run):
         ))
 
 
-db = runconf_db.connect()
+db = rcdb.connect()
 
 #select all runs we have
 runs = db.query(RunConfiguration).all()
