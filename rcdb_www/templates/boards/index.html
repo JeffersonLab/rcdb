@@ -1,0 +1,36 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Boards' %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="blog-header"><h3 class="blog-title">Boards</h3></div>
+
+    {% for board_type in boards_by_types.keys() %}
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">{{ board_type }}</div>
+
+        <!-- Table -->
+        <table class="table">
+            <tr>
+                <th>Serial</th>
+            </tr>
+            {% for board in boards_by_types[board_type] %}
+
+            <tr>
+                <td>
+                    <a href="{{ url_for('boards.info', board_id=board.id) }}">
+                        {{ board.serial }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

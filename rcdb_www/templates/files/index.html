@@ -1,0 +1,122 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Home' %}
+
+{% block container %}
+    <div class="container">
+    <div class="blog-header">
+        <h1 class="blog-title">File information</h1>
+        <p class="lead blog-description">/home/romanov/halld/tdb/trunk/src/FADC_250_samle1.cnf</p>
+        <p class="lead blog-description">Lookup for run 1100</p>
+      </div>
+    <pre>
+        #
+# fadc250 config file - example
+#
+# this file contains settings for
+# fADC250 - JLAB VXS Flash ADC 12-bit 250 Msps 16 ch
+#
+# format:
+# ~~~~~~~
+# CRATE             rocbcal1   <- ROC name, crate name, usually IP name
+# FADC250_ALLSLOTS             <- just keyword - all settings after this line will be implemented
+#                                                for all slots, till FADC250_SLOTS will be met
+# FADC250_SLOTS     3  8  15   <- slot_numbers - in which next settings will be implemented
+#                                                till file ends or next FADC250_SLOTS will be met
+#
+# FADC250_F_REV     0x0216     <- firmware revision  (0x0 Bits:7-0)
+# FADC250_B_REV     0x0908     <- board revision     (0x0 Bits:15-8)
+# FADC250_ID        0xfadc     <- board type         (0x0 Bits:31-16)
+#
+# FADC250_MODE      1   <- process mode: 1-4  (0x10C Bits:2-0)
+# FADC250_W_OFFSET  50  <- number of sample back from trigger point. (0x120)
+#                            (in Manual it is  PL=Trigger_Window(ns) * 250MHz)
+# FADC250_W_WIDTH   49  <- number of ADC sample to include in trigger window. (0x11C)
+#                            (in M:  PTW=Trigger_Window(ns) * 250MHz, minimum is 6)
+# FADC250_NSB       3   <- number of sample before trigger point to include in data processing. (0x124)
+#                            This include the trigger Point. (minimum is 2 in all mode)
+# FADC250_NSA       6   <- number of sample after trigger point to include in data processing. (0x128)
+#                            Minimum is (6 in mode 2) and ( 3 in mode 0 and 1).
+#                            Number of sample report is 1 more for odd and 2 more for even NSA number.
+# FADC250_NPEAK     1   <- number of Pulses in Mode 2 and 3.  (0x10C Bits:6-5)
+#
+#                   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 - channels ##
+# FADC250_ADC_MASK  1  0  1  0  1  0  1  0  1  0  1  0  1  0  1  0   <- channel enable mask (0x110)
+# FADC250_TRG_MASK  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1   <- trigger enable mask
+#                                                (channel includes in global trigger, if bit set to 1)
+# FADC250_TET       110        <- board Trigger Energy Threshold (TET), same for all 16 channels
+# FADC250_CH_TET    0    110   <- channel# and TET_value for this channel
+# FADC250_ALLCH_TET 111  222  2  3  4  5  6  7  8  9  10  11  12  13  14  15   <- 16 TETs (0x12C - 0x148)
+#
+# FADC250_DAC       3300       <- board DAC, one and the same for all 16 channels
+# FADC250_CH_DAC    0    3300  <- channel# and DAC_value for this channel
+# FADC250_ALLCH_DAC 3300 3280 3310 3280 3310 3280 3310 3280 3300 3280 3300 3280 3310 3280 3310 3280 <- 16 DACs
+#
+# FADC250_PED       210        <- board Pedestals, same for all channels
+# FADC250_CH_PED    0    210   <- channel# and Pedestal_value for this channel
+# FADC250_ALLCH_PED 210  220  210  215  215  220  220  210  210  215  215  220  220  210  215  220  <- 16 PEDs
+
+#                                      slots
+#                   1   2        3        4        5        6        7        8        9       10  11  12       13       14       15       16       17       18       19       20  21
+FADC250_ALLSN       0   0  CQV2-13  CQV2-14  CQV2-15  CQV2-16  CQV2-17  CQV2-18  CQV2-19  CQV2-20   0   0  CQV2-23  CQV2-24  CQV2-25  CQV2-26  CQV2-27  CQV2-37  CQV2-38  CQV2-43   0
+#FADC250_SN        CQV2-13     <- single board Serial Number
+
+
+CRATE          rocfcal2
+#FADC250_ALLSLOTS
+
+FADC250_ALLCH_DAC  0014 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010
+
+########################
+FADC250_SLOTS  6  4
+########################
+
+FADC250_ALLCH_DAC  1014 1010 1010 1010 1010 1010 1010 1010 1010 0010 0010 0010 0010 0010 0010 0010
+
+
+########################
+FADC250_SLOTS  8
+########################
+
+FADC250_DAC    3200
+
+#######################
+FADC250_SLOTS  8
+#######################
+
+
+FADC250_F_REV  0x0219
+FADC250_B_REV  0x0908
+FADC250_TYPE   0xfadc
+
+FADC250_MODE      1
+FADC250_W_OFFSET  100
+FADC250_W_WIDTH   50
+FADC250_NSB       3
+FADC250_NSA       6
+FADC250_NPEAK     1
+
+#       channel:  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+FADC250_ADC_MASK  0  0  0  0  1  1  1  1  1  1  1  1  1  1  1  1
+FADC250_TRG_MASK  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1  1
+
+#     channel:        0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
+FADC250_ALLCH_TET  0300 0002 0003 0004 0005 0006 0007 0007 0008 0009 0010 0011 0012 0013 0014 0015
+FADC250_ALLCH_DAC  3300 3280 3310 3280 3310 3280 3310 3280 3300 3280 3300 3280 3310 3280 3310 3280
+FADC250_ALLCH_PED   410  420  210  215  215  220  220  210  210  215  215  220  220  210  215  220
+
+#######################
+FADC250_SLOTS      13
+#######################
+
+
+FADC250_ALLCH_TET  0301 0102 0103 0104 0105 0106 0107 0107 0108 0109 0110 0111 0112 0113 0114 0115
+FADC250_CH_DAC     14    3111
+FADC250_TET        220
+FADC250_CH_TET     3    555
+FADC250_W_OFFSET   50
+    </pre>
+
+
+    </div>
+{% endblock %}
