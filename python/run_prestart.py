@@ -37,7 +37,7 @@ if __name__ == "__main__":
     xml_start_comment = xml_run_start.find("start-comment")
     start_comment = xml_start_comment.text if xml_start_comment else None   # start comment could be absent
 
-    start_time = datetime.strptime(xml_run_start.find("start-time").text,"%m/%d/%Y %H:%M:%S")
+    start_time = datetime.strptime(xml_run_start.find("start-time").text,"%m/%d/%y %H:%M:%S")
 
     #log gathered information
     log.info(lf("Files to add: '{}'","', '".join(files)))

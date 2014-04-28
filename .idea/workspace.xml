@@ -112,19 +112,19 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="board_in_run.html" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="board_in_run.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="0.46567163" vertical-offset="516" max-vertical-offset="1368">
+            <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="-11.555555" vertical-offset="516" max-vertical-offset="1368">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_end.py" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="run_end.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/run_end.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="27" column="85" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1296">
+            <state line="27" column="76" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.45633802" vertical-offset="162" max-vertical-offset="1296">
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -135,7 +135,7 @@
       <file leaf-file-name="run_prestart.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="39" column="91" selection-start="1433" selection-end="1450" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
+            <state line="39" column="82" selection-start="1441" selection-end="1441" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
               <folding />
             </state>
           </provider>
@@ -235,9 +235,9 @@
         <option value="$PROJECT_DIR$/python/runconf_db/model.py" />
         <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/index.html" />
-        <option value="$PROJECT_DIR$/python/run_prestart.py" />
-        <option value="$PROJECT_DIR$/python/run_end.py" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html" />
+        <option value="$PROJECT_DIR$/python/run_end.py" />
+        <option value="$PROJECT_DIR$/python/run_prestart.py" />
       </list>
     </option>
   </component>
@@ -1230,26 +1230,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="-11.555555" vertical-offset="516" max-vertical-offset="1368">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="39" column="91" selection-start="1433" selection-end="1450" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
+        <state line="39" column="82" selection-start="1441" selection-end="1441" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/run_end.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="85" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1296">
+        <state line="27" column="76" selection-start="1103" selection-end="1103" vertical-scroll-proportion="0.45633802" vertical-offset="162" max-vertical-offset="1296">
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="0.46567163" vertical-offset="516" max-vertical-offset="1368">
-          <folding />
         </state>
       </provider>
     </entry>
