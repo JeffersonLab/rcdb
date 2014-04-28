@@ -28,7 +28,7 @@ def parse_end_run_data(filename, con_string):
         end_comment = xml_run_end.find("end-comment").text
     except:
         end_comment = "No user comments"
-        
+
     end_time = datetime.strptime(xml_run_end.find("end-time").text,"%m/%d/%y %H:%M:%S")
     total_events = int(xml_run_end.find("total-evt").text)
     xml_components = xml_run_end.find("components").findall("component")
@@ -56,7 +56,7 @@ def parse_end_run_data(filename, con_string):
     db.add_run_end_time(run_number, end_time)
     db.add_run_record(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
     db.add_configuration_file(run_number, filename)
-    #db.add_run_statistics(run_number, total_events)
+    db.add_run_statistics(run_number, total_events)
     for name, comp_type, evt_rate, data_rate, evt_number in statistics:
         db.add_run_component_statistics(run_number, end_time, name, comp_type, evt_rate, data_rate, evt_number)
 
