@@ -47,7 +47,12 @@ if __name__ == "__main__":
 
     #add everything to run number
     db = ConfigurationProvider()
-    db.connect()
+    con_string = os.environ["RCDB_CONNECTION"] if "RCDB_CONNECTION" in os.environ else None
+    if con_string:
+        db.connect(con_string)
+    else:
+        db.connect()
+
     db.add_run_start_time(run_number, start_time)
     if start_comment:
         db.add_run_record(run_number, rcdb.START_COMMENT_RECORD_KEY, start_comment, start_time)

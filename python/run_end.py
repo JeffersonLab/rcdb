@@ -12,7 +12,7 @@ log = logging.getLogger('rcdb')                     # create run configuration s
 log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
 log.setLevel(logging.DEBUG)                         # print everything. Change to logging.INFO for less output
 
-def parse_end_run_data(filename):
+def parse_end_run_data(filename, con_string):
 
     #read xml file and get root and run-start element
     log.debug(lf("Parsing end-run data from file {0}", filename))
@@ -45,7 +45,10 @@ def parse_end_run_data(filename):
     #return run_number, end_time, end_comment, total_events
     #add everything to run number
     db = ConfigurationProvider()
-    db.connect()
+    if con_string:
+        db.connect(con_string)
+    else:
+        db.connect()
     db.add_run_end_time(run_number, end_time)
     db.add_run_record(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
     db.add_configuration_file(run_number, filename)
@@ -62,5 +65,10 @@ if __name__ == "__main__":
         print("Please provide a path to xml data file")
         sys.exit(1)
 
+    #get file name
     file_name = sys.argv[1]
-    parse_end_run_data(file_name)
+
+    #get connection string
+    con_string = os.environ["RCDB_CONNECTION"] if "RCDB_CONNECTION" in os.environ else None
+
+    parse_end_run_data(file_name, con_string)
