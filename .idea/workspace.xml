@@ -2,135 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\dataSources.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\dictionaries\Dmitry.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\encodings.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\misc.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\modules.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\scopes\scope_settings.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\sqldialects.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\vagrant.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\vcs.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\workspace.xml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\boards\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\boards\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\constants.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\crates\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\crates\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\files\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\files\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\logs\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\logs\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\pagination.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\runs\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\runs\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\schema.sql" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\start.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.min.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.min.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\main.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\humans.txt" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\js\bootstrap.js" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\js\bootstrap.min.js" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\js\jquery-2.1.0.min.js" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\robots.txt" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\style.css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\statistics\__init__.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\statistics\views.py" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\404.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\layout.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\user.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\users.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\board_in_run.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\info.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\crates\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\crates\info.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\forbidden_page.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\layout.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\page_not_found.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\server_error.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\files\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\files\info.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\files\not_found.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\create_profile.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\footers\help.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\login.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\login_openid.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\reauth.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\reset_password.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\search.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\signup.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\layout.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\layouts\base.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\login.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\logs\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_ask_user_to_update_ie.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_form.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_google_analytics.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_misc.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_reset_password.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\render_pagination.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\example.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\info.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\layout.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\password.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\profile.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\show_entries.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\statistics\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\user\index.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\user\profile.html" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\.name" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\admin" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\boards" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\boards" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.css.map" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.css.map" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\crates" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\crates" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\css" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\dataSources.ids" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\dictionaries" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\errors" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\favicon.png" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\files" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\files" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\flask.iml" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\flaskr.db" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\fonts" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\footers" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.eot" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.svg" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.ttf" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.woff" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\img\glyphicons-halflings-white.png" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\img\glyphicons-halflings.png" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\img" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\js" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\layouts" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static\img\logo.png" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\logs" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\logs" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\macros" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\runs" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\runs" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\.idea\scopes" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\settings" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\static" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\statistics" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\statistics" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates" afterPath="" />
-      <change type="DELETED" beforePath="D:\Projects\TriggerDB\trunk\runconf_www\templates\user" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/start_www.py" afterPath="$PROJECT_DIR$/start_www.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -143,17 +14,17 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/trunk$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1396505007785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
-    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393606195147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/trunk$haha.coverage" NAME="haha Coverage Results" MODIFIED="1394751566301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/runconf_db" />
-    <SUITE FILE_PATH="coverage/trunk$sincos.coverage" NAME="sincos Coverage Results" MODIFIED="1395677071833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$run_end.coverage" NAME="run_end Coverage Results" MODIFIED="1396505611219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$fill_test_runs.coverage" NAME="fill_test_runs Coverage Results" MODIFIED="1398282709184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$fill_test_run1.coverage" NAME="fill_test_run1 Coverage Results" MODIFIED="1395265382654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/trunk$run_end.coverage" NAME="run_end Coverage Results" MODIFIED="1396505611219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393606195147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$views.coverage" NAME="views Coverage Results" MODIFIED="1394071264424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/runconf_www/files" />
+    <SUITE FILE_PATH="coverage/trunk$fill_test_run1.coverage" NAME="fill_test_run1 Coverage Results" MODIFIED="1395265382654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/trunk$sincos.coverage" NAME="sincos Coverage Results" MODIFIED="1395677071833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$run_prestart.coverage" NAME="run_prestart Coverage Results" MODIFIED="1396501311565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/trunk$haha.coverage" NAME="haha Coverage Results" MODIFIED="1394751566301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/runconf_db" />
+    <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
+    <SUITE FILE_PATH="coverage/trunk$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1396505007785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -167,31 +38,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="model.py" pinned="true" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="43" column="6" selection-start="2070" selection-end="2070" vertical-scroll-proportion="0.0" vertical-offset="1154" max-vertical-offset="9456">
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <marker date="1398282723913" expanded="true" signature="1766:1822" placeholder="SELECT count..missing_value..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="query.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/sqlalchemy/orm/query.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="105" column="0" selection-start="3291" selection-end="3291" vertical-scroll-proportion="0.0" vertical-offset="1841" max-vertical-offset="84768">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="config_parser.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/rcdb/config_parser.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="67" column="0" selection-start="1938" selection-end="1938" vertical-scroll-proportion="0.0" vertical-offset="1296" max-vertical-offset="2136">
+            <state line="105" column="0" selection-start="3291" selection-end="3291" vertical-scroll-proportion="0.0" vertical-offset="1890" max-vertical-offset="63918">
               <folding />
             </state>
           </provider>
@@ -200,18 +50,16 @@
       <file leaf-file-name="fill_test_runs.py" pinned="true" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4224">
-              <folding>
-                <element signature="e#0#14#0" expanded="true" />
-              </folding>
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3168">
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="run_end.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="run_end.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/run_end.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="0.39252338" vertical-offset="0" max-vertical-offset="1728">
+            <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="1.44" vertical-offset="162" max-vertical-offset="1296">
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -219,10 +67,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="provider.py" pinned="true" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
+      <file leaf-file-name="prestart_example.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="9" column="0" selection-start="146" selection-end="146" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="10200">
+            <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="0.40093786" vertical-offset="0" max-vertical-offset="1044">
               <folding />
             </state>
           </provider>
@@ -231,7 +79,7 @@
       <file leaf-file-name="environment.bash" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/environment.bash">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="33" selection-start="91" selection-end="91" vertical-scroll-proportion="0.0" vertical-offset="98" max-vertical-offset="768">
+            <state line="4" column="33" selection-start="91" selection-end="91" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="576">
               <folding />
             </state>
           </provider>
@@ -240,7 +88,7 @@
       <file leaf-file-name="start_www.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/start_www.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="9" selection-start="608" selection-end="608" vertical-scroll-proportion="0.0" vertical-offset="576" max-vertical-offset="744">
+            <state line="24" column="9" selection-start="608" selection-end="608" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="558">
               <folding />
             </state>
           </provider>
@@ -249,7 +97,7 @@
       <file leaf-file-name="__init__.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="30" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
+            <state line="24" column="30" selection-start="533" selection-end="533" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="1368">
               <folding />
             </state>
           </provider>
@@ -258,7 +106,7 @@
       <file leaf-file-name="environment.csh" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/environment.csh">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="4" selection-start="163" selection-end="163" vertical-scroll-proportion="0.0" vertical-offset="168" max-vertical-offset="840">
+            <state line="7" column="4" selection-start="163" selection-end="163" vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="630">
               <folding />
             </state>
           </provider>
@@ -329,9 +177,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-3" />
-    <option name="width" value="1539" />
-    <option name="height" value="826" />
+    <option name="width" value="1680" />
+    <option name="height" value="1025" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -393,7 +240,35 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
               <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="python" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -406,7 +281,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../ccdb/trunk/python" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="restartRequiresConfirmation" value="true" />
     <property name="FullScreen" value="false" />
     <property name="dynamic.classpath" value="false" />
@@ -463,245 +338,6 @@
       <recent name="D:\Projects\TriggerDB\trunk\tridb_www" />
       <recent name="$PROJECT_DIR$/python/trigger_db" />
     </key>
-  </component>
-  <component name="RestoreUpdateTree">
-    <UpdateInfo date="Moments ago" ActionInfo="_Update">
-      <UpdatedFiles>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated from server" />
-          <option name="myStatusName" value="Changed on server" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CHANGED_ON_SERVER" />
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Updated" />
-            <option name="myStatusName" value="Changed" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="UPDATED" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Created" />
-            <option name="myStatusName" value="Created" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="CREATED" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Deleted" />
-            <option name="myStatusName" value="Deleted" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="true" />
-            <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-          </FILE-GROUP>
-          <FILE-GROUP>
-            <option name="myUpdateName" value="Restored" />
-            <option name="myStatusName" value="Will be restored" />
-            <option name="mySupportsDeletion" value="false" />
-            <option name="myCanBeAbsent" value="false" />
-            <option name="myId" value="RESTORED" />
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\flask.iml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\vagrant.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\modules.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\sqldialects.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\encodings.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\misc.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\vcs.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\dataSources.ids</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\dataSources.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\scopes</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\scopes\scope_settings.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\dictionaries</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\dictionaries\Dmitry.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\workspace.xml</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\.idea\.name</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\pagination.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\crates</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\crates\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\crates\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\files</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\files\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\files\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\constants.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\logs</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\logs\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\logs\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\start.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\flaskr.db</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\runs</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\runs\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\runs\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\robots.txt</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\style.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.css.map</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.css.map</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap-theme.min.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\bootstrap.min.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\css\main.css</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\favicon.png</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\fonts</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.ttf</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.svg</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.woff</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\fonts\glyphicons-halflings-regular.eot</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\humans.txt</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\img</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\img\logo.png</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\img\glyphicons-halflings-white.png</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\img\glyphicons-halflings.png</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\js</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\js\bootstrap.js</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\js\jquery-2.1.0.min.js</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\static\js\bootstrap.min.js</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\boards</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\boards\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\boards\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\statistics</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\statistics\views.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\statistics\__init__.py</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\schema.sql</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\footers</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\footers\help.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\create_profile.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\reset_password.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\search.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\signup.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\login_openid.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\login.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\frontend\reauth.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\layout.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\crates</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\crates\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\crates\info.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_ask_user_to_update_ie.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_form.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_google_analytics.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_reset_password.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\macros\_misc.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\runs</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\example.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\runs\info.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\admin</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\layout.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\user.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\users.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\admin\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\statistics</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\statistics\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\render_pagination.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\settings</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\layout.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\profile.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\settings\password.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\layouts</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\layouts\base.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\files</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\files\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\files\info.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\files\not_found.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\logs</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\logs\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\boards</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\board_in_run.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\index.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\boards\info.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\404.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\login.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\errors</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\layout.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\server_error.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\page_not_found.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\errors\forbidden_page.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\show_entries.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\user</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\user\profile.html</PATH>
-            <PATH vcs="svn" revision="0">D:\Projects\TriggerDB\trunk\runconf_www\templates\user\index.html</PATH>
-          </FILE-GROUP>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Modified" />
-          <option name="myStatusName" value="Modified" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MODIFIED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Skipped" />
-          <option name="myStatusName" value="Skipped" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SKIPPED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with conflicts" />
-          <option name="myStatusName" value="Will be merged with conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_CONFLICTS" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with tree conflicts" />
-          <option name="myStatusName" value="Merged with tree conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged with property conflicts" />
-          <option name="myStatusName" value="Will be merged with property conflicts" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Merged" />
-          <option name="myStatusName" value="Will be merged" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="MERGED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Not in repository" />
-          <option name="myStatusName" value="Not in repository" />
-          <option name="mySupportsDeletion" value="true" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UNKNOWN" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally added" />
-          <option name="myStatusName" value="Locally added" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_ADDED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Locally removed" />
-          <option name="myStatusName" value="Locally removed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="LOCALLY_REMOVED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Switched" />
-          <option name="myStatusName" value="Switched" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="SWITCHED" />
-        </FILE-GROUP>
-      </UpdatedFiles>
-    </UpdateInfo>
   </component>
   <component name="RunManager" selected="Python.fill_test_runs">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -788,9 +424,6 @@
       <option name="PARAMETERS" value="" />
       <method />
     </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
-      <method />
-    </configuration>
     <configuration default="true" type="tests" factoryName="Unittests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -812,6 +445,9 @@
       <option name="PUREUNITTEST" value="true" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug" singleton="true">
       <method />
     </configuration>
     <configuration default="true" type="tests" factoryName="Doctests">
@@ -994,16 +630,16 @@
     <option name="myMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="D:\Projects\TriggerDB\trunk" />
-          <option name="myCopyRoot" value="D:\Projects\TriggerDB\trunk" />
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
       </list>
     </option>
     <option name="myMoreRealMappingRoots">
       <list>
         <SvnCopyRootSimple>
-          <option name="myVcsRoot" value="D:\Projects\TriggerDB\trunk" />
-          <option name="myCopyRoot" value="D:\Projects\TriggerDB\trunk" />
+          <option name="myVcsRoot" value="$PROJECT_DIR$" />
+          <option name="myCopyRoot" value="$PROJECT_DIR$" />
         </SvnCopyRootSimple>
       </list>
     </option>
@@ -1094,28 +730,28 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-3" y="0" width="1539" height="826" extended-state="0" />
+    <frame x="0" y="0" width="1680" height="1025" extended-state="1" />
     <editor active="false" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32614943" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32853025" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3968254" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32708934" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19581364" sideWeight="0.67151165" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2079676" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21017157" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3968254" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1757925" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3263506" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32853025" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1147,9 +783,55 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://D:/AWork/Gyro/releases/build.py">
+    <entry file="file://$PROJECT_DIR$/python/sqlalchemy/orm/query.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="195" column="23" selection-start="6873" selection-end="6873" vertical-scroll-proportion="0.52034885" vertical-offset="3866" max-vertical-offset="4554" />
+        <state line="105" column="0" selection-start="3291" selection-end="3291" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="63918">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3168">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/run_end.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="0.0" vertical-offset="126" max-vertical-offset="1296">
+          <folding>
+            <element signature="e#0#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environment.bash">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="4" column="33" selection-start="91" selection-end="91" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="576">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/start_www.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="9" selection-start="608" selection-end="608" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="558">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="30" selection-start="533" selection-end="533" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="1368">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/environment.csh">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="7" column="4" selection-start="163" selection-end="163" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="630">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/main_window.py">
@@ -1165,16 +847,6 @@
     <entry file="file://$PROJECT_DIR$/rcdb_www/files/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="19" column="5" selection-start="587" selection-end="587" vertical-scroll-proportion="1.1338583" vertical-offset="0" max-vertical-offset="696" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/log_format.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="11" column="0" selection-start="334" selection-end="334" vertical-scroll-proportion="0.0" vertical-offset="39" max-vertical-offset="432" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.PyCharm30/system/python_stubs/182067540/__builtin__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="1709" column="8" selection-start="58731" selection-end="58731" vertical-scroll-proportion="0.14210527" vertical-offset="40962" max-vertical-offset="121872" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/sqlalchemy/engine/default.py">
@@ -1317,16 +989,6 @@
         <state line="18" column="14" selection-start="525" selection-end="525" vertical-scroll-proportion="1.0252526" vertical-offset="26" max-vertical-offset="672" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="8" column="0" selection-start="275" selection-end="275" vertical-scroll-proportion="-7.456919" vertical-offset="3024" max-vertical-offset="3696" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="3" column="23" selection-start="165" selection-end="165" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="216" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="44" column="75" selection-start="1661" selection-end="1661" vertical-scroll-proportion="0.0" vertical-offset="651" max-vertical-offset="2592" />
@@ -1342,18 +1004,9 @@
         <state line="25" column="46" selection-start="801" selection-end="843" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1464" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="0.0" vertical-offset="753" max-vertical-offset="1392">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/fadc250_example2.cnf">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="864" max-vertical-offset="2664">
-          <folding />
-        </state>
+        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="864" max-vertical-offset="2664" />
       </provider>
       <provider editor-type-id="com.intellij.persistence.database.editor.CsvTableFileEditorProvider">
         <state />
@@ -1382,14 +1035,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="30" selection-start="521" selection-end="521" vertical-scroll-proportion="0.0" vertical-offset="312" max-vertical-offset="1824">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/config_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="67" column="0" selection-start="1938" selection-end="1938" vertical-scroll-proportion="0.0" vertical-offset="1296" max-vertical-offset="2136">
+        <state line="24" column="30" selection-start="533" selection-end="533" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="1368">
           <folding />
         </state>
       </provider>
@@ -1401,38 +1047,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="6" selection-start="2070" selection-end="2070" vertical-scroll-proportion="0.0" vertical-offset="1154" max-vertical-offset="9456">
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <marker date="1398282723913" expanded="true" signature="1766:1822" placeholder="SELECT count..missing_value..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="9" column="0" selection-start="146" selection-end="146" vertical-scroll-proportion="0.0" vertical-offset="5" max-vertical-offset="10200">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4224">
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/run_end.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="0.39252338" vertical-offset="0" max-vertical-offset="1728">
+        <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="1.44" vertical-offset="162" max-vertical-offset="1296">
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="0.40093786" vertical-offset="0" max-vertical-offset="1044">
+          <folding />
         </state>
       </provider>
     </entry>
