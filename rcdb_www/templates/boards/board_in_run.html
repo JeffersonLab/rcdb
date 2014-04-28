@@ -34,8 +34,31 @@
         </tr>
     </table>
 
-    {{ board_config }}
-    {{ board_config.dac_preset.values }}
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Per channel data</div>
+
+        <!-- Table -->
+        <table class="table table-striped table-bordered ">
+            <tr class="info">
+                <th rowspan="2">Name</th>
+                <th colspan="16">Channel</th>
+            </tr>
+            <tr class="info">
+                {% for index in range(16) %} <th>  {{ index }} </th>{% endfor %}
+            </tr>
+
+            <!-- DAC VALUES -->
+            <tr>
+                <td>DAC</td>
+                {% for value in board_config.dac_preset.values %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+
+
     <div class="well">
 
     </div>

@@ -2,6 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/index.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/run_end.py" afterPath="$PROJECT_DIR$/python/run_end.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/run_prestart.py" afterPath="$PROJECT_DIR$/python/run_prestart.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/trunk.iml" afterPath="$PROJECT_DIR$/.idea/trunk.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="trunk.iws" />
@@ -15,7 +21,7 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/trunk$fill_test_runs.coverage" NAME="fill_test_runs Coverage Results" MODIFIED="1398282709184" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/trunk$fill_test_runs.coverage" NAME="fill_test_runs Coverage Results" MODIFIED="1398703353746" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$run_end.coverage" NAME="run_end Coverage Results" MODIFIED="1396505611219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393606195147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$views.coverage" NAME="views Coverage Results" MODIFIED="1394071264424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/runconf_www/files" />
@@ -23,8 +29,8 @@
     <SUITE FILE_PATH="coverage/trunk$sincos.coverage" NAME="sincos Coverage Results" MODIFIED="1395677071833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$run_prestart.coverage" NAME="run_prestart Coverage Results" MODIFIED="1396501311565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/trunk$haha.coverage" NAME="haha Coverage Results" MODIFIED="1394751566301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/runconf_db" />
+    <SUITE FILE_PATH="coverage/trunk$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1398703536668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
-    <SUITE FILE_PATH="coverage/trunk$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1396505007785" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -38,19 +44,78 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="query.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/sqlalchemy/orm/query.py">
+      <file leaf-file-name="fill_test_runs.py" pinned="true" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="105" column="0" selection-start="3291" selection-end="3291" vertical-scroll-proportion="0.0" vertical-offset="1890" max-vertical-offset="63918">
+            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3096">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fill_test_runs.py" pinned="true" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
+      <file leaf-file-name="prestart_example.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3168">
+            <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="-12.666667" vertical-offset="0" max-vertical-offset="1044">
+              <folding>
+                <marker date="1398455160667" expanded="true" signature="64:1961" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="79:780" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="183:467" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="480:683" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="793:1953" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="891:1872" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="943:1086" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="1138:1279" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="1331:1475" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="1526:1663" placeholder="..." />
+                <marker date="1398455160667" expanded="true" signature="1715:1852" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="10" column="12" selection-start="287" selection-end="287" vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="2466">
+              <folding>
+                <marker date="1398702757705" expanded="true" signature="114:1350" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="247:272" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="273:332" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="375:1339" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="514:687" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="554:668" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="750:1324" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="771:899" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="962:1274" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="991:1138" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="1025:1133" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="1526:4286" placeholder="..." />
+                <marker date="1398702757705" expanded="true" signature="1550:4271" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="2112:2181" placeholder="[...]" />
+                <marker date="1398702757705" expanded="true" signature="2183:2609" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="2209:2402" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="2238:2296" placeholder="{&quot;show&quot;: true...}" />
+                <marker date="1398702757705" expanded="true" signature="2326:2384" placeholder="{&quot;show&quot;: true...}" />
+                <marker date="1398702757705" expanded="true" signature="2426:2518" placeholder="{&quot;hoverable&quot;: true...}" />
+                <marker date="1398702757705" expanded="true" signature="2543:2595" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="2659:2893" placeholder="{&quot;position&quot;: &quot;absolute&quot;...}" />
+                <marker date="1398702757705" expanded="true" signature="2990:3813" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="3054:3206" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="3235:3731" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="3257:3356" placeholder="//..." />
+                <marker date="1398702757705" expanded="true" signature="3737:3798" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="3893:4126" placeholder="{...}" />
+                <marker date="1398702757705" expanded="true" signature="3921:4112" placeholder="{...}" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="board_in_run.html" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="0.46567163" vertical-offset="516" max-vertical-offset="1368">
               <folding />
             </state>
           </provider>
@@ -59,7 +124,7 @@
       <file leaf-file-name="run_end.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/python/run_end.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="1.44" vertical-offset="162" max-vertical-offset="1296">
+            <state line="27" column="85" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1296">
               <folding>
                 <element signature="e#0#14#0" expanded="true" />
               </folding>
@@ -67,28 +132,28 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="prestart_example.xml" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
+      <file leaf-file-name="run_prestart.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="0.40093786" vertical-offset="0" max-vertical-offset="1044">
+            <state line="39" column="91" selection-start="1433" selection-end="1450" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="environment.bash" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/environment.bash">
+      <file leaf-file-name="provider.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="4" column="33" selection-start="91" selection-end="91" vertical-scroll-proportion="0.0" vertical-offset="72" max-vertical-offset="576">
+            <state line="37" column="68" selection-start="976" selection-end="976" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="7470">
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="start_www.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/start_www.py">
+      <file leaf-file-name="index.html" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="24" column="9" selection-start="608" selection-end="608" vertical-scroll-proportion="0.0" vertical-offset="432" max-vertical-offset="558">
+            <state line="32" column="10" selection-start="187" selection-end="926" vertical-scroll-proportion="-21.333334" vertical-offset="0" max-vertical-offset="756">
               <folding />
             </state>
           </provider>
@@ -122,8 +187,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/tridb_www/templates/layouts/base.html" />
-        <option value="$PROJECT_DIR$/start_tdb_www.py" />
         <option value="$PROJECT_DIR$/python/file_archiver.py" />
         <option value="$PROJECT_DIR$/python/trigger_db.py" />
         <option value="$PROJECT_DIR$/python/trigger_db/config_parser.py" />
@@ -161,18 +224,20 @@
         <option value="$PROJECT_DIR$/runconf_www/logs/views.py" />
         <option value="$PROJECT_DIR$/runconf_www/templates/render_pagination.html" />
         <option value="$PROJECT_DIR$/runconf_www/templates/logs/index.html" />
-        <option value="$PROJECT_DIR$/python/run_prestart.py" />
         <option value="$PROJECT_DIR$/python/runconf_db/constants.py" />
         <option value="$PROJECT_DIR$/python/runconf_db/__init__.py" />
         <option value="$PROJECT_DIR$/python/runconf_db/provider.py" />
         <option value="$PROJECT_DIR$/runconf_www/runs/views.py" />
         <option value="$PROJECT_DIR$/runconf_www/templates/runs/info.html" />
-        <option value="$PROJECT_DIR$/python/run_end.py" />
         <option value="$PROJECT_DIR$/python/prestart_example.xml" />
         <option value="$PROJECT_DIR$/environment.csh" />
         <option value="$PROJECT_DIR$/python/runconf_db/config_parser.py" />
         <option value="$PROJECT_DIR$/python/runconf_db/model.py" />
         <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
+        <option value="$PROJECT_DIR$/rcdb_www/templates/index.html" />
+        <option value="$PROJECT_DIR$/python/run_prestart.py" />
+        <option value="$PROJECT_DIR$/python/run_end.py" />
+        <option value="$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html" />
       </list>
     </option>
   </component>
@@ -268,6 +333,68 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="runs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb_www" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="templates" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="boards" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trunk" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="python" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -339,7 +466,7 @@
       <recent name="$PROJECT_DIR$/python/trigger_db" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.fill_test_runs">
+  <component name="RunManager" selected="Python.start_www">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -731,18 +858,18 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1025" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32708934" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32614943" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3275862" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.19581364" sideWeight="0.67151165" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21017157" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21017157" sideWeight="0.6705539" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3968254" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1757925" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16132596" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3263506" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -909,11 +1036,6 @@
         <state line="26" column="20" selection-start="735" selection-end="735" vertical-scroll-proportion="-5.967742" vertical-offset="439" max-vertical-offset="1008" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="40" selection-start="821" selection-end="827" vertical-scroll-proportion="-17.806452" vertical-offset="0" max-vertical-offset="1272" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/info.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="6" column="23" selection-start="118" selection-end="118" vertical-scroll-proportion="0.23801653" vertical-offset="0" max-vertical-offset="605" />
@@ -932,11 +1054,6 @@
     <entry file="file://$PROJECT_DIR$/rcdb_www/boards/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="1" column="0" selection-start="13" selection-end="13" vertical-scroll-proportion="0.035820894" vertical-offset="0" max-vertical-offset="670" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="33" column="6" selection-start="89" selection-end="933" vertical-scroll-proportion="-3.903226" vertical-offset="671" max-vertical-offset="1008" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/templates/layouts/base.html">
@@ -974,11 +1091,6 @@
         <state line="1" column="57" selection-start="91" selection-end="91" vertical-scroll-proportion="-0.7741935" vertical-offset="0" max-vertical-offset="960" />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="5" column="23" selection-start="111" selection-end="111" vertical-scroll-proportion="-3.8709676" vertical-offset="0" max-vertical-offset="936" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/templates/login.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="456" />
@@ -997,11 +1109,6 @@
     <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/info.html">
       <provider selected="true" editor-type-id="text-editor">
         <state line="89" column="21" selection-start="3451" selection-end="3451" vertical-scroll-proportion="0.0" vertical-offset="2136" max-vertical-offset="4560" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="25" column="46" selection-start="801" selection-end="843" vertical-scroll-proportion="0.0" vertical-offset="600" max-vertical-offset="1464" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/fadc250_example2.cnf">
@@ -1047,6 +1154,75 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="-12.666667" vertical-offset="0" max-vertical-offset="1044">
+          <folding>
+            <marker date="1398455160667" expanded="true" signature="64:1961" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="79:780" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="183:467" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="480:683" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="793:1953" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="891:1872" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="943:1086" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="1138:1279" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="1331:1475" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="1526:1663" placeholder="..." />
+            <marker date="1398455160667" expanded="true" signature="1715:1852" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="10" column="12" selection-start="287" selection-end="287" vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="2466">
+          <folding>
+            <marker date="1398702757705" expanded="true" signature="114:1350" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="247:272" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="273:332" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="375:1339" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="514:687" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="554:668" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="750:1324" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="771:899" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="962:1274" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="991:1138" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="1025:1133" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="1526:4286" placeholder="..." />
+            <marker date="1398702757705" expanded="true" signature="1550:4271" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="2112:2181" placeholder="[...]" />
+            <marker date="1398702757705" expanded="true" signature="2183:2609" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="2209:2402" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="2238:2296" placeholder="{&quot;show&quot;: true...}" />
+            <marker date="1398702757705" expanded="true" signature="2326:2384" placeholder="{&quot;show&quot;: true...}" />
+            <marker date="1398702757705" expanded="true" signature="2426:2518" placeholder="{&quot;hoverable&quot;: true...}" />
+            <marker date="1398702757705" expanded="true" signature="2543:2595" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="2659:2893" placeholder="{&quot;position&quot;: &quot;absolute&quot;...}" />
+            <marker date="1398702757705" expanded="true" signature="2990:3813" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="3054:3206" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="3235:3731" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="3257:3356" placeholder="//..." />
+            <marker date="1398702757705" expanded="true" signature="3737:3798" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="3893:4126" placeholder="{...}" />
+            <marker date="1398702757705" expanded="true" signature="3921:4112" placeholder="{...}" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="10" selection-start="187" selection-end="926" vertical-scroll-proportion="-21.333334" vertical-offset="0" max-vertical-offset="756">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="37" column="68" selection-start="976" selection-end="976" vertical-scroll-proportion="0.0" vertical-offset="380" max-vertical-offset="7470">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/python/fill_test_runs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4224">
@@ -1054,18 +1230,25 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="39" column="91" selection-start="1433" selection-end="1450" vertical-scroll-proportion="0.0" vertical-offset="262" max-vertical-offset="972">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/python/run_end.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="7" column="29" selection-start="0" selection-end="759" vertical-scroll-proportion="1.44" vertical-offset="162" max-vertical-offset="1296">
+        <state line="27" column="85" selection-start="1112" selection-end="1112" vertical-scroll-proportion="0.0" vertical-offset="162" max-vertical-offset="1296">
           <folding>
             <element signature="e#0#14#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/boards/board_in_run.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="19" column="15" selection-start="781" selection-end="781" vertical-scroll-proportion="0.40093786" vertical-offset="0" max-vertical-offset="1044">
+        <state line="46" column="28" selection-start="1892" selection-end="1892" vertical-scroll-proportion="0.46567163" vertical-offset="516" max-vertical-offset="1368">
           <folding />
         </state>
       </provider>

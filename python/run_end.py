@@ -25,7 +25,7 @@ def parse_end_run_data(filename):
     run_number = int(xml_root.find("run-start").find("run-number").text)
 
     end_comment = xml_run_end.find("end-comment").text
-    end_time = datetime.strptime(xml_run_end.find("end-time").text,"%Y-%m-%d %H:%M:%S")
+    end_time = datetime.strptime(xml_run_end.find("end-time").text,"%m/%d/%Y %H:%M:%S")
     total_events = int(xml_run_end.find("total-evt").text)
     xml_components = xml_run_end.find("components").findall("component")
     statistics = []
