@@ -16,17 +16,19 @@
             {% else %}
                 No run start information
             {% endif %}
-        </p>
-        <p class="lead blog-description">
             {% if run.end_time %}
                 Run ended {{ run.end_time }}
             {% else %}
                 No run end information
             {% endif %}
         </p>
+        <p class="lead blog-description">
+            <div class="row"><h2>Events: {{ run.total_events }}</h2></div>
+        </p>
     </div>
 
     <div class="row" id="content">
+
 
         <!-- CONTENT BAR -->
         <div class="col-sm-8 blog-main" id="central_bar">
@@ -79,8 +81,6 @@
 
 
         <div class="blog-post">
-            <p class="blog-post-meta">January 1, 2014 by <a href="#">Mark</a></p>
-
             <p class="blog-post-meta">All run records</p>
             <table class="table">
                 <tr class="text-info">
@@ -100,6 +100,7 @@
                     {% endif %}
                 {% endfor %}
             </table>
+        {#
 
             <p>This blog post shows a few different types of content that's supported and styled with Bootstrap. Basic typography, images, and code are all supported.</p>
             <hr>
@@ -128,6 +129,7 @@
               <li>Maecenas sed diam eget risus varius blandit sit amet non magna.</li>
             </ol>
             <p>Cras mattis consectetur purus sit amet fermentum. Sed posuere consectetur est at lobortis.</p>
+         #}
           </div><!-- /.blog-post -->
 
           <ul class="pager" id="pager">
