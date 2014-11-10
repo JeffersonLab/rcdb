@@ -17,35 +17,50 @@ def parse_end_run_data(filename, con_string):
     #read xml file and get root and run-start element
     log.debug(lf("Parsing end-run data from file {0}", filename))
     xml_root = ET.parse(filename).getroot()
-    xml_run_end = xml_root.find("run-end")
+
+    try:
+        xml_run_end = xml_root.find("run-end")
+    except:
+        xml_run_end = ""
 
     #read xml-root data (which is <coda runtype = "xxx" session = "yyy">
     runtype = xml_root.attrib["runtype"]
     session = xml_root.attrib["session"]
     run_number = int(xml_root.find("run-start").find("run-number").text)
 
+#    try:
+#        end_comment = xml_run_end.find("end-comment").text
+#    except:
+#        end_comment = "No user comments"
     try:
-        end_comment = xml_run_end.find("end-comment").text
+        end_comment = xml_root.find("end-comment").text
     except:
         end_comment = "No user comments"
 
-    end_time = datetime.strptime(xml_run_end.find("end-time").text,"%m/%d/%y %H:%M:%S")
-    total_events = int(xml_run_end.find("total-evt").text)
-    xml_components = xml_run_end.find("components").findall("component")
-    statistics = []
-    for xml_component in xml_components:
-        name = xml_component.attrib["name"]
-        comp_type = xml_component.attrib["type"]
-        evt_rate = xml_component.find("evt-rate").text
-        data_rate = xml_component.find("data-rate").text
-        evt_number = xml_component.find("evt-number").text
-        statistics.append((name, comp_type, evt_rate, data_rate, evt_number))
+    try:
+        end_time = datetime.strptime(xml_run_end.find("end-time").text,"%m/%d/%y %H:%M:%S")
+    except:
+        end_time = datetime.now()
+
+    if  xml_run_end:
+
+        total_events = int(xml_run_end.find("total-evt").text)
+
+        xml_components = xml_run_end.find("components").findall("component")
+        statistics = []
+        for xml_component in xml_components:
+            name = xml_component.attrib["name"]
+            comp_type = xml_component.attrib["type"]
+            evt_rate = xml_component.find("evt-rate").text
+            data_rate = xml_component.find("data-rate").text
+            evt_number = xml_component.find("evt-number").text
+            statistics.append((name, comp_type, evt_rate, data_rate, evt_number))
 
     #log gathered information
     log.info(lf("Run number '{}'", run_number))
     log.info(lf("End time '{}'", end_time))
     log.info(lf("End comment text: {}", (end_comment if len(end_comment) < 100 else end_comment[0:100] + "...")))
-
+        
     #return run_number, end_time, end_comment, total_events
     #add everything to run number
     db = ConfigurationProvider()
@@ -53,6 +68,7 @@ def parse_end_run_data(filename, con_string):
         db.connect(con_string)
     else:
         db.connect()
+
     db.add_run_end_time(run_number, end_time)
     db.add_run_record(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
     db.add_configuration_file(run_number, filename)
