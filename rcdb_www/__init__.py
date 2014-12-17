@@ -1,10 +1,8 @@
 from rcdb.model import RunConfiguration
 
-__author__ = 'romanov'
 from flask import Flask, render_template, g, request, url_for
 
 import rcdb
-#from rcdb import Board
 
 # configuration
 DATABASE = 'flaskr.db'
@@ -14,16 +12,15 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 SQL_CONNECTION_STRING = "mysql+mysqlconnector://runconf_db@127.0.0.1/runconf_db"
 
-
 app = Flask(__name__)
-#app.config.from_object('config')
 app.config.from_object(__name__)
+
 
 @app.before_request
 def before_request():
-
     g.tdb = rcdb.ConfigurationProvider()
     g.tdb.connect(app.config["SQL_CONNECTION_STRING"])
+
 
 @app.teardown_request
 def teardown_request(exception):
@@ -35,23 +32,27 @@ def teardown_request(exception):
 def not_found(error):
     return render_template('404.html')
 
+
 @app.route('/sample')
 def sample():
     return render_template('index.html')
 
+
 @app.route('/')
 def index():
-    runs = g.tdb.session.query(RunConfiguration).order_by(RunConfiguration.number.desc()).all()
+    runs = g.tdb.session.query(RunConfiguration).order_by(RunConfiguration.number.desc()).limit(100);
     return render_template("index.html", runs=runs)
+
 
 def url_for_other_page(page):
     args = request.view_args.copy()
     args['page'] = page
     return url_for(request.endpoint, **args)
 
+
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 
-#from  import mod as boardsModule
+# register modules
 from boards.views import mod as boards_module
 from runs.views import mod as runs_module
 from logs.views import mod as logs_module

@@ -24,15 +24,16 @@ def index():
 @mod.route('/info/<int:run_number>')
 def info(run_number):
     """Shows run information and statistics"""
+
     run = g.tdb.session.query(RunConfiguration).filter(RunConfiguration.number == run_number).first()
     assert (isinstance(run, RunConfiguration))
 
-    #create board by crate list
+    # create board by crate list
     bi_by_crate = defaultdict(list)
     for bi in run.board_installations:
         bi_by_crate[bi.crate].append(bi)
 
-    #sort boards by slot
+    # sort boards by slot
     for bis in bi_by_crate.values():
         bis.sort(key=lambda x: x.slot)
 

@@ -15,8 +15,8 @@ def index(page):
     pagination = Pagination(page, PER_PAGE, count)
 
     log_records = g.tdb.session.query(LogRecord)\
-        .order_by(desc(LogRecord.id))\
-        .slice(pagination.item_limit_from, pagination.item_limit_to)
+                               .order_by(desc(LogRecord.id))\
+                               .slice(pagination.item_limit_from, pagination.item_limit_to)
 
     return render_template("logs/index.html", log_records=log_records, pagination=pagination)
 
