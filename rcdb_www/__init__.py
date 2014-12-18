@@ -24,8 +24,9 @@ def before_request():
 
 @app.teardown_request
 def teardown_request(exception):
-    #tdb = getattr(g, 'db', None)
-    pass
+    tdb = getattr(g, 'db', None)
+    if tdb:
+		tdb.close()
 
 
 @app.errorhandler(404)
