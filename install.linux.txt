@@ -22,8 +22,8 @@ Create database structure:
 Create user and give privilegies:
     
     mysql -u root -p
-    CREATE USER runconf_db;
-    GRANT ALL PRIVILEGES ON runconf_db.* TO 'runconf_db'@'localhost';
+    CREATE USER rcdb;
+    GRANT ALL PRIVILEGES ON rcdb.* TO 'rcdb'@'localhost';
 
 
 TEST

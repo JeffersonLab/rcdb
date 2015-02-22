@@ -339,7 +339,7 @@
       </general>
     </ddl-file-settings>
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.3 (D:/Tools/Python/Python27_86/python.exe)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.6 (/usr/bin/python2.7)" project-jdk-type="Python SDK" />
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
@@ -362,4 +362,3 @@
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
 </project>
-

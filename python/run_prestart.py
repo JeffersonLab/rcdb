@@ -23,6 +23,7 @@ if __name__ == "__main__":
 
     #read xml file and get root and run-start element
     log.debug(lf("Parsing file {0}", sys.argv[1]))
+    ET.parse()
     xml_root = ET.parse(sys.argv[1]).getroot()
     xml_run_start = xml_root.find("run-start")
 
@@ -55,7 +56,7 @@ if __name__ == "__main__":
 
     db.add_run_start_time(run_number, start_time)
     if start_comment:
-        db.add_run_record(run_number, rcdb.START_COMMENT_RECORD_KEY, start_comment, start_time)
+        db.add_condition(run_number, rcdb.START_COMMENT_RECORD_KEY, start_comment, start_time)
     db.add_configuration_file(run_number, sys.argv[1])
     for file in files:
         db.add_configuration_file(run_number, os.path.abspath(file))

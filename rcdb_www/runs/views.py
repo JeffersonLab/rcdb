@@ -9,14 +9,14 @@ from collections import defaultdict
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from rcdb.model import RunConfiguration, BoardInstallation
+from rcdb.model import Run, BoardInstallation
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
 
 @mod.route('/')
 def index():
-    runs = g.tdb.session.query(RunConfiguration).order_by(RunConfiguration.number.desc()).all()
+    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).all()
     return render_template("runs/index.html", runs=runs)
     pass
 
@@ -25,8 +25,8 @@ def index():
 def info(run_number):
     """Shows run information and statistics"""
 
-    run = g.tdb.session.query(RunConfiguration).filter(RunConfiguration.number == run_number).first()
-    assert (isinstance(run, RunConfiguration))
+    run = g.tdb.session.query(Run).filter(Run.number == run_number).first()
+    assert (isinstance(run, Run))
 
     # create board by crate list
     bi_by_crate = defaultdict(list)

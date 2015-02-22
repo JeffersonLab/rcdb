@@ -1,6 +1,9 @@
 
 import rcdb
-from rcdb import Board
+from rcdb.model import Run
+
+
+
 from rcdb import ThresholdPreset
 
 db = rcdb.connect()

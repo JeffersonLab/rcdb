@@ -1,4 +1,4 @@
-from rcdb.model import RunConfiguration
+from rcdb.model import Run
 
 from flask import Flask, render_template, g, request, url_for
 
@@ -41,7 +41,7 @@ def sample():
 
 @app.route('/')
 def index():
-    runs = g.tdb.session.query(RunConfiguration).order_by(RunConfiguration.number.desc()).limit(100);
+    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).limit(100);
     return render_template("index.html", runs=runs)
 
 

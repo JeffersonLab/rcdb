@@ -1,0 +1,195 @@
+from datetime import datetime
+import unittest
+import rcdb
+import rcdb.model
+from rcdb.model import ConditionType, Condition
+
+import logging
+
+#logging.basicConfig()
+#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+
+
+
+class TestConditions(unittest.TestCase):
+    """ Tests ConditionType, ConditionValue classes and their operations in provider"""
+
+    def setUp(self):
+        self.db = rcdb.ConfigurationProvider("sqlite://")
+        rcdb.model.Base.metadata.create_all(self.db.engine)
+        # create run
+        self.db.obtain_run(1)
+
+    def tearDown(self):
+        self.db.disconnect()
+
+    def test_creating_condition_type(self):
+        """Test of create_condition_type function"""
+
+        # Create condition type
+        ct = self.db.create_condition_type("test", ConditionType.FLOAT_FIELD, False)
+
+        # Check values
+        self.assertIsInstance(ct, ConditionType)
+        self.assertEqual(ct.name, "test")
+        self.assertEqual(ct.value_type, ConditionType.FLOAT_FIELD)
+        self.assertFalse(ct.is_many_per_run)
+
+        # Creating ConditionType with the same name but different type or flag should raise
+        self.assertRaises(rcdb.OverrideConditionTypeError, self.db.create_condition_type, "test",
+                          ConditionType.INT_FIELD, False)
+        self.assertRaises(rcdb.OverrideConditionTypeError, self.db.create_condition_type, "test",
+                          ConditionType.FLOAT_FIELD, True)
+
+        # Creating the same existing ConditionType should not raise
+        try:
+            self.db.create_condition_type("test", ConditionType.FLOAT_FIELD, False)
+        except rcdb.OverrideConditionTypeError:
+            self.fail()
+
+    def test_get_condition_type(self):
+        """Test of get_condition_type function"""
+        # Create condition type
+        ct = self.db.create_condition_type("test", ConditionType.FLOAT_FIELD, False)
+
+        # now get it from DB using API
+        ct = self.db.get_condition_type("test")
+        self.assertEqual(ct.name, "test")
+
+        # now check that there is no way selecting non existent
+        self.assertRaises(rcdb.NoConditionTypeFoundError, self.db.get_condition_type, "abra kadabra")
+
+    def test_basic_work_with_condition_value(self):
+        """ Tests add_condition_value funciton
+        :return:None
+        """
+        ct = self.db.create_condition_type("events_num", ConditionType.FLOAT_FIELD, False)
+        self.db.add_condition(1, "events_num", 1000)
+        result = self.db.get_condition(1, "events_num")
+        self.assertEqual(result.value, 1000)
+
+
+    def test_one_per_run_condition_values(self):
+        ct = self.db.create_condition_type("single", ConditionType.INT_FIELD, False)
+
+        # First addition to DB
+        val = self.db.add_condition(1, ct, 1000)
+
+        # The func should return ConditionValue it created or found in BD
+        self.assertIsNotNone(val)
+
+        # Ok. no exception and do nothing is the very same value already exists
+        val = self.db.add_condition(1, "single", 1000)
+        self.assertIsNotNone(val)
+
+        # Error. exception ConditionValueExistsError
+        self.assertRaises(rcdb.OverrideConditionValueError, self.db.add_condition, 1, "single", 2222)
+
+        # Ok. Replacing existing value
+        val = self.db.add_condition(1, "single", 2222, replace=True)
+        self.assertIsNotNone(val)
+
+        # Check, that get method works as expected
+        val = self.db.get_condition(1, "single")
+        self.assertEqual(val.value, 2222)
+        self.assertEqual(val.int_value, 2222)
+        self.assertIsNone(val.time)
+
+        # Create condition for non existent run is impossible
+        self.assertRaises(rcdb.NoRunFoundError, self.db.add_condition, 1763654, "single", 2222)
+
+    def test_timed_many_per_run_condition_values(self):
+        """Test how many conditions per run are saved"""
+
+        # Many condition values allowed for the run (is_many_per_run=True)
+        #    1. If run has this condition, with the same value and actual_time the func. DOES NOTHING
+        #    2. If run has this conditions but at different time, it adds this condition to DB
+        #    3. If run has this condition at this time
+
+        ct = self.db.create_condition_type("multi", ConditionType.INT_FIELD, True)
+        time1 = datetime(2015,9,1,14,21,01, 222)
+        time2 = datetime(2015,9,1,14,21,01, 333)
+
+        # First addition to DB. Time is None
+        self.db.add_condition(1, "multi", 1000)
+
+        # Ok. Do nothing, such value already exists
+        self.db.add_condition(1, "multi", 1000)
+
+        # Error. Another value for time None
+        self.assertRaises(rcdb.OverrideConditionValueError, self.db.add_condition, 1, "multi", 2222)
+
+        # Ok. Replacing existing value for time None
+        self.db.add_condition(1, "multi", 2222, replace=True)
+
+        # Ok. Value for time1 is added to DB
+        self.db.add_condition(1, "multi", 3333, time1)
+
+        # Error. Value differs for time1
+        self.assertRaises(rcdb.OverrideConditionValueError, self.db.add_condition, 1, "multi", 4444, time1)
+
+        # Ok. Add 444 for time2 to DB
+        self.db.add_condition(1, "multi", 4444, time2)
+
+        results = self.db.get_condition(1, "multi")
+        # We should get 3 values as:
+        # 0: value=2222; time=None
+        # 1: value=3333; time=time1
+        # 2: value=4444; time=time2
+        # lets check it
+        self.assertEqual(len(results), 3)
+        values = [result.value for result in results]
+        times = [result.time for result in results]
+
+        self.assertEqual(values, [2222, 3333, 4444])
+        self.assertEqual(times, [None, time1, time2])
+
+    def test_timed_one_per_run_condition_values(self):
+        """Test how to work with one_per_run condition values that have time information too"""
+
+        ct = self.db.create_condition_type("timed", ConditionType.INT_FIELD, False)
+
+        time1 = datetime(2015, 9, 1, 14, 21, 01, 222)
+        time2 = datetime(2015, 9, 1, 14, 21, 01, 333)
+
+        # First addition to DB
+        self.db.add_condition(1, "timed", 1, time1)
+
+        # Ok. Do nothing
+        self.db.add_condition(1, "timed", 1, time1)
+
+        # Error. Time is different
+        self.assertRaises(rcdb.OverrideConditionValueError, self.db.add_condition, 1, "timed", 1, time2)
+
+        # Error. Value is different
+        self.assertRaises(rcdb.OverrideConditionValueError, self.db.add_condition, 1, "timed", 5, time1)
+
+        # Ok. Value replaced
+        self.db.add_condition(1, "timed", 5, time2, replace=True)
+
+        val = self.db.get_condition(1, "timed")
+        self.assertEqual(val.value, 5)
+        self.assertEqual(val.time, time2)
+
+    def test_check_float_condition_value(self):
+        """ Tests add_condition_value funciton
+        :return:None
+        """
+        ct = self.db.create_condition_type("float_cnd", ConditionType.FLOAT_FIELD, False)
+        cnd = self.db.add_condition(1, ct, 0.15)
+
+        # evict all database-loaded data from the session
+        self.db.session.expire_all()
+
+        result = self.db.get_condition(1, "float_cnd")
+        self.assertEqual(result.value, 0.15)
+
+
+
+
+
+
+
+
+
+

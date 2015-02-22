@@ -70,7 +70,7 @@ def parse_end_run_data(filename, con_string):
         db.connect()
 
     db.add_run_end_time(run_number, end_time)
-    db.add_run_record(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
+    db.add_condition(run_number, rcdb.END_COMMENT_RECORD_KEY, end_comment, end_time)
     db.add_configuration_file(run_number, filename)
     db.add_run_statistics(run_number, total_events)
     for name, comp_type, evt_rate, data_rate, evt_number in statistics:

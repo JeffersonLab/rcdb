@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
-from rcdb.model import Board, BoardConfiguration, RunConfiguration, BoardInstallation, Crate
+from rcdb.model import Board, BoardConfiguration, Run, BoardInstallation, Crate
 
 mod = Blueprint('crates', __name__, url_prefix='/crates')
 

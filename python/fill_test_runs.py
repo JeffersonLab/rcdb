@@ -42,9 +42,9 @@ if __name__ == '__main__':
     #            R U N   1
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run_configuration(1)
+    #run = db.obtain_run(1)
     db.add_run_start_time(1, dt_run1_start)
-    db.add_run_record(1,
+    db.add_condition(1,
                       rcdb.START_COMMENT_RECORD_KEY,
                       "This is 1-st run generated as example by rcdb software test",
                       dt_run1_start)
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     db.add_board_installation_to_run(1, (roc2, boards[4], 7))
     db.add_board_installation_to_run(1, (roc2, boards[5], 9))
 
-    db.add_run_record(1,
+    db.add_condition(1,
                       rcdb.END_COMMENT_RECORD_KEY,
                       "Finished OK",
                       dt_run1_end
@@ -78,9 +78,9 @@ if __name__ == '__main__':
     #            R U N   2
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run_configuration(1)
+    #run = db.obtain_run(1)
     db.add_run_start_time(2, dt_run2_start)
-    db.add_run_record(2,
+    db.add_condition(2,
                       rcdb.START_COMMENT_RECORD_KEY,
                       "This is 2nd run generated as example by rcdb software test",
                       dt_run2_start)
@@ -111,9 +111,9 @@ if __name__ == '__main__':
     #            R U N   3
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run_configuration(1)
+    #run = db.obtain_run(1)
     db.add_run_start_time(3, dt_run3_start)
-    db.add_run_record(3,
+    db.add_condition(3,
                       rcdb.START_COMMENT_RECORD_KEY,
                       "This is 3rd run generated as example by rcdb software test",
                       dt_run3_start)
@@ -143,9 +143,9 @@ if __name__ == '__main__':
     #            R U N   4
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run_configuration(1)
+    #run = db.obtain_run(1)
     db.add_run_start_time(4, dt_run4_start)
-    db.add_run_record(4,
+    db.add_condition(4,
                       rcdb.START_COMMENT_RECORD_KEY,
                       "This is 3rd run generated as example by rcdb software test",
                       dt_run4_start)

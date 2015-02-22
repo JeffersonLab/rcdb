@@ -5,7 +5,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.forms import RegisterForm, LoginForm
 #from app.users.decorators import requires_login
 
-from rcdb.model import Board, BoardConfiguration, RunConfiguration, BoardInstallation
+from rcdb.model import Board, BoardConfiguration, Run, BoardInstallation
 
 mod = Blueprint('boards', __name__, url_prefix='/boards')
 
@@ -34,12 +34,12 @@ def board_in_run(board_id, run_number):
     board_config = g.tdb.session.query(BoardConfiguration)\
                                 .join(BoardConfiguration.runs)\
                                 .filter(BoardConfiguration.board_id == board_id,
-                                         RunConfiguration.number == run_number)\
+                                         Run.number == run_number)\
                                 .one()
 
     board_install = g.tdb.session.query(BoardInstallation)\
                                  .join(BoardInstallation.runs)\
-                                 .filter(RunConfiguration.number == run_number)\
+                                 .filter(Run.number == run_number)\
                                  .filter(BoardInstallation.board_id == board_config.board_id)\
                                  .one()
     assert isinstance(board_config, BoardConfiguration)
