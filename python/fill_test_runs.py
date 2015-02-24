@@ -42,7 +42,7 @@ if __name__ == '__main__':
     #            R U N   1
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run(1)
+    #run = db.create_run(1)
     db.add_run_start_time(1, dt_run1_start)
     db.add_condition(1,
                       rcdb.START_COMMENT_RECORD_KEY,
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     #            R U N   2
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run(1)
+    #run = db.create_run(1)
     db.add_run_start_time(2, dt_run2_start)
     db.add_condition(2,
                       rcdb.START_COMMENT_RECORD_KEY,
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     #            R U N   3
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run(1)
+    #run = db.create_run(1)
     db.add_run_start_time(3, dt_run3_start)
     db.add_condition(3,
                       rcdb.START_COMMENT_RECORD_KEY,
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     #            R U N   4
     #---------------------------------------------------------------------------------------
     #get run configuration for run #1
-    #run = db.obtain_run(1)
+    #run = db.create_run(1)
     db.add_run_start_time(4, dt_run4_start)
     db.add_condition(4,
                       rcdb.START_COMMENT_RECORD_KEY,

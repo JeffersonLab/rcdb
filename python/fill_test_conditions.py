@@ -43,7 +43,7 @@ if __name__ == '__main__':
         db.set_condition_value(run_number, "events_num", events_num)
         db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
         db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
-        run = db.obtain_run(run_number)
+        run = db.create_run(run_number)
         db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=1))
         db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=2))
         db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=3))

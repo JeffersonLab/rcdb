@@ -261,7 +261,7 @@ class Run(ModelBase):
         return self.__tablename__ + "_" + str(self.number)
 
     def __repr__(self):
-        return "<Run id='{0}'>".format(self.id)
+        return "<Run number='{0}'>".format(self.number)
 
 
 #--------------------------------------------
@@ -303,26 +303,15 @@ class ConfigurationFile(ModelBase):
 class ConditionType(ModelBase):
     """
     Holds type and constants name of data attached to particular run.
-    :see Condition
-    : BOOL_FIELD: Ha ha ha, test it
-    :type BOOL_FIEL
-
     """
 
-    #: Boolean field. Is used for declaration of value_type
+    # Constants to represent the type of the field
     BOOL_FIELD = "bool"
-
     JSON_FIELD = "json"
-    """JSON field. It is a string constant using for declaration of value_type"""
-
     STRING_FIELD = "string"
-    """String field. It is a string constant using for declaration of value_type"""
-
     FLOAT_FIELD = "float"
-    """Float field. It is a string constant using for declaration of value_type"""
-
     INT_FIELD = "int"
-    """Integer field. It is a string constant using for declaration of value_type"""
+    TIME_FIELD = "time"
 
     __tablename__ = 'condition_types'
     """Name of the database table"""
@@ -333,12 +322,13 @@ class ConditionType(ModelBase):
     name = Column(String(255), nullable=False)
     """Key. Or constant name"""
 
-    value_type = Column(Enum(JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, native_enum=False),
+    value_type = Column(Enum(JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD,
+                             native_enum=False),
                         nullable=False, default=STRING_FIELD)
-    """Type of constant. Might be one of JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD"""
+    """Type of constant. Might be one of JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD"""
 
     is_many_per_run = Column(Boolean, nullable=False, default=True)
-    """True if the value is allowed only one per run"""
+    """True if the value is allowed many times per run"""
 
     created = Column(DateTime, default=datetime.datetime.now)
     """Time of creation (set automatically)"""
@@ -357,6 +347,9 @@ class ConditionType(ModelBase):
             #get condition values for
             condition_type.values.filter(Condition.run.number > 5000)
     """
+
+    def __repr__(self):
+        return "<ConditionType id='{}', name='{}', value_type={}>".format(self.id, self.name, self.value_type)
 
 
 class Condition(ModelBase):
@@ -404,6 +397,8 @@ class Condition(ModelBase):
             return self.float_value
         if field_type == ConditionType.BOOL_FIELD:
             return self.bool_value
+        if field_type == ConditionType.TIME_FIELD:
+            return self.time
         return self.text_value
 
     @value.setter
@@ -418,12 +413,13 @@ class Condition(ModelBase):
             self.float_value = val
         elif field_type == ConditionType.BOOL_FIELD:
             self.bool_value = val
+        elif field_type == ConditionType.TIME_FIELD:
+            self.time = val
         else:
             raise ValueError("Unknown field type! field_type='{}'".format(field_type))
 
-
     def __repr__(self):
-        return "<Condition id='{id}', run_number='{run_number}', value={value}>".format(self)
+        return "<Condition id='{}', run_number='{}', value={}>".format(self.id, self.run_number, self.value)
 
 
 class LogRecord(ModelBase):
@@ -438,6 +434,7 @@ class LogRecord(ModelBase):
     description = Column(String)
     related_run_number = Column('related_run', Integer, nullable=True)
     created = Column(DateTime, default=datetime.datetime.now)
+    user_name = Column(String(255), nullable=True)
 
     def __repr__(self):
         return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)

@@ -2,7 +2,7 @@ from datetime import datetime
 import unittest
 import rcdb
 import rcdb.model
-from rcdb.model import ConditionType, Condition
+from rcdb.model import ConditionType, Condition, Run
 
 import logging
 
@@ -18,7 +18,7 @@ class TestConditions(unittest.TestCase):
         self.db = rcdb.ConfigurationProvider("sqlite://")
         rcdb.model.Base.metadata.create_all(self.db.engine)
         # create run
-        self.db.obtain_run(1)
+        self.db.create_run(1)
 
     def tearDown(self):
         self.db.disconnect()
@@ -94,6 +94,10 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(val.value, 2222)
         self.assertEqual(val.int_value, 2222)
         self.assertIsNone(val.time)
+
+        # Add time information to the
+        val = self.db.add_condition(1, "single", 2222, datetime(2015, 10, 10, 15, 28, 12, 111), replace=True)
+        self.assertIsNotNone(val)
 
         # Create condition for non existent run is impossible
         self.assertRaises(rcdb.NoRunFoundError, self.db.add_condition, 1763654, "single", 2222)
@@ -183,6 +187,43 @@ class TestConditions(unittest.TestCase):
 
         result = self.db.get_condition(1, "float_cnd")
         self.assertEqual(result.value, 0.15)
+
+    def test_run_link_to_conditions(self):
+        """ Tests add_condition_value funciton
+        :return:None
+        """
+        ct = self.db.create_condition_type("one", ConditionType.INT_FIELD, False)
+        self.db.add_condition(1, "one", 1000)
+        ct = self.db.create_condition_type("two", ConditionType.INT_FIELD, False)
+        self.db.add_condition(1, "two", 2000)
+
+        run = self.db.get_run(1)
+
+        self.assertGreaterEqual(len(run.conditions),  2)
+        names = [condition.name for condition in run.conditions]
+        self.assertIn("one", names)
+        self.assertIn("two", names)
+
+    def test_query(self):
+        """ Tests add_condition_value function
+        :return:None
+        """
+        ct = self.db.create_condition_type("one", ConditionType.INT_FIELD, False)
+        ct = self.db.create_condition_type("two", ConditionType.INT_FIELD, False)
+
+        for i in range(101, 110):
+            self.db.create_run(i)
+            self.db.add_condition(i, "one", (i-100)*10)
+            print self.db.add_condition(i, "two", (i-100)*100).int_value
+
+
+        runs = self.db.session.query(Run).join(Run.conditions).join(Condition.type)\
+            .filter(Run.number > 105)\
+            .filter(((ConditionType.name == "two") & (Condition.int_value < 900)) | ((ConditionType.name == "one") & (Condition.int_value > 200)))
+
+        print str(runs)
+
+        print runs.all()
 
 
 

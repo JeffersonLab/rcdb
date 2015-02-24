@@ -461,6 +461,7 @@ CREATE TABLE IF NOT EXISTS `rcdb`.`logs` (
   `description` TEXT NOT NULL,
   `created` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `related_run` INT NULL DEFAULT NULL,
+  `user_name` VARCHAR(255) NULL,
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC))
 ENGINE = InnoDB;
