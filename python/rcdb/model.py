@@ -6,7 +6,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import Column, ForeignKey, Table
 from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText
-from sqlalchemy.orm import sessionmaker, reconstructor
+from sqlalchemy.orm import sessionmaker, reconstructor, object_session
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.ext.declarative import declared_attr
@@ -312,6 +312,7 @@ class ConditionType(ModelBase):
     FLOAT_FIELD = "float"
     INT_FIELD = "int"
     TIME_FIELD = "time"
+    BLOB_FIELD = "blob"
 
     __tablename__ = 'condition_types'
     """Name of the database table"""
@@ -322,10 +323,11 @@ class ConditionType(ModelBase):
     name = Column(String(255), nullable=False)
     """Key. Or constant name"""
 
-    value_type = Column(Enum(JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD,
+    value_type = Column(Enum(JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD, BLOB_FIELD,
                              native_enum=False),
                         nullable=False, default=STRING_FIELD)
-    """Type of constant. Might be one of JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD"""
+    """Type of constant. Might be one of:
+     JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD, BLOB_FIELD"""
 
     is_many_per_run = Column(Boolean, nullable=False, default=True)
     """True if the value is allowed many times per run"""
@@ -347,6 +349,33 @@ class ConditionType(ModelBase):
             #get condition values for
             condition_type.values.filter(Condition.run.number > 5000)
     """
+
+    @property
+    def run_query(self):
+        return object_session(self).query(Run)\
+            .join(Condition, Condition.run_number == Run.number)\
+            .filter(Condition.type == self)
+
+    @property
+    def value_field(self):
+        """ Gets appropriate Condition.xxx_value field according to type """
+
+        field = None
+        if self.value_type == ConditionType.INT_FIELD:
+            field = Condition.int_value
+        if self.value_type == ConditionType.STRING_FIELD \
+                or self.value_type == ConditionType.JSON_FIELD \
+                or self.value_type == ConditionType.BLOB_FIELD:
+            field = Condition.text_value
+        if self.value_type == ConditionType.FLOAT_FIELD:
+            field = Condition.float_value
+        if self.value_type == ConditionType.BOOL_FIELD:
+            field = Condition.bool_value
+        if self.value_type == ConditionType.TIME_FIELD:
+            field = Condition.time
+        return field
+
+
 
     def __repr__(self):
         return "<ConditionType id='{}', name='{}', value_type={}>".format(self.id, self.name, self.value_type)
@@ -391,7 +420,9 @@ class Condition(ModelBase):
         field_type = self.type.value_type
         if field_type == ConditionType.INT_FIELD:
             return self.int_value
-        if field_type == ConditionType.STRING_FIELD or field_type == ConditionType.JSON_FIELD:
+        if field_type == ConditionType.STRING_FIELD \
+                or field_type == ConditionType.JSON_FIELD \
+                or field_type == ConditionType.BLOB_FIELD:
             return self.text_value
         if field_type == ConditionType.FLOAT_FIELD:
             return self.float_value
@@ -407,7 +438,9 @@ class Condition(ModelBase):
         field_type = self.type.value_type
         if field_type == ConditionType.INT_FIELD:
             self.int_value = val
-        elif field_type == ConditionType.STRING_FIELD or field_type == ConditionType.JSON_FIELD:
+        elif field_type == ConditionType.STRING_FIELD \
+                or field_type == ConditionType.JSON_FIELD\
+                or field_type == ConditionType.BLOB_FIELD:
             self.text_value = val
         elif field_type == ConditionType.FLOAT_FIELD:
             self.float_value = val

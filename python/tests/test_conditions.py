@@ -15,7 +15,7 @@ class TestConditions(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.db = rcdb.ConfigurationProvider("sqlite://")
+        self.db = rcdb.RCDBProvider("sqlite://")
         rcdb.model.Base.metadata.create_all(self.db.engine)
         # create run
         self.db.create_run(1)
@@ -148,6 +148,7 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(values, [2222, 3333, 4444])
         self.assertEqual(times, [None, time1, time2])
 
+
     def test_timed_one_per_run_condition_values(self):
         """Test how to work with one_per_run condition values that have time information too"""
 
@@ -217,13 +218,42 @@ class TestConditions(unittest.TestCase):
             print self.db.add_condition(i, "two", (i-100)*100).int_value
 
 
+        print ct.run_query.filter(ct.value_field > 300).filter(ct.value_field < 900).all()
+
+
+        print self.db.session.query(Run).join(Run.conditions).filter((Condition.type == ct) & (Condition.int_value < 200)).all()
+
         runs = self.db.session.query(Run).join(Run.conditions).join(Condition.type)\
             .filter(Run.number > 105)\
             .filter(((ConditionType.name == "two") & (Condition.int_value < 900)) | ((ConditionType.name == "one") & (Condition.int_value > 200)))
 
+        print type(ConditionType.name == "haha")
+
         print str(runs)
 
         print runs.all()
+
+    def test_usage_of_string_values(self):
+        self.db.create_condition_type("string_val", ConditionType.STRING_FIELD, False)
+        self.db.add_condition(1, "string_val", "test test")
+        val = self.db.get_condition(1, "string_val")
+        self.assertEqual(val.value, "test test")
+
+    def test_time_only_condition(self):
+        """Test how to work with time information too"""
+
+        self.db.create_condition_type("lunch_bell_rang", ConditionType.TIME_FIELD, False)
+
+        # add value to run 1
+        time = datetime(2015, 9, 1, 14, 21, 01)
+        self.db.add_condition(1, "lunch_bell_rang", time)
+
+        # get from DB
+        val = self.db.get_condition(1, "lunch_bell_rang")
+        self.assertEqual(val.value, time)
+        self.assertEqual(val.time, time)
+        print val.value
+
 
 
 

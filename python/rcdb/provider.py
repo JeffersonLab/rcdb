@@ -277,7 +277,7 @@ class RCDBProvider(object):
         """ Adds condition value for the run
 
         What if such condition value is already exists for this run?
-        It depends on 'is_many_per_run'. Another wods if it is possible to have many such conditions per run or not.
+        It depends on 'is_many_per_run'. Another words if it is possible to have many such conditions per run or not.
 
         Only one value is allowed for a run (is_many_per_run=False) :
             1. If run has this condition, with the same value and actual_time it does nothing
@@ -355,6 +355,10 @@ class RCDBProvider(object):
         else:
             assert isinstance(key, str)
             ct = self.get_condition_type(key)
+
+        # if we have TIME_FIELD condition type, then value is meant to be the actual time
+        if ct.value_type == ConditionType.TIME_FIELD:
+            actual_time = value
 
         # Check! maybe ve have such condition value for this run
         condition_value = None

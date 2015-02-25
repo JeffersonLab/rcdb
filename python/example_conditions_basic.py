@@ -2,7 +2,7 @@ from datetime import datetime
 from rcdb.provider import RCDBProvider
 from rcdb.model import ConditionType
 
-# Create RCDBProvider provider object and connect it to DB
+# Create RCDBProvider object that connects to DB and provide most of the functions
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
