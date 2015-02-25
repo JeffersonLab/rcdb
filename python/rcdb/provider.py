@@ -342,14 +342,17 @@ class RCDBProvider(object):
         :rtype: Condition
         """
 
-        if actual_time is not None:
-            assert (isinstance(actual_time, datetime.datetime))
+        # get run for the condition
+        if isinstance(run_number, Run):
+            run = run_number
+        else:
+            run = self.get_run(run_number)
 
-        run = self.get_run(run_number)
         if not run:
             message = "No run with run_number='{}' found".format(run_number)
             raise NoRunFoundError(message)
 
+        # get type
         if isinstance(key, ConditionType):
             ct = key
         else:
@@ -359,6 +362,10 @@ class RCDBProvider(object):
         # if we have TIME_FIELD condition type, then value is meant to be the actual time
         if ct.value_type == ConditionType.TIME_FIELD:
             actual_time = value
+
+        # validate time
+        if actual_time is not None:
+            assert (isinstance(actual_time, datetime.datetime))
 
         # Check! maybe ve have such condition value for this run
         condition_value = None
@@ -426,7 +433,7 @@ class RCDBProvider(object):
             # if we are here, we haven't found the field with the same time and have to add
             condition_value = Condition()
             condition_value.type = ct
-            condition_value.run_number = run_number
+            condition_value.run = run
             self.session.add(condition_value)
 
         # finally if we are here, we either have to replace or just created the object

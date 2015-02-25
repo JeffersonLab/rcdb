@@ -17,9 +17,9 @@ def make_dummy_db():
 
     # create runs and fill values
     for i in range(0, 100):
-        db.create_run(i)
-        db.add_condition(i, event_count_type, i + 950)      #event_count in range 950 - 1049
-        db.add_condition(i, data_value_type, (i/100.0) + 1) #data_value in 1 - 2
+        run = db.create_run(i)
+        db.add_condition(run, event_count_type, i + 950)      # event_count in range 950 - 1049
+        db.add_condition(i, data_value_type, (i/100.0) + 1)   # data_value in 1 - 2
 
     print("Runs filled with data")
     return db

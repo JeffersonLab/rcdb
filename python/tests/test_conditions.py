@@ -254,6 +254,18 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(val.time, time)
         print val.value
 
+    def test_use_run_instead_of_run_number(self):
+
+        run = self.db.create_run(2)
+        ct = self.db.create_condition_type("lalala", ConditionType.INT_FIELD, False)
+        val = self.db.add_condition(run, ct, 10)      # event_count in range 950 - 1049
+
+        self.assertEqual(val.run_number, 2)
+
+
+
+
+
 
 
 
