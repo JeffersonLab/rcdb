@@ -6,7 +6,7 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False)
+db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False, description="This is my value")
 
 # Add data to database
 db.add_condition(1, "my_val", 1000)
@@ -33,8 +33,21 @@ print "name =", ct.name
 print "value_type =", ct.value_type
 
 
-# Getting Run information
+# Get all existing conditions names and their descriptions
+print "Get all existing conditions names and their descriptions"
+for ct in db.get_condition_types():
+    print ct.name, ':', ct.description
+
+
+
+# Getting Run information and conditions
+print "Getting Run information and conditions"
 run = db.get_run(1)
 
 print run
 print "run_number =", run.number
+
+print "Conditions for run {}".format(run.number)
+for condition in run.conditions:
+    print condition.name, '=', condition.value
+

@@ -4,59 +4,61 @@ import logging
 import rcdb
 from rcdb.log_format import BraceMessage as lf
 from rcdb import ConfigurationProvider
+from rcdb import coda_parser
+
+
 
 from datetime import datetime
 
-#setup logger
+# setup logger
 log = logging.getLogger('rcdb')                     # create run configuration standard logger
 log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
 log.setLevel(logging.DEBUG)                         # print everything. Change to logging.INFO for less output
 
 
-#entry point
-if __name__ == "__main__":
+def print_usage():
+    print("""
+    Usage:
+        run_prestart <coda_xml_log_file> <db_connection_string>
+        run_end      <coda_xml_log_file> <db_connection_string>
 
-    #check we have arguments
+    <db_connection_string> - is optional. But if it is not set, RCDB_CONNECTION environment variable should be set
+
+    """)
+
+
+def parse_files():
+    # check we have arguments
     if len(sys.argv) < 2:
-        print("Please provide a path to xml data file")
+        print("ERROR! Please provide a path to xml data file")
+        print_usage()
         sys.exit(1)
 
-    #read xml file and get root and run-start element
-    log.debug(lf("Parsing file {0}", sys.argv[1]))
-    ET.parse()
-    xml_root = ET.parse(sys.argv[1]).getroot()
-    xml_run_start = xml_root.find("run-start")
+    # coda xml file name
+    coda_xml_log_file = sys.argv[1]
 
-    #read xml-root data (which is <coda runtype = "xxx" session = "yyy">
-    runtype = xml_root.attrib["runtype"]
-    session = xml_root.attrib["session"]
-
-    #read run-start info
-    files = [xml_file.text for xml_file in xml_run_start.findall("file")]
-    run_number = int(xml_run_start.find("run-number").text)
-
-    xml_start_comment = xml_run_start.find("start-comment")
-    start_comment = xml_start_comment.text if xml_start_comment else None   # start comment could be absent
-
-    start_time = datetime.strptime(xml_run_start.find("start-time").text,"%m/%d/%y %H:%M:%S")
-
-    #log gathered information
-    log.info(lf("Files to add: '{}'","', '".join(files)))
-    log.info(lf("Run_number '{}'", run_number))
-    log.info(lf("Start time '{}'", start_time))
-    log.info(lf("Start comment text: {}...", start_comment[0:100] if start_comment else None))
-
-    #add everything to run number
-    db = ConfigurationProvider()
-    con_string = os.environ["RCDB_CONNECTION"] if "RCDB_CONNECTION" in os.environ else None
-    if con_string:
-        db.connect(con_string)
+    if len(sys.argv) > 2:       # RCDB connection string is given
+        con_string = sys.argv[2]
+    elif "RCDB_CONNECTION" in os.environ:
+        con_string = os.environ["RCDB_CONNECTION"]
     else:
-        db.connect()
+        print ("ERROR! RCDB_CONNECTION is not set and is not given as a parameter")
+        print_usage()
+        sys.exit(2)
 
-    db.add_run_start_time(run_number, start_time)
-    if start_comment:
-        db.add_condition(run_number, rcdb.START_COMMENT_RECORD_KEY, start_comment, start_time)
-    db.add_configuration_file(run_number, sys.argv[1])
-    for file in files:
-        db.add_configuration_file(run_number, os.path.abspath(file))
+    # Open DB connection
+    db = ConfigurationProvider(con_string)
+
+    # Parse coda xml and save to DB
+    run, run_config_file = coda_parser.parse_file(db, coda_xml_log_file)
+    db.add_configuration_file(run, coda_xml_log_file)
+
+    # Parse run configuration file and save to DB
+    if run_config_file:
+        # mmm just save for now
+        db.add_configuration_file(run, run_config_file)
+
+
+# entry point
+if __name__ == "__main__":
+    parse_files()

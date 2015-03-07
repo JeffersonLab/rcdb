@@ -1,14 +1,11 @@
 
 
-class NotFoundConditionTypeError(Exception):
-    pass
-
 
 class OverrideConditionTypeError(Exception):
     pass
 
 
-class NoConditionTypeFoundError(Exception):
+class NoConditionTypeFound(Exception):
     pass
 
 class OverrideConditionValueError(Exception):

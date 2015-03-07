@@ -1,10 +1,11 @@
+from rcdb.model import ConditionType
 import sqlalchemy
 from sqlalchemy.orm import sessionmaker
-#from .model import Board
+# from .model import Board
 
 from .provider import RCDBProvider
 from .provider import ConfigurationProvider
-from .errors import NotFoundConditionTypeError, OverrideConditionTypeError, NoConditionTypeFoundError
+from .errors import OverrideConditionTypeError, NoConditionTypeFound
 from .errors import OverrideConditionValueError, NoRunFoundError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -48,111 +49,45 @@ def make_threshold_preset(db, board, values):
         text_values = list_to_db_text(values)
 
 
-
-
-
-if __name__ == "__main__":
-    engine = sqlalchemy.create_engine('mysql+mysqlconnector://triggerdb@127.0.0.1/triggerdb')
-    Session = sessionmaker(bind=engine)
-    session = Session()
-    #boards = session.query(Board).all()
-
-
-
-
+class DefaultConditions(object):
     """
-        print sqlalchemy.__version__
+    Holds common names for conditions and can ensure database have them
+    """
 
-        root_dir = Directory()
-        root_dir.path = '/'
-        root_dir.name = ''
-        root_dir.id = 0
+    EVENT_RATE = 'event_rate'
+    EVENT_COUNT = 'event_count'
+    RUN_TYPE = 'run_type'
+    RUN_CONFIG = 'run_config'
+    SESSION = 'session'
+    USER_COMMENT = 'user_comment'
+    COMPONENTS = 'components'
+    COMPONENT_STATS = 'component_stats'
+    RTVS = 'rtvs'
 
-        engine = sqlalchemy.create_engine('mysql://ccdb_user@127.0.0.1/ccdb')
+    @staticmethod
+    def create_condition_types(db):
+        """
+        Checks if condition types listed in class exist in the database and create them if not
+        :param db: RCDBProvider connected to database
+        :type db: RCDBProvider
 
-        def structure_dirs(dirs):
+        :return: None
+        """
+        all_types_dict = {t.name: t for t in db.get_condition_types()}
+        create_condition_type = lambda name, value_type: \
+            all_types_dict[name] if name in all_types_dict.keys() else db.create_condition_type(name, value_type, False)
 
-            assert(isinstance(dirs,type({})))
-
-            #clear the full path dictionary
-            dirsByFullPath = {root_dir.path: root_dir}
-
-            #begin loop through the directories
-            for dir in dirs.values():
-                assert (isinstance(dir, Directory))
-
-                parent_dir = root_dir
-
-                # and check if it have parent directory
-                if dir.parent_id >0:
-                    #this directory must have a parent! so now search it
-                    parent_dir = dirs[dir.parent_id]
-
-                parent_dir.sub_dirs.append(dir)
-                dir.path = posixpath.join(parent_dir.path, dir.name)
-                dir.parent_dir = parent_dir
-                dirsByFullPath[dir.path] = dir
-
-            return dirsByFullPath
-            #end of structure_dirs()
-
-
-        def get_dirs_by_id_dic(dirs):
-            result = {}
-            for dir in dirs:
-                assert(isinstance(dir, Directory))
-                result[dir.id]=dir
-
-            return result
+        # get or create condition type
+        create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)
+        create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD)
+        create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD)
+        create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD)
+        create_condition_type(DefaultConditions.SESSION, ConditionType.STRING_FIELD)
+        create_condition_type(DefaultConditions.USER_COMMENT, ConditionType.STRING_FIELD)
+        create_condition_type(DefaultConditions.COMPONENTS, ConditionType.JSON_FIELD)
+        create_condition_type(DefaultConditions.RTVS, ConditionType.JSON_FIELD)
+        create_condition_type(DefaultConditions.COMPONENT_STATS, ConditionType.JSON_FIELD)
 
 
-        Session = sessionmaker(bind=engine)
-        session = Session()
-        dirsById = get_dirs_by_id_dic(session.query(Directory))
-        dirsByFullPath = structure_dirs(dirsById)
 
-
-        for key,val in dirsByFullPath.items():
-                print key, val, val.id
-
-        experiment_dir = dirsByFullPath['/test/test_vars']
-
-        assert (isinstance(experiment_dir, Directory))
-
-        t = TypeTable()
-
-        for table in experiment_dir.type_tables:
-            print " TABLE: " + table.name
-            print " +--> COLUMNS:"
-
-            for column in table.columns:
-                print "      +-->" + column.name
-
-            print " +--> CONSTANTS:"
-
-            for set in table.constant_sets:
-                print "      +-->" + set.vault
-
-
-        #assignments = session.query(Assignment)
-
-        #for assignment in assignments:
-         #   assignment.print_deps()
-
-        query = session.query(Assignment).join(ConstantSet).join(TypeTable).join(RunRange).join(Variation)\
-                .filter(Variation.name == "default").filter(TypeTable.name=="test_table").filter(RunRange.min<=1000).filter(RunRange.max>=1000)\
-                .order_by(desc(Assignment.id)).limit(1).one()
-
-        print query
-
-        print query.print_deps()
-
-        #for assignment in query:
-        #    assignment.print_deps()
-        print session.dirty
-
-        q = session.query(Directory)
-        q = q.limit(1)
-
-        print q"""
 

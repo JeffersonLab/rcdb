@@ -244,16 +244,6 @@ class Run(ModelBase):
     conditions = relationship("Condition", back_populates="run")
     """Conditions associated with the run"""
 
-    #total_events = Column(Integer, nullable=False, default=0)
-
-    #@property
-    #def records_map(self):
-    #    """
-    #    :return: map with pedestal values as strings
-    #    :rtype:  {str:Condition}
-    #    """
-    #   rbt = {record.key: record for record in self.records}
-    #   return rbt
 
     @property
     def log_id(self):
@@ -349,6 +339,8 @@ class ConditionType(ModelBase):
             #get condition values for
             condition_type.values.filter(Condition.run.number > 5000)
     """
+
+    description = Column(String(255), nullable=True)
 
     @property
     def run_query(self):

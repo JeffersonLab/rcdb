@@ -27,13 +27,14 @@ class TestConditions(unittest.TestCase):
         """Test of create_condition_type function"""
 
         # Create condition type
-        ct = self.db.create_condition_type("test", ConditionType.FLOAT_FIELD, False)
+        ct = self.db.create_condition_type("test", ConditionType.FLOAT_FIELD, False, description="This is a test")
 
         # Check values
         self.assertIsInstance(ct, ConditionType)
         self.assertEqual(ct.name, "test")
         self.assertEqual(ct.value_type, ConditionType.FLOAT_FIELD)
         self.assertFalse(ct.is_many_per_run)
+        self.assertEqual(ct.description, "This is a test")
 
         # Creating ConditionType with the same name but different type or flag should raise
         self.assertRaises(rcdb.OverrideConditionTypeError, self.db.create_condition_type, "test",
@@ -57,7 +58,7 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(ct.name, "test")
 
         # now check that there is no way selecting non existent
-        self.assertRaises(rcdb.NoConditionTypeFoundError, self.db.get_condition_type, "abra kadabra")
+        self.assertRaises(rcdb.NoConditionTypeFound, self.db.get_condition_type, "abra kadabra")
 
     def test_basic_work_with_condition_value(self):
         """ Tests add_condition_value funciton
@@ -261,6 +262,35 @@ class TestConditions(unittest.TestCase):
         val = self.db.add_condition(run, ct, 10)      # event_count in range 950 - 1049
 
         self.assertEqual(val.run_number, 2)
+
+    def test_auto_commit_false(self):
+        """ Test auto_commit feature that allows to commit changes to DB later and"""
+        ct = self.db.create_condition_type("ac", ConditionType.INT_FIELD, False)
+
+        # Add condition to addition but don't commit changes
+        self.db.add_condition(1, ct, 10, auto_commit=False)
+
+        # But the object is selectable already
+        val = self.db.get_condition(1, ct)
+        self.assertEqual(val.value, 10)
+
+        # Commit session. Now "ac"=10 is stored in the DB
+        self.db.session.commit()
+
+        # Now we deffer committing changes to DB. Object is in SQLAlchemy cache
+        self.db.add_condition(1, ct, 20, None, True, False)
+        self.db.add_condition(1, ct, 30, None, True, False)
+
+        # If we select this object, SQLAlchemy gives us changed version
+        val = self.db.get_condition(1, ct)
+        self.assertEqual(val.value, 30)
+
+        # Roll back changes
+        self.db.session.rollback()
+        val = self.db.get_condition(1, ct)
+        self.assertEqual(val.value, 10)
+
+
 
 
 

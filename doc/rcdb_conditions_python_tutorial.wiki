@@ -98,42 +98,71 @@ python $RCDB_HOME/python/create_empty_sqlite.py path_to_database.db
 
 
 
-== Getting started ==
-
-Lets start with basic working example.
+== ALL YOU HAVE TO KNOW example ==
+At least to start with RCDB conditions, to put values and to get them back:
 
 <syntaxhighlight lang="python">
 from datetime import datetime
 from rcdb.provider import RCDBProvider
 from rcdb.model import ConditionType
 
-# Create RCDBProvider object that connects to DB and provide most of the functions
+# 1. Create RCDBProvider object that connects to DB and provide most of the functions
 db = RCDBProvider("sqlite:///example.db")
 
-# Create condition type
-db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False)
+# 2. Create condition type. It is done only once
+db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False, description="This is my value")
 
-# Add data to database
+# 3. Add data to database
 db.add_condition(1, "my_val", 1000)
 
 # Replace previous value
 db.add_condition(1, "my_val", 2000, replace=True)
 
-# Get condition from database
+# 4. Get condition from database
 condition = db.get_condition(1, "my_val")
 
 print condition
 print "value =", condition.value
 print "name  =", condition.name
+
 </syntaxhighlight>
 
 The script result:
-
-<syntaxhighlight lang="python">
+<pre>
 <Condition id='1', run_number='1', value=2000>
 value = 2000
 name  = my_val
+</pre>
+
+
+More actions on objects:
+
+<syntaxhighlight lang="python">
+# 5. Get all existing conditions names and their descriptions
+for ct in db.get_condition_types():
+    print ct.name, ':', ct.description
 </syntaxhighlight>
+
+
+The script result:
+<pre>
+my_val : This is my value
+</pre>
+
+
+<syntaxhighlight lang="python">
+# 6. Get all values for the run 1
+run = db.get_run(1)
+print "Conditions for run {}".format(run.number)
+for condition in run.conditions:
+    print condition.name, '=', condition.value
+</syntaxhighlight>
+
+
+The script result:
+<pre>
+my_val = 2000
+</pre>
 
 
 
@@ -337,7 +366,8 @@ Lets look ''create_condition_type'' from the example above (we add parameter nam
 <syntaxhighlight lang="python">
 db.create_condition_type(name="my_val",
                          value_type=ConditionType.INT_FIELD,
-                         is_many_per_run=False)
+                         is_many_per_run=False,
+                         description="This is my value")
 </syntaxhighlight>
 
 
@@ -356,7 +386,6 @@ category-sub_name
 Names are just strings. RCDB doesn't provide special treatment of slashes '/' or directories.
 
 
-
 '''value_type''' - The second parameter defines type of the value. It can be one of:
 
 * ConditionType.STRING_FIELD
@@ -370,24 +399,25 @@ Names are just strings. RCDB doesn't provide special treatment of slashes '/' or
 More examples of how to use types are presented in the next section
 
 
+'''is_many_per_run''' - Allows to store many values with different time for the same run
 
-'''is_many_per_run''' - There are two different behaviours that are assumed for run conditions:
+* '''False''' - API works as '''name''' - '''value'''(time), i.e. it checks that there is only one value per run
 
-* ''is_many_per_run''='''False'''
-Sometimes it is intended to have strictly one name-value for a run. ''total_events'' or ''target_material'' are the
-examples. If ''is_many_per_run'' is set to ''False'', then API checks that there is '''only one''' value per run.
-
-
-* ''is_many_per_run''='''True'''
-But in another cases it is desirable to have '''name''' - '''[(value1, time1), (value2, time2), ...]''' data.
-Hall ''temperature'' or ''event_rate'' during a run are those examples.
+* '''True''' - API allows '''name''' - '''[(value1, time1), (value2, time2), ...]''' scheme.
 
 
-If ''is_many_per_run'' is set to '''True''', then API allows to have different values for different times for one name
-and one run.
-
+''Explanation'' - There are two different behaviours that are assumed for run conditions: Sometimes it is intended to
+have strictly one name-value for a run. "''total_events''" or "''target_material''" are the examples. If
+''is_many_per_run=False'', then API checks that there is '''only one''' value per run. But the sometimes it is
+desirable to track value change during a run. Hall "''temperature''" or "''current''" are those examples.
+If ''is_many_per_run=True'', then API allows to set several values for different times under the same name for the same run
 
 More examples on it is given in [[#Replacing previous values]]
+
+
+'''description''' - 255 chars max human readable description, that other users can see. It is optional but it is very
+good practice to fill it.
+
 
 
 
@@ -1189,6 +1219,89 @@ First None means there is no specific database object ID for this message. The l
 
 
 
+
+== Performance ==
+
+
+
+
+=== Reusing objects ===
+
+
+Most of the API functions (like <code>add_condition(...)</code> or  <code>get_condition(...)</code>) can accept model objects as parameters:
+
+<syntaxhighlight lang="python">
+# 1. Using run number and condition name
+db.add_condition(1, "my_value", 10)
+
+# 2. Using model objects
+run = db.get_run(1)
+ct = db.get_condition_type("my_value")
+db.add_condition(run, ct, 10)
+</syntaxhighlight>
+
+
+When you do <code>db.add_condition(1, "my_value", 10)</code> condition type and run are queried inside a function. If you do several actions with one object, like adding many conditions for one run or adding one condition to many runs, reusing the object could boost performance up to 30% each.
+
+
+
+
+
+=== Auto commit value addition===
+Performance study shows, that approximately 50% of the time spent in <code>add_condition(...)</code> is used to commit changes to DB.
+
+To speed up conditions addition <code>add_condition(...)</code> function has '''auto_commit''' optional argument.
+By default it is '''True''', changes are committed to DB, if ''add_condition'' call is successful.
+Setting ''auto_commit''='''False''' allows to defer commit, changes are pending in SQLAlchemy cache and can be committed
+manually later.
+
+
+''auto_commit''='''False''' purposes are:
+
+* Make a lot of changes and commit them at one time gaining performance
+* Rollback changes
+
+
+To commit changes, having <code>db = RCDBProvider(...)</code> you should call <code>db.session.commit()</code>
+
+
+<syntaxhighlight lang="python">
+""" Test auto_commit feature that allows to commit changes to DB later"""
+ct = self.db.create_condition_type("ac", ConditionType.INT_FIELD, False)
+
+# Add condition to addition but don't commit changes
+self.db.add_condition(1, ct, 10, auto_commit=False)
+
+# But the object is selectable already
+val = self.db.get_condition(1, ct)
+self.assertEqual(val.value, 10)
+
+# Commit session. Now "ac"=10 is stored in the DB
+self.db.session.commit()
+
+# Now we deffer committing changes to DB. Object is in SQLAlchemy cache
+self.db.add_condition(1, ct, 20, None, True, False)
+self.db.add_condition(1, ct, 30, None, True, False)
+
+# If we select this object, SQLAlchemy gives us changed version
+val = self.db.get_condition(1, ct)
+self.assertEqual(val.value, 30)
+
+# Roll back changes
+self.db.session.rollback()
+val = self.db.get_condition(1, ct)
+self.assertEqual(val.value, 10)
+</syntaxhighlight>
+
+
+The example is available in tests:
+
+<pre>
+$RCDB_HOME/python/tests/test_conditions.py
+</pre>
+
+
+(!) note at the same time, that more complex scenarios with not committed objects haven't been tested.
 
 == Support ==
 Dmitry Romanov <[mailto:romanov@jlab.org romanov@jlab.org]>

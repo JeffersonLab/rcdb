@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="1476675893">
+    <data-source source="LOCAL" name="SQLite generated.db" uuid="8901669a-7f82-4b4c-af9f-bf79a745e3f1">
+      <driver-ref>sqlite.zentus</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/../generated.db</jdbc-url>
+      <libraries />
+    </data-source>
+  </component>
+</project>

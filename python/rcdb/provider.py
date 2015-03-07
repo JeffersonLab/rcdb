@@ -9,7 +9,7 @@ import re
 import logging
 import sys
 from log_format import BraceMessage as Lf
-from .errors import OverrideConditionTypeError, NoConditionTypeFoundError, NoRunFoundError, OverrideConditionValueError
+from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError
 import sqlalchemy.orm
 from sqlalchemy.orm import Session
 
@@ -28,9 +28,7 @@ log = logging.getLogger("rcdb.provider")
 
 
 class RCDBProvider(object):
-    """
-        RCDB data provider that uses SQLAlchemy for accessing databases
-    """
+    """ RCDB data provider that uses SQLAlchemy for accessing databases """
 
     def __init__(self, connection_string=None, user_name=""):
         self._is_connected = False
@@ -213,13 +211,27 @@ class RCDBProvider(object):
             return self.session.query(ConditionType).filter(ConditionType.name == name).one()
         except NoResultFound:
             message = "No ConditionType with name='{}' is found in DB".format(name)
-            raise NoConditionTypeFoundError(message)
+            raise NoConditionTypeFound(message)
+
+    # ------------------------------------------------
+    # Returns condition type
+    # ------------------------------------------------
+    def get_condition_types(self):
+        """Gets all condition types as list of ConditionType
+
+        :return: all ConditionTypes in db
+        :rtype: dict, {ConditionType}
+        """
+        try:
+            return self.session.query(ConditionType).all()
+        except NoResultFound:
+            return []
 
 
     # ------------------------------------------------
     # Creates condition type
     # ------------------------------------------------
-    def create_condition_type(self, name, value_type, is_many_per_run):
+    def create_condition_type(self, name, value_type, is_many_per_run, description=""):
         """
         Creates condition type
 
@@ -231,6 +243,9 @@ class RCDBProvider(object):
 
         :param is_many_per_run: if true many condition of the same type can be attached to a one run
         :type is_many_per_run: bool
+
+        :param description: Short description of the condition. 255 chars max
+        :type description: basestring
 
         :return: ConditionType object that corresponds to created DB record
         :rtype: ConditionType
@@ -264,6 +279,7 @@ class RCDBProvider(object):
             ct.is_many_per_run = is_many_per_run
             ct.name = name
             ct.value_type = value_type
+            ct.description = description
             self.session.add(ct)
             self.session.commit()
             self.add_log_record(ct, "ConditionType created with name='{}', type='{}', is_many_per_run='{}'"
@@ -273,7 +289,7 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Adds condition value to database
     # ------------------------------------------------
-    def add_condition(self, run_number, key, value, actual_time=None, replace=False):
+    def add_condition(self, run, key, value, actual_time=None, replace=False, auto_commit=True):
         """ Adds condition value for the run
 
         What if such condition value is already exists for this run?
@@ -326,11 +342,11 @@ class RCDBProvider(object):
                2: value=4444; time=time2]
 
 
-        :param run_number: The run number for this condition value
-        :type run_number: int
+        :param run: The run number for this condition value
+        :type run: int
 
         :param key: name of condition or ConditionType
-        :type condition_type: str or ConditionType
+        :type key: str or ConditionType
 
         :param actual_time:
         :type actual_time: datetime.datetime
@@ -343,13 +359,11 @@ class RCDBProvider(object):
         """
 
         # get run for the condition
-        if isinstance(run_number, Run):
-            run = run_number
-        else:
-            run = self.get_run(run_number)
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.get_run(run)
 
         if not run:
-            message = "No run with run_number='{}' found".format(run_number)
+            message = "No run with run_number='{}' found".format(run)
             raise NoRunFoundError(message)
 
         # get type
@@ -368,10 +382,9 @@ class RCDBProvider(object):
             assert (isinstance(actual_time, datetime.datetime))
 
         # Check! maybe ve have such condition value for this run
-        condition_value = None
-        db_result = self.get_condition(run_number, ct)
+        condition = None
+        db_result = self.get_condition(run, ct)
         if db_result:
-
 
             if ct.is_many_per_run:
                 # we have many per run situation
@@ -387,13 +400,13 @@ class RCDBProvider(object):
                             # value mismatch
                             if replace:
                                 # We have to replace the old value
-                                condition_value = db_value
+                                condition = db_value
                                 break
                             else:
                                 message = "Condition with such time('{}') already exists for the run_number='{}'" \
                                           "but the is different. DB saved value='{}', new value='{}'. " \
                                           "(Add replace=True flag if you want to replace the old value)" \
-                                    .format(actual_time, run_number, db_value.value, value)
+                                    .format(actual_time, run, db_value.value, value)
                                 raise OverrideConditionValueError(message)
                         else:
                             # we found the same value. Return it
@@ -408,40 +421,44 @@ class RCDBProvider(object):
                     # time mismatch
                     if replace:
                         # We have to replace the old value
-                        condition_value = db_value
+                        condition = db_value
                     else:
                         message = "Condition with already exists for the run_number='{}'" \
                                   "but the time is different. DB saved time='{}', new time='{}'. " \
                                   "(Add replace=True flag if you want to replace the old value)" \
-                            .format(run_number, db_value.time, actual_time)
+                            .format(run, db_value.time, actual_time)
                         raise OverrideConditionValueError(message)
 
-                if db_value.value != value:
+                elif db_value.value != value:
                     # field have different value
                     if replace:
                         # We have to replace the old value
-                        condition_value = db_value
+                        condition = db_value
                     else:
                         message = "Condition with already exists for the run_number='{}' " \
                                   "but the value is different. DB saved value='{}', new value='{}'. " \
                                   "(Add replace=True flag if you want to replace the old value)" \
-                            .format(run_number, db_value.value, value)
+                            .format(run, db_value.value, value)
 
                         raise OverrideConditionValueError(message)
+                else:
+                    # the value and time are the same
+                    return db_value
 
-        if not condition_value:
+        if not condition:
             # if we are here, we haven't found the field with the same time and have to add
-            condition_value = Condition()
-            condition_value.type = ct
-            condition_value.run = run
-            self.session.add(condition_value)
+            condition = Condition()
+            condition.type = ct
+            condition.run = run
+            self.session.add(condition)
 
         # finally if we are here, we either have to replace or just created the object
         # now we have to only add value and time and save it to DB
-        condition_value.value = value
-        condition_value.time = actual_time
-        self.session.commit()
-        return condition_value
+        condition.value = value
+        condition.time = actual_time
+        if auto_commit:
+            self.session.commit()
+        return condition
 
     # ------------------------------------------------
     # Gets condition
@@ -473,6 +490,7 @@ class RCDBProvider(object):
             filter(Condition.type == ct, Condition.run_number == run_number)
 
         return query.all() if ct.is_many_per_run else query.first()
+
 
 class ConfigurationProvider(RCDBProvider):
     """
@@ -557,9 +575,6 @@ class ConfigurationProvider(RCDBProvider):
             return query.first()
 
 
-
-
-
     # ------------------------------------------------
     #
     # ------------------------------------------------
@@ -585,7 +600,7 @@ class ConfigurationProvider(RCDBProvider):
     # ------------------------------------------------
     def add_board_config_to_run(self, run, board, dac_preset):
         """sets that the board have the dac preset values in the run"""
-        if not isinstance(run, Run):
+        if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(int(run))
 
         if not isinstance(dac_preset, DacPreset):
@@ -594,7 +609,7 @@ class ConfigurationProvider(RCDBProvider):
         # query = self.session.query(BoardConfiguration).join(BoardConfiguration.runs) \
         # .filter(RunConfiguration.id == run.id,
         # BoardConfiguration.board_id == board.id,
-        #            BoardConfiguration.dac_preset_id == dac_preset.id)
+        # BoardConfiguration.dac_preset_id == dac_preset.id)
 
         query = self.session.query(BoardConfiguration) \
             .filter(BoardConfiguration.board_id == board.id,
@@ -639,7 +654,7 @@ class ConfigurationProvider(RCDBProvider):
             crate, board, slot = board_installation
             board_installation = self.obtain_board_installation(crate, board, slot)
 
-        if not isinstance(run, Run):
+        if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(int(run))
         assert isinstance(board_installation, BoardInstallation)
 
@@ -655,12 +670,13 @@ class ConfigurationProvider(RCDBProvider):
             log.debug(Lf("Board installation id='{}' already associated with run='{}'",
                          board_installation.id, run.number))
 
+
     # ------------------------------------------------
     #
     # ------------------------------------------------
     def add_run_statistics(self, run, total_events):
         """adds run statistics like total events number, etc"""
-        if not isinstance(run, Run):
+        if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(int(run))
 
         run.total_events = total_events
@@ -672,30 +688,35 @@ class ConfigurationProvider(RCDBProvider):
     # ------------------------------------------------
     #
     # ------------------------------------------------
-    def add_run_start_time(self, run_num, dtm):
+    def add_run_start_time(self, run, dtm):
         """
             Sets staring time of run
         """
         assert (isinstance(dtm, datetime.datetime))
 
-        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run_num))
-        run = self.create_run(run_num)
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(int(run))
+
+        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
+
         run.start_time = dtm
         self.session.commit()
-        self.add_log_record(run, "Start time changed to '{}' for run '{}'".format(dtm, run_num), run_num)
+        self.add_log_record(run, "Start time changed to '{}' for run '{}'".format(dtm, run.number), run)
 
     # ------------------------------------------------
     #
     # ------------------------------------------------
-    def add_run_end_time(self, run_num, dtm):
+    def add_run_end_time(self, run, dtm):
         """Adds time of run"""
         assert (isinstance(dtm, datetime.datetime))
 
-        log.debug(Lf("Setting end time '{}' to run '{}'", dtm, run_num))
-        run = self.create_run(run_num)
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(int(run))
+
+        log.debug(Lf("Setting end time '{}' to run '{}'", dtm, run.number))
         run.end_time = dtm
         self.session.commit()
-        log.info(Lf("End time changed to '{}' for run '{}'", dtm, run_num))
+        log.info(Lf("End time changed to '{}' for run '{}'", dtm, run.number))
 
     # ------------------------------------------------
     #
@@ -706,15 +727,24 @@ class ConfigurationProvider(RCDBProvider):
         value = {"type": comp_type, "event-rate": evt_rate, "data-rate": data_rate, "event-count": evt_number}
         self.add_condition(run_number, key, value, actual_time, "dict")
 
+
     # ------------------------------------------------
     #
     # ------------------------------------------------
-    def add_configuration_file(self, run_num, path):
+    def add_configuration_file(self, run, path, content=None):
         """Adds configuration file to run configuration. If such file exists"""
 
         log.debug("Processing configuration file")
-        check_sum = file_archiver.get_file_sha256(path)
-        run_conf = self.create_run(run_num)
+
+        if content is None:
+            log.debug(Lf("|- Content is None, assuming using file '{}'", path))
+            check_sum = file_archiver.get_file_sha256(path)
+        else:
+            log.debug(Lf("|- Content is NOT none, using it to put to DB", path))
+            check_sum = file_archiver.get_string_sha256(content)
+
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(run)
 
         # Look, do we have such file?
         file_query = self.session.query(ConfigurationFile) \
@@ -728,18 +758,21 @@ class ConfigurationProvider(RCDBProvider):
             conf_file = ConfigurationFile()
             conf_file.sha256 = check_sum
             conf_file.path = path
-            with open(path) as io_file:
-                conf_file.content = io_file.read()
+            if content is None:
+                with open(path) as io_file:
+                    conf_file.content = io_file.read()
+            else:
+                conf_file.content = content
 
             # put it to DB and associate with run
             self.session.add(conf_file)
             self.session.commit()
 
-            conf_file.runs.append(run_conf)
+            conf_file.runs.append(run)
 
             # save and exit
             self.session.commit()
-            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run_num), run_num)
+            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run), run)
             return
 
         # such file already exists! Get it from database
@@ -747,13 +780,13 @@ class ConfigurationProvider(RCDBProvider):
         log.debug(Lf("|- File '{}' found in DB by id: '{}'", path, conf_file.id))
 
         # maybe... we even have this file in run conf?
-        if conf_file not in run_conf.files:
-            conf_file.runs.append(run_conf)
+        if conf_file not in run.files:
+            conf_file.runs.append(run)
             # run_conf.files.append(conf_file)
             self.session.commit()  # save and exit
-            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run_num), run_num)
+            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run)
         else:
-            log.debug(Lf("|- File already associated with run'{}'", run_num))
+            log.debug(Lf("|- File already associated with run'{}'", run))
 
 
 

@@ -1,0 +1,15 @@
+
+== Packages ==
+pip install gprof2dot
+apt-get install xdot
+
+
+python -m cProfile -o foo.stats <script name>
+gprof2dot foo.stats -f pstats > foo.dot
+dot -Tps foo.dot > output.eps
+dot -Tpng  foo.dot > output.png
+xdot to see
+
+==runsnake==
+pip install RunSnakeRun
+runsnake foo.stats
