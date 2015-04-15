@@ -26,4 +26,4 @@ if ( ! $?PYTHONPATH ) then
 else
     setenv PYTHONPATH "$RCDB_HOME/python":$PYTHONPATH
 endif
-setenv PATH "$RCDB_HOME/bin":$PATH
+setenv PATH "$RCDB_HOME":$PATH

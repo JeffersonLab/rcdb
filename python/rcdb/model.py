@@ -22,7 +22,6 @@ class ModelBase(Base):
         return self.__tablename__ + "_" + str(self.id)
 
 
-
 # objects for many to many association
 _board_conf_have_runs_association = Table('board_configurations_have_runs', Base.metadata,
                                           Column('board_configuration_id', Integer,
@@ -49,9 +48,9 @@ def _count_version(context, table_name):
         return int(row['n'])
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class Board
-#--------------------------------------------
+# --------------------------------------------
 class Board(ModelBase):
     """
     Represents trigger DB board.
@@ -73,9 +72,9 @@ class Board(ModelBase):
         return "<Board id='{0}' name='{1}'>".format(self.id, self.board_name)
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class Crate
-#--------------------------------------------
+# --------------------------------------------
 class Crate(ModelBase):
     """
     Represents Crate where boards are placed
@@ -87,9 +86,9 @@ class Crate(ModelBase):
     installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan", back_populates="crate")
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class BoardInstallation
-#--------------------------------------------
+# --------------------------------------------
 class BoardInstallation(ModelBase):
     """
     Represents board installation
@@ -105,9 +104,10 @@ class BoardInstallation(ModelBase):
                         secondary=_board_inst_have_runs_association,
                         back_populates="board_installations")
 
-#--------------------------------------------
+
+# --------------------------------------------
 # class PerChannelData
-#--------------------------------------------
+# --------------------------------------------
 class PerChannelPresetMixin(object):
     id = Column(Integer, primary_key=True)
     text_values = Column('values', String(1024))
@@ -134,9 +134,9 @@ class PerChannelPresetMixin(object):
         return "<PerChannelPreset id='{0}' table='{1}'>".format(self.id, self.__tablename__)
 
 
-#--------------------------------------------
+# --------------------------------------------
 # Per channel preset classes
-#--------------------------------------------
+# --------------------------------------------
 class DacPreset(PerChannelPresetMixin, Base):
     __tablename__ = 'dac_presets'
 
@@ -158,9 +158,9 @@ class TriggerMaskPreset(PerChannelPresetMixin, Base):
 
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class
-#--------------------------------------------
+# --------------------------------------------
 class BoardConfiguration(ModelBase):
     """
 
@@ -201,9 +201,9 @@ class BoardConfiguration(ModelBase):
         return "<BoardConfiguration id='{0}'>".format(self.id)
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class RUN
-#--------------------------------------------
+# --------------------------------------------
 class Run(ModelBase):
     """
 
@@ -254,18 +254,18 @@ class Run(ModelBase):
         return "<Run number='{0}'>".format(self.number)
 
 
-#--------------------------------------------
+# --------------------------------------------
 # class
-#--------------------------------------------
+# --------------------------------------------
 class ConfigurationFile(ModelBase):
     """
     Table contains original coda and board configuration files
     """
     __tablename__ = 'files'
     id = Column(Integer, primary_key=True)
-    path = Column(String, nullable=False)
+    path = Column(Text, nullable=False)
     sha256 = Column(String(44), nullable=False)
-    content = Column(String(convert_unicode=True), nullable=False)
+    content = Column(Text(convert_unicode=True), nullable=False)
     description = Column(String(255), nullable=True)
     runs = relationship("Run", secondary=_files_have_runs_association, back_populates="files")
 
@@ -373,6 +373,17 @@ class ConditionType(ModelBase):
         return "<ConditionType id='{}', name='{}', value_type={}>".format(self.id, self.name, self.value_type)
 
 
+all_value_types = [
+    ConditionType.BOOL_FIELD,
+    ConditionType.JSON_FIELD,
+    ConditionType.STRING_FIELD,
+    ConditionType.FLOAT_FIELD,
+    ConditionType.INT_FIELD,
+    ConditionType.TIME_FIELD,
+    ConditionType.BLOB_FIELD,
+]
+
+
 class Condition(ModelBase):
     """
     Holds information attached to particular run.
@@ -383,7 +394,7 @@ class Condition(ModelBase):
     __tablename__ = 'conditions'
     id = Column(Integer, primary_key=True)
 
-    text_value = Column(String, nullable=True, default=None)
+    text_value = Column(Text, nullable=True, default=None)
     int_value = Column(Integer, nullable=False, default=0)
     float_value = Column(Float, nullable=False, default=0.0)
     bool_value = Column(Boolean, nullable=False, default=False)
@@ -456,7 +467,7 @@ class LogRecord(ModelBase):
     __tablename__ = 'logs'
     id = Column(Integer, primary_key=True)
     table_ids = Column(String(255))
-    description = Column(String)
+    description = Column(Text)
     related_run_number = Column('related_run', Integer, nullable=True)
     created = Column(DateTime, default=datetime.datetime.now)
     user_name = Column(String(255), nullable=True)
@@ -465,9 +476,9 @@ class LogRecord(ModelBase):
         return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)
 
 
-#-------------------------------------------------
+# -------------------------------------------------
 # function Convert list to DB text representation
-#-------------------------------------------------
+# -------------------------------------------------
 def list_to_db_text(values):
     """
     Converts list of values like pedestal,threshold,baseline_preset values

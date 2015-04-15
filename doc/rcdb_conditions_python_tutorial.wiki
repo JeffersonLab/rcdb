@@ -24,6 +24,8 @@ filtering results if they wish.
 Lets see how python code would look for the example above. Read event_count for run 100:
 
 <syntaxhighlight lang="python">
+import rcdb
+
 # Open SQLite database connection
 db = rcdb.RCDBProvider("sqlite:///path.to.file.db")
 
@@ -43,9 +45,20 @@ db.add_condition(100, "event_count", 1663)
 </syntaxhighlight>
 
 
-What RCDB conditions is not designed for? - If data is bulky and changes rarely (value is the same for many runs),
-it is better not to save it using conditions. That is because each value is independently saved and attached to a run.
-RCDB provides file saving mechanism for such kind of bulk data. Or maybe CCDB fits better in this case.
+There is a small handy command line tool '''rcnd''', that allows to see RCDB conditions and write values
+
+<syntaxhighlight lang="bash">
+export RCDB_CONNECTION=mysql://rcdb@localhost/rcdb
+rcnd --help                            # Gives you self descriptive help
+rcnd 1000 event_count                  # See exact value of 'event_count' for run 1000
+rcnd --write 1663 100 event_count      # Write condition value to run 100
+</syntaxhighlight>
+
+
+What RCDB conditions are not designed for? - They are not designed for large data sets that change rarely (value is the same for many runs).
+That is because each condition value is independently saved (and attached) for each run.
+
+In the case of bulk data, it is better to save it using other RCDB options. RCDB provides the files saving mechanism as example.
 
 
 
@@ -98,7 +111,10 @@ python $RCDB_HOME/python/create_empty_sqlite.py path_to_database.db
 
 
 
-== ALL YOU HAVE TO KNOW example ==
+
+== ALL YOU HAVE TO KNOW examples ==
+
+===Python===
 At least to start with RCDB conditions, to put values and to get them back:
 
 <syntaxhighlight lang="python">
@@ -182,6 +198,32 @@ python $RCDB_HOME/python/example_conditions_basic.py
 '''(!)''' note that to run the script again you probably have to delete the database <code>rm example.db</code>
 
 The next sections will cover this example and give thorough explanation on what is here.
+
+
+
+=== Command line tools ===
+Command line tools provide less possibilities for data manipulation than python API at the moment.
+
+<syntaxhighlight lang="bash">
+export RCDB_CONNECTION=mysql://rcdb@localhost/rcdb
+rcnd --help                            # Gives you self descriptive help
+rcnd -c mysql://rcdb@localhost/rcdb    # -c flag sets connection string from command line instead of environment
+rcnd                                   # Gives database statistics, number of runs and conditions
+rcnd 1000                              # See all recorded values for run 1000
+rcnd 1000 event_count                  # See exact value of 'event_count' for run 1000
+
+# Creating condition type (need to be done once)
+rcnd --create my_value --type string --description "This is my value"
+
+# Write value for run 1000 for condition 'my_value'
+rcnd --write "value to write" --replace 1000 my_value
+
+# See all condition names and types in DB
+rcnd --list
+</syntaxhighlight>
+
+More information and examples are in [[#Command line tools]] section below.
+
 
 
 
@@ -1228,7 +1270,8 @@ First None means there is no specific database object ID for this message. The l
 === Reusing objects ===
 
 
-Most of the API functions (like <code>add_condition(...)</code> or  <code>get_condition(...)</code>) can accept model objects as parameters:
+Most of the API functions (like <code>add_condition(...)</code> or  <code>get_condition(...)</code>) can accept model objects as
+parameters:
 
 <syntaxhighlight lang="python">
 # 1. Using run number and condition name
@@ -1302,6 +1345,122 @@ $RCDB_HOME/python/tests/test_conditions.py
 
 
 (!) note at the same time, that more complex scenarios with not committed objects haven't been tested.
+
+
+
+
+
+== Command line tools ==
+While ccdb like shell is still in progress, you can introspect and manipulate with run conditions using '''rcnd''' tool.
+The tool is added to the PATH after environment.bash(csh) from RCDB_HOME folder is sourced. It is, actually, placed
+in the same place as the environment.bash.
+
+
+(!) '''rcnd''' doesn't offer all possible data manipulations
+
+
+
+<syntaxhighlight lang="bash">
+> export RCDB_CONNECTION=mysql://rcdb@localhost/rcdb
+> rcnd --help                            # Gives you self descriptive help
+> rcnd -c mysql://rcdb@localhost/rcdb    # -c flag sets connection string from command line
+> rcnd                                   # Gives database statistics, number of runs and conditions
+</syntaxhighlight>
+
+Output
+<pre>
+Runs total: 1387
+Last run  : 2472
+Condition types total: 9
+Conditions:
+
+  components
+  component_stats
+...
+</pre>
+
+
+
+=== Getting condition names and info ===
+
+To get all conditions '''-l''' or '''--list''' flags are to be used. It shows condition names, types and descriptions (if exists):
+<pre>
+> rcnd -l
+components (json)
+component_stats (json)
+event_count (int) - Run events count
+event_rate (float) - Events per sec.
+...
+</pre>
+
+
+To get names only use '''--list-names''':
+<pre>
+> rcnd --list-names
+components
+component_stats
+event_count
+event_rate
+...
+</pre>
+
+=== Getting value by the run number===
+To see all conditions and values for a run:
+
+<pre>
+> rcnd 1000          # See all recorded values for run 1000
+components = (json){"ROCBCAL2": "ROC", "ROCBCAL3": "ROC", "ROCBCAL1":...
+component_stats = (json){"ROCBCAL2": {"evt-number": 487, "data-rate": 300....
+event_count = 487
+rtvs = (json){"%(CODA_ROL1)": "/home/hdops/CDAQ/daq_dev_v0.31/d...
+run_config = 'pulser.conf'
+run_type = 'hd_bcal_n.ti'
+...
+</pre>
+
+
+Add name to get value of the only condition:
+<pre>
+> rcnd 1000 event_count
+487
+
+> rcnd 1000 components
+{"ROCBCAL2": "ROC", "ROCBCAL3": "ROC"}
+</pre>
+
+=== Writing data ===
+
+Creating condition type (need to be done once):
+
+<pre>
+> rcnd --create my_value --type string --description "This is my value"
+ConditionType created with name='my_value', type='string', is_many_per_run='False'
+</pre>
+
+Where --type is:
+
+* bool, int, float, string - basic types. float is the default
+* json - to store arrays or custom objects
+* time - to store just time. (You can alwais add time information to any other type)
+* blob - binary blob. Don't use it if possible
+
+
+Names policy (not strict at all):
+
+# Don't use spaces. Use '_' instead
+# Full words are better. So 'event_count' is better than evt_cnt
+# Max name is 255 character. But please, make them shorter
+
+
+
+Write value for run 1000 for condition 'my_value'
+
+<pre>
+> rcnd --write "value to write" --replace 1000 my_value
+Written 'my_value' to run number 1000
+</pre>
+
+Without '''--replace''' error is raised, if run 1000 already have different value for 'my_value'
 
 == Support ==
 Dmitry Romanov <[mailto:romanov@jlab.org romanov@jlab.org]>

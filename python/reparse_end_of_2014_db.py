@@ -1,11 +1,15 @@
+"""
+The script re-parses old sqlite database of the Fall 2014 format and fills conditions according to the run
+"""
 import argparse
-import os
 import sqlite3
 import sys
 from flask import logging
 import rcdb.model
 from rcdb import ConfigurationProvider
 from rcdb import coda_parser
+from rcdb.file_archiver import get_file_sha256, get_string_sha256
+
 import xml.etree.ElementTree as ET
 
 # setup logger
@@ -14,23 +18,23 @@ log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for log
 log.setLevel(logging.DEBUG)
 
 if __name__ == "__main__":
+
+    # hello
+    print ("This program takes sqlite file of RCDB with data taken prior 2015" \
+           " and add to a database with new format")
+
+    # parse arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("con_string", help="Connection string to database")
+    parser.add_argument("in_sqlite_file", help="Input SQLite file")
+    parser.add_argument("out_con_string",
+                        help="Connection string to empty output database. Example: sqlite:////home/john/out.db")
     args = parser.parse_args()
-    print ("create database:")
-    print args.con_string
+    print("Arguments given: ")
+    print("Take data from: {}".format(args.in_sqlite_file))
+    print("Convert to    : {}".format(args.out_con_string))
 
-    db = ConfigurationProvider(args.con_string)
-    rcdb.model.Base.metadata.create_all(db.engine)
-
-    # create run
-    db.create_run(0)
-    db.create_run(1)
-    print("database created")
-
-    from rcdb.file_archiver import get_file_sha256, get_string_sha256
-
-    con = sqlite3.connect("/home/romanov/gluex/rcdb/experiments.sqlite.db")
+    # connect to sqlite source database
+    con = sqlite3.connect(args.in_sqlite_file)
     con.row_factory = sqlite3.Row
 
     cur = con.cursor()
@@ -39,20 +43,32 @@ if __name__ == "__main__":
     for row in cur:
         print row["run_number"], row["started"]
 
+    # connect to target DB
+    db = ConfigurationProvider(args.out_con_string)
+    rcdb.model.Base.metadata.create_all(db.engine)
 
+    # create database
+    db.create_run(0)
+    db.create_run(1)
+    print("Database schema created")
+
+    # select files from old DB
     cur = con.cursor()
     cur.execute("select path, sha256, content from files "
-                "where content LIKE '%<run-end>%' "
-                "ORDER BY id DESC LIMIT 100 OFFSET 2")
+                #"where content LIKE '%<run-end>%' "
+                "ORDER BY id DESC ")   # LIMIT 100 OFFSET 2")
+
 
     run_count = 0
     for row in cur:
         path = row["path"]
         content = row["content"]
+        # add data to database
         run, run_config_file = coda_parser.parse_xml(db, ET.fromstring(content))
-        run_count += 1
+        db.add_configuration_file(run, path, content)
 
-        print run_count,"\t", path, run, run_config_file
+        run_count += 1
+        print run_count, "\t", path, run, run_config_file
 
 
     print "Total {} runs selected".format(run_count)

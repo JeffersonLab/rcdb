@@ -39,11 +39,8 @@ def info(run_number):
 
     return render_template("runs/info.html",
                            run=run,
-                           records_map=run.records_map,
-                           board_installs_by_crate=bi_by_crate,
-                           start_comment_key=rcdb.START_COMMENT_RECORD_KEY,
-                           end_comment_key=rcdb.END_COMMENT_RECORD_KEY,
-                           component_stat_key=rcdb.COMPONENT_STAT_KEY)
+                           conditions=run.conditions,
+                           board_installs_by_crate=bi_by_crate,)
 
 
 

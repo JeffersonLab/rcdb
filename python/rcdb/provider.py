@@ -479,6 +479,9 @@ class RCDBProvider(object):
         """
         if isinstance(run_number, Run):
             run_number = run_number.number
+        else:
+            run_number = int(run_number)
+
 
         if isinstance(key, ConditionType):
             ct = key
@@ -787,11 +790,3 @@ class ConfigurationProvider(RCDBProvider):
             self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run)
         else:
             log.debug(Lf("|- File already associated with run'{}'", run))
-
-
-
-
-
-
-
-

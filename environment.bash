@@ -22,5 +22,5 @@ popd  > /dev/null
 export RCDB_HOME=$SCRIPT_PATH 
 export LD_LIBRARY_PATH="$RCDB_HOME/lib":$LD_LIBRARY_PATH
 export PYTHONPATH="$RCDB_HOME/python":$PYTHONPATH
-export PATH="$RCDB_HOME/bin":$PATH
+export PATH="$RCDB_HOME":$PATH
 
