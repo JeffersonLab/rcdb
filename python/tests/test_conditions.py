@@ -6,9 +6,8 @@ from rcdb.model import ConditionType, Condition, Run
 
 import logging
 
-#logging.basicConfig()
-#logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
-
+# logging.basicConfig()
+# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 class TestConditions(unittest.TestCase):
@@ -69,7 +68,7 @@ class TestConditions(unittest.TestCase):
         result = self.db.get_condition(1, "events_num")
         self.assertEqual(result.value, 1000)
 
-
+    # TEST
     def test_one_per_run_condition_values(self):
         ct = self.db.create_condition_type("single", ConditionType.INT_FIELD, False)
 
@@ -111,9 +110,9 @@ class TestConditions(unittest.TestCase):
         #    2. If run has this conditions but at different time, it adds this condition to DB
         #    3. If run has this condition at this time
 
-        ct = self.db.create_condition_type("multi", ConditionType.INT_FIELD, True)
-        time1 = datetime(2015,9,1,14,21,01, 222)
-        time2 = datetime(2015,9,1,14,21,01, 333)
+        self.db.create_condition_type("multi", ConditionType.INT_FIELD, True)
+        time1 = datetime(2015, 9, 1, 14, 21, 01, 222)
+        time2 = datetime(2015, 9, 1, 14, 21, 01, 333)
 
         # First addition to DB. Time is None
         self.db.add_condition(1, "multi", 1000)

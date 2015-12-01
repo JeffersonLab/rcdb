@@ -1,11 +1,9 @@
 from rcdb.model import Run
-
 from flask import Flask, render_template, g, request, url_for
-
 import rcdb
 
 # configuration
-DATABASE = 'flaskr.db'
+
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -26,7 +24,7 @@ def before_request():
 def teardown_request(exception):
     tdb = getattr(g, 'db', None)
     if tdb:
-		tdb.close()
+        tdb.close()
 
 
 @app.errorhandler(404)
@@ -41,7 +39,7 @@ def sample():
 
 @app.route('/')
 def index():
-    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).limit(100);
+    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).limit(100)
     return render_template("index.html", runs=runs)
 
 
@@ -67,7 +65,6 @@ app.register_blueprint(logs_module)
 app.register_blueprint(files_module)
 app.register_blueprint(crates_module)
 app.register_blueprint(statistics_module)
-
 
 if __name__ == '__main__':
     app.run()
