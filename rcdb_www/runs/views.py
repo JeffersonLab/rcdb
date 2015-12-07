@@ -9,7 +9,8 @@ from collections import defaultdict
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from rcdb.model import Run, BoardInstallation
+from rcdb.model import Run, BoardInstallation,Condition, ConditionType
+from sqlalchemy.orm import subqueryload
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
@@ -20,10 +21,21 @@ def index():
     return render_template("runs/index.html", runs=runs)
     pass
 
+@mod.route('/conditions/<int:run_number>')
+def conditions(run_number):
+    run = g.tdb.session.\
+                query(Run).\
+                options(subqueryload(Run.conditions)).\
+                filter_by(number=int(run_number)).one()
+
+    return render_template("runs/conditions.html", run=run)
+
 
 @mod.route('/info/<int:run_number>')
 def info(run_number):
-    """Shows run information and statistics"""
+    """Shows run information and statistics
+    :param run_number:
+    """
 
     run = g.tdb.session.query(Run).filter(Run.number == run_number).first()
     assert (isinstance(run, Run))

@@ -1,0 +1,91 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Run {0} conditions'.format(run.number) %}
+
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.jsonview.css') }}">
+{% endblock %}
+
+{% block container %}
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="blog-header">
+        <h1 class="blog-title">{{ run.number }}</h1>
+
+        <!-- TIME -->
+        <p class="lead blog-description">
+            {% if run.start_time %}
+                Run start {{ run.start_time }}
+            {% else %}
+                No run start information
+            {% endif %}
+            {% if run.end_time %}
+                Run ended {{ run.end_time }}
+            {% else %}
+                No run end information
+            {% endif %}
+            {% if run.start_time and run.end_time %}
+                Length: {{ (run.end_time - run.start_time) }}
+            {% endif %}
+        </p>
+        <p class="lead blog-description">
+            <div class="row"><h2>Events: {{ run.total_events }}</h2></div>
+        </p>
+    </div>
+
+    <div class="row" id="content">
+
+
+        <!-- CONTENT BAR -->
+        <div class="col-sm-8 blog-main" id="central_bar">
+
+
+        <div class="blog-post">
+            <p class="blog-post-meta">All run records</p>
+            <table class="table">
+                <tr class="text-info">
+                    <th>Key</th>
+                    <th>Value</th>
+                </tr>
+                {% for condition in run.conditions %}
+                    <!-- skip comment records -->
+                    {% if 1 %}
+
+                        <tr>
+                            <td>{{ condition.name }}</td>
+                            <td {% if condition.value_type == 'json'%}datatype="json"{% endif  %}>
+                                {{ condition.value }}
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </table>
+          </div><!-- /.blog-post -->
+
+          <ul class="pager" id="pager">
+            <li><a href="#">Previous</a></li>
+            <li><a href="#">Next</a></li>
+          </ul>
+
+        </div><!-- /.blog-main -->
+
+    </div><!-- /.row -->
+</div><!-- /.container -->
+
+
+{% endblock %}
+
+{% block js_btm %}
+    {{ super() }}
+
+    <script src="{{ url_for('static', filename='js/jquery.jsonview.js') }}"></script>
+    <script>
+    $( "[datatype='json']" ).each( function( i, el ) {
+        var elem = $( el );
+        json_parsed = jQuery.parseJSON( elem.text() );
+        elem.JSONView(json_parsed);
+    });
+    </script>
+{% endblock %}
