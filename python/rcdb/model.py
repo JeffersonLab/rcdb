@@ -206,31 +206,31 @@ class BoardConfiguration(ModelBase):
 # --------------------------------------------
 class Run(ModelBase):
     """
+    Represents data for run
+
+    Attributes:
+        Run.number (int): The run number
 
     """
     __tablename__ = 'runs'
 
     number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
-    """The run number"""
+
 
     #
-    board_configs = relationship("BoardConfiguration", secondary=_board_conf_have_runs_association,
-                                 back_populates="runs")
-    """Link to board channels and etc. configured for the run"""
+    board_configs = relationship("BoardConfiguration", secondary=_board_conf_have_runs_association,                              back_populates="runs")
+    """[BoardConfiguration]: Link to board channels and etc. configured for the run"""
 
     #
     board_installations = relationship("BoardInstallation",
                                        secondary=_board_inst_have_runs_association,
                                        order_by=lambda: BoardInstallation.crate_id,
                                        back_populates="runs")
-    """Link to crate and slot information for the board"""
+    "[BoardInstallation]: Link to crate and slot information for the board"
 
     #
     files = relationship("ConfigurationFile", secondary=_files_have_runs_association, back_populates="runs")
-    """Configuration and log files associated with the run"""
-
-    #_trigger_config_id = Column('trigger_configuration_id', Integer, ForeignKey('trigger_configurations.id'), nullable=True)
-    #trigger = relationship("TriggerConfiguration",  back_populates="runs")
+    """[ConfigurationFile]: Configuration and log files associated with the run"""
 
     #
     start_time = Column('started', DateTime, nullable=True)
@@ -244,11 +244,22 @@ class Run(ModelBase):
     conditions = relationship("Condition", back_populates="run")
     """Conditions associated with the run"""
 
-
     @property
     def log_id(self):
         """returns id suitable for log. Which is tablename_id"""
         return self.__tablename__ + "_" + str(self.number)
+
+    def get_conditions_by_name(self):
+        """
+        Create and returns dictionary of condition.name -> condition
+
+        Returns:
+            dict[str, Condition]: Dictionary where key is condition.name and value is condition
+        """
+        d = dict()
+        for condition in self.conditions:
+            d[condition.name] = condition
+        return d
 
     def __repr__(self):
         return "<Run number='{0}'>".format(self.number)
@@ -367,10 +378,9 @@ class ConditionType(ModelBase):
             field = Condition.time
         return field
 
-
-
     def __repr__(self):
-        return "<ConditionType id='{}', name='{}', value_type={}>".format(self.id, self.name, self.value_type)
+        return "<ConditionType id='{}', name='{}', value_type={}>"\
+                .format(self.id, self.name, self.value_type)
 
 
 all_value_types = [
