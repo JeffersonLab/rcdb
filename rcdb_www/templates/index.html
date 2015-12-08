@@ -72,9 +72,13 @@
             var runs = [];
 
             {% for run in runs %}
-                points.push([{{ loop.revindex0 }}, {{ run.total_events }}]);
-                ticks.push([{{ loop.revindex0 }}, {{ run.number }}]);
-                runs.push({"number":"{{ run.number }}", "total_events":"{{ run.total_events }}", "start_time":"{{ run.start_time }}" })
+                {% set conditions_by_name =  run.get_conditions_by_name() %}
+                {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                    {% set event_count = conditions_by_name[DefaultConditions.EVENT_COUNT].value  %}
+                    points.push([{{ loop.revindex0 }}, {{ event_count }}]);
+                    ticks.push([{{ loop.revindex0 }}, {{ run.number }}]);
+                    runs.push({"number":"{{ run.number }}", "total_events":"{{ conditions_by_name[DefaultConditions.EVENT_COUNT] }}", "start_time":"{{ run.start_time }}" });
+                {% endif %}
             {% endfor %}
 
             points.reverse()
