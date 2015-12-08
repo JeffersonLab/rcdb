@@ -62,7 +62,7 @@ h6, .h6 {
 }
 
 .my-table {
-    table-layout: fixed;
+    /*table-layout: fixed;*/
     word-wrap: break-word;
 }
 
@@ -142,6 +142,9 @@ h6, .h6 {
   color: #999;
 }
 
+.full-width {
+  width:100%;
+}
 
 /*
  * Footer

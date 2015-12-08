@@ -24,18 +24,35 @@
 
 
             <!-- Table -->
-            <table class="table">
+            <table class="table table-responsive table-hover">
                 <tr>
                     <th>Number</th>
                     <th>Date</th>
+                    <th>Length</th>
                     <th>Events</th>
+                    <th>Comment</th>
                 </tr>
                 {% for run in runs %}
+                    {% set conditions_by_name =  run.get_conditions_by_name() %}
                     <tr>
                         <td><a class="btn btn-default btn-sm"
                                href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
                         <td>{{ run.start_time }}</td>
-                        <th>{{ run.total_events }}</th>
+                        <td>
+                            {% if run.end_time and run.start_time %}
+                                {{ run.end_time - run.start_time }}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                                {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                            {% endif %}
+                        </td>
+                        <td style="word-break: break-all; width: 50%">
+                            {% if DefaultConditions.USER_COMMENT in conditions_by_name %}
+                                {{ conditions_by_name[DefaultConditions.USER_COMMENT].value }}
+                            {% endif %}
+                        </td>
                     </tr>
                 {% endfor %}
             </table>

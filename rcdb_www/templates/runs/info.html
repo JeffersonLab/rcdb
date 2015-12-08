@@ -2,7 +2,13 @@
 
 {% set page_title = 'Run {0} information'.format(run.number) %}
 
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.jsonview.css') }}">
+{% endblock %}
+
 {% block container %}
+
 
 <div class="container">
     <!-- HEADER -->
@@ -23,6 +29,7 @@
             {% endif %}
             {% if run.end_time and run.start_time %}
                 Length {{ run.end_time - run.start_time }}
+
             {% endif %}
         </p>
         <div class="lead blog-description">
@@ -46,6 +53,30 @@
                     {% endfor %}
                 </table>
             </div>
+
+            <!-- COMPONENTS iteration -->
+            {% if component_stats %}
+                <div class="blog-post" id="files_sec">
+                    <h3 class="blog-post-title">Components</h3>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name</th>
+                            <th>Event count</th>
+                            <th>Event rate</th>
+                            <th>Data rate</th>
+                        </tr>
+                        {% for comp_name in component_sorted_keys %}
+                            {% set stats =  component_stats[comp_name]%}
+                        <tr>
+                            <td>{{ comp_name }}</td>
+                            <td>{{ stats["evt-number"] }}</td>
+                            <td>{{ stats["evt-rate"]|round(2, 'floor') }}</td>
+                            <td>{{ stats["data-rate"]|round(2, 'floor') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %} <!--if component_stats-->
 
             <!-- CRATES ITERATION -->
             <div class="blog-post" id="crates_sec">
@@ -84,19 +115,27 @@
 
             <div class="blog-post">
                 <p class="blog-post-meta">All conditions</p>
-                <div class="panel panel-default">
+                <div class="panel ">
                     <table class="table my-table">
                         <tr class="text-info">
-                            <th>Name</th>
-                            <th>Value</th>
-                            <th>Date</th>
+                            <th >Name</th>
+                            <th style="display:block;min-width:70%;clear:both" >Value</th>
                         </tr>
                         {% for condition in conditions %}
                             <!-- skip comment records -->
                             <tr>
                                 <td>{{ condition.name }}</td>
-                                <td>{{ condition.value }}</td>
-                                <td>{{ condition.created }}</td>
+                                <td>
+
+                                    {% if condition.value_type == 'json'%}
+                                        <button type="button" class="btn btn-info btn-xs next-toggle" data>show json</button>
+                                        <div datatype="json" style="display: none">{{ condition.value }}</div>
+                                    {% else %}
+                                        {{ condition.value }}
+                                    {% endif %}
+
+                                </td>
+
                             </tr>
                         {% endfor %}
                     </table>
@@ -124,7 +163,7 @@
 
             <!-- -->
             <div class="sidebar-module">
-                <h4>Trigger: sample_v1</h4>
+                <h4>Info:</h4>
                 <ol class="list-unstyled">
                     <li><a href="#">name1 value1</a></li>
                     <li><a href="#">name2 value2</a></li>
@@ -146,5 +185,22 @@
     </div><!-- /.row -->
 </div><!-- /.container -->
 
+{% endblock %}
 
+
+{% block js_btm %}
+    {{ super() }}
+
+    <script src="{{ url_for('static', filename='js/jquery.jsonview.js') }}"></script>
+    <script>
+    $( "[datatype='json']" ).each( function( i, el ) {
+        var elem = $( el );
+        json_parsed = jQuery.parseJSON( elem.text() );
+        elem.JSONView(json_parsed);
+    });
+    $(".next-toggle").click(function() {
+        $(this).preventDefault = true;
+        $(this).next().fadeToggle();
+    });
+    </script>
 {% endblock %}

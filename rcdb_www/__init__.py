@@ -3,6 +3,7 @@ from flask import Flask, render_template, g, request, url_for
 import rcdb
 
 # configuration
+from sqlalchemy.orm import subqueryload
 
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -39,8 +40,13 @@ def sample():
 
 @app.route('/')
 def index():
-    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).limit(100)
-    return render_template("index.html", runs=runs)
+    runs = g.tdb.session\
+        .query(Run)\
+        .order_by(Run.number.desc())\
+        .options(subqueryload(Run.conditions))\
+        .limit(50)
+
+    return render_template("index.html", runs=runs, DefaultConditions=rcdb.DefaultConditions)
 
 
 def url_for_other_page(page):
