@@ -20,7 +20,6 @@ h6, .h6 {
   color: #333;
 }
 
-
 /*
  * Masthead for nav
  */
@@ -157,3 +156,25 @@ h6, .h6 {
   background-color: #f9f9f9;
   border-top: 1px solid #e5e5e5;
 }
+
+/*
+ * type colors
+ */
+
+
+
+
+.string-type{
+    background-color:#E0E4CC;}
+.float-type{
+    background-color:#FC9D9A;}
+.int-type{
+    background-color:#F9CDAD;}
+.time-type{
+    background-color:#C8C8A9;}
+.blob-type{
+    background-color:#A7DBD8;}
+.bool-type{
+    background-color:#FE4365;}
+.json-type{
+    background-color:#69D2E7;}

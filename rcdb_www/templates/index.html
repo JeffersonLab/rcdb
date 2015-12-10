@@ -7,7 +7,7 @@
 
         <div class="blog-header"><h3 class="blog-title">Home</h3></div>
 
-        <div id="placeholder" class="text-center" style="width:800px;height:200px;">
+        <div id="placeholder" class="text-center" style="height:200px;">
             <h3>Loading run statistics</h3>
         </div>
 
@@ -35,8 +35,10 @@
                 {% for run in runs %}
                     {% set conditions_by_name =  run.get_conditions_by_name() %}
                     <tr>
-                        <td><a class="btn btn-default btn-sm"
-                               href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
+                        <td>
+                            <a  name="run{{ run.number }}" class="btn btn-default btn-sm"
+                               href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a>
+                        </td>
                         <td>{{ run.start_time }}</td>
                         <td>
                             {% if run.end_time and run.start_time %}
@@ -65,7 +67,37 @@
     <script src="{{ url_for('static', filename='js/jquery.flot.min.js') }}"></script>
 
     <script type="text/javascript">
+        (function($, window) {
+            var adjustAnchor = function() {
+
+                var $anchor = $(':target'),
+                        fixedElementHeight = 100;
+
+                if ($anchor.length > 0) {
+
+                    $anchor.fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+
+                    $('html, body')
+                        .stop()
+                        .animate({
+                            scrollTop: $anchor.offset().top - fixedElementHeight
+                        }, 200);
+
+                }
+
+            };
+
+            $(window).on('hashchange load', function() {
+                adjustAnchor();
+            });
+
+        })(jQuery, window);
+
+
+
         $(function () {
+
+
 
             var points = [];
             var ticks = [];
@@ -77,7 +109,7 @@
                     {% set event_count = conditions_by_name[DefaultConditions.EVENT_COUNT].value  %}
                     points.push([{{ loop.revindex0 }}, {{ event_count }}]);
                     ticks.push([{{ loop.revindex0 }}, {{ run.number }}]);
-                    runs.push({"number":"{{ run.number }}", "total_events":"{{ conditions_by_name[DefaultConditions.EVENT_COUNT] }}", "start_time":"{{ run.start_time }}" });
+                    runs.push({"number":"{{ run.number }}", "total_events":"{{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}", "start_time":"{{ run.start_time }}" });
                 {% endif %}
             {% endfor %}
 
@@ -125,12 +157,15 @@
                 if (item) {
                     //var x = item.datapoint[0].toFixed(2);
                     //var y = item.datapoint[1].toFixed(2);
-                    var index = item.datapoint[0].toFixed(0);
+                    var index = item.dataIndex; //item.datapoint[0].toFixed(0);
                     var run = runs[index];
 
-                    $("#tooltip").html("Run: " + run.number+ "<br>Events: " + run.total_events + "<br>Started: " + run.start_time)
-                            .css({top: item.pageY + 5, left: item.pageX + 5})
-                            .fadeIn(200);
+                    if (typeof run === "undefined") return;
+
+                    var insertion = "Run: " + run.number + "<br>Events: " + run.total_events + "<br>Started: " + run.start_time;
+                    $("#tooltip").html(insertion).css({top: item.pageY + 5, left: item.pageX + 5}).fadeIn(200);
+
+
                 } else {
                     $("#tooltip").hide();
                 }
@@ -139,7 +174,12 @@
 
             $("#placeholder").bind("plotclick", function (event, pos, item) {
                 if (item) {
-                    $("#clickdata").text(" - click point " + item.dataIndex + " in " + item.series.label);
+                    var run = runs[item.dataIndex];
+                    var insertion = " - click point " + item.dataIndex + " in " + item.series.label + " "
+                            + "<a class='btn btn-default btn-sm' href='runs/info/" + run.number+ "'>" + run.number+ "</a> "
+                            + "<a class='btn btn-default btn-xs btn-info' href='#run" + run.number+ "'>Scroll to</a>";
+
+                    $("#clickdata").html(insertion);
                     plot.highlight(item.series, item.datapoint);
                 }
             });

@@ -64,6 +64,7 @@ from logs.views import mod as logs_module
 from files.views import mod as files_module
 from crates.views import mod as crates_module
 from statistics.views import mod as statistics_module
+from conditions.views import mod as conditions_module
 
 app.register_blueprint(boards_module)
 app.register_blueprint(runs_module)
@@ -71,6 +72,7 @@ app.register_blueprint(logs_module)
 app.register_blueprint(files_module)
 app.register_blueprint(crates_module)
 app.register_blueprint(statistics_module)
+app.register_blueprint(conditions_module)
 
 if __name__ == '__main__':
     app.run()
