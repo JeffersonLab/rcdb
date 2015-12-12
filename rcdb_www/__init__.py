@@ -49,6 +49,20 @@ def index():
     return render_template("index.html", runs=runs, DefaultConditions=rcdb.DefaultConditions)
 
 
+@app.template_filter('remove_dot_conf')
+def remove_dot_conf_filter(s):
+    """Removes '.conf' at the end of the string
+    :type s:str
+
+    """
+    return s[:-5] if s.endswith(".conf") else s;
+
+
+
+
+
+    return s[::-1]
+
 def url_for_other_page(page):
     args = request.view_args.copy()
     args['page'] = page

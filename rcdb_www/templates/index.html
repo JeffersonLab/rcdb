@@ -11,7 +11,7 @@
             <h3>Loading run statistics</h3>
         </div>
 
-        <div class="panel panel-default">
+        <div class="panel panel-default ">
             <!-- Default panel contents -->
             <div class="panel-heading">Last 25 runs</div>
             <div class="panel-body">
@@ -30,6 +30,7 @@
                     <th>Date</th>
                     <th>Length</th>
                     <th>Events</th>
+                    <th>Daq</th>
                     <th>Comment</th>
                 </tr>
                 {% for run in runs %}
@@ -50,7 +51,12 @@
                                 {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
                             {% endif %}
                         </td>
-                        <td style="word-break: break-all; width: 50%">
+                         <td style="font-size: 0.9em; font-weight: bold">
+                            {% if DefaultConditions.RUN_CONFIG in conditions_by_name %}
+                                {{ conditions_by_name[DefaultConditions.RUN_CONFIG].value|remove_dot_conf }}
+                            {% endif %}
+                        </td>
+                        <td style="word-break: break-all; width: 30%; font-size: 0.8em;">
                             {% if DefaultConditions.USER_COMMENT in conditions_by_name %}
                                 {{ conditions_by_name[DefaultConditions.USER_COMMENT].value }}
                             {% endif %}
