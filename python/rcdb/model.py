@@ -423,6 +423,10 @@ class Condition(ModelBase):
     def name(self):
         return self.type.name
 
+    @name.expression
+    def balance(self):
+        return ConditionType.name
+
     @hybrid_property
     def value_type(self):
         return self.type.value_type

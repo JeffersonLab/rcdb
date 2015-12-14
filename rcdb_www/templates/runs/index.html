@@ -1,3 +1,6 @@
+{% import 'default_run_table.html' as table%}
+{% from 'render_pagination.html' import render_pagination %}
+
 {% extends 'layouts/base.html' %}
 
 {% set page_title = 'Runs' %}
@@ -6,31 +9,30 @@
 
 <div class="container">
 
-    <div class="blog-header"><h3 class="blog-title">Runs</h3></div>
+    <div class="blog-header">
+        <h3 class="blog-title">
+            Runs
+        </h3>
+         <div class="pull-right"> {{ render_pagination(pagination) }}</div>
+    </div>
 
     <div class="panel panel-default">
         <!-- Default panel contents -->
-        <div class="panel-heading">Last runs</div>
-        <div class="panel-body">
-            <p>Last N runs</p>
+        <div class="panel-heading">
+            {% if runs %}
+                Showing runs: {{ runs[-1].number }} -  {{ runs[0].number }}. {{ pagination.per_page }} runs per page. Total runs: {{ pagination.total_count }}
+            {% else %}
+                No runs found
+            {% endif %}
         </div>
+        <div class="panel-body" >
 
-        <!-- Table -->
-        <table class="table">
-            <tr>
-                <th>Number</th>
-                <th>Date</th>
-                <th>Events</th>
-            </tr>
-            {% for run in runs %}
-            <tr>
-                <td><a class="btn btn-default btn-sm" href="{{ url_for('runs.info', run_number=run.number) }}">{{ run.number }}</a></td>
-                <td>{{ run.start_time }}</td>
-                <th>{{ run.total_events }}</th>
-            </tr>
-            {% endfor %}
-        </table>
+        </div>
+        {{ table.default_run_table(runs, DefaultConditions) }}
+
     </div>
+
+    {{ render_pagination(pagination) }}
 </div>
 
 {% endblock %}

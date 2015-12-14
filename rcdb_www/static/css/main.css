@@ -162,6 +162,17 @@ h6, .h6 {
  */
 
 
+.string-type,
+.float-type,
+.int-type,
+.time-type,
+.blob-type,
+.bool-type,
+.json-type
+{
+    color: #0f0f0f;
+}
+
 
 
 .string-type{

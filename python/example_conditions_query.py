@@ -1,5 +1,7 @@
 import rcdb
 from rcdb.model import ConditionType, Run, Condition
+from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 
 
 def make_dummy_db():
@@ -14,12 +16,14 @@ def make_dummy_db():
     # create conditions types
     event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD, False)
     data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD, False)
+    tag_type = db.create_condition_type("tag", ConditionType.STRING_FIELD, False)
 
     # create runs and fill values
     for i in range(0, 100):
         run = db.create_run(i)
         db.add_condition(run, event_count_type, i + 950)      # event_count in range 950 - 1049
         db.add_condition(i, data_value_type, (i/100.0) + 1)   # data_value in 1 - 2
+        db.add_condition(run, tag_type, "tag" + str(i))       # Some text data
 
     print("Runs filled with data")
     return db
@@ -49,6 +53,7 @@ def querying_using_condition_type(db):
     print "Results union is:"
     print query.union(query2).all()
 
+
 def querying_using_alchemy(db):
     """ Demonstrates SQLAlchemy query helpers"""
     query = db.session.query(Run).join(Run.conditions).join(Condition.type)\
@@ -59,6 +64,18 @@ def querying_using_alchemy(db):
 
     print query.all()
 
+
+def querying_specific_conditions(db):
+    query = db.session.query(Condition).join(Condition.run).join(Condition.type)\
+        .filter(Run.number > 1, Run.number < 15)\
+        .filter(Condition.name.in_(["data_value", "event_count"]))\
+        .options(joinedload(Condition.run))\
+        .order_by(Condition.type)
+
+    result = query.all()
+
+    for row in range(len(query.all())/2):
+        print result[row*2].name, result[row*2], "\t\t\t", result[row*2 + 1].name, result[row*2+1]
 
 
 
@@ -73,5 +90,9 @@ if __name__ == "__main__":
     print()
     print("querying_using_alchemy")
     querying_using_alchemy(db)
+
+    print()
+    print("querying_specific_conditions")
+    querying_specific_conditions(db);
 
 

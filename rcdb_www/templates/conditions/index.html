@@ -17,7 +17,7 @@
 
         {% for condition in conditions %}
         <tr>
-            <td> <span class="{{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
+            <td> <span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
             <td>{{ condition.name }}</td>
             <td>{{ condition.description }}</td>
         </tr>

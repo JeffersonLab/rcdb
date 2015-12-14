@@ -4,8 +4,12 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from collections import defaultdict
+from rcdb import DefaultConditions
 from rcdb.model import Run, BoardInstallation, Condition, ConditionType
-from sqlalchemy.orm import subqueryload
+from rcdb_www.pagination import Pagination
+from run_table import RunTableData
+from sqlalchemy import func
+from sqlalchemy.orm import subqueryload, joinedload
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
@@ -17,10 +21,22 @@ def natural_sort_key(l):
     return sorted(l, key = alphanum_key)
 
 
-@mod.route('/')
-def index():
-    runs = g.tdb.session.query(Run).order_by(Run.number.desc()).all()
-    return render_template("runs/index.html", runs=runs)
+PER_PAGE = 500
+
+
+@mod.route('/', defaults={'page': 1})
+@mod.route('/page/<int:page>')
+def index(page):
+    count = g.tdb.session.query(func.count(Run.number)).scalar()
+    pagination = Pagination(page, PER_PAGE, count)
+
+    runs = g.tdb.session.query(Run)\
+        .options(subqueryload(Run.conditions))\
+        .order_by(Run.number.desc())\
+        .slice(pagination.item_limit_from, pagination.item_limit_to)\
+        .all()
+
+    return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination)
     pass
 
 
@@ -45,6 +61,9 @@ def info(run_number):
         .options(subqueryload(Run.conditions)) \
         .filter(Run.number == run_number) \
         .first()
+
+    if not isinstance(run, Run):
+        return render_template("runs/not_found.html", run_number=run_number)
 
     assert (isinstance(run, Run))
     conditions_by_name = run.get_conditions_by_name()
@@ -74,3 +93,17 @@ def info(run_number):
                            component_sorted_keys=component_sorted_keys,
                            DefaultConditions=rcdb.DefaultConditions
                            )
+
+
+@mod.route('/search', methods=['GET'])
+def search():
+    search_query = request.args.get('q', '')
+
+    if search_query:
+        try:
+            run_number = int(search_query)
+            return redirect(url_for('.info', run_number=run_number))
+        except ValueError:
+            return redirect(url_for('.index'))
+    else:
+        return redirect(url_for('.index'))

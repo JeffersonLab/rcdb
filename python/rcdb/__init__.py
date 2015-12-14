@@ -58,6 +58,7 @@ class DefaultConditions(object):
     EVENT_COUNT = 'event_count'
     RUN_TYPE = 'run_type'
     RUN_CONFIG = 'run_config'
+    DAQ_SETUP = 'daq_setup'
     SESSION = 'session'
     USER_COMMENT = 'user_comment'
     COMPONENTS = 'components'

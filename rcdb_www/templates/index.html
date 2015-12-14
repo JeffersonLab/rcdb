@@ -30,7 +30,8 @@
                     <th>Date</th>
                     <th>Length</th>
                     <th>Events</th>
-                    <th>Daq</th>
+                    <th>Run config</th>
+                    <th>Daq setup</th>
                     <th>Comment</th>
                 </tr>
                 {% for run in runs %}
@@ -54,6 +55,11 @@
                          <td style="font-size: 0.9em; font-weight: bold">
                             {% if DefaultConditions.RUN_CONFIG in conditions_by_name %}
                                 {{ conditions_by_name[DefaultConditions.RUN_CONFIG].value|remove_dot_conf }}
+                            {% endif %}
+                        </td>
+                        <td style="font-size: 0.9em; font-weight: bold">
+                            {% if DefaultConditions.DAQ_SETUP in conditions_by_name %}
+                                {{ conditions_by_name[DefaultConditions.DAQ_SETUP].value|remove_dot_conf }}
                             {% endif %}
                         </td>
                         <td style="word-break: break-all; width: 30%; font-size: 0.8em;">

@@ -7,6 +7,7 @@ mod = Blueprint('logs', __name__, url_prefix='/logs')
 
 PER_PAGE = 50
 
+
 @mod.route('/', defaults={'page': 1})
 @mod.route('/page/<int:page>')
 def index(page):
