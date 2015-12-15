@@ -65,6 +65,9 @@ h6, .h6 {
     word-wrap: break-word;
 }
 
+.table-no-border {
+    border: none;
+}
 /*
  * Blog name and description
  */

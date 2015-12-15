@@ -177,6 +177,44 @@ class RCDBProvider(object):
         return query.first()
 
     # ------------------------------------------------
+    # Gets Run or returns None
+    # ------------------------------------------------
+    def get_next_run(self, run_or_number):
+        """Gets run which number is the next to given run_number
+            :param run_or_number: the run number
+            :param run_or_number: int, Run
+
+            :return: Run object corresponding to run number or None if there is no such run in DB
+            :rtype: Run or None
+        """
+        if isinstance(run_or_number, Run):
+            run_number = run_or_number.number
+        else:
+            run_number = run_or_number
+
+        query = self.session.query(Run).filter(Run.number > run_number).order_by(Run.number)
+        return query.first()
+
+    # ------------------------------------------------
+    # Gets Run or returns None
+    # ------------------------------------------------
+    def get_prev_run(self, run_or_number):
+        """Gets run which number is the previous to given run_number
+            :param run_or_number: the run number
+            :param run_or_number: int, Run
+
+            :return: Run object corresponding to run number or None if there is no such run in DB
+            :rtype: Run or None
+        """
+        if isinstance(run_or_number, Run):
+            run_number = run_or_number.number
+        else:
+            run_number = run_or_number
+
+        query = self.session.query(Run).filter(Run.number < run_number).order_by(Run.number.desc())
+        return query.first()
+
+    # ------------------------------------------------
     # Gets or creates Run
     # ------------------------------------------------
     def create_run(self, run_number):

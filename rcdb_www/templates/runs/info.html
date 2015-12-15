@@ -33,7 +33,7 @@
             {% endif %}
         </p>
         <div class="lead blog-description">
-            <div class="row"><h2>Events: {{ run.total_events }}</h2></div>
+            <div class="row"><h2>Events: {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}</h2></div>
         </div>
     </div>
 
@@ -128,7 +128,7 @@
                                 <td>
 
                                     {% if condition.value_type == 'json'%}
-                                        <button type="button" class="btn btn-info btn-xs next-toggle" data>show json</button>
+                                        <button type="button" class="btn btn-info btn-xs next-toggle">show json</button>
                                         <div datatype="json" style="display: none">{{ condition.value }}</div>
                                     {% else %}
                                         {{ condition.value }}
@@ -159,16 +159,31 @@
                 <p>{{ conditions_by_name[DefaultConditions.USER_COMMENT].value }}</p>
             </div>
             {% endif %}
-
-
-            <!-- -->
             <div class="sidebar-module">
                 <h4>Info:</h4>
+
+
+                <table class="table table-no-border table-condensed ">
+                    {% macro build_condition_row(name) %}
+                        {% if name in conditions_by_name %}
+                            <tr><td class="row"><strong>{{ name }}</strong></td><td>{{ conditions_by_name[name].value }}</td></tr>
+                        {% endif %}
+                    {% endmacro %}
+                    {{  build_condition_row(DefaultConditions.EVENT_COUNT) }}
+                    {{  build_condition_row(DefaultConditions.EVENT_RATE) }}
+                    {{  build_condition_row(DefaultConditions.RUN_TYPE) }}
+                    {{  build_condition_row(DefaultConditions.RUN_CONFIG) }}
+                    {{  build_condition_row(DefaultConditions.DAQ_SETUP) }}
+
+                    {{  build_condition_row('daq_run') }}
+                    {{  build_condition_row('daq_setup') }}
+                    {{  build_condition_row('daq_config') }}
+                </table>
                 <ol class="list-unstyled">
-                    <li><a href="#">name1 value1</a></li>
-                    <li><a href="#">name2 value2</a></li>
-                    <li><a href="#">name3 value3</a></li>
-                    <li><a href="#">name4 value4</a></li>
+                    <li><a href="#">name1 </a></li>
+                    <li><a href="#">name2 </a></li>
+                    <li><a href="#">name3 </a></li>
+                    <li><a href="#">name4 </a></li>
                 </ol>
             </div>
 
@@ -195,7 +210,7 @@
     <script>
     $( "[datatype='json']" ).each( function( i, el ) {
         var elem = $( el );
-        json_parsed = jQuery.parseJSON( elem.text() );
+        var json_parsed = jQuery.parseJSON( elem.text() );
         elem.JSONView(json_parsed);
     });
     $(".next-toggle").click(function() {
