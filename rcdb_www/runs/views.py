@@ -62,8 +62,11 @@ def info(run_number):
         .filter(Run.number == run_number) \
         .first()
 
+    prev_run = g.tdb.get_prev_run(run_number)
+    next_run = g.tdb.get_next_run(run_number)
+
     if not isinstance(run, Run):
-        return render_template("runs/not_found.html", run_number=run_number)
+        return render_template("runs/not_found.html", run_number=run_number, prev_run=prev_run, next_run=next_run)
 
     assert (isinstance(run, Run))
     conditions_by_name = run.get_conditions_by_name()
@@ -91,7 +94,9 @@ def info(run_number):
                            board_installs_by_crate=bi_by_crate,
                            component_stats=component_stats,
                            component_sorted_keys=component_sorted_keys,
-                           DefaultConditions=rcdb.DefaultConditions
+                           DefaultConditions=rcdb.DefaultConditions,
+                           prev_run=prev_run,
+                           next_run=next_run
                            )
 
 

@@ -33,14 +33,25 @@
             {% endif %}
         </p>
         <div class="lead blog-description">
-            <div class="row"><h2>Events: {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}</h2></div>
+            <div class="row"><h2>Events: {% if DefaultConditions.EVENT_COUNT in conditions_by_name %} {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}{% endif %}</h2></div>
         </div>
+
     </div>
 
     <div class="row" id="content">
 
         <!-- CONTENT BAR -->
         <div class="col-sm-10 blog-main" id="central_bar">
+
+        <!-- PAGER -->
+        <ul class="pager" id="pager">
+            {% if prev_run %}
+                <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">Previous {{ prev_run.number }}</a></li>
+            {% endif %}
+            {% if next_run %}
+                <li><a href="{{ url_for('.info', run_number=next_run.number) }}">Next {{ next_run.number }}</a></li>
+            {% endif %}
+        </ul>
 
             <!-- FILES ITERATION -->
             <div class="blog-post" id="files_sec">
@@ -142,10 +153,14 @@
                 </div>
             </div><!-- /.blog-post -->
 
-            <ul class="pager" id="pager">
-                <li><a href="#">Previous</a></li>
-                <li><a href="#">Next</a></li>
-            </ul>
+                <ul class="pager" id="pager">
+                    {% if prev_run %}
+                        <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">Previous {{ prev_run.number }}</a></li>
+                    {% endif %}
+                    {% if next_run %}
+                        <li><a href="{{ url_for('.info', run_number=next_run.number) }}">Next {{ next_run.number }}</a></li>
+                    {% endif %}
+                </ul>
 
         </div><!-- /.blog-main -->
 
