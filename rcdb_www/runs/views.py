@@ -7,7 +7,6 @@ from collections import defaultdict
 from rcdb import DefaultConditions
 from rcdb.model import Run, BoardInstallation, Condition, ConditionType
 from rcdb_www.pagination import Pagination
-from run_table import RunTableData
 from sqlalchemy import func
 from sqlalchemy.orm import subqueryload, joinedload
 
