@@ -12,47 +12,59 @@
 
 <div class="container">
     <!-- HEADER -->
-    <div class="blog-header">
-        <h1 class="blog-title">{{ run.number }}</h1>
+    <div class="lead blog-header">
+        <div class="row">
+            <h1 class="blog-title col-sm-3">{{ run.number }}</h1>
+
+            <h2 class="col-sm-7" style="margin-top:50px">
+                    Events:
+                    {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                        {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                    {% else %}
+                        0
+                    {% endif %}
+            </h2>
+            <div class="col-sm-2 text-right" style="margin-top:50px">
+                {% if prev_run %}
+                    <a class="btn btn-default" href="{{ url_for('.info', run_number=prev_run.number) }}" role="button">< {{ prev_run.number }}</a>
+                {% endif %}
+                {% if next_run %}
+                    <a class="btn btn-default" href="{{ url_for('.info', run_number=next_run.number) }}" role="button">{{ next_run.number }} ></a>
+                {% endif %}
+            </div>
+        </div>
+
 
         <!-- TIME -->
         <p class="lead blog-description">
             {% if run.start_time %}
-                Run start {{ run.start_time }}
+                Start &nbsp; {{ run.start_time }}
             {% else %}
-                No run start information
+                No start info
             {% endif %}
+            &nbsp;&nbsp;&nbsp;
             {% if run.end_time %}
-                Run ended {{ run.end_time }}
+                End {{ run.end_time }}
             {% else %}
-                No run end information
+                No end info
             {% endif %}
+            &nbsp;&nbsp;&nbsp;
             {% if run.end_time and run.start_time %}
                 Length {{ run.end_time - run.start_time }}
-
             {% endif %}
         </p>
-        <div class="lead blog-description">
-            <div class="row"><h2>Events: {% if DefaultConditions.EVENT_COUNT in conditions_by_name %} {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}{% endif %}</h2></div>
-        </div>
 
     </div>
 
-    <div class="row" id="content">
 
+    <!-- PAGER -->
+
+
+
+
+    <div class="row" id="content">
         <!-- CONTENT BAR -->
         <div class="col-sm-10 blog-main" id="central_bar">
-
-        <!-- PAGER -->
-        <ul class="pager" id="pager">
-            {% if prev_run %}
-                <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">Previous {{ prev_run.number }}</a></li>
-            {% endif %}
-            {% if next_run %}
-                <li><a href="{{ url_for('.info', run_number=next_run.number) }}">Next {{ next_run.number }}</a></li>
-            {% endif %}
-        </ul>
-
             <!-- FILES ITERATION -->
             <div class="blog-post" id="files_sec">
                 <h2 class="blog-post-title">Files</h2>
@@ -153,20 +165,20 @@
                 </div>
             </div><!-- /.blog-post -->
 
-                <ul class="pager" id="pager">
-                    {% if prev_run %}
-                        <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">Previous {{ prev_run.number }}</a></li>
-                    {% endif %}
-                    {% if next_run %}
-                        <li><a href="{{ url_for('.info', run_number=next_run.number) }}">Next {{ next_run.number }}</a></li>
-                    {% endif %}
-                </ul>
+            <ul class="pager" id="pager">
+                {% if prev_run %}
+                    <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">< {{ prev_run.number }}</a></li>
+                {% endif %}
+                {% if next_run %}
+                    <li><a href="{{ url_for('.info', run_number=next_run.number) }}">{{ next_run.number }} ></a></li>
+                {% endif %}
+            </ul>
 
         </div><!-- /.blog-main -->
 
         <!-- SIDE BAR -->
         <div class="col-sm-2 blog-sidebar" id="side_bar">
-
+            <h1></h1>
             <!-- START COMMENT -->
             {% if DefaultConditions.USER_COMMENT in conditions_by_name.keys() %}
             <div class="sidebar-module sidebar-module-inset">
@@ -181,35 +193,32 @@
                 <table class="table table-no-border table-condensed ">
                     {% macro build_condition_row(name) %}
                         {% if name in conditions_by_name %}
-                            <tr><td class="row"><strong>{{ name }}</strong></td><td>{{ conditions_by_name[name].value }}</td></tr>
+                            <tr><td class="row"><strong>{{ name }}</strong></td><td style="white-space: nowrap">{{ conditions_by_name[name].value }}</td></tr>
                         {% endif %}
                     {% endmacro %}
-                    {{  build_condition_row(DefaultConditions.EVENT_COUNT) }}
-                    {{  build_condition_row(DefaultConditions.EVENT_RATE) }}
                     {{  build_condition_row(DefaultConditions.RUN_TYPE) }}
                     {{  build_condition_row(DefaultConditions.RUN_CONFIG) }}
                     {{  build_condition_row(DefaultConditions.DAQ_SETUP) }}
-
                     {{  build_condition_row('daq_run') }}
-                    {{  build_condition_row('daq_setup') }}
                     {{  build_condition_row('daq_config') }}
                 </table>
-                <ol class="list-unstyled">
-                    <li><a href="#">name1 </a></li>
-                    <li><a href="#">name2 </a></li>
-                    <li><a href="#">name3 </a></li>
-                    <li><a href="#">name4 </a></li>
-                </ol>
+
             </div>
 
             <!-- -->
             <div class="sidebar-module">
                 <h4>Statistics</h4>
+                <table class="table table-no-border table-condensed ">
+                    {{  build_condition_row(DefaultConditions.EVENT_COUNT) }}
+                    {{  build_condition_row(DefaultConditions.EVENT_RATE) }}
+                </table>
+                <!-- killed dogs are here
                 <ol class="list-unstyled">
                     <li><a href="#">name1 value1</a></li>
                     <li><a href="#">name2 value2</a></li>
                     <li><a href="#">name3 value3</a></li>
                 </ol>
+                -->
             </div>
         </div><!-- /.blog-sidebar -->
     </div><!-- /.row -->
