@@ -5,6 +5,19 @@
 
 {% set page_title = 'Runs' %}
 
+{#    Add DataTable style#}
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/datatables.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/jquery.dataTables.yadcf.css') }}"/>
+
+    <script src=""></script>
+{% endblock %}
+
+
+{#
+    Content
+#}
 {% block container %}
 
 <div class="container">
@@ -36,3 +49,85 @@
 </div>
 
 {% endblock %}
+
+
+{% block js_btm %}
+    {{ super() }}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='DataTables/datatables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='DataTables/jquery.dataTables.yadcf.js') }}"></script>
+    <script>
+
+
+
+        var table = $('#runs-table').DataTable( {
+                responsive: true,
+                paging:   false,
+                ordering: false,
+                info:     false
+        } );
+
+        yadcf.init( table, [{
+                column_number: 3,
+                filter_type: "range_number"
+            },{
+                column_number: 1,
+                filter_type: "text"
+            },{
+                column_number: 4,
+                filter_type: "text"
+            },{
+                column_number: 5,
+                filter_type: "text"
+        }]);
+
+        $("#yadcf-filter-wrapper--runs-table-1 .yadcf-filter").css("width","110px");
+        $("#yadcf-filter-wrapper--runs-table-1").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-1-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-1").addClass("form-control").css("width","120px");
+
+        $("#yadcf-filter-wrapper--runs-table-3").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter-wrapper-inner--runs-table-3").addClass("input-group-sm").css("display", "inline-flex");;
+        $("#yadcf-filter-wrapper--runs-table-3 .yadcf-filter-reset-button").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-from-3").addClass("form-control").css("width","70px");
+
+        $("#yadcf-filter-wrapper-inner--runs-table-3 .yadcf-filter-range-number-seperator").hide();
+        $("#yadcf-filter-wrapper-inner--runs-table-3 #yadcf-filter--runs-table-to-3").hide();
+
+
+
+        $("#yadcf-filter-wrapper--runs-table-4").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-4-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-4").addClass("form-control").css("width","120px");
+
+        $("#yadcf-filter-wrapper--runs-table-5").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-5-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-5").addClass("form-control").css("width","120px");
+
+        $("#runs-table_filter").hide();
+
+
+
+            // Apply the search
+    /*table.columns().eq( 0 ).each( function ( colIdx ) {
+        $( 'input', table.column( colIdx ).header() ).on( 'keyup change', function () {
+            var compare_value = this.value * 1;
+            if(this.name === "min_events"){
+                table.column(3).data().filter( function ( value, index ) {
+                        var thisValue = parseInt(value)
+                        return thisValue > compare_value;
+                }).draw();
+            }
+            else {
+                table
+                    .column( colIdx )
+                    .search( compare_value )
+                    .draw();
+            }
+        } );
+    } );*/
+    </script>
+{% endblock %}
+
+
+

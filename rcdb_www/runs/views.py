@@ -23,20 +23,44 @@ def natural_sort_key(l):
 PER_PAGE = 500
 
 
-@mod.route('/', defaults={'page': 1})
-@mod.route('/page/<int:page>')
-def index(page):
-    count = g.tdb.session.query(func.count(Run.number)).scalar()
-    pagination = Pagination(page, PER_PAGE, count)
+@mod.route('/', defaults={'page': 1, 'run_from': -1, 'run_to': -1})
+@mod.route('/page/<int:page>', defaults={'run_from': -1, 'run_to': -1})
+@mod.route('/<int:run_from>-<int:run_to>', defaults={'page': 1})
+def index(page, run_from, run_to):
 
-    runs = g.tdb.session.query(Run)\
-        .options(subqueryload(Run.conditions))\
+    query = g.tdb.session.query(Run)
+
+    # Run range is defined?
+    if run_from != -1 and run_to != -1:
+
+        # Check what is max/min run
+        run_min, run_max = run_from, run_to
+        if run_max < run_min:
+            run_min, run_max = run_max, run_min
+
+        # Filter query and count results
+        query = query.filter(Run.number >= run_min, Run.number <= run_max)
+        count = g.tdb.session.query(func.count(Run.number)).filter(Run.number >= run_min, Run.number <= run_max).scalar()
+
+        # we don't want pagination in this case, setting page size same/bigger than count
+        per_page = run_max - run_min
+    else:
+        count = g.tdb.session.query(func.count(Run.number)).scalar()
+        per_page = PER_PAGE
+
+    # Create pagination
+    pagination = Pagination(page, per_page, count)
+
+    # Get runs from query
+    runs = query.options(subqueryload(Run.conditions))\
         .order_by(Run.number.desc())\
         .slice(pagination.item_limit_from, pagination.item_limit_to)\
         .all()
 
     return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination)
     pass
+
+
 
 
 @mod.route('/conditions/<int:run_number>')
@@ -103,11 +127,25 @@ def info(run_number):
 def search():
     search_query = request.args.get('q', '')
 
-    if search_query:
-        try:
-            run_number = int(search_query)
-            return redirect(url_for('.info', run_number=run_number))
-        except ValueError:
-            return redirect(url_for('.index'))
-    else:
+    # Have query at all?
+    if not search_query:
         return redirect(url_for('.index'))
+
+    # Have run-range?
+    if '-' in search_query:
+        search_query = search_query.replace(" ", "")
+        tokens = search_query.split("-")
+        try:
+            run_from = int(tokens[0])
+            run_to = int(tokens[1])
+            return redirect(url_for('.index', run_from=run_from, run_to=run_to))
+        except (ValueError, KeyError):
+            return redirect(url_for('.index'))
+
+    # Have run number?
+    if search_query.isdigit():
+        return redirect(url_for('.info', run_number=int(search_query)))
+
+    # Default return is index
+    return redirect(url_for('.index'))
+

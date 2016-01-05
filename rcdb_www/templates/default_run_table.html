@@ -1,15 +1,16 @@
-{% macro default_run_table(runs, DefaultConditions) %}
+{% macro default_run_table(runs, DefaultConditions, search_boxes=false) %}
             <!-- Table -->
-            <table class="table table-responsive table-hover">
+            <table class="table table-responsive table-hover" id="runs-table">
                 <thead>
+
                 <tr>
-                    <th>Number</th>
-                    <th>Date</th>
-                    <th>Length</th>
-                    <th>Events</th>
-                    <th>Run config</th>
-                    <th>Run type</th>
-                    <th>Comment</th>
+                    <th id="run-column-header">Number<br/></th>
+                    <th id="start-time-column-header">Start time<br/></th>
+                    <th id="length-column-header">Length<br/></th>
+                    <th id="event-count-column-header">Events<br/></th>
+                    <th id="run-config-column-header">Run config<br/></th>
+                    <th id="run-type-column-header">Run type<br/></th>
+                    <th id="comment-column-header">Comment<br/></th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,6 +30,8 @@
                             <td>
                                 {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
                                     {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                                {% else %}
+                                    -1
                                 {% endif %}
                             </td>
                              <td style="font-size: 0.9em; font-weight: bold">

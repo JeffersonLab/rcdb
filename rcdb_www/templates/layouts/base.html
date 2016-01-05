@@ -84,10 +84,18 @@
                     <!-- Search form -->
                     <form class="navbar-form navbar-left" role="search" action="{{ url_for('runs.search') }}" method="get">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" placeholder="Run number" name="q">
-                            <span class="input-group-btn"><button type="submit" class="btn btn-default">Go</button></span>
+                            <input type="text" class="form-control" placeholder="Run num or min-max" name="q">
+                            <span class="input-group-btn"><button type="submit" class="btn btn-default">GO</button></span>
+
+                        <!-- Home -->
+
+                            <span class="input-group-btn"><a href="https://github.com/JeffersonLab/rcdb/wiki/Web-quick-query" target="_blank" class="btn" ><span class="glyphicon glyphicon-question-sign"></span></a></span>
+
+
                         </div>
                     </form>
+
+
 
                     <!-- right links -->
                     <ul class="nav navbar-nav navbar-right">
