@@ -1,64 +1,67 @@
 import sys
 import os
 
-#Setup default environment. This environment 
-if not 'TDB_HOME' in os.environ:
-	print "TDB_HOME environment variable is not found but should be set to compile the TRIGGER DATABASE"
-	print "One can run 'source environment.bash' from your bash shell to automatically set environment variables"
-	exit(1)
-	
-#add some colors 
-colors = {
-	'cyan':'\033[96m', 
-	'purple':'\033[95m', 
-	'blue':'\033[94m', 
-	'green':'\033[92m', 
-	'yellow':'\033[93m',
-	'red':'\033[91m', 
-	'end':'\033[0m'}
- 
-#If the output is not a terminal, remove the colors
-if not sys.stdout.isatty():
-    for key, value in colors.iteritems():
-        colors[key] = ''
- 
-compile_source_message        = '%sCompiling %s==> %s$SOURCE%s' % (colors['blue'], colors['purple'], colors['yellow'], colors['end'])
-compile_shared_source_message = '%sCompiling shared %s==> %s$SOURCE%s' % (colors['blue'], colors['purple'], colors['yellow'], colors['end'])
-link_program_message          = '%sLinking Program %s==> %s$TARGET%s' % (colors['red'], colors['purple'], colors['yellow'], colors['end'])
-link_library_message          = '%sLinking Static Library %s==> %s$TARGET%s' % (colors['red'], colors['purple'], colors['yellow'], colors['end'])
-ranlib_library_message        = '%sRanlib Library %s==> %s$TARGET%s' % (colors['red'], colors['purple'], colors['yellow'], colors['end'])
-link_shared_library_message   = '%sLinking Shared Library %s==> %s$TARGET%s' % (colors['red'], colors['purple'], colors['yellow'], colors['end'])
-java_library_message          = '%sCreating Java Archive %s==> %s$TARGET%s' % (colors['red'], colors['purple'], colors['yellow'], colors['end'])
+#Setup default environment. This environment
+#if not 'CCDB_HOME' in os.environ:
+#    print "CCDB_HOME environment variable is not found but should be set to compile the CCDB"
+#    print "One can run 'source environment.bash' from your bash shell to automatically set environment variables"
+#    exit(1)
+
+HEADER = '\033[95m'
+OKBLUE = '\033[94m'
+OKGREEN = '\033[92m'
+WARNING = '\033[93m'
+FAIL = '\033[91m'
+ENDC = '\033[0m'
+BOLD = '\033[1m'
+UNDERLINE = '\033[4m'
+BOLD = "\033[1m"
+
+def supports_color():
+    """
+    Returns True if the running system's terminal supports color,
+    and False otherwise.
+    """
+    plat = sys.platform
+    supported_platform = plat != 'Pocket PC' and (plat != 'win32' or 'ANSICON' in os.environ)
+
+    # isatty is not always implemented, #6223.
+    is_a_tty = hasattr(sys.stdout, 'isatty') and sys.stdout.isatty()
+    if not supported_platform or not is_a_tty:
+        return False
+    return True
+
+if supports_color():
+    print (HEADER+BOLD+"RCDB build scripts options:"+ENDC)
+    print ("(default values are shown)")
+    print (OKBLUE+"with-tests"+ENDC +"="+ OKGREEN + "true" +  ENDC + "   Build unit tests. Will be as ./bin/test_rcdb_cpp")
+    print ("")
+
 
 #Create 'default' environment. Other environments will be a copy of this one
 default_env = Environment(
-    #Messages
-    #CXXCOMSTR = compile_source_message, 
-    #CCCOMSTR = compile_source_message,
-    #SHCCCOMSTR = compile_shared_source_message,
-    #SHCXXCOMSTR = compile_shared_source_message,
-    #ARCOMSTR = link_library_message,
-    #RANLIBCOMSTR = ranlib_library_message,
-    #SHLINKCOMSTR = link_shared_library_message,
-    #LINKCOMSTR = link_program_message,
-    #JARCOMSTR = java_library_message,
-    #JAVACCOMSTR = compile_source_message,
-    
     #>> CCDB related default staff <<
-    CPPPATH = ['#cpp'],
+    CPPPATH = ['#include', '#src', '/usr/include'], #, '#include/SQLite'],
     ENV = os.environ,
+    CXXFLAGS = '-std=c++11',
 )
 
 
-
-#Export 'default' environment for everything that whishes to use it
-Export('default_env') 
+#Export 'default' environment for everything that wishes to use it
+Export('default_env')
 
 #Create 'working' environment
-env = default_env.Clone()
-env.Repository('src')
+#default_env.Repository('src')
 
 #Attach SConsctipts
-SConscript('cpp/Library/SConscript', 'env', variant_dir='tmp/Library', duplicate=0)
-SConscript('cpp/Tests/SConscript', 'env', variant_dir='tmp/Tests', duplicate=0)
+SConscript('src/SQLiteCpp/SConscript', 'default_env', variant_dir='tmp/SQLiteCpp', duplicate=0)
+SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
+#SConscript('src/Tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
+
+#if ARGUMENTS.get("with-tests","false")=="true":
+#    print("Building with tests. To run example print example_ccdb_<example name> in console")
+#    SConscript('examples/SConscript', 'default_env', variant_dir='tmp/Examples', duplicate=0)
+#else:
+#    print("Building without examples. To build with examples add 'with-examples=true' flag")
+
 

@@ -2,18 +2,18 @@
 <module type="CPP_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Transaction.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Statement.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Backup.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Column.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Database.cpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/SQLiteCpp" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/include/RCDB" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests/test_ConditionType.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests/catch.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests/test_SqLiteProvider.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests/catch.hpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/tests/test_MySqlProvider.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/SQLiteCpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/include/RCDB" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Database.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Backup.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Column.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Transaction.cpp" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/src/SQLiteCpp/Statement.cpp" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/CMakeLists.txt" isTestSource="false" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
