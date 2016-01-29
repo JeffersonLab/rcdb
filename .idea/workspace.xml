@@ -1,17 +1,121 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="CMakeRunConfigurationManager" shouldGenerate="true" assignedExecutableTargets="true" buildAllGenerated="true">
+    <generated>
+      <config projectName="rcdb_cpp" targetName="rcdb_cpp" />
+      <config projectName="rcdb_cpp" targetName="test_rcdb_cpp" />
+    </generated>
+  </component>
+  <component name="CMakeSettings" AUTO_RELOAD="false" GENERATION_PASS_SYSTEM_ENVIRONMENT="true">
+    <ADDITIONAL_GENERATION_ENVIRONMENT>
+      <envs />
+    </ADDITIONAL_GENERATION_ENVIRONMENT>
+  </component>
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="">
+    <list default="true" readonly="true" id="65081ea8-ad67-452d-8d0c-56c1c2919996" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/TestBench/TestBench.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/Library" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/Library/Library.vcxproj" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/TestBench" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/TestBench/TestBench.vcxproj.filters" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/Tests" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/vs/Tests/Tests.vcxproj" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/encodings.xml" afterPath="$PROJECT_DIR$/.idea/encodings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/trunk.iml" afterPath="$PROJECT_DIR$/.idea/trunk.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_conditions.py" afterPath="$PROJECT_DIR$/python/tests/test_conditions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/__init__.py" afterPath="$PROJECT_DIR$/rcdb_www/__init__.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/runs/views.py" afterPath="$PROJECT_DIR$/rcdb_www/runs/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/start_www.py" afterPath="$PROJECT_DIR$/start_www.py" />
     </list>
-    <ignored path="trunk.iws" />
+    <list id="521e3420-e912-4bdc-9525-e42d65681bdb" name="Failed commit: Default" comment="Refactoring and cleanup">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/Condition.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/ConditionType.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/DataProvider.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/Exceptions.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/MySqlProvider.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/RCDB/SqLiteProvider.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Assertion.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Backup.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Column.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Database.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Exception.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/SQLiteCpp.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Statement.h" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/cpp/include/SQLiteCpp/Transaction.h" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/codeStyleSettings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/dictionaries/romanov.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/encodings.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/misc.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/modules.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/vcs.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/CMakeLists.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/Condition.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/ConditionType.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/DataProvider.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/Exceptions.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/MySqlProvider.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB/SqLiteProvider.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Assertion.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Backup.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Column.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Database.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Exception.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/SQLiteCpp.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Statement.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp/Transaction.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/Backup.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/Column.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/Database.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/Statement.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/Transaction.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/catch.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/catch.hpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/test_ConditionType.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/test_MySqlProvider.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/test_SqLiteProvider.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/confutils.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/confutils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/main.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc/common_errors.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.wiki" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/.name" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/dictionaries" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.idea/rcdb_cpp.iml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/.sconsign.dblite" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/SConstruct" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/bin" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/bin/rcdb_test_cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/RCDB" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/include/SQLiteCpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/lib" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/RCDB" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/RCDB/SConscript" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/src/SQLiteCpp/SConscript" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tests/SConscript" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tmp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tmp/SQLiteCpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tmp/Tests" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/rcdb_cpp/tmp/Tests/rcdb_test_cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/.cproject" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/.project" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/.sconsign.dblite" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/SConstruct" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/fadc250_example.cnf" afterPath="" />
+    </list>
+    <ignored path="rcdb_cpp.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -22,143 +126,137 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
-  <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/trunk$fill_test_runs.coverage" NAME="fill_test_runs Coverage Results" MODIFIED="1424480919589" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$config_parser.coverage" NAME="config_parser Coverage Results" MODIFIED="1392250797316" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/trigger_db" />
-    <SUITE FILE_PATH="coverage/trunk$run_end.coverage" NAME="run_end Coverage Results" MODIFIED="1396505611219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$start_tdb_www.coverage" NAME="start_tdb_www Coverage Results" MODIFIED="1393606195147" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/trunk$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1449005927240" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/trunk$sean_db_import.coverage" NAME="sean_db_import Coverage Results" MODIFIED="1429120111725" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$Unittests_in_test_conditions.coverage" NAME="Unittests in test_conditions Coverage Results" MODIFIED="1448919569400" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
-    <SUITE FILE_PATH="coverage/trunk$example_conditions_query.coverage" NAME="example_conditions_query Coverage Results" MODIFIED="1424888568872" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$fill_test_run1.coverage" NAME="fill_test_run1 Coverage Results" MODIFIED="1395265382654" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$reparse_end_of_2014_db.coverage" NAME="reparse_end_of_2014_db Coverage Results" MODIFIED="1426185745908" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$run_prestart.coverage" NAME="run_prestart Coverage Results" MODIFIED="1396501311565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$create_empty_sqlite.coverage" NAME="create_empty_sqlite Coverage Results" MODIFIED="1424721406981" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$sincos.coverage" NAME="sincos Coverage Results" MODIFIED="1395677071833" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$docutils_task_in_rcdb_python_tutorial_rst.coverage" NAME="docutils task in rcdb_python_tutorial.rst Coverage Results" MODIFIED="1424616093412" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/doc" />
-    <SUITE FILE_PATH="coverage/trunk$docutils_task_in_rcdb_conditions_python_tutorial_rst.coverage" NAME="docutils task in rcdb_conditions_python_tutorial.rst Coverage Results" MODIFIED="1424866500825" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/doc" />
-    <SUITE FILE_PATH="coverage/trunk$haha.coverage" NAME="haha Coverage Results" MODIFIED="1394751566301" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/runconf_db" />
-    <SUITE FILE_PATH="coverage/trunk$Nosetests_in_test_conditions.coverage" NAME="Nosetests in test_conditions Coverage Results" MODIFIED="1424482675978" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
-    <SUITE FILE_PATH="coverage/trunk$views.coverage" NAME="views Coverage Results" MODIFIED="1394071264424" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/runconf_www/files" />
-    <SUITE FILE_PATH="coverage/trunk$example_store_object.coverage" NAME="example_store_object Coverage Results" MODIFIED="1424800106456" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$fill_test_conditions.coverage" NAME="fill_test_conditions Coverage Results" MODIFIED="1424480939648" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/trunk$trunk.coverage" NAME="trunk Coverage Results" MODIFIED="1391208486095" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
   </component>
-  <component name="DatabaseView">
-    <option name="FLATTEN" value="false" />
-    <option name="GROUP_BY_TYPE" value="true" />
-    <option name="SORT_CHILDREN" value="false" />
-    <option name="SHOW_TABLE_CONSTRAINTS" value="true" />
-    <PATH>
-      <PATH_ELEMENT>
-        <option name="myItemId" />
-        <option name="myItemType" value="com.intellij.database.view.DbRootNodeDescriptor" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="SQLite generated.db" />
-        <option name="myItemType" value="com.intellij.database.view.DbNodeDescriptor" />
-      </PATH_ELEMENT>
-      <PATH_ELEMENT>
-        <option name="myItemId" value="" />
-        <option name="myItemType" value="com.intellij.database.view.DbNodeDescriptor" />
-      </PATH_ELEMENT>
-    </PATH>
-    <PATH>
-      <PATH_ELEMENT>
-        <option name="myItemId" />
-        <option name="myItemType" value="com.intellij.database.view.DbRootNodeDescriptor" />
-      </PATH_ELEMENT>
-    </PATH>
-  </component>
-  <component name="DockManager">
-    <window id="1">
-      <content type="file-editors">
-        <state>
-          <leaf>
-            <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-              <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.0">
-                    <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-            <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
-              <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
-                <provider selected="true" editor-type-id="text-editor">
-                  <state vertical-scroll-proportion="0.18100558">
-                    <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
-                    <folding />
-                  </state>
-                </provider>
-              </entry>
-            </file>
-          </leaf>
-        </state>
-      </content>
-    </window>
-  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
-    <favorites_list name="trunk" />
+    <favorites_list name="rcdb_cpp" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="ConditionType.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/ConditionType.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="DataProvider.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/DataProvider.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="MySqlProvider.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/MySqlProvider.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SqLiteProvider.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/SqLiteProvider.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Backup.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Backup.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Column.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Column.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Database.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Database.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Assertion.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Assertion.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="CMakeLists.txt" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cpp/CMakeLists.txt">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.60638297">
+              <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Exceptions.h" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/Exceptions.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
-  <component name="FindManager">
-    <FindUsagesManager>
-      <setting name="OPEN_NEW_TAB" value="false" />
-    </FindUsagesManager>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/SConstruct" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/rcdb_www/static/css/bootstrap.css" />
-        <option value="$PROJECT_DIR$/sql/update_00_to_01.sqlite.sql" />
-        <option value="$PROJECT_DIR$/python/sqlite2mysql.py" />
-        <option value="$PROJECT_DIR$/install.linux.txt" />
-        <option value="$PROJECT_DIR$/python/tests/create_sqlite.py" />
-        <option value="$PROJECT_DIR$/python/fill_test_conditions.py" />
-        <option value="$PROJECT_DIR$/doc/rcdb_python_tutorial.rst" />
-        <option value="$PROJECT_DIR$/python/create_empty_sqlite.py" />
-        <option value="$PROJECT_DIR$/python/exampe_basic_conditions.py" />
-        <option value="$PROJECT_DIR$/python/example_basic_conditions.py" />
-        <option value="$PROJECT_DIR$/python/example_store_arrays.py" />
-        <option value="$PROJECT_DIR$/python/example_store_object.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/condition_query_builder.py" />
-        <option value="$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.rst" />
-        <option value="$PROJECT_DIR$/python/example_conditions_query.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/file_archiver.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/errors.py" />
-        <option value="$PROJECT_DIR$/python/example_conditions_basic.py" />
-        <option value="$PROJECT_DIR$/python/run_end.py" />
-        <option value="$PROJECT_DIR$/python/prestart_example.xml" />
-        <option value="$PROJECT_DIR$/python/rcdb/__init__.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/coda_parser.py" />
-        <option value="$PROJECT_DIR$/python/run_prestart.py" />
-        <option value="$PROJECT_DIR$/rcdb_www/templates/runs/info.html" />
-        <option value="$PROJECT_DIR$/rcdb_www/runs/__init__.py" />
-        <option value="$PROJECT_DIR$/python/tests/benchmark_conditions.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
-        <option value="$PROJECT_DIR$/python/reparse_end_of_2014_db.py" />
-        <option value="$PROJECT_DIR$/python/profile.txt" />
-        <option value="$PROJECT_DIR$/python/sean_db_import.py" />
-        <option value="$PROJECT_DIR$/environment.bash" />
-        <option value="$PROJECT_DIR$/environment.csh" />
-        <option value="$PROJECT_DIR$/python/rcdb/model.py" />
-        <option value="$PROJECT_DIR$/rcnd" />
-        <option value="$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.wiki" />
-        <option value="$PROJECT_DIR$/python/parse_coda_log.py" />
-        <option value="$PROJECT_DIR$/start_www.py" />
-        <option value="$PROJECT_DIR$/python/tests/test_conditions.py" />
-        <option value="$PROJECT_DIR$/rcdb_www/__init__.py" />
-        <option value="$PROJECT_DIR$/rcdb_www/runs/views.py" />
+        <option value="$PROJECT_DIR$/include/RCDB/MySqlRcdbConnection.h" />
+        <option value="$PROJECT_DIR$/tests/test_MySqlProvider.cpp" />
+        <option value="$PROJECT_DIR$/tests/test_SqLiteProvider.cpp" />
+        <option value="$PROJECT_DIR$/include/RCDB/SqLiteProvider.h" />
+        <option value="$PROJECT_DIR$/include/RCDB/DataProvider.h" />
+        <option value="$PROJECT_DIR$/include/RCDB/MySqlProvider.h" />
+        <option value="$PROJECT_DIR$/tests/test_ConditionType.cpp" />
+        <option value="$PROJECT_DIR$/include/RCDB/ConditionType.h" />
+        <option value="$PROJECT_DIR$/tests/catch.cpp" />
+        <option value="$PROJECT_DIR$/src/RCDB/SConscript" />
+        <option value="$PROJECT_DIR$/CMakeLists.txt" />
+        <option value="$PROJECT_DIR$/src/SQLiteCpp/SConscript" />
+        <option value="$PROJECT_DIR$/tests/SConscript" />
+        <option value="$PROJECT_DIR$/SConstruct" />
       </list>
     </option>
   </component>
@@ -168,9 +266,10 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-1" />
-    <option name="width" value="1082" />
-    <option name="height" value="1895" />
+    <option name="x" value="-3" />
+    <option name="y" value="27" />
+    <option name="width" value="1926" />
+    <option name="height" value="950" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -180,12 +279,45 @@
             <id />
           </State>
           <State>
-            <id>SQL</id>
+            <id>C/C++</id>
+          </State>
+          <State>
+            <id>Code style issuesJavaScript</id>
+          </State>
+          <State>
+            <id>GeneralC/C++</id>
+          </State>
+          <State>
+            <id>GeneralJavaScript</id>
+          </State>
+          <State>
+            <id>HTML</id>
+          </State>
+          <State>
+            <id>JavaScript</id>
+          </State>
+          <State>
+            <id>Probable bugsJavaScript</id>
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+          <State>
+            <id>Type checksC/C++</id>
+          </State>
+          <State>
+            <id>TypeScript</id>
+          </State>
+          <State>
+            <id>XML</id>
+          </State>
+          <State>
+            <id>XPath</id>
           </State>
         </expanded-state>
         <selected-state>
           <State>
-            <id>SqlDialectInspection</id>
+            <id>C/C++</id>
           </State>
         </selected-state>
       </profile-state>
@@ -201,9 +333,6 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
-  <component name="ProjectReloadState">
-    <option name="STATE" value="0" />
-  </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -213,7 +342,7 @@
       <hideEmptyPackages />
       <abbreviatePackageNames />
       <autoscrollToSource />
-      <autoscrollFromSource ProjectPane="true" />
+      <autoscrollFromSource />
       <sortByType />
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
@@ -223,268 +352,44 @@
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
+              <option name="myItemId" value="rcdb_cpp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
+              <option name="myItemId" value="rcdb_cpp" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="__init__.py" />
-              <option name="myItemType" value="com.jetbrains.python.projectView.PyFileNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="views.py" />
-              <option name="myItemType" value="com.jetbrains.python.projectView.PyFileNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trunk" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="options.splitter.main.proportions" value="0.3" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="options.lastSelected" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="FullScreen" value="false" />
-    <property name="dynamic.classpath" value="false" />
-    <property name="options.searchVisible" value="true" />
-    <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="DefaultHtmlFileTemplate" value="Html5" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth0" value="172" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder0" value="0" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth1" value="172" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder1" value="1" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth2" value="172" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder2" value="2" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth3" value="75" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder3" value="3" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatWidth4" value="847" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_flatOrder4" value="4" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth0" value="153" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder0" value="0" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth1" value="152" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder1" value="1" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth2" value="153" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder2" value="2" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth3" value="153" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder3" value="3" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeWidth4" value="827" />
-    <property name="FileHistory.org.jetbrains.idea.svn.history.SvnHistoryProvider_treeOrder4" value="4" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cpp" />
+    <property name="settings.editor.selected.configurable" value="preferences.fileTypes" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
-  </component>
-  <component name="PyConsoleOptionsProvider">
-    <option name="myPythonConsoleState">
-      <console-settings module-name="trunk" is-module-sdk="true" working-directory="$PROJECT_DIR$/python">
-        <envs>
-          <env key="PYTHONPATH" value="$PWD:$PYTHONPATH" />
-        </envs>
-        <option name="myUseModuleSdk" value="true" />
-        <option name="myModuleName" value="trunk" />
-        <option name="myEnvs">
-          <map>
-            <entry key="PYTHONPATH" value="$PWD:$PYTHONPATH" />
-          </map>
-        </option>
-        <option name="myWorkingDirectory" value="$PROJECT_DIR$/python" />
-      </console-settings>
-    </option>
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/python" />
-      <recent name="D:\Projects\TriggerDB\trunk\python" />
-      <recent name="D:\Projects\TriggerDB\trunk\runconf_www\templates\runs" />
-      <recent name="D:\Projects\TriggerDB\trunk\runconf_www\templates\logs" />
-      <recent name="D:\Projects\TriggerDB\trunk\tridb_www\templates\runs" />
+      <recent name="$PROJECT_DIR$/src" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Projects\TriggerDB\trunk\runconf_www\templates\files" />
-      <recent name="D:\Projects\TriggerDB\trunk\tridb_www" />
-      <recent name="$PROJECT_DIR$/python/trigger_db" />
+      <recent name="$PROJECT_DIR$/cpp/include" />
+      <recent name="$PROJECT_DIR$/cpp" />
+      <recent name="$PROJECT_DIR$/src/SQLiteCpp" />
+      <recent name="$PROJECT_DIR$/tests" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.start_www">
-    <configuration default="false" name="example_store_object" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/example_conditions_store_object.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="example_conditions_query" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/example_conditions_query.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="reparse_end_of_2014_db" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/reparse_end_of_2014_db.py" />
-      <option name="PARAMETERS" value="sqlite:///$PROJECT_DIR$/../generated.db" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="sean_db_import" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/sean_db_import.py" />
-      <option name="PARAMETERS" value="$PROJECT_DIR$/../../sean.db sqlite:///$PROJECT_DIR$/../generated.db" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="docutils task in rcdb_conditions_python_tutorial.rst" type="docs" factoryName="Docutils task" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/doc" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="docutils_input_file" value="$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.rst" />
-      <option name="docutils_output_file" value="$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.html" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="rst2html" />
-      <option name="docutils_open_in_browser" value="true" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
+  <component name="RunManager">
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -496,7 +401,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="TARGET" value="" />
       <option name="SETTINGS_FILE" value="" />
@@ -517,7 +422,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="ADDITIONAL_ARGS" value="" />
       <method />
@@ -531,7 +436,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="ADDITIONAL_ARGS" value="" />
       <method />
@@ -547,29 +452,11 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="true" type="docs" factoryName="Docutils task">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="docutils_input_file" value="" />
-      <option name="docutils_output_file" value="" />
-      <option name="docutils_params" value="" />
-      <option name="docutils_task" value="" />
-      <option name="docutils_open_in_browser" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
@@ -577,7 +464,6 @@
       <gulpfile />
       <tasks />
       <arguments />
-      <pass-parent-envs>true</pass-parent-envs>
       <envs />
       <method />
     </configuration>
@@ -596,7 +482,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
@@ -616,7 +502,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
@@ -636,7 +522,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
@@ -658,7 +544,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
@@ -681,7 +567,7 @@
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
+      <module name="rcdb_cpp" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
       <option name="SCRIPT_NAME" value="" />
       <option name="CLASS_NAME" value="" />
@@ -697,172 +583,20 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <configuration default="false" name="start_www" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="RCDB_CONNECTION" value="mysql://rcdb@localhost/rcdb" />
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/start_www.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="config_parser" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-        <env name="TDB_HOME" value="/home/romanov/gluex/rcdb/trunk/rcdb" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python/trigger_db" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/trigger_db/config_parser.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="fill_test_runs" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/fill_test_runs.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="run_end" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/run_end.py" />
-      <option name="PARAMETERS" value="prestart_example.xml" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="run_prestart" type="PythonConfigurationType" factoryName="Python">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/run_prestart.py" />
-      <option name="PARAMETERS" value="prestart_example.xml" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
-      <method />
-    </configuration>
-    <configuration default="false" name="Unittests in test_conditions" type="tests" factoryName="Unittests" nameIsGenerated="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
+    <configuration default="false" name="Build All" type="CMakeRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="rcdb_cpp" TARGET_NAME="test_rcdb_cpp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="rcdb_cpp" RUN_TARGET_NAME="test_rcdb_cpp">
       <envs />
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/python/tests" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="trunk" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" enabled="false" sample_coverage="true" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/python/tests/test_conditions.py" />
-      <option name="CLASS_NAME" value="" />
-      <option name="METHOD_NAME" value="" />
-      <option name="FOLDER_NAME" value="" />
-      <option name="TEST_TYPE" value="TEST_SCRIPT" />
-      <option name="PATTERN" value="" />
-      <option name="USE_PATTERN" value="false" />
-      <option name="PUREUNITTEST" value="true" />
-      <option name="PARAMS" value="" />
-      <option name="USE_PARAM" value="false" />
-      <RunnerSettings RunnerId="PyDebugRunner" />
-      <RunnerSettings RunnerId="PythonRunner" />
-      <ConfigurationWrapper RunnerId="PyDebugRunner" />
-      <ConfigurationWrapper RunnerId="PythonRunner" />
       <method />
     </configuration>
-    <list size="11">
-      <item index="0" class="java.lang.String" itemvalue="Python.start_www" />
-      <item index="1" class="java.lang.String" itemvalue="Python.config_parser" />
-      <item index="2" class="java.lang.String" itemvalue="Python.fill_test_runs" />
-      <item index="3" class="java.lang.String" itemvalue="Python.run_end" />
-      <item index="4" class="java.lang.String" itemvalue="Python.run_prestart" />
-      <item index="5" class="java.lang.String" itemvalue="Python.example_store_object" />
-      <item index="6" class="java.lang.String" itemvalue="Python.example_conditions_query" />
-      <item index="7" class="java.lang.String" itemvalue="Python.reparse_end_of_2014_db" />
-      <item index="8" class="java.lang.String" itemvalue="Python.sean_db_import" />
-      <item index="9" class="java.lang.String" itemvalue="Python docs.docutils task in rcdb_conditions_python_tutorial.rst" />
-      <item index="10" class="java.lang.String" itemvalue="Python tests.Unittests in test_conditions" />
-    </list>
-    <recent_temporary>
-      <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.sean_db_import" />
-        <item index="1" class="java.lang.String" itemvalue="Python.reparse_end_of_2014_db" />
-        <item index="2" class="java.lang.String" itemvalue="Python.example_conditions_query" />
-        <item index="3" class="java.lang.String" itemvalue="Python docs.docutils task in rcdb_conditions_python_tutorial.rst" />
-        <item index="4" class="java.lang.String" itemvalue="Python.example_store_object" />
-      </list>
-    </recent_temporary>
+    <configuration default="false" name="test_rcdb_cpp" type="CMakeRunConfiguration" factoryName="Application" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="rcdb_cpp" TARGET_NAME="test_rcdb_cpp" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="rcdb_cpp" RUN_TARGET_NAME="test_rcdb_cpp">
+      <envs />
+      <method />
+    </configuration>
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
-  <component name="StructureViewFactory">
-    <option name="AUTOSCROLL_FROM_SOURCE" value="true" />
-    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
-  </component>
-  <component name="SvnConfiguration" myUseAcceleration="nothing" cleanupOnStartRun="true">
-    <configuration useDefault="false">$USER_HOME$/.subversion</configuration>
+  <component name="SvnConfiguration" cleanupOnStartRun="true">
+    <configuration>$USER_HOME$/.subversion</configuration>
     <supportedVersion>125</supportedVersion>
+    <option name="FORCE_UPDATE" value="true" />
   </component>
   <component name="SvnFileUrlMappingImpl">
     <option name="myMappingRoots">
@@ -884,178 +618,44 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="cd589572-fdff-48a7-a86a-9d17b5c63649" name="Default" comment="" />
-      <created>1391208446699</created>
+      <changelist id="65081ea8-ad67-452d-8d0c-56c1c2919996" name="Default" comment="" />
+      <created>1453535298840</created>
       <option name="number" value="Default" />
-      <updated>1391208446699</updated>
+      <updated>1453535298840</updated>
     </task>
-    <task id="LOCAL-00001" summary="TDB code gardening">
-      <created>1391212947105</created>
+    <task id="LOCAL-00001" summary="Cpp interface update">
+      <created>1453999844937</created>
       <option name="number" value="00001" />
       <option name="project" value="LOCAL" />
-      <updated>1391212947105</updated>
+      <updated>1453999844937</updated>
     </task>
-    <task id="LOCAL-00002" summary="TDB code gardening">
-      <created>1392251760108</created>
-      <option name="number" value="00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1392251760108</updated>
-    </task>
-    <task id="LOCAL-00003" summary="TDB code gardening">
-      <created>1392252172105</created>
-      <option name="number" value="00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1392252172105</updated>
-    </task>
-    <task id="LOCAL-00004" summary="TDB code gardening">
-      <created>1393268985212</created>
-      <option name="number" value="00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1393268985212</updated>
-    </task>
-    <task id="LOCAL-00005" summary="TDB code gardening">
-      <created>1393981032134</created>
-      <option name="number" value="00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1393981032134</updated>
-    </task>
-    <task id="LOCAL-00006" summary="TDB code gardening">
-      <created>1393983586498</created>
-      <option name="number" value="00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1393983586498</updated>
-    </task>
-    <task id="LOCAL-00007" summary="RunConfDB code gardening">
-      <created>1395176817657</created>
-      <option name="number" value="00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1395176817657</updated>
-    </task>
-    <task id="LOCAL-00008" summary="RunConfDB code gardening">
-      <created>1395880521016</created>
-      <option name="number" value="00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1395880521016</updated>
-    </task>
-    <task id="LOCAL-00009" summary="RunConfDB code gardening">
-      <created>1396507148330</created>
-      <option name="number" value="00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1396507148330</updated>
-    </task>
-    <task id="LOCAL-00010" summary="RunConfDB csh script home determining">
-      <created>1397069930831</created>
-      <option name="number" value="00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1397069930831</updated>
-    </task>
-    <task id="LOCAL-00011" summary="RunConfDB csh script home determining">
-      <created>1397070181446</created>
-      <option name="number" value="00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1397070181446</updated>
-    </task>
-    <task id="LOCAL-00012" summary="RunConfDB csh script home determining">
-      <created>1397070468351</created>
-      <option name="number" value="00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1397070468351</updated>
-    </task>
-    <task id="LOCAL-00013" summary="model update for per channel data">
-      <created>1398450471938</created>
-      <option name="number" value="00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1398450471938</updated>
-    </task>
-    <task id="LOCAL-00014" summary="runconf_db renamed to rcdb">
-      <created>1398450999991</created>
-      <option name="number" value="00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1398450999991</updated>
-    </task>
-    <task id="LOCAL-00015" summary="Run conditions API, unit tests for run conditions, schema change, online DB filling is NOT tested yet">
-      <created>1424576965140</created>
-      <option name="number" value="00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1424576965140</updated>
-    </task>
-    <task id="LOCAL-00016" summary="Unit tests for condition parts. Documentation is 70% done.">
-      <created>1424736183847</created>
-      <option name="number" value="00016" />
-      <option name="project" value="LOCAL" />
-      <updated>1424736183847</updated>
-    </task>
-    <task id="LOCAL-00017" summary="The documentation looks complete. ConditionType query helpers are implemented. Tests are working. And conditions API is mostly done">
-      <created>1424831686052</created>
-      <option name="number" value="00017" />
-      <option name="project" value="LOCAL" />
-      <updated>1424831686052</updated>
-    </task>
-    <task id="LOCAL-00018" summary="RCDBProvider.add_condition now accepts Run object as well as run_number integer">
-      <created>1424888638732</created>
-      <option name="number" value="00018" />
-      <option name="project" value="LOCAL" />
-      <updated>1424888638732</updated>
-    </task>
-    <task id="LOCAL-00019" summary="Files reparsing and Sean database import. Performance analysis.">
-      <created>1425760648848</created>
-      <option name="number" value="00019" />
-      <option name="project" value="LOCAL" />
-      <updated>1425760648848</updated>
-    </task>
-    <option name="localTasksCounter" value="20" />
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
-  <component name="TestHistory">
-    <history-entry file="Unittests_in_test_conditions - 2015.11.30 at 16h 39m 30s.xml">
-      <configuration name="Unittests in test_conditions" configurationId="tests" />
-    </history-entry>
-  </component>
-  <component name="TodoView" selected-index="0">
-    <todo-panel id="selected-file">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="false" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="false" />
-    </todo-panel>
-    <todo-panel id="default-changelist">
-      <are-packages-shown value="false" />
-      <are-modules-shown value="false" />
-      <flatten-packages value="false" />
-      <is-autoscroll-to-source value="false" />
-    </todo-panel>
-  </component>
   <component name="ToolWindowManager">
-    <frame x="-1" y="0" width="1082" height="1895" extended-state="6" />
+    <frame x="-3" y="27" width="1926" height="950" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34042552" sideWeight="0.4964739" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32742617" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15007962" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3279797" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3263506" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1979638" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34042552" sideWeight="0.5035261" order="1" side_tool="true" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3245985" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16400427" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28363636" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3954276" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32658228" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32708934" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24980143" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3259949" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3272727" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -1070,74 +670,140 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="TDB code gardening" />
-    <MESSAGE value="RunConfDB code gardening" />
-    <MESSAGE value="RunConfDB csh script home determining" />
-    <MESSAGE value="model update for per channel data" />
-    <MESSAGE value="runconf_db renamed to rcdb" />
-    <MESSAGE value="runconf_www renamed to rcdb_www" />
-    <MESSAGE value="Run conditions API, unit tests for run conditions, schema change, online DB filling is NOT tested yet" />
-    <MESSAGE value="Unit tests for condition parts. Documentation is 70% done." />
-    <MESSAGE value="The documentation looks complete. ConditionType query helpers are implemented. Tests are working. And conditions API is mostly done" />
-    <MESSAGE value="RCDBProvider.add_condition now accepts Run object as well as run_number integer" />
-    <MESSAGE value="Files reparsing and Sean database import. Performance analysis." />
-    <option name="LAST_COMMIT_MESSAGE" value="Files reparsing and Sean database import. Performance analysis." />
+    <MESSAGE value="Cpp interface update" />
+    <MESSAGE value="Refactoring and cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactoring and cleanup" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/python/tests/test_conditions.py</url>
-          <line>75</line>
-          <option name="timeStamp" value="14" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/python/run_prestart.py</url>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/python/rcdb/coda_parser.py</url>
-          <line>146</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/python/rcdb/coda_parser.py</url>
-          <line>120</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-      </breakpoints>
-      <breakpoints-dialog>
-        <breakpoints-dialog />
-      </breakpoints-dialog>
-      <default-breakpoints>
-        <breakpoint type="python-exception">
-          <properties notifyOnTerminate="true" exception="BaseException">
-            <option name="notifyOnTerminate" value="true" />
-          </properties>
-        </breakpoint>
-      </default-breakpoints>
-      <option name="time" value="29" />
+      <option name="time" value="1" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/python/sqlalchemy/sql/expression.py">
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/ConditionType.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="3" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="3" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/DataProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/MySqlProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/SqLiteProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Backup.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Column.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Database.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Assertion.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/Exceptions.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SConstruct">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/c++/4.8/exception">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/sqlite3.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="227" column="22" selection-start-line="227" selection-start-column="8" selection-end-line="227" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/include/mysql/mysql.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="379" column="20" selection-start-line="379" selection-start-column="20" selection-end-line="379" selection-end-column="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SConstruct">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="0" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="305" column="0" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="0" />
-          <folding />
+          <caret line="313" column="21" selection-start-line="313" selection-start-column="21" selection-end-line="313" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.wiki">
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/Condition.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1145,371 +811,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/sean_db_events_compare.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="58" column="52" selection-start-line="58" selection-start-column="52" selection-end-line="58" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="63" selection-start-line="42" selection-start-column="63" selection-end-line="42" selection-end-column="63" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/reparse_end_of_2014_db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="0" selection-start-line="25" selection-start-column="4" selection-end-line="34" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/example_conditions_store_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3126551">
-          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/condition_query_builder.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6253102">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/example_conditions_query.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="95" selection-start-line="19" selection-start-column="8" selection-end-line="20" selection-end-column="95" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/file_archiver.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/config_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/errors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/create_empty_sqlite.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="29" selection-start-line="6" selection-start-column="0" selection-end-line="21" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/xml/etree/ElementTree.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1332" column="0" selection-start-line="1332" selection-start-column="0" selection-end-line="1332" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="uml://DATABASE/3da167ad-8bc1-467e-a4a9-7a86908c8177">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>DATABASE</ID>
-          <OriginalElement>3da167ad-8bc1-467e-a4a9-7a86908c8177</OriginalElement>
-          <nodes>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:readout_masks</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:condition_types</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:board_installations</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:readout_thresholds</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:trigger_thresholds</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:crates</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:runs</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:board_configurations</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:boards</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:files_have_runs</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:trigger_masks</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:files</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:board_configurations_have_runs</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:conditions</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:logs</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:dac_presets</node>
-            <node x="" y="">3da167ad-8bc1-467e-a4a9-7a86908c8177.table:board_installations_have_runs</node>
-          </nodes>
-          <notes />
-          <edges />
-          <settings layout="Hierarchic Group" zoom="0.6325757575757576" x="698.0" y="518.0" />
-          <SelectedNodes />
-          <Categories>
-            <Category>Columns</Category>
-            <Category>Key columns</Category>
-          </Categories>
-          <SCOPE>All</SCOPE>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file:///usr/lib/python2.7/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="242" column="0" selection-start-line="242" selection-start-column="0" selection-end-line="242" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/example_conditions_basic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="8" selection-end-column="114" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/flask/app.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="721" column="8" selection-start-line="721" selection-start-column="8" selection-end-line="721" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/info.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.0">
-          <caret line="15" column="20" selection-start-line="15" selection-start-column="11" selection-end-line="15" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/benchmark_conditions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="43" selection-start-line="37" selection-start-column="43" selection-end-line="37" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/prestart_example.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8947368">
-          <caret line="150" column="21" selection-start-line="138" selection-start-column="9" selection-end-line="150" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/run_conditions_simple.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sqlalchemy/engine/default.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="424" column="0" selection-start-line="424" selection-start-column="0" selection-end-line="424" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/constants.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/pagination.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="38" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="57" column="11" selection-start-line="57" selection-start-column="11" selection-end-line="57" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/environment.bash">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-25.08">
-          <caret line="24" column="23" selection-start-line="24" selection-start-column="23" selection-end-line="24" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/environment.csh">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.75422627">
-          <caret line="28" column="23" selection-start-line="28" selection-start-column="23" selection-end-line="28" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sean_db_import.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="37" column="30" selection-start-line="33" selection-start-column="4" selection-end-line="37" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sean_db_events_compare.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="58" column="52" selection-start-line="58" selection-start-column="52" selection-end-line="58" selection-end-column="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="305" column="0" selection-start-line="298" selection-start-column="4" selection-end-line="305" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sqlalchemy/sql/expression.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="80" column="3" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="284" column="37" selection-start-line="284" selection-start-column="37" selection-end-line="284" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/doc/rcdb_conditions_python_tutorial.wiki">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1468" column="0" selection-start-line="1468" selection-start-column="0" selection-end-line="1468" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/reparse_end_of_2014_db.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="0" selection-start-line="25" selection-start-column="4" selection-end-line="34" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/run_end.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="0" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/coda_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="42" column="4" selection-start-line="42" selection-start-column="4" selection-end-line="42" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcnd">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="205" column="0" selection-start-line="205" selection-start-column="0" selection-end-line="205" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/run_prestart.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/parse_coda_log.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.58640224">
-          <caret line="46" column="6" selection-start-line="46" selection-start-column="6" selection-end-line="46" selection-end-column="6" />
-          <folding>
-            <element signature="e#0#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/start_www.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24220963">
-          <caret line="21" column="23" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/rcdb_www.wsgi">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.39518413">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="32" selection-end-column="81" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/main_window.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.12747875">
-          <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/sqlite2mysql.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <marker date="1448475929489" expanded="true" signature="869:890" placeholder="DROP TABLE I..." />
-            <marker date="1448475929489" expanded="true" signature="901:938" placeholder="CREATE TABLE..IF..." />
-            <marker date="1448475929489" expanded="true" signature="1099:1111" placeholder="INSERT INTO missing_value..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_conditions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.47025496">
-          <caret line="112" column="0" selection-start-line="112" selection-start-column="0" selection-end-line="112" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/flask/__init__.py">
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/Exceptions.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -1517,44 +819,77 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/profile.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24220963">
-          <caret line="19" column="418" selection-start-line="19" selection-start-column="405" selection-end-line="19" selection-end-column="418" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/DataProvider.h">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="28" column="0" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/ConditionType.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18100558">
-          <caret line="19" column="28" selection-start-line="19" selection-start-column="28" selection-end-line="19" selection-end-column="28" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/MySqlProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/RCDB/SqLiteProvider.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Backup.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Column.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Database.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/include/SQLiteCpp/Assertion.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="2" selection-start-line="17" selection-start-column="2" selection-end-line="17" selection-end-column="2" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cpp/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.60638297">
+          <caret line="19" column="36" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>

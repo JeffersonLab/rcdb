@@ -1,13 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 2.7.6 (/usr/bin/python2.7)" project-jdk-type="Python SDK" />
+  <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/cpp" />
+      <file path="$PROJECT_DIR$/cpp/include/include/RCDB" />
+      <file path="$PROJECT_DIR$/cpp/include/include/SQLiteCpp" />
+    </sourceRoots>
+    <libraryRoots />
+    <excludeRoots />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
   <component name="SvnBranchConfigurationManager">
     <option name="myConfigurationMap">
       <map>
         <entry key="$PROJECT_DIR$">
           <value>
             <SvnBranchConfiguration>
-              <option name="trunkUrl" value="" />
+              <option name="branchUrls">
+                <list>
+                  <option value="https://halldsvn.jlab.org/repos/beam_tests" />
+                  <option value="https://halldsvn.jlab.org/repos/branches" />
+                  <option value="https://halldsvn.jlab.org/repos/tags" />
+                  <option value="https://halldsvn.jlab.org/repos/temp" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://halldsvn.jlab.org/repos/trunk" />
             </SvnBranchConfiguration>
           </value>
         </entry>
