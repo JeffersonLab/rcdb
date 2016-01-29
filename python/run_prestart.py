@@ -51,7 +51,7 @@ def parse_files():
 
     # Parse coda xml and save to DB
     run, run_config_file = coda_parser.parse_file(db, coda_xml_log_file)
-    db.add_configuration_file(run, coda_xml_log_file)
+    db.add_configuration_file(run, coda_xml_log_file, overwrite=True)
 
     # Parse run configuration file and save to DB
     if run_config_file:

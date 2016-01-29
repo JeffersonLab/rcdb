@@ -8,12 +8,9 @@ from .provider import ConfigurationProvider
 from .errors import OverrideConditionTypeError, NoConditionTypeFound
 from .errors import OverrideConditionValueError, NoRunFoundError
 from sqlalchemy.orm.exc import NoResultFound
-
 from constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
 
-
-
-#This thing separates cells in data blob
+# This thing separates cells in data blob
 blob_delimiter = "|"
 
 # if cell of data table is a string and the string already contains blob_delimiter
@@ -21,9 +18,9 @@ blob_delimiter = "|"
 blob_delimiter_replacement = "&delimiter;"
 
 
-#-------------------------------------------------
+# -------------------------------------------------
 # function Convert list to DB text representation
-#-------------------------------------------------
+# -------------------------------------------------
 def list_to_db_text(values):
     """
     Converts list of values like pedestal,threshold,baseline_preset values
@@ -64,31 +61,35 @@ class DefaultConditions(object):
     COMPONENTS = 'components'
     COMPONENT_STATS = 'component_stats'
     RTVS = 'rtvs'
-
-    @staticmethod
-    def create_condition_types(db):
-        """
-        Checks if condition types listed in class exist in the database and create them if not
-        :param db: RCDBProvider connected to database
-        :type db: RCDBProvider
-
-        :return: None
-        """
-        all_types_dict = {t.name: t for t in db.get_condition_types()}
-        create_condition_type = lambda name, value_type: \
-            all_types_dict[name] if name in all_types_dict.keys() else db.create_condition_type(name, value_type, False)
-
-        # get or create condition type
-        create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)
-        create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD)
-        create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD)
-        create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD)
-        create_condition_type(DefaultConditions.SESSION, ConditionType.STRING_FIELD)
-        create_condition_type(DefaultConditions.USER_COMMENT, ConditionType.STRING_FIELD)
-        create_condition_type(DefaultConditions.COMPONENTS, ConditionType.JSON_FIELD)
-        create_condition_type(DefaultConditions.RTVS, ConditionType.JSON_FIELD)
-        create_condition_type(DefaultConditions.COMPONENT_STATS, ConditionType.JSON_FIELD)
+    IS_VALID_RUN_END = 'is_valid_run_end'
 
 
+def create_condition_types(db):
+    """
+    Checks if condition types listed in class exist in the database and create them if not
+    :param db: RCDBProvider connected to database
+    :type db: RCDBProvider
+
+    :return: None
+    """
+    all_types_dict = {t.name: t for t in db.get_condition_types()}
+
+    def create_condition_type(name, value_type, description=""):
+        all_types_dict[name] if name in all_types_dict.keys() \
+            else db.create_condition_type(name, value_type, False, description)
+
+    # get or create condition type
+    create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)
+    create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD)
+    create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.SESSION, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.USER_COMMENT, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.COMPONENTS, ConditionType.JSON_FIELD)
+    create_condition_type(DefaultConditions.RTVS, ConditionType.JSON_FIELD)
+    create_condition_type(DefaultConditions.COMPONENT_STATS, ConditionType.JSON_FIELD)
+    create_condition_type(DefaultConditions.IS_VALID_RUN_END, ConditionType.BOOL_FIELD,
+                          "True if a run has valid run-end record. "
+                          "False means the run was aborted/crashed at some point")
 
 

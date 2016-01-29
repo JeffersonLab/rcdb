@@ -8,6 +8,7 @@ from rcdb import DefaultConditions
 from rcdb.model import ConditionType
 from rcdb.log_format import BraceMessage as lf
 from rcdb import ConfigurationProvider
+from rcdb import create_condition_types
 
 
 from datetime import datetime
@@ -56,7 +57,7 @@ def parse_xml(db, xml_root, auto_commit=True):
     log.debug("Processing xml tree ")
 
     # Check that all condition types exists in DB
-    DefaultConditions.create_condition_types(db)
+    create_condition_types(db)
 
     # parse <run-start> section
     run, run_config_file = parse_start_run_data(db, xml_root)
@@ -98,6 +99,9 @@ def parse_start_run_data(db, xml_root, auto_commit=True):
     # Session
     db.add_condition(run, DefaultConditions.SESSION, xml_root.attrib["session"], None, True, auto_commit)
 
+    # Set the run as not properly finished (We hope that the next section will
+    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, False, None, True, auto_commit)
+
     # Start time
     try:
         start_time = datetime.strptime(xml_run_start.find("start-time").text,"%m/%d/%y %H:%M:%S")
@@ -105,6 +109,20 @@ def parse_start_run_data(db, xml_root, auto_commit=True):
         log.info(lf("Run start time is '{}'", start_time))
     except Exception as ex:
         log.warning("Error parsing <start-time> section: " + str(ex))
+
+    # Update time
+    try:
+        update_time = datetime.strptime(xml_run_start.find("update-time").text,"%m/%d/%y %H:%M:%S")
+        db.add_run_end_time(run, update_time)
+        log.info(lf("Update time is '{}'", update_time))
+    except Exception as ex:
+        log.warning("Error parsing <update-time> section: " + str(ex))
+
+    # Event number
+    xml_event_count = xml_run_start.find('total-evt')
+    if xml_event_count:
+        event_count = int(xml_event_count.text)
+        db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, None, True, auto_commit)
 
     # Components used
     xml_components = xml_run_start.find('components')
@@ -157,6 +175,9 @@ def parse_end_run_data(db, run, xml_root, auto_commit=True):
 
     db.add_run_end_time(run, end_time)
 
+    # Set the run as properly finished
+    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, True, None, True, auto_commit)
+
     # Number of events
     event_count = int(xml_run_end.find("total-evt").text)
     db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, None, True, auto_commit)
@@ -204,8 +225,6 @@ def parse_end_comment(db, run, xml_root, auto_commit=True):
     -------------------------------------------
     </end-comment>
 
-    :param end_comment:
-    :type end_comment: str
 
     :return: user_comment, run_type_file, run_config
     :rtype: (str,str,str)

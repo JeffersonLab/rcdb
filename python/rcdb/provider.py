@@ -380,11 +380,12 @@ class RCDBProvider(object):
                2: value=4444; time=time2]
 
 
+        :param run:
         :param run: The run number for this condition value
-        :type run: int
+        :type run: int, Run
 
         :param key: name of condition or ConditionType
-        :type key: str or ConditionType
+        :type key: str, ConditionType
 
         :param actual_time:
         :type actual_time: datetime.datetime
