@@ -39,7 +39,6 @@ def parse_file(db, filename, auto_commit=True):
     return parse_xml(db, xml_root, auto_commit)
 
 
-
 def parse_xml(db, xml_root, auto_commit=True):
     """
     Parses ElementTree element that should contain whole coda file

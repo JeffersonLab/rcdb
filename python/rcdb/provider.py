@@ -772,8 +772,20 @@ class ConfigurationProvider(RCDBProvider):
     # ------------------------------------------------
     #
     # ------------------------------------------------
-    def add_configuration_file(self, run, path, content=None):
-        """Adds configuration file to run configuration. If such file exists"""
+    def add_configuration_file(self, run, path, content=None, overwrite=False):
+        """Adds configuration file to run configuration. If such file exists
+        :param overwrite: If this flag is true, such file for this run exists but checksumm is different,
+                          file content will be overwritten
+        :param content: Content of a file. If not given, func tryes to open file by path.
+        :param path: Path of the file
+        :param run: Run number
+        """
+        def get_content():
+            if content:
+                return content
+            with open(path) as io_file:
+               return io_file.read()
+
 
         log.debug("Processing configuration file")
 
@@ -787,7 +799,27 @@ class ConfigurationProvider(RCDBProvider):
         if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(run)
 
-        # Look, do we have such file?
+        if overwrite:
+            # If we have to potentially overwrite the file, we have to apply another logic
+            # First, we look at file with this name in this run
+            query = self.session.query(ConfigurationFile)\
+                    .filter(ConfigurationFile.runs.contains(run))\
+                    .filter(ConfigurationFile.path == path)\
+                    .order_by(desc(ConfigurationFile.id))   # we want latest
+            if query.count():
+                # There are file to overwrite!
+                conf_file = query.first()
+                conf_file.sha256 = check_sum
+                conf_file.path = path
+                conf_file.content = get_content()
+                log.debug(Lf("|- File '{}' is getting overwritten", path))
+
+                self.session.commit()
+                self.add_log_record(conf_file, "File overwritten in DB. Path: '{}'. Run: '{}'".format(path, run), run)
+                return
+
+        # Overwrite = false or is not possible
+        # Look, do we have a file with such name and checksumm?
         file_query = self.session.query(ConfigurationFile) \
             .filter(ConfigurationFile.sha256 == check_sum, ConfigurationFile.path == path)
 
@@ -799,11 +831,7 @@ class ConfigurationProvider(RCDBProvider):
             conf_file = ConfigurationFile()
             conf_file.sha256 = check_sum
             conf_file.path = path
-            if content is None:
-                with open(path) as io_file:
-                    conf_file.content = io_file.read()
-            else:
-                conf_file.content = content
+            conf_file.content = get_content()
 
             # put it to DB and associate with run
             self.session.add(conf_file)
