@@ -120,7 +120,7 @@ def parse_start_run_data(db, xml_root, auto_commit=True):
 
     # Event number
     xml_event_count = xml_run_start.find('total-evt')
-    if xml_event_count:
+    if xml_event_count is not None:
         event_count = int(xml_event_count.text)
         db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, None, True, auto_commit)
 
