@@ -25,10 +25,9 @@ class ConfigParser:
         """
 
         lines = [l.strip() for l in content.splitlines() if l]
-        is_section_name = False
         current_section = ""
 
-        for index,line in enumerate(lines):
+        for line in lines:
 
             if line.startswith('----') or line.startswith('===='):
                 continue
@@ -36,6 +35,8 @@ class ConfigParser:
             tokens = shlex.split(line)
             if not tokens:
                 continue
+
+            if tokens[0] in section_names[l]
 
 
 

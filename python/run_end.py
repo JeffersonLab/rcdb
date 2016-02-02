@@ -1,6 +1,6 @@
-import run_prestart
+import update
 
 
 # entry point
 if __name__ == "__main__":
-    run_prestart.parse_files()
+    update.parse_files()

@@ -21,6 +21,14 @@ log = logging.getLogger('rcdb.coda_parser')         # create run configuration s
 RUN_CONFIG_RTV = '%(config)'
 
 
+class CodaConfigParseResult:
+    def __init__(self):
+        self.db = None
+        self.run = -1
+        self.has_run_start = False
+        self.has_run_end = False
+
+
 def parse_file(db, filename, auto_commit=True):
     """
     Opens and parses coda file
@@ -174,6 +182,8 @@ def parse_end_run_data(db, run, xml_root, auto_commit=True):
         end_time = datetime.now()
 
     db.add_run_end_time(run, end_time)
+
+
 
     # Set the run as properly finished
     db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, True, None, True, auto_commit)
