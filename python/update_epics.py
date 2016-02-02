@@ -5,15 +5,16 @@
 #
 # The following condition variables are currently loaded from this script:
 #
-# * beam_current
-# * beam_energy
-# * coherent_peak
-# * collimator_diameter
+# * beam_current           (float)
+# * beam_energy            (float)
+# * coherent_peak          (float)
+# * collimator_diameter    
 # * luminosity
 # * radiator_type
 # * ps_convertor
-# * solenoid_current
-# * status
+# * solenoid_current       (float)
+# * status                 (int)
+# * radiator_index         (int)
 # * 
 #
 # More description of these variables is provided below
@@ -82,7 +83,7 @@ def update_rcdb_conds(db, run):
         try:
             conditions["radiator_type"] = caget("HD:GONI:RADIATOR_NAME")
         except:
-            conditions["radiator_type"] = -1.
+            conditions["radiator_type"] = ""
         # index of radiator position in goniometer
         try:
             conditions["radiator_index"] = caget("HD:GONI:RADIATOR_INDEX")
