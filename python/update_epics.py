@@ -5,22 +5,24 @@
 #
 # The following condition variables are currently loaded from this script:
 #
-# * beam_current           (float)
-# * beam_energy            (float)
-# * coherent_peak          (float)
-# * collimator_diameter    
-# * luminosity
-# * radiator_type
-# * ps_convertor
-# * solenoid_current       (float)
-# * status                 (int)
-# * radiator_index         (int)
-# * 
+# * beam_beam_energy       (float)  # Beam current - uses the primary epics BCM, IBCAD00CRCUR6
+# * beam_energy            (float)  # Beam energy - from epics HALLD:p
+# * coherent_peak          (float)  # Coherent peak location
+# * collimator_diameter    (string) # Collimator diameter
+# * luminosity             (float)  # Estimated luminosity factor
+# * ps_converter           (string) # PS converter
+# * solenoid_current       (float)  # Solenoid current
+# * status                 (int)    # Run status - Rough information about run (e.g. is it "good" or not).
+# * radiator_index         (int)    # Index of radiator position in goniometer
+# * radiator_id            (int)    # ID of radiator in goniometer: unique id of diamond (0 for all amorphous)
+# * polarization_direction (string) # Polarization direction - parallel or perpendicular to floor
+# * radiator_type          (string) # Diamond name
 #
+
 # More description of these variables is provided below
 #
 # To call this script from other python code, use:
-#     update_rcdb_conds.update_rcdb_conds(db, run_number)
+#     update_rcdb_condspolarization_direction.update_rcdb_conds(db, run_number)
 #
 # This script was originally written by Sean Dobbs (s-dobbs@northwestern.edu), 20 Apr. 2015
 #      Updated: 28 Jan. 2016 (sdobbs)
