@@ -15,6 +15,8 @@ log = logging.getLogger('rcdb')                     # create run configuration s
 log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
 log.setLevel(logging.INFO)                          # print everything. Change to logging.INFO for less output
 
+# [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
+
 
 # noinspection SqlDialectInspection
 def print_usage():
