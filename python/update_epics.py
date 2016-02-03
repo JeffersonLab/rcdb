@@ -22,7 +22,7 @@
 # More description of these variables is provided below
 #
 # To call this script from other python code, use:
-#     update_rcdb_condspolarization_direction.update_rcdb_conds(db, run_number)
+#     update_rcdb_conds(db, run_number)
 #
 # This script was originally written by Sean Dobbs (s-dobbs@northwestern.edu), 20 Apr. 2015
 #      Updated: 28 Jan. 2016 (sdobbs)
@@ -99,7 +99,7 @@ def update_rcdb_conds(db, run):
         conditions["radiator_type"] = ""
 
     # Estimated luminosity factor - updated calculation in progress
-    #conditions["luminosity"] = -1.
+    # conditions["luminosity"] = -1.
     # Run status - Used to store rough information about run (e.g. is it "good" or not).
     # Exact usage is still being discussed
     conditions["status"] = -1;
@@ -138,7 +138,6 @@ def update_rcdb_conds(db, run):
             conditions["ps_converter"] = "5x10-3 RL"
     except:
         conditions["ps_converter"] = "Unknown"
-    
 
     # Add all the values that we've determined to the RCDB
     for (key,value) in conditions.items():
