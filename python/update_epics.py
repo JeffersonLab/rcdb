@@ -17,6 +17,7 @@
 # * radiator_id            (int)    # ID of radiator in goniometer: unique id of diamond (0 for all amorphous)
 # * polarization_direction (string) # Polarization direction - parallel or perpendicular to floor
 # * radiator_type          (string) # Diamond name
+# * target_type            (string) # Target type/status
 #
 
 # More description of these variables is provided below
@@ -29,7 +30,10 @@
 #
 import os,sys
 import rcdb
+from rcdb.model import ConditionType, Condition, Run
 from epics import caget,caput
+import subprocess
+import datetime
 
 ######################################
 
@@ -42,7 +46,34 @@ def update_rcdb_conds(db, run):
     # Beam current - uses the primary BCM, IBCAD00CRCUR6
     # We could also use the following: IPM5C11.VAL,IPM5C11A.VAL,IPM5C11B.VAL,IPM5C11C.VAL
     try: 
-        conditions["beam_current"] = float(caget("IBCAD00CRCUR6"))
+        #conditions["beam_current"] = float(caget("IBCAD00CRCUR6"))   # pull the value at beam start?
+        # save integrated beam current over the whole run
+        # use MYA archive commands to calculate average
+        now = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')  # current date/time
+        # get the start time for the run
+        rundata = db.get_run(run)    
+        begintime = datetime.datetime.strftime(rundata.start_time, '%Y-%m-%d %H:%M:%S')
+        # build myStats command
+        cmds = []
+        cmds.append("myStats")
+        cmds.append("-b")
+        cmds.append(begintime)
+        cmds.append("-e")
+        cmds.append(now)
+        cmds.append("-l")
+        cmds.append("IBCAD00CRCUR6")
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        for line in p.stdout:
+            #print line.strip()
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]    ## average value
+            if key == "IBCAD00CRCUR6":
+                conditions["beam_current"] = float(value)
     except:
         conditions["beam_current"] = -1.
     # Beam energy - HALLD:p gives the measured beam energy
@@ -138,6 +169,17 @@ def update_rcdb_conds(db, run):
             conditions["ps_converter"] = "5x10-3 RL"
     except:
         conditions["ps_converter"] = "Unknown"
+    # hydrogen target status
+    # caget HLD:TGT:status.ZRST   // OFF
+    # caget HLD:TGT:status.ONST   // Cooling
+    # caget HLD:TGT:status.TWST   // Filling
+    # caget HLD:TGT:status.THST   // FULL & Ready
+    # caget HLD:TGT:status.FRST   // Emptying
+    # caget HLD:TGT:status.FVST   // EMPTY & Ready
+    try: 
+        conditions["target_type"] = caget("HLD:TGT:status")
+    except:
+        conditions["target_type"] = "Unknown"
 
     # Add all the values that we've determined to the RCDB
     for (key,value) in conditions.items():
@@ -145,5 +187,6 @@ def update_rcdb_conds(db, run):
 
 # entry point
 if __name__ == "__main__":
-    db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
+    #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
+    db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
     update_rcdb_conds(db, int(sys.argv[2]))
