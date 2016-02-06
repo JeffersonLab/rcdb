@@ -48,7 +48,7 @@ namespace rcdb
             if(GetValueType() != ValueTypes::Bool) {
                 throw rcdb::ValueFormatError("Value type of the condition is not bool");
             }
-            return _int_value;
+            return _bool_value;
         }
 
         template <>  double GetValue<double>() {

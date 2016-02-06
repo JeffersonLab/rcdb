@@ -15,9 +15,13 @@ namespace rcdb {
     public:
         SqLiteProvider(std::string dbPath) throw :
                 DataProvider(),
-                _db(dbPath) {
+                _db(dbPath),
+                _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time "
+                                        "FROM conditions WHERE run_number = ? AND condition_type_id = ?")
+        {
             //Fill types
             SQLite::Statement query(_db, "SELECT id, name, value_type FROM condition_types");
+
 
             while (query.executeStep()) {
                 const int id = query.getColumn(0);
@@ -29,6 +33,7 @@ namespace rcdb {
                 conditionType.SetName(name);
                 conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
                 _types.push_back(conditionType);
+                _nameTypeMap[name]=conditionType;
             }
         }
 
@@ -39,7 +44,9 @@ namespace rcdb {
 
         }                     // Destructor
 
-        void GetData() override {
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        virtual Condition GetCondition(const std::string& name) override
+        {
 
         }
 
@@ -86,6 +93,7 @@ namespace rcdb {
         SqLiteProvider &operator=(const SqLiteProvider &);  // disable Copy assignment operator
 
         SQLite::Database _db;
+        SQLite::Statement _getConditionQuery;
     };
 }
 
