@@ -95,7 +95,9 @@ def update_rcdb_conds(db, run):
 
     # only save information about the diamond radiator (or whatever is in the goniometer)
     # if the amorphous radiator is not in
-    if conditions["radiator_id"] != 0:
+    # yes, ID #5 is the retracted state
+    # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
+    if conditions["radiator_id"] != 5:
         # Polarization direction - parallel or perpendicular to floor
         try:
             polarization_dir = int(caget("HD:CBREM:PLANE"))
