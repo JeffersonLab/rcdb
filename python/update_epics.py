@@ -177,7 +177,7 @@ def update_rcdb_conds(db, run):
     # caget HLD:TGT:status.FRST   // Emptying
     # caget HLD:TGT:status.FVST   // EMPTY & Ready
     try: 
-        conditions["target_type"] = caget("HLD:TGT:status")
+        conditions["target_type"] = caget("HLD:TGT:status", as_string=True)
     except:
         conditions["target_type"] = "Unknown"
 
