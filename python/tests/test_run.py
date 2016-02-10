@@ -39,3 +39,15 @@ class TestRun(unittest.TestCase):
         test_prev_run2 = self.db.get_prev_run(run3)
         self.assertEqual(test_prev_run.number, run1.number)
         self.assertEqual(test_prev_run, test_prev_run2)
+
+    def test_get_runs(self):
+        run1 = self.db.create_run(1)
+        run3 = self.db.create_run(3)
+        run5 = self.db.create_run(5)
+
+        runs = self.db.get_runs(0, 3)
+        self.assertEqual(len(runs), 2)
+        self.assertEqual(runs[0].number, 1)
+        self.assertEqual(runs[1].number, 3)
+
+

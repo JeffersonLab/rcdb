@@ -66,7 +66,6 @@ def parse_files():
 
     must_update_epics = True if "--modules=update_epics" in sys.argv else False
 
-
     # Open DB connection
     db = ConfigurationProvider(con_string)
 

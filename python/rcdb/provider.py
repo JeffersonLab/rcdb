@@ -177,6 +177,19 @@ class RCDBProvider(object):
         return query.first()
 
     # ------------------------------------------------
+    # Gets Runs in range [rum_min, run_max]
+    # ------------------------------------------------
+    def get_runs(self, rum_min, run_max):
+
+        """ Gets all runs that rum_min<= run.number <= run_max
+
+        :type run_max: int
+        :type rum_min: int
+        """
+        return self.session.query(Run).filter(Run.number >= rum_min, Run.number <= run_max)\
+            .order_by(Run.number).all()
+
+    # ------------------------------------------------
     # Gets Run or returns None
     # ------------------------------------------------
     def get_next_run(self, run_or_number):
