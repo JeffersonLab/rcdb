@@ -1,8 +1,5 @@
 """
-test.py
-python script to follow examples from RCDB wiki page
-
-
+Select event_count condition for selected runs
 """
 
 from rcdb.provider import RCDBProvider
@@ -19,5 +16,11 @@ print(conditions_by_name.keys())
 
 for run in runs:
     # Remember that get_condition() function returns Condition object. Call .value to get the value
-    event_count = run.get_condition('event_count').value
-    print(event_count)
+    event_count_cnd = run.get_condition('event_count')
+
+    # get_condition returns None if no such condition is written for tun
+    if event_count_cnd:
+        print(event_count_cnd.value)
+    else:
+        print("no event_count for run", run.number)
+
