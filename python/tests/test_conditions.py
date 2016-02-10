@@ -289,6 +289,15 @@ class TestConditions(unittest.TestCase):
         val = self.db.get_condition(1, ct)
         self.assertEqual(val.value, 10)
 
+    def test_get_condition(self):
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, False)
+        self.db.create_condition_type("two", ConditionType.INT_FIELD, False)
+        self.db.add_condition(1, "one", 10)
+
+        self.assertEqual(self.db.get_run(1).get_condition("one").value, 10)
+        self.assertIsNone(self.db.get_run(1).get_condition("two"))
+
+
 
 
 

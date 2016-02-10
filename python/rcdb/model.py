@@ -244,6 +244,13 @@ class Run(ModelBase):
     conditions = relationship("Condition", back_populates="run")
     """Conditions associated with the run"""
 
+    def __init__(self):
+        self._conditions_by_name = None
+
+    @reconstructor
+    def init_on_load(self):
+        self._conditions_by_name = None
+
     @property
     def log_id(self):
         """returns id suitable for log. Which is tablename_id"""
@@ -260,6 +267,21 @@ class Run(ModelBase):
         for condition in self.conditions:
             d[condition.name] = condition
         return d
+
+    def get_condition(self, condition_name):
+        """ Gets the Condition object by name if such name condition exist for the run. Null otherwise
+
+        :param condition_name: The condition name
+        :type condition_name: string
+        :return: Condition for this name for run or null
+        :rtype: Condition or None
+        """
+        if self._conditions_by_name is None:
+            self._conditions_by_name = self.get_conditions_by_name()
+
+        return self._conditions_by_name[condition_name] \
+            if condition_name in self._conditions_by_name.keys() \
+            else None
 
     def __repr__(self):
         return "<Run number='{0}'>".format(self.number)
