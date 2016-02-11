@@ -36,7 +36,7 @@ class ConfigParser:
             if not tokens:
                 continue
 
-            if tokens[0] in section_names[l]
+            #if tokens[0] in section_names[l]
 
 
 
@@ -51,4 +51,4 @@ class ConfigParser:
 
 
 
-class ConfigParseResult:
+#class ConfigParseResult:

@@ -185,7 +185,8 @@ def update_rcdb_conds(db, run):
 
     # Add all the values that we've determined to the RCDB
     for (key,value) in conditions.items():
-        db.add_condition(run, key, value, None, True)
+        db.add_condition(run, key, value, None, True, auto_commit=False)
+    db.session.commit()
 
 # entry point
 if __name__ == "__main__":

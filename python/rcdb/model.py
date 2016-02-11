@@ -381,10 +381,9 @@ class ConditionType(ModelBase):
             .join(Condition, Condition.run_number == Run.number)\
             .filter(Condition.type == self)
 
-    @property
+    @hybrid_property
     def value_field(self):
         """ Gets appropriate Condition.xxx_value field according to type """
-
         field = None
         if self.value_type == ConditionType.INT_FIELD:
             field = Condition.int_value
@@ -452,6 +451,7 @@ class Condition(ModelBase):
     @hybrid_property
     def value_type(self):
         return self.type.value_type
+
 
     @hybrid_property
     def value(self):

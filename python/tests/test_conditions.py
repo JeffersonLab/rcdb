@@ -297,6 +297,15 @@ class TestConditions(unittest.TestCase):
         self.assertEqual(self.db.get_run(1).get_condition("one").value, 10)
         self.assertIsNone(self.db.get_run(1).get_condition("two"))
 
+    def test_double_penetration(self):
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, False)
+        self.db.create_run(5665)
+        self.db.add_condition(5665, "one", 10, None, True)
+        self.db.add_condition(5665, "one", 10, None, True)
+        run = self.db.get_run(5665)
+
+        self.assertEqual(len(run.conditions), 1)
+
 
 
 
