@@ -754,6 +754,9 @@ class ConfigurationProvider(RCDBProvider):
 
         log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
 
+        if run.start_time == dtm:
+            return
+
         run.start_time = dtm
         self.session.commit()
         self.add_log_record(run, "Start time changed to '{}' for run '{}'".format(dtm, run.number), run)
@@ -829,7 +832,6 @@ class ConfigurationProvider(RCDBProvider):
                 log.debug(Lf("|- File '{}' is getting overwritten", path))
 
                 self.session.commit()
-                self.add_log_record(conf_file, "File overwritten in DB. Path: '{}'. Run: '{}'".format(path, run), run)
                 return
 
         # Overwrite = false or is not possible
