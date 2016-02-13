@@ -13,3 +13,6 @@ class OverrideConditionValueError(Exception):
 
 class NoRunFoundError(Exception):
     pass
+
+class QueryFormatError(Exception):
+    pass

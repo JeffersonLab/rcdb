@@ -8,6 +8,38 @@ from collections import namedtuple
 import ply.lex
 from ply.lex import TOKEN
 
+
+rcdb_query_restricted = [
+    'AS',
+    'ASSERT',
+    'BREAK',
+    'CLASS',
+    'CONTINUE',
+    'DEF',
+    'DEL',
+    'ELIF',
+    'ELSE',
+    'EXCEPT',
+    'EXEC',
+    'FINALLY',
+    'FOR',
+    'FROM',
+    'GLOBAL',
+    'IF',
+    'IMPORT',
+    'IS',
+    'LAMBDA',
+    'PASS',
+    'PRINT',
+    'RAISE',
+    'RETURN',
+    'TRY',
+    'WHILE',
+    'WITH',
+    'YIELD',
+
+    'SEMICOLON']
+
 reserved = {
     'and': 'AND',
     'as': 'AS',

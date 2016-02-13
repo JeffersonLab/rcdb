@@ -8,11 +8,18 @@ import os
 import re
 import logging
 import sys
-from log_format import BraceMessage as Lf
-from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError
-import sqlalchemy.orm
-from sqlalchemy.orm import Session
 
+from sqlalchemy.sql.elements import and_
+
+from ply.lex import LexToken
+
+from log_format import BraceMessage as Lf
+from rcdb import lexer
+from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError, \
+    QueryFormatError
+import sqlalchemy.orm
+from sqlalchemy.orm import Session, contains_eager
+from sqlalchemy.orm import joinedload, aliased
 import datetime
 
 import sqlalchemy
@@ -546,6 +553,79 @@ class RCDBProvider(object):
 
         return query.all() if ct.is_many_per_run else query.first()
 
+    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize):
+        """ Searches RCDB for runs with e
+
+        :param run_min: minimum run to search
+        :param run_max: maximum run to search
+        :param search_str: Search pattern
+        :type search_str: str
+        :return: List of runs matching creteria
+        :rtype: list(Run)
+        """
+
+        # get all condition types
+        all_cnt_types = self.get_condition_types()
+        all_cnd_types_by_name = {cnd.name: cnd for cnd in all_cnt_types}
+        all_cnd_names = [str(key) for key in all_cnd_types_by_name.keys()]
+
+        if '__' in search_str:
+            raise QueryFormatError("Query contains restricted symbol: '__'")
+
+        tokens = [token for token in lexer.tokenize(search_str)]
+
+        target_cnd_types = []
+        alchemy_comparisons = []
+        names = []
+        aliased_cnd_types = []
+        aliased_cnd = []
+        names_count = 0
+        for token in tokens:
+            if token.type in lexer.rcdb_query_restricted:
+                raise QueryFormatError("Query contains restricted symbol: '{}'".format(token.value))
+
+            if token.type != "NAME":
+                continue
+
+            if token.value not in all_cnd_names:
+                print("name '{}' is not found in ConditionTypes".format(token.value))
+                exit(1)
+            else:
+                cnd_name = token.value
+                cnd_type = all_cnd_types_by_name[token.value]
+                target_cnd_types.append(cnd_type)
+
+                token.value = "value[{}].value".format(names_count)
+                names_count += 1
+
+                names.append(cnd_name)
+                aliased_cnd.append(aliased(Condition))
+                aliased_cnd_types.append(aliased(ConditionType))
+
+        if not names_count:
+            return None
+
+        search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
+
+        query = self.session.query()
+        for (i, alias_cnd) in enumerate(aliased_cnd):
+            query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)\
+
+            if i != 0:
+                query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
+
+        query = query.join(aliased_cnd[0].run).order_by(aliased_cnd[0].run_number)
+
+        # print runs
+        compiled_search_eval = compile(search_eval, '<string>', 'eval')
+
+        values = query.all()
+
+        sel_runs = []
+        for value in values:
+            if eval(compiled_search_eval):
+                sel_runs.append(value[0].run)
+        return sel_runs
 
 class ConfigurationProvider(RCDBProvider):
     """

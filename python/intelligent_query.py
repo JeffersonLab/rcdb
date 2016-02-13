@@ -1,15 +1,19 @@
 import ast
+from timeit import default_timer
 from token import NAME
 
 from ply.lex import LexToken
 
 import rcdb
 import rcdb.lexer
+from rcdb import RCDBProvider
 from rcdb.model import ConditionType, Run, Condition
 from sqlalchemy import or_, and_
 from sqlalchemy.orm import joinedload, aliased
 import shlex
 import ast
+
+from rcdb.stopwatch import StopWatchTimer
 
 db = rcdb.RCDBProvider("mysql://rcdb@127.0.0.1/rcdb")
 #query = db.session.query(Run).join(Run.conditions).join(Condition.type)\
@@ -17,70 +21,78 @@ db = rcdb.RCDBProvider("mysql://rcdb@127.0.0.1/rcdb")
 #        .filter((ConditionType.name == "event_count"), (ConditionType.value_field < 950))\
 #        .order_by(Run.number)
 
-db.create_condition_type("one", ConditionType.INT_FIELD, False)
-db.create_run(10171)
-db.add_condition(10171, "one", 10, None, True)
-db.add_condition(10171, "one", 11, None, True)
-run = db.get_run(10171)
-print [cnd for cnd in run.conditions if cnd.type.name == 'polarization_direction']
+#db.create_condition_type("one", ConditionType.INT_FIELD, False)
+#db.create_run(10171)
+#db.add_condition(10171, "one", 10, None, True)
+#db.add_condition(10171, "one", 11, None, True)
+#run = db.get_run(10171)
+#print [cnd for cnd in run.conditions if cnd.type.name == 'polarization_direction']
 
-eq = "(event_count)>5000 and polarization_direction == 'PARA'"
+#eq = "(event_count)>5000 and polarization_direction == 'PARA'"
 
-cnd_types = {cnd.name: cnd for cnd in db.get_condition_types()}
-all_cnd_names = [str(key) for key in cnd_types.keys()]
+"""
+.session \
+.query(Run) \
+.options(subqueryload(Run.conditions)) \
+.filter(Run.number == run_number) \
+.first()
+"""
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and daq_run")
+sw.stop()
+print sw.elapsed
 
 
-print all_cnd_names
-tokens = [token for token in rcdb.lexer.tokenize(eq)]
-print tokens
+ct1 = db.get_condition_type('event_count')
+ct2 = db.get_condition_type('daq_run')
 
-target_cnd_types=[]
-alchemy_comparisons=[]
-names = []
-queries = []
-for token in tokens:
-    if token.type != "NAME":
-        continue
-
-    if token.value not in all_cnd_names:
-        print("name '{}' is not found in ConditionTypes".format(token.value))
-        exit(1)
-    else:
-        target_cnd_types.append(cnd_types[token.value])
-        cnd_name = token.value
-        token.value = "cnd_by_name['{}'].value".format(cnd_name)
-        alchemy_comparisons.append((ConditionType.name == cnd_name))
-        names.append(cnd_name)
-        queries.append(db.session.query(Run).join(Run.conditions).join(Condition.type).filter(Run.number > 1).filter((ConditionType.name != cnd_name)))
+alias1 = aliased(Condition)
+alias2 = aliased(Condition)
 
 
-print alchemy_comparisons
+#query = db.session.query().add_entity(alias1).add_entity(alias2).filter((alias1._condition_type_id == ct1.id), (alias2._condition_type_id == ct2.id), (alias1.run_number == alias2.run_number)).options(joinedload(alias1.run)).order_by(alias1.run_number)
+#print query
+#print query.count()
+#print query.all()
 
-search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
 
-print search_eval
 
-alias1 = aliased(ConditionType)
-cnd_al1 = aliased(Condition)
-alias2 = aliased(ConditionType)
-cnd_al2 = aliased(Condition)
+#        .filter(Run.number > 10000)\
+#        .filter((ConditionType.name == "event_count"), (ConditionType.value_field < 950))\
+#        .order_by(Run.number)
 
-query = db.session.query(Run).join(cnd_al1, Run.conditions).join(cnd_al2, Run.conditions).join(alias1, cnd_al1.type).join(alias2, cnd_al2.type)\
-    .filter(alias1.name == 'event_count', alias2.name == 'polarization_direction')
-
-runs = query.all()
-print query
-#print runs
-compiled_search_eval = compile(search_eval,'<string>','eval')
-print "Begin search"
-
-sel_runs=[]
-for run in runs:
-
-    cnd_by_name = run.get_conditions_by_name()
-    if(eval(compiled_search_eval)):
-        sel_runs.append(run.number)
-print sel_runs
 exit(1)
 
 def get_comparison_value(db, entity):
