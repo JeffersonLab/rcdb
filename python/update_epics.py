@@ -65,7 +65,11 @@ def update_rcdb_conds(db, run):
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
         # iterate over output
+        n = 0
         for line in p.stdout:
+            n += 1
+            if n == 1:     # skip header
+                continue 
             #print line.strip()
             tokens = line.strip().split()
             if len(tokens) < 3:
