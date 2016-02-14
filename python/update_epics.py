@@ -49,17 +49,23 @@ def update_rcdb_conds(db, run):
         #conditions["beam_current"] = float(caget("IBCAD00CRCUR6"))   # pull the value at beam start?
         # save integrated beam current over the whole run
         # use MYA archive commands to calculate average
-        now = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')  # current date/time
+
         # get the start time for the run
         rundata = db.get_run(run)    
         begintime = datetime.datetime.strftime(rundata.start_time, '%Y-%m-%d %H:%M:%S')
+        # if the run has a set end time, then use that, otherwise use the current time
+        if rundata.end_time:
+            endtime = datetime.datetime.strftime(rundata.end_time, '%Y-%m-%d %H:%M:%S')
+        else:
+            endtime = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')  # current date/time
+
         # build myStats command
         cmds = []
         cmds.append("myStats")
         cmds.append("-b")
         cmds.append(begintime)
         cmds.append("-e")
-        cmds.append(now)
+        cmds.append(endtime)
         cmds.append("-l")
         cmds.append("IBCAD00CRCUR6")
         # execute external command
