@@ -40,7 +40,13 @@ db = rcdb.RCDBProvider("mysql://rcdb@127.0.0.1/rcdb")
 
 sw = StopWatchTimer()
 sw.start()
-runs = db.select_runs("event_count!=0 and daq_run")
+runs = db.select_runs("event_count!=0 and 'TRG' in run_config", 0, 20000)
+sw.stop()
+print sw.elapsed, len(runs)
+
+sw = StopWatchTimer()
+sw.start()
+runs = db.select_runs("event_count!=0 and run_config.startswith('TRG')")
 sw.stop()
 print sw.elapsed
 
@@ -54,13 +60,7 @@ sw = StopWatchTimer()
 sw.start()
 runs = db.select_runs("event_count!=0 and daq_run")
 sw.stop()
-print sw.elapsed
-
-sw = StopWatchTimer()
-sw.start()
-runs = db.select_runs("event_count!=0 and daq_run")
-sw.stop()
-print sw.elapsed
+print sw.elapsed, runs
 
 sw = StopWatchTimer()
 sw.start()

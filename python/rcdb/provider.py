@@ -8,6 +8,7 @@ import os
 import re
 import logging
 import sys
+from collections import MutableSequence
 
 from sqlalchemy.sql.elements import and_
 
@@ -553,14 +554,15 @@ class RCDBProvider(object):
 
         return query.all() if ct.is_many_per_run else query.first()
 
-    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize):
+    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize, select=[], select_values=[]):
         """ Searches RCDB for runs with e
 
+        :param select: "Array of fields to select"
         :param run_min: minimum run to search
         :param run_max: maximum run to search
         :param search_str: Search pattern
         :type search_str: str
-        :return: List of runs matching creteria
+        :return: List of runs matching criteria
         :rtype: list(Run)
         """
 
@@ -585,6 +587,12 @@ class RCDBProvider(object):
                 raise QueryFormatError("Query contains restricted symbol: '{}'".format(token.value))
 
             if token.type != "NAME":
+                continue
+
+            if token.value == 'math':
+                continue
+
+            if token.value == 'startswith':
                 continue
 
             if token.value not in all_cnd_names:
@@ -614,7 +622,8 @@ class RCDBProvider(object):
             if i != 0:
                 query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
 
-        query = query.join(aliased_cnd[0].run).order_by(aliased_cnd[0].run_number)
+        query = query.filter(aliased_cnd[0].run_number >= run_min, aliased_cnd[0].run_number <= run_max)\
+            .join(aliased_cnd[0].run).order_by(aliased_cnd[0].run_number)
 
         # print runs
         compiled_search_eval = compile(search_eval, '<string>', 'eval')
@@ -622,10 +631,59 @@ class RCDBProvider(object):
         values = query.all()
 
         sel_runs = []
+
         for value in values:
+            run = value[0].run
             if eval(compiled_search_eval):
-                sel_runs.append(value[0].run)
-        return sel_runs
+                sel_runs.append(run)
+
+        result = RunSelectionResult(sel_runs)
+        result.filter_condition_names = names
+        result.filter_condition_types = target_cnd_types
+        return result
+
+
+class RunSelectionResult(MutableSequence):
+    """Define a list format, which I can customize"""
+    def __init__(self, runs=None):
+        super(RunSelectionResult, self).__init__()
+        self.filter_condition_types = []
+        self.filter_condition_names = []
+        self.selected_conditions = []
+
+        if not (runs is None):
+            self.runs = list(runs)
+        else:
+            self.runs = list()
+
+    def __len__(self):
+        return len(self.runs)
+
+    def __getitem__(self, ii):
+        return self.runs[ii]
+
+    def __delitem__(self, ii):
+        del self.runs[ii]
+
+    def __setitem__(self, ii, val):
+        self.runs[ii] = val
+        return self.runs[ii]
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return """<RunSelectionResult filer_cnd_names:{}, Runs:{}>""".format(self.filter_condition_names, self.runs)
+
+    def insert(self, ii, val):
+        self.runs.insert(ii, val)
+
+    def append(self, val):
+        list_idx = len(self.runs)
+        self.insert(list_idx, val)
+
+
+
 
 class ConfigurationProvider(RCDBProvider):
     """

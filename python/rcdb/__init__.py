@@ -62,6 +62,7 @@ class DefaultConditions(object):
     COMPONENT_STATS = 'component_stats'
     RTVS = 'rtvs'
     IS_VALID_RUN_END = 'is_valid_run_end'
+    RUN_LENGTH = 'run_length'
 
 
 def create_condition_types(db):
