@@ -92,5 +92,6 @@ def create_condition_types(db):
     create_condition_type(DefaultConditions.IS_VALID_RUN_END, ConditionType.BOOL_FIELD,
                           "True if a run has valid run-end record. "
                           "False means the run was aborted/crashed at some point")
+    create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of ")
 
 

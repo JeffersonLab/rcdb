@@ -83,13 +83,29 @@
 
                     <!-- Search form -->
                     <form class="navbar-form navbar-left" role="search" action="{{ url_for('runs.search') }}" method="get">
-                        <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" placeholder="Run num or min-max" name="q">
-                            <span class="input-group-btn"><button type="submit" class="btn btn-default">GO</button></span>
+
+                        <div class="input-group input-group-sm" style="min-width: 500px">
+                            <input type="text" class="form-control" placeholder="Run or min-max" name="rr" style="width:28%; margin-right:4px;">
+                            <input type="text" class="form-control" placeholder="Query" name="q" style="width:70%; ">
+                            <span class="input-group-btn"><button id="qGoBtn" type="submit" class="btn btn-default">GO</button></span>
+
 
                         <!-- Home -->
 
-                            <span class="input-group-btn"><a href="https://github.com/JeffersonLab/rcdb/wiki/Web-quick-query" target="_blank" class="btn" ><span class="glyphicon glyphicon-question-sign"></span></a></span>
+                            <span class="input-group-btn" id="queryQuickHelp">
+                                <a href="https://github.com/JeffersonLab/rcdb/wiki/Web-quick-query" target="_blank" class="btn" data-container="body" data-placement="bottom" type="button">
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                </a>
+                            </span>
+                        </div>
+                        <div id="popover-content" class="hide" style="min-width: 300px">
+                            <p><strong>Show one run:</strong> Put run number in left box and push GO</p>
+                            <p><strong>Show runs:</strong> put run range in left box:</p>
+                            <ul>
+                                <li>4000-5000  : show runs in range</li>
+                                <li>4000-      : show all runs from 4000</li>
+                            </ul>
+                            <p><strong>Query:</strong> put run range in left box:</p>
 
 
                         </div>
@@ -231,6 +247,19 @@
     {% block js_btm %}
         <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script>
+        jQuery(document).ready(function() {
+            $("#queryQuickHelp").popover({
+                html: true,
+                trigger: "hover",
+                placement: "bottom",
+                content: function() {
+                      return $('#popover-content').html();
+                    }
+
+            }).on("show.bs.popover", function() {$(this).data("bs.popover").tip().css("width", "600px")});
+        });
+        </script>
     {% endblock %}
 
     {% block ga %}
