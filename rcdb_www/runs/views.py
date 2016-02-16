@@ -1,6 +1,8 @@
 import json
 import re
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+import urllib2
+
+from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from collections import defaultdict
@@ -59,8 +61,6 @@ def index(page, run_from, run_to):
 
     return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination)
     pass
-
-
 
 
 @mod.route('/conditions/<int:run_number>')
@@ -122,30 +122,40 @@ def info(run_number):
                            next_run=next_run
                            )
 
+@mod.route('/elog/<int:run_number>')
+def elog(run_number):
+    elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'.format(run_number)).read()
+    resp = Response(response=elog_json,
+        status=200, \
+        mimetype="application/json")
+    return resp
+
+
 
 @mod.route('/search', methods=['GET'])
 def search():
+    run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
 
     # Have query at all?
-    if not search_query:
-        return redirect(url_for('.index'))
+    if not search_query and not run_range:
+        return redirect(url_for('.index', search_query=search_query))
 
     # Have run-range?
-    if '-' in search_query:
-        search_query = search_query.replace(" ", "")
-        tokens = search_query.split("-")
+    if '-' in run_range:
+        run_range = run_range.replace(" ", "")
+        tokens = run_range.split("-")
         try:
             run_from = int(tokens[0])
             run_to = int(tokens[1])
-            return redirect(url_for('.index', run_from=run_from, run_to=run_to))
+            return redirect(url_for('.index', run_from=run_from, run_to=run_to, search_query=search_query))
         except (ValueError, KeyError):
             return redirect(url_for('.index'))
 
     # Have run number?
     if search_query.isdigit():
-        return redirect(url_for('.info', run_number=int(search_query)))
+        return redirect(url_for('.info', run_number=int(run_range), search_query=search_query))
 
     # Default return is index
-    return redirect(url_for('.index'))
+    return redirect(url_for('.index', search_query=search_query))
 

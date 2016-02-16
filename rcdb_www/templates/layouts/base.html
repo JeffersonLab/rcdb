@@ -248,16 +248,36 @@
         <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <script>
+
         jQuery(document).ready(function() {
-            $("#queryQuickHelp").popover({
-                html: true,
-                trigger: "hover",
-                placement: "bottom",
+
+            {#%
+                Show help popover about how to use query window
+            %#}
+            $("#queryQuickHelp").popover({html: true, trigger: "hover", placement: "bottom",
                 content: function() {
                       return $('#popover-content').html();
                     }
+            }).on("show.bs.popover", function() {$(this).data("bs.popover").tip().css("width", "700px")});
 
-            }).on("show.bs.popover", function() {$(this).data("bs.popover").tip().css("width", "600px")});
+
+            {#%
+                This JavaScript code takes a link of a.elog-link and tries to get elog id by run-number
+                To do this, it goes to /runs/elog/<run_number> that gets elog info for the run,
+                It looks like:
+                {"stat":"ok","data":{...,"entries":[{"lognumber":"3374220",..."}}]}}
+                Then we popup to this page
+            %#}
+            $( "a.elog-link" ).click(function( event ) {
+                event.preventDefault();
+                var lnk_btn = $(this);
+                var lnk = lnk_btn.attr("href");
+                $.getJSON( lnk_btn.attr("href"), function( data, textStatus, jqxhr ) {
+                    real_target = "https://logbooks.jlab.org/entry/" + data.data.entries[0].lognumber;
+                    alert(real_target);
+                    window.open(real_target,'_blank');
+                });
+            });
         });
         </script>
     {% endblock %}

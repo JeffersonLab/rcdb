@@ -76,8 +76,36 @@
                     {% endfor %}
                 </table>
             </div>
+            <div class="blog-post">
+                <p class="blog-post-meta">All conditions</p>
+                <div class="panel ">
+                    <table class="table my-table">
+                        <tr class="text-info">
+                            <th >Name</th>
+                            <th style="display:block;min-width:70%;clear:both" >Value</th>
+                        </tr>
+                        {% for condition in conditions %}
+                            <!-- skip comment records -->
+                            <tr>
+                                <td>{{ condition.name }}</td>
+                                <td>
 
-            <!-- COMPONENTS iteration -->
+                                    {% if condition.value_type == 'json'%}
+                                        <button type="button" class="btn btn-info btn-xs next-toggle">show json</button>
+                                        <div datatype="json" style="display: none">{{ condition.value }}</div>
+                                    {% else %}
+                                        {{ condition.value }}
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div><!-- /.blog-post -->
+
+                    <!-- COMPONENTS iteration -->
             {% if component_stats %}
                 <div class="blog-post" id="files_sec">
                     <h3 class="blog-post-title">Components</h3>
@@ -136,35 +164,6 @@
             </div>
 
 
-            <div class="blog-post">
-                <p class="blog-post-meta">All conditions</p>
-                <div class="panel ">
-                    <table class="table my-table">
-                        <tr class="text-info">
-                            <th >Name</th>
-                            <th style="display:block;min-width:70%;clear:both" >Value</th>
-                        </tr>
-                        {% for condition in conditions %}
-                            <!-- skip comment records -->
-                            <tr>
-                                <td>{{ condition.name }}</td>
-                                <td>
-
-                                    {% if condition.value_type == 'json'%}
-                                        <button type="button" class="btn btn-info btn-xs next-toggle">show json</button>
-                                        <div datatype="json" style="display: none">{{ condition.value }}</div>
-                                    {% else %}
-                                        {{ condition.value }}
-                                    {% endif %}
-
-                                </td>
-
-                            </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-            </div><!-- /.blog-post -->
-
             <ul class="pager" id="pager">
                 {% if prev_run %}
                     <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">< {{ prev_run.number }}</a></li>
@@ -196,6 +195,7 @@
                             <tr><td class="row"><strong>{{ name }}</strong></td><td style="white-space: nowrap">{{ conditions_by_name[name].value }}</td></tr>
                         {% endif %}
                     {% endmacro %}
+                    {{  build_condition_row(DefaultConditions.IS_VALID_RUN_END) }}
                     {{  build_condition_row(DefaultConditions.RUN_TYPE) }}
                     {{  build_condition_row(DefaultConditions.RUN_CONFIG) }}
                     {{  build_condition_row(DefaultConditions.DAQ_SETUP) }}

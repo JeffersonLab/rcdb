@@ -1,6 +1,7 @@
 from rcdb.model import Run
 from flask import Flask, render_template, g, request, url_for
 import rcdb
+from datetime import datetime
 
 # configuration
 from sqlalchemy.orm import subqueryload
@@ -19,6 +20,7 @@ app.config.from_object(__name__)
 def before_request():
     g.tdb = rcdb.ConfigurationProvider()
     g.tdb.connect(app.config["SQL_CONNECTION_STRING"])
+    app.jinja_env.globals['now_time'] = datetime.now()
 
 
 @app.teardown_request
@@ -56,6 +58,8 @@ def remove_dot_conf_filter(s):
 
     """
     return s[:-5] if s.endswith(".conf") else s;
+
+
 
 
 
