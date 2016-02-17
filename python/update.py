@@ -11,9 +11,9 @@ from datetime import datetime
 
 
 # setup logger
-log = logging.getLogger('rcdb')                     # create run configuration standard logger
-log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
-log.setLevel(logging.INFO)                          # print everything. Change to logging.INFO for less output
+log = logging.getLogger('rcdb.update')               # create run configuration standard logger
+log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
+log.setLevel(logging.INFO)                           # print everything. Change to logging.INFO for less output
 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
@@ -44,8 +44,6 @@ def print_usage():
     """)
 
 
-
-
 def parse_files():
     # check we have arguments
     if len(sys.argv) < 2:
@@ -65,14 +63,21 @@ def parse_files():
         sys.exit(2)
 
     must_update_epics = True if "--modules=update_epics" in sys.argv else False
+    log.setLevel(logging.DEBUG if "--verbose" in sys.argv else logging.INFO)
 
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
     # Parse coda xml and save to DB
+    log.debug(lf("Parsing coda_xml_log_file='{}'", coda_xml_log_file))
+
     run, run_config_file = coda_parser.parse_file(db, coda_xml_log_file)
+    log.debug(lf("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'", coda_xml_log_file, run, run_config_file))
+
+    log.debug(lf("Adding coda_xml_log_file to DB", ))
     db.add_configuration_file(run, coda_xml_log_file, overwrite=True)
 
+    log.debug(lf("Adding run_config_file to DB", ))
     # Parse run configuration file and save to DB
     if run_config_file:
         if os.path.isfile(run_config_file) and os.access(run_config_file, os.R_OK):
@@ -83,6 +88,7 @@ def parse_files():
 
     # Get EPICS variables
     if must_update_epics and run:
+        log.debug(lf("Performing update_epics.py", ))
         # noinspection PyBroadException
         try:
             import update_epics
@@ -93,9 +99,4 @@ def parse_files():
 
 # entry point
 if __name__ == "__main__":
-    #import argparse
-    #parser = argparse.ArgumentParser()
-    #args = parser.parse_args()
-    #print args.echo
-
     parse_files()
