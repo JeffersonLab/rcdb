@@ -76,7 +76,6 @@ def update_rcdb_conds(db, run):
             n += 1
             if n == 1:     # skip header
                 continue 
-            #print line.strip()
             tokens = line.strip().split()
             if len(tokens) < 3:
                 continue
@@ -86,6 +85,8 @@ def update_rcdb_conds(db, run):
                 conditions["beam_current"] = float(value)
     except:
         conditions["beam_current"] = -1.
+    #except Exception,e:
+    #    print str(e)
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
@@ -205,5 +206,11 @@ def update_rcdb_conds(db, run):
 # entry point
 if __name__ == "__main__":
     #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
-    db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
-    update_rcdb_conds(db, int(sys.argv[2]))
+    #db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
+    #db = rcdb.RCDBProvider("mysql://rcdb@gluondb1/rcdb")
+    update_rcdb_conds(db, int(sys.argv[1]))
+
+    #query = db.session.query(Run).filter(Run.number > 9999)
+    #print query.all() 
+    #for run in query.all():
+    #    update_rcdb_conds(db, run.number)
