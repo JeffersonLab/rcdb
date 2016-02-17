@@ -34,19 +34,20 @@
                                 <div class="btn-group " role="group" has-error  aria-label="..." style="display: flex;">
                                     <a  name="run{{ run.number }}" class="btn btn-default btn-sm {{ crashed_run_class }} {{ active_run_class }}" href="{{ url_for('runs.info', run_number=run.number) }}">
                                         {% if is_active_run %}<span class="glyphicon glyphicon-refresh spinning"></span>{% endif %}
-
-
                                         &nbsp;{{ run.number }}
                                     </a>
-                                    <div class="btn-group" role="group" style="">
-                                        <button type="button" class="btn btn-default dropdown-toggle  " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <span class="caret"></span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                          <li><a href="https://halldweb.jlab.org/cgi-bin/data_monitoring/monitoring/runBrowser.py?run_number={{ run.number }}" target="_blank">Run browser</a></li>
-                                          <li><a href="{{ url_for('runs.elog', run_number=run.number) }}" class="elog-link">HDRun elog</a></li>
-                                        </ul>
-                                    </div>
+                                    <button type="button" class="btn btn-default btn-sm">
+                                        <span class="glyphicon glyphicon-eye-open"></span>
+                                    </button>
+
+                                    <button type="button" class="btn btn-default dropdown-toggle  " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu">
+                                      <li><a href="#" data-run="{{ run.number }}" target="_blank">Run browser</a></li>
+                                      <li><a href="{{ url_for('runs.elog', run_number=run.number) }}" class="elog-link">HDRun elog</a></li>
+                                    </ul>
                                 </div>
                             </td>
                             <td>{{ run.start_time }}</td>

@@ -298,7 +298,7 @@ class ConfigurationFile(ModelBase):
     id = Column(Integer, primary_key=True)
     path = Column(Text, nullable=False)
     sha256 = Column(String(44), nullable=False)
-    content = Column(Text(convert_unicode=True), nullable=False)
+    content = Column(Text(), nullable=False, convert_unicode=True)
     description = Column(String(255), nullable=True)
     runs = relationship("Run", secondary=_files_have_runs_association, back_populates="files")
 

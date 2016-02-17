@@ -248,6 +248,24 @@
         <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
         <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
         <script>
+        function openPopUp(urlToOpen) {
+            var popup_window=window.open(urlToOpen, '_blank');
+            try {
+              popup_window.focus();
+            }
+            catch (e) {
+              alert("Pop-up Blocker is enabled! Please add this site to your exception list.");
+            }
+        }
+
+        function showFlashMessage(message, category){
+            var html = '<div class="container"><div id="flash_message_container"><div class="alert alert-' + category + '">';
+            html +='<button type="button" class="close" data-dismiss="alert">×</button>';
+            html += message;
+            html += '</div></div></div>';
+            $( "nav" ).after(html);
+
+        }
 
         jQuery(document).ready(function() {
 
@@ -268,14 +286,22 @@
                 {"stat":"ok","data":{...,"entries":[{"lognumber":"3374220",..."}}]}}
                 Then we popup to this page
             %#}
+
             $( "a.elog-link" ).click(function( event ) {
                 event.preventDefault();
+                var link = "https://halldweb.jlab.org/cgi-bin/data_monitoring/monitoring/runBrowser.py?run_number="
                 var lnk_btn = $(this);
-                var lnk = lnk_btn.attr("href");
-                $.getJSON( lnk_btn.attr("href"), function( data, textStatus, jqxhr ) {
-                    real_target = "https://logbooks.jlab.org/entry/" + data.data.entries[0].lognumber;
-                    alert(real_target);
-                    window.open(real_target,'_blank');
+                var run = lnk_btn.attr("data-run");
+                $.getJSON(lnk_btn.attr("href"), function (data, textStatus) {
+                    try {
+                        var log_id_str = data.data.entries[0].lognumber
+                        var real_target = "https://logbooks.jlab.org/entry/" + log_id_str;
+                        window.open(real_target,'_blank');
+                    }
+                    catch (e)
+                    {
+                        showFlashMessage("Log entry for the run is not found. https://logbooks.jlab.org/book/hdrun", "danger");
+                    }
                 });
             });
         });
