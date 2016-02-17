@@ -87,8 +87,12 @@ def update_rcdb_conds(db, run):
     except:
         conditions["beam_current"] = -1.
     # Beam energy - HALLD:p gives the measured beam energy
+    #             - MMSHLDE gives beam energy from model
     try: 
-        conditions["beam_energy"] = float(caget("HALLD:p"))
+        #conditions["beam_energy"] = float(caget("HALLD:p"))
+        # accelerator claims that measured beam energy isn't reliable 
+        # below ~100 nA, so use model energy instead
+        conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
     # Solenoid current
