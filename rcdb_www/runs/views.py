@@ -183,6 +183,12 @@ def search():
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
 
+    run_from_str = request.args.get('runFrom', '')
+    run_to_str = request.args.get('runTo', '')
+    if run_from_str or run_to_str:
+        run_range = run_from_str + "-" + run_to_str
+
+
     args = {}
     run_from, run_to = _parse_run_range(run_range)
 

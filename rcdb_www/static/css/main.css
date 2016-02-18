@@ -225,4 +225,8 @@ h6, .h6 {
     to { -webkit-transform: rotate(360deg); }
 }
 
+.ct-select-table td {
+    cursor: pointer;
+}
+
 

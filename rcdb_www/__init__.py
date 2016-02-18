@@ -1,3 +1,4 @@
+from rcdb.alias import get_default_aliases_by_name
 from rcdb.model import Run
 from flask import Flask, render_template, g, request, url_for
 import rcdb
@@ -37,6 +38,7 @@ def not_found(error):
 
 @app.route('/sample')
 def sample():
+
     return render_template('index.html')
 
 
@@ -47,8 +49,9 @@ def index():
         .order_by(Run.number.desc())\
         .options(subqueryload(Run.conditions))\
         .limit(50)
+    condition_types = g.tdb.get_condition_types()
 
-    return render_template("index.html", runs=runs, DefaultConditions=rcdb.DefaultConditions)
+    return render_template("index.html", runs=runs, DefaultConditions=rcdb.DefaultConditions, condition_types=condition_types)
 
 
 @app.template_filter('remove_dot_conf')
@@ -69,7 +72,7 @@ def url_for_other_page(page):
 
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
-
+app.jinja_env.globals['rcdb_default_alias'] = rcdb.alias.default_aliases
 # register modules
 from boards.views import mod as boards_module
 from runs.views import mod as runs_module

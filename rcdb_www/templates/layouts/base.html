@@ -16,6 +16,8 @@
         <!-- Bootstrap core CSS -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
 
+        <link href="{{ url_for('static', filename='css/webintellisense.css') }}" rel="stylesheet" />
+
         <!-- Custom styles -->
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     {% endblock %}
@@ -58,40 +60,19 @@
                         <li {% if request.endpoint == 'runs.index' %} class="active"{% endif %}>
                             <a href="{{ url_for('runs.index') }}">Runs</a>
                         </li>
-                        <!-- Dropdown example
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li class="dropdown-header">Nav header</li>
-                                <li><a href="#">Separated link</a></li>
-                                <li><a href="#">One more separated link</a></li>
-                            </ul>
-                        </li>
-                        -->
-                        <!-- Conditions -->
                         <li {% if request.endpoint == 'conditions.index' %} class="active"{% endif %}>
                             <a href="{{ url_for('conditions.index') }}">Conditions</a>
                         </li>
-
-
 
                     </ul>
 
                     <!-- Search form -->
                     <form class="navbar-form navbar-left" role="search" action="{{ url_for('runs.search') }}" method="get">
-
                         <div class="input-group input-group-sm" style="min-width: 500px">
                             <input type="text" class="form-control" placeholder="Run or min-max" name="rr" style="width:28%; margin-right:4px;">
                             <input type="text" class="form-control" placeholder="Query" name="q" style="width:70%; ">
                             <span class="input-group-btn"><button id="qGoBtn" type="submit" class="btn btn-default">GO</button></span>
-
-
-                        <!-- Home -->
-
+                            <!-- Home -->
                             <span class="input-group-btn" id="queryQuickHelp">
                                 <a href="https://github.com/JeffersonLab/rcdb/wiki/Web-quick-query" target="_blank" class="btn" data-container="body" data-placement="bottom" type="button">
                                     <span class="glyphicon glyphicon-question-sign"></span>
@@ -268,7 +249,25 @@
 
         }
 
+        jQuery.fn.highlight = function() {
+            $(this).each(function() {
+                var el = $(this);
+                el.before("<div/>")
+                el.prev()
+                    .width(el.width())
+                    .height(el.height())
+                    .css({
+                        "position": "absolute",
+                        "background-color": "#ffff99",
+                        "opacity": ".9"
+                    })
+                    .fadeOut(500);
+            });
+        }
+
         jQuery(document).ready(function() {
+
+            var $editor = $('#editor');
 
             {#%
                 Show help popover about how to use query window
@@ -309,16 +308,12 @@
                             else {
                                 showFlashMessage("Unable to get log enty. Server returns "+data.stat+". Try logging in https://logbooks.jlab.org/book/hdrun", "danger");
                             }
-                        }
-
+                        };
                     }
                     catch (e)
                     {
                         showFlashMessage("Log entry for the run is not found. Try logging in https://logbooks.jlab.org/book/hdrun   <br>or " + log_request, "danger");
-                    }
-
-
-
+                    };
                 });
             });
         });
