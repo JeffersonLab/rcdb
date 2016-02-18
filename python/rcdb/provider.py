@@ -554,10 +554,10 @@ class RCDBProvider(object):
 
         return query.all() if ct.is_many_per_run else query.first()
 
-    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize, select=[], select_values=[]):
+    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize, sort_desc=False):
         """ Searches RCDB for runs with e
 
-        :param select: "Array of fields to select"
+        :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
         :param run_min: minimum run to search
         :param run_max: maximum run to search
         :param search_str: Search pattern
@@ -565,6 +565,9 @@ class RCDBProvider(object):
         :return: List of runs matching criteria
         :rtype: list(Run)
         """
+
+        if run_min > run_max:
+            run_min, run_max = run_max, run_min
 
         # get all condition types
         all_cnt_types = self.get_condition_types()
@@ -596,8 +599,7 @@ class RCDBProvider(object):
                 continue
 
             if token.value not in all_cnd_names:
-                print("name '{}' is not found in ConditionTypes".format(token.value))
-                exit(1)
+                raise QueryFormatError("Name '{}' is not found in ConditionTypes".format(token.value))
             else:
                 cnd_name = token.value
                 cnd_type = all_cnd_types_by_name[token.value]
@@ -610,12 +612,13 @@ class RCDBProvider(object):
                 aliased_cnd.append(aliased(Condition))
                 aliased_cnd_types.append(aliased(ConditionType))
 
+        query = self.session.query()
+
         if not names_count:
             return None
 
         search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
 
-        query = self.session.query()
         for (i, alias_cnd) in enumerate(aliased_cnd):
             query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)\
 
@@ -623,7 +626,13 @@ class RCDBProvider(object):
                 query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
 
         query = query.filter(aliased_cnd[0].run_number >= run_min, aliased_cnd[0].run_number <= run_max)\
-            .join(aliased_cnd[0].run).order_by(aliased_cnd[0].run_number)
+            .join(aliased_cnd[0].run)
+
+        # apply sorting
+        if not sort_desc:
+            query = query.order_by(aliased_cnd[0].run_number)
+        else:
+            query = query.order_by(desc(aliased_cnd[0].run_number))
 
         # print runs
         compiled_search_eval = compile(search_eval, '<string>', 'eval')
@@ -633,6 +642,8 @@ class RCDBProvider(object):
         sel_runs = []
 
         for value in values:
+            if isinstance(value, Condition):
+                value = (value,)
             run = value[0].run
             if eval(compiled_search_eval):
                 sel_runs.append(run)
@@ -970,7 +981,7 @@ class ConfigurationProvider(RCDBProvider):
                 log.debug(Lf("|- File '{}' is getting overwritten", path))
 
                 self.session.commit()
-                return
+                return conf_file
 
         # Overwrite = false or is not possible
         # Look, do we have a file with such name and checksumm?
@@ -995,8 +1006,8 @@ class ConfigurationProvider(RCDBProvider):
 
             # save and exit
             self.session.commit()
-            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run), run)
-            return
+            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run), run.number)
+            return conf_file
 
         # such file already exists! Get it from database
         conf_file = file_query.first()
@@ -1007,6 +1018,8 @@ class ConfigurationProvider(RCDBProvider):
             conf_file.runs.append(run)
             # run_conf.files.append(conf_file)
             self.session.commit()  # save and exit
-            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run)
+            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run.number)
         else:
             log.debug(Lf("|- File already associated with run'{}'", run))
+
+        return conf_file

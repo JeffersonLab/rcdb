@@ -53,5 +53,13 @@ class TestRun(unittest.TestCase):
         conf_file = query.first()
         self.assertEqual(conf_file.content, 'two')
 
+    def test_large_file(self):
+        self.db = rcdb.ConfigurationProvider("mysql://rcdb@127.0.0.1/rcdb")
+
+        path_4433 = os.path.join(self.this_dir, "large_run.log")
+        cf = self.db.add_configuration_file(1, path_4433)
+        content = self.db.session.query(ConfigurationFile.content).filter(ConfigurationFile.id == cf.id).scalar()
+        self.assertIn("</coda>", content)
+
 
 

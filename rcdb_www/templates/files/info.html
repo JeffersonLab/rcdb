@@ -11,7 +11,11 @@
 
     <div class="panel panel-default">
         <!-- Default panel contents -->
-        <div class="panel-heading">{{ file.path }}<span class="badge pull-right">DB id={{ file.id }}</span></div>
+        <div class="panel-heading">
+            {{ file.path }}
+            <span class="badge pull-right">DB id={{ file.id }}</span>
+            <a class="btn btn-info btn-xs" href="{{ url_for(".raw", file_db_id=file.id) }}">Raw</a>
+        </div>
         <div class="panel-body">
             <h3>Content:</h3>
             <pre>{{ file.content }}</pre>

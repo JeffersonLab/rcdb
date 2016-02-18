@@ -59,13 +59,8 @@ def remove_dot_conf_filter(s):
     """
     return s[:-5] if s.endswith(".conf") else s;
 
-
-
-
-
-
-
     return s[::-1]
+
 
 def url_for_other_page(page):
     args = request.view_args.copy()

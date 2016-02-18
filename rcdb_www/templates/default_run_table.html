@@ -20,9 +20,14 @@
                         {% set is_valid_run_end = (conditions_by_name[DefaultConditions.IS_VALID_RUN_END].value)
                                                 if (DefaultConditions.IS_VALID_RUN_END in conditions_by_name)
                                                 else False%}
-                        {% set is_active_run = ((now_time - run.end_time).total_seconds()<120)
-                                                if (run.end_time and not is_valid_run_end and loop.index == 1)
+                        {% set is_active_run = True
+                                               if (run.end_time and not is_valid_run_end and loop.index == 1) and (now_time - run.end_time).total_seconds()<120
                                                 else False %}
+                        <!-- now_time={{ now_time }}  run.end_time={{ run.end_time }}
+                        {% if (run.end_time) and (now_time) %}
+                             (now_time - run.end_time)= {{ (now_time - run.end_time) }} = {{ (now_time - run.end_time).total_seconds() }} is_valid_run_end={{ is_valid_run_end }}
+                        {% endif %}
+                        -->
 
                         {% set is_crashed_run = (not is_active_run) and (not is_valid_run_end)  %}
 
@@ -36,17 +41,14 @@
                                         {% if is_active_run %}<span class="glyphicon glyphicon-refresh spinning"></span>{% endif %}
                                         &nbsp;{{ run.number }}
                                     </a>
-                                    <button type="button" class="btn btn-default btn-sm">
-                                        <span class="glyphicon glyphicon-eye-open"></span>
-                                    </button>
 
-                                    <button type="button" class="btn btn-default dropdown-toggle  " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button type="button" class="btn btn-default  dropdown-toggle  " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <span class="caret"></span>
                                     </button>
 
                                     <ul class="dropdown-menu">
-                                      <li><a href="#" data-run="{{ run.number }}" target="_blank">Run browser</a></li>
-                                      <li><a href="{{ url_for('runs.elog', run_number=run.number) }}" class="elog-link">HDRun elog</a></li>
+                                      <li><a href="https://halldweb.jlab.org/cgi-bin/data_monitoring/monitoring/runBrowser.py?run_number={{ run.number }}" target="_blank">Run browser</a></li>
+                                      <li><a href="{{ url_for('runs.elog', run_number=run.number) }}" data-run="{{ run.number }}" class="elog-link">HDRun elog</a></li>
                                     </ul>
                                 </div>
                             </td>

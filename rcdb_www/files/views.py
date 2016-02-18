@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response
 from rcdb.model import ConfigurationFile
 #from werkzeug import check_password_hash, generate_password_hash
 
@@ -23,3 +23,10 @@ def info(file_db_id):
     # except:
     #     return render_template("files/not_found.html", id=file_db_id)
     # pass
+
+@mod.route('/raw/<int:file_db_id>')
+def raw(file_db_id):
+
+    content = g.tdb.session.query(ConfigurationFile.content).filter(ConfigurationFile.id == file_db_id).scalar()
+    resp = Response(response=content, status=200, mimetype="text/plain")
+    return resp

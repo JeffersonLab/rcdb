@@ -141,6 +141,7 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+        <div class="blog-below-nav"></div>
         {##
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
@@ -263,7 +264,7 @@
             html +='<button type="button" class="close" data-dismiss="alert">×</button>';
             html += message;
             html += '</div></div></div>';
-            $( "nav" ).after(html);
+            $( ".blog-below-nav" ).after(html);
 
         }
 
@@ -287,21 +288,37 @@
                 Then we popup to this page
             %#}
 
-            $( "a.elog-link" ).click(function( event ) {
+            $( ".elog-link" ).click(function( event ) {
                 event.preventDefault();
-                var link = "https://halldweb.jlab.org/cgi-bin/data_monitoring/monitoring/runBrowser.py?run_number="
                 var lnk_btn = $(this);
+                var link = lnk_btn.attr("href");
                 var run = lnk_btn.attr("data-run");
-                $.getJSON(lnk_btn.attr("href"), function (data, textStatus) {
+                var log_request= 'https://logbooks.jlab.org/api/elog/entries?book=hdrun&title='+run+'&limit=1';
+                $.getJSON(link, function (data, textStatus) {
                     try {
-                        var log_id_str = data.data.entries[0].lognumber
-                        var real_target = "https://logbooks.jlab.org/entry/" + log_id_str;
-                        window.open(real_target,'_blank');
+                        if (data.stat=="ok"){
+                            var log_id_str = data.data.entries[0].lognumber;
+                            var real_target = "https://logbooks.jlab.org/entry/" + log_id_str;
+                            window.open(real_target,'_blank');
+                        }
+                        else{
+                            alert(data.stat);
+                            if(data.stat=='401'){
+                                showFlashMessage("Log authentication error. Try logging in https://logbooks.jlab.org/book/hdrun   <br>or " + log_request, "danger");
+                            }
+                            else {
+                                showFlashMessage("Unable to get log enty. Server returns "+data.stat+". Try logging in https://logbooks.jlab.org/book/hdrun", "danger");
+                            }
+                        }
+
                     }
                     catch (e)
                     {
-                        showFlashMessage("Log entry for the run is not found. https://logbooks.jlab.org/book/hdrun", "danger");
+                        showFlashMessage("Log entry for the run is not found. Try logging in https://logbooks.jlab.org/book/hdrun   <br>or " + log_request, "danger");
                     }
+
+
+
                 });
             });
         });

@@ -2,7 +2,9 @@ import json
 import re
 import urllib2
 
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response
+import sys
+
+from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, jsonify
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from collections import defaultdict
@@ -122,14 +124,58 @@ def info(run_number):
                            next_run=next_run
                            )
 
+
 @mod.route('/elog/<int:run_number>')
 def elog(run_number):
-    elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'.format(run_number)).read()
-    resp = Response(response=elog_json,
-        status=200, \
-        mimetype="application/json")
+    try:
+        elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'.format(run_number)).read()
+    except urllib2.HTTPError as e:
+        return jsonify(stat=str(e.code))
+
+    resp = Response(response=elog_json, status=200, mimetype="application/json")
     return resp
 
+
+def _parse_run_range(run_range_str):
+    """ Parses run range, returning a pair (run_from, run_to) or (run_from, None) or (None, None)
+
+    Function doesn't raise FormatError
+    :exception ValueError: if run_range_str is not str
+
+    :param run_range_str: string to parse
+    :return: (run_from, run_to). Function always return lower run number as run_from
+    """
+
+    if run_range_str is None:
+        return None, None
+
+    run_range_str = str(run_range_str).strip()
+    if not run_range_str:
+        return None, None
+
+    assert isinstance(run_range_str, str)
+
+    # Have run-range?
+    if '-' in run_range_str:
+        tokens = [t.strip() for t in run_range_str.split("-")]
+        try:
+            run_from = int(tokens[0])
+        except (ValueError, KeyError):
+            return None, None
+
+        try:
+            run_to = int(tokens[1])
+        except (ValueError, KeyError):
+            return run_from, None
+
+        return (run_from, run_to) if run_from <= run_to else (run_to, run_from)
+
+    # Have run number?
+    if run_range_str.isdigit():
+        return int(run_range_str), None
+
+    # Default return is index
+    return None, None
 
 
 @mod.route('/search', methods=['GET'])
@@ -137,25 +183,48 @@ def search():
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
 
-    # Have query at all?
-    if not search_query and not run_range:
-        return redirect(url_for('.index', search_query=search_query))
+    args = {}
+    run_from, run_to = _parse_run_range(run_range)
 
-    # Have run-range?
-    if '-' in run_range:
-        run_range = run_range.replace(" ", "")
-        tokens = run_range.split("-")
-        try:
-            run_from = int(tokens[0])
-            run_to = int(tokens[1])
-            return redirect(url_for('.index', run_from=run_from, run_to=run_to, search_query=search_query))
-        except (ValueError, KeyError):
+    if not search_query or not search_query.strip():
+        if run_from is not None and run_to is not None:
+            return redirect(url_for('.index', run_from=run_from, run_to=run_to))
+        elif run_from is not None:
+            return redirect(url_for('.info', run_number=int(search_query)))
+        else:
             return redirect(url_for('.index'))
 
-    # Have run number?
-    if search_query.isdigit():
-        return redirect(url_for('.info', run_number=int(run_range), search_query=search_query))
+    if run_from is None:
+        run_from = 0
 
-    # Default return is index
-    return redirect(url_for('.index', search_query=search_query))
+    if run_to is None:
+        run_to = sys.maxint
+
+    try:
+        result = g.tdb.select_runs(search_query, run_to, run_from, sort_desc=True)
+
+        # Create pagination
+        pagination = Pagination(1, len(result.runs), len(result.runs))
+
+        return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination)
+    except Exception as err:
+        flash("Error in performing request: {}".format(err), 'danger')
+        return redirect(url_for('.index'))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
