@@ -208,14 +208,14 @@ def search():
 
     try:
         result = g.tdb.select_runs(search_query, run_to, run_from, sort_desc=True)
-
-        # Create pagination
-        pagination = Pagination(1, len(result.runs), len(result.runs))
-
-        return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination)
     except Exception as err:
         flash("Error in performing request: {}".format(err), 'danger')
         return redirect(url_for('.index'))
+        # Create pagination
+    pagination = Pagination(1, len(result.runs), len(result.runs) if len(result.runs) else 1)
+
+    return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination)
+
 
 
 
