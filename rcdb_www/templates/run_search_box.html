@@ -1,5 +1,7 @@
 {% macro run_search_box(condition_types=[], run_from=-1, run_to=-1, search_query="") %}
     {% set run_from_str = "" if run_from == -1 else run_from %}
+    {% set run_to_str = "" if run_to == -1 else run_to %}
+
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-body">
@@ -26,7 +28,7 @@
                                  <div class="col-sm-6">
                                      <label class="small" for="run-max-inp">Run max</label>
                                      <div class="input-group">
-                                         <input type="text" class="form-control input-sm" id="run-max-inp"  name="runTo" placeholder="inf">
+                                         <input type="text" class="form-control input-sm" id="run-max-inp"  name="runTo" placeholder="inf"  value="{{ run_to_str }}">
                                          <div class="input-group-btn">
                                              <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                              <ul class="dropdown-menu">
