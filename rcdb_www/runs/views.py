@@ -228,7 +228,7 @@ def search():
                            pagination=pagination,
                            condition_types=condition_types,
                            run_from=run_from,
-                           run_to=run_to,
+                           run_to=run_to if run_to != sys.maxint else -1,
                            search_query=search_query)
 
 
