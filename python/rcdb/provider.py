@@ -10,6 +10,7 @@ import logging
 import sys
 from collections import MutableSequence
 
+from rcdb.alias import default_aliases
 from sqlalchemy.sql.elements import and_
 
 from ply.lex import LexToken
@@ -576,6 +577,11 @@ class RCDBProvider(object):
 
         if '__' in search_str:
             raise QueryFormatError("Query contains restricted symbol: '__'")
+
+        for alias in default_aliases:
+            al_name = "@"+alias.name
+            if al_name in search_str:
+                search_str = search_str.replace(al_name, alias.expression)
 
         tokens = [token for token in lexer.tokenize(search_str)]
 
