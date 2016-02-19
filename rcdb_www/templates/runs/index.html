@@ -8,9 +8,10 @@
 {#    Add DataTable style#}
 {% block css %}
     {{ super() }}
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/datatables.min.css') }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/jquery.dataTables.yadcf.css') }}"/>
-
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.yadcf.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buttons.dataTables.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/select.dataTables.min.css') }}"/>
     <script src=""></script>
 {% endblock %}
 
@@ -54,8 +55,10 @@
 {% block js_btm %}
     {{ super() }}
 
-    <script type="text/javascript" src="{{ url_for('static', filename='DataTables/datatables.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='DataTables/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.yadcf.js') }}"></script>
     <script>
 
 
@@ -64,7 +67,27 @@
                 responsive: true,
                 paging:   false,
                 ordering: false,
-                info:     false
+                info:     false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'selectAll',
+                    'selectNone',
+                    {
+                        text: 'As JSON',
+                        action: function () {
+                            //var count = table.rows( { selected: true } ).count();
+                            var rows = table.rows( { selected: true } ).data().toArray();
+                            }
+                            .each(function(){
+    console.log($(this).attr('expression'));
+})
+                            alert(rows);
+                        }
+                    },
+                ],
+                select: {
+                    style: 'multi'
+                }
         } );
 
         yadcf.init( table, [{

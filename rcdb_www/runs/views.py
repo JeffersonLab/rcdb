@@ -61,7 +61,7 @@ def index(page, run_from, run_to):
         .slice(pagination.item_limit_from, pagination.item_limit_to)\
         .all()
 
-    return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination)
+    return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination, run_from=-1, run_to=-1, search_query="")
     pass
 
 
@@ -214,7 +214,7 @@ def search():
         # Create pagination
     pagination = Pagination(1, len(result.runs), len(result.runs) if len(result.runs) else 1)
 
-    return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination)
+    return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination, run_from=run_from, run_to=run_to, search_query=search_query)
 
 
 

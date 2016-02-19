@@ -34,7 +34,7 @@
                         {% set crashed_run_class = 'crashed_run' if is_crashed_run else '' %}
                         {% set active_run_class = 'active_run' if is_active_run else '' %}
 
-                        <tr>
+                        <tr data-run-number="{{ run.number }}">
                             <td>
                                 <div class="btn-group " role="group" has-error  aria-label="..." style="display: flex;">
                                     <a  name="run{{ run.number }}" class="btn btn-default btn-sm {{ crashed_run_class }} {{ active_run_class }}" href="{{ url_for('runs.info', run_number=run.number) }}">
