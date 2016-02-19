@@ -10,7 +10,7 @@ class Pagination(object):
 
     @property
     def pages(self):
-        return int(ceil(self.total_count / float(self.per_page)))
+        return int(ceil(self.total_count / float(self.per_page))) if self.per_page else 0
 
     @property
     def has_prev(self):

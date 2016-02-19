@@ -32,6 +32,7 @@ PER_PAGE = 500
 @mod.route('/<int:run_from>-<int:run_to>', defaults={'page': 1})
 def index(page, run_from, run_to):
 
+    condition_types = g.tdb.get_condition_types()
     query = g.tdb.session.query(Run)
 
     # Run range is defined?
@@ -61,7 +62,13 @@ def index(page, run_from, run_to):
         .slice(pagination.item_limit_from, pagination.item_limit_to)\
         .all()
 
-    return render_template("runs/index.html", runs=runs, DefaultConditions=DefaultConditions, pagination=pagination, run_from=-1, run_to=-1, search_query="")
+    return render_template("runs/index.html", runs=runs,
+                           DefaultConditions=DefaultConditions,
+                           pagination=pagination,
+                           condition_types=condition_types,
+                           run_from=-1,
+                           run_to=-1,
+                           search_query="")
     pass
 
 
@@ -212,9 +219,17 @@ def search():
         flash("Error in performing request: {}".format(err), 'danger')
         return redirect(url_for('.index'))
         # Create pagination
-    pagination = Pagination(1, len(result.runs), len(result.runs) if len(result.runs) else 1)
+    pagination = Pagination(1, len(result.runs), len(result.runs))
+    condition_types = g.tdb.get_condition_types()
 
-    return render_template("runs/index.html", runs=result.runs, DefaultConditions=DefaultConditions, pagination=pagination, run_from=run_from, run_to=run_to, search_query=search_query)
+    return render_template("runs/index.html",
+                           runs=result.runs,
+                           DefaultConditions=DefaultConditions,
+                           pagination=pagination,
+                           condition_types=condition_types,
+                           run_from=run_from,
+                           run_to=run_to,
+                           search_query=search_query)
 
 
 

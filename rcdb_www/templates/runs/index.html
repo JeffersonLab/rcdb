@@ -1,5 +1,6 @@
 {% import 'default_run_table.html' as table%}
 {% from 'render_pagination.html' import render_pagination %}
+{% import 'run_search_box.html' as search_box%}
 
 {% extends 'layouts/base.html' %}
 
@@ -20,6 +21,7 @@
     Content
 #}
 {% block container %}
+{{ search_box.run_search_box(condition_types, run_from=run_from, run_to=run_to, search_query=search_query) }}
 
 <div class="container">
 
@@ -76,14 +78,20 @@
                         text: 'As JSON',
                         action: function () {
                             //var count = table.rows( { selected: true } ).count();
-                            var rows = table.rows( { selected: true } ).data().toArray();
-                            }
-                            .each(function(){
-    console.log($(this).attr('expression'));
-})
-                            alert(rows);
+                            var runs = [];
+                            $("tr[data-run-number].selected").each(function(){
+                                runs.push($(this).attr('data-run-number'));
+                            });
+                            alert("site development is in progress... " + runs.toString());
                         }
                     },
+                    {
+                        text: 'Make my analysis and submit papers',
+                        action: function () {
+
+                            alert("Submitting runs to the farm... [done]\nMaking analysis... [done]\nDiscussing on meetings........... [done]\nPresenting... [done]\nSubmitting to arxiv.org... [done]\nSubmitting to physrev... [done]\nSubmitting to British Medical Journal... [done]\n Job is done. Wait mails from reviewers." );
+                        }
+                    }
                 ],
                 select: {
                     style: 'multi'
@@ -150,6 +158,7 @@
         } );
     } );*/
     </script>
+    {{ search_box.run_search_box_scripts(condition_types) }}
 {% endblock %}
 
 
