@@ -9,7 +9,7 @@ default_aliases = [
     ConditionSearchAlias('is_production', """( run_type == 'hd_all.tsg' and
                  daq_run == 'PHYSICS' and 
                  beam_current > 2 and 
-                 num_events > 10000 and 
+                 event_count > 10000 and
                  radiator_id !=5 and 
                  solenoid_current > 100)""", "Is production run"),
 
