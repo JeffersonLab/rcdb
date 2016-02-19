@@ -623,7 +623,7 @@ class RCDBProvider(object):
         if not names_count:
             return None
 
-        search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
+        search_eval = "".join([token.value for token in tokens if isinstance(token, LexToken)])
 
         for (i, alias_cnd) in enumerate(aliased_cnd):
             query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)\
