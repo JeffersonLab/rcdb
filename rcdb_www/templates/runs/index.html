@@ -62,7 +62,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" id="copyRunsToClipboard">Copy to clipboard</button>
+                <button type="button" class="btn btn-default" data-clipboard-target="#selectedRunsTextArea" id="copyRunsToClipboard">Copy to clipboard</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -78,14 +78,9 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.yadcf.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', filename='js/copy_clipboard.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/clipboard.min.js') }}"></script>
     <script>
-        jQuery(document).ready(function() {
-            $("#copyRunsToClipboard").click(function(){
-                var text_to_copy = $("#selectedRunsTextArea").val();
-                copyToClipboard(text_to_copy);
-            });
-        });
+        new Clipboard('#copyRunsToClipboard');
 
         var table = $('#runs-table').DataTable( {
                 responsive: true,
