@@ -42,15 +42,32 @@
             {% endif %}
         </div>
         <div class="panel-body" >
-
         </div>
         {{ table.default_run_table(runs, DefaultConditions) }}
-
     </div>
-
     {{ render_pagination(pagination) }}
 </div>
+<!-- Modal -->
+<div class="modal fade " id="selectedRunsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Selected runs</h4>
+            </div>
+            <div class="modal-body">
+                <textarea rows="10" id="selectedRunsTextArea" class="input-medium full-width">
 
+                </textarea>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="copyRunsToClipboard">Copy to clipboard</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 
@@ -61,9 +78,14 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/copy_clipboard.js') }}"></script>
     <script>
-
-
+        jQuery(document).ready(function() {
+            $("#copyRunsToClipboard").click(function(){
+                var text_to_copy = $("#selectedRunsTextArea").val();
+                copyToClipboard(text_to_copy);
+            });
+        });
 
         var table = $('#runs-table').DataTable( {
                 responsive: true,
@@ -75,14 +97,15 @@
                     'selectAll',
                     'selectNone',
                     {
-                        text: 'As JSON',
+                        text: 'Selected runs',
                         action: function () {
                             //var count = table.rows( { selected: true } ).count();
                             var runs = [];
                             $("tr[data-run-number].selected").each(function(){
                                 runs.push($(this).attr('data-run-number'));
                             });
-                            alert("site development is in progress... " + runs.toString());
+                            $("#selectedRunsTextArea").val(runs.toString());
+                            $("#selectedRunsModal").modal('show');
                         }
                     },
                     {
@@ -136,27 +159,6 @@
         $("#yadcf-filter--runs-table-5").addClass("form-control").css("width","120px");
 
         $("#runs-table_filter").hide();
-
-
-
-            // Apply the search
-    /*table.columns().eq( 0 ).each( function ( colIdx ) {
-        $( 'input', table.column( colIdx ).header() ).on( 'keyup change', function () {
-            var compare_value = this.value * 1;
-            if(this.name === "min_events"){
-                table.column(3).data().filter( function ( value, index ) {
-                        var thisValue = parseInt(value)
-                        return thisValue > compare_value;
-                }).draw();
-            }
-            else {
-                table
-                    .column( colIdx )
-                    .search( compare_value )
-                    .draw();
-            }
-        } );
-    } );*/
     </script>
     {{ search_box.run_search_box_scripts(condition_types) }}
 {% endblock %}
