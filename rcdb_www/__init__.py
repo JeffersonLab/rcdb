@@ -21,7 +21,7 @@ app.config.from_object(__name__)
 def before_request():
     g.tdb = rcdb.ConfigurationProvider()
     g.tdb.connect(app.config["SQL_CONNECTION_STRING"])
-    app.jinja_env.globals['now_time'] = datetime.now()
+    app.jinja_env.globals['datetime_now'] = datetime.now
 
 
 @app.teardown_request

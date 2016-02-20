@@ -13,6 +13,7 @@
                 </tr>
                 </thead>
                 <tbody>
+                    {% set now_time = datetime_now() %}
                     {% for run in runs %}
                         {% set conditions_by_name =  run.get_conditions_by_name() %}
 
