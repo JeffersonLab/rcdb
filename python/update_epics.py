@@ -62,7 +62,7 @@ def update_rcdb_conds(db, run):
 
         # if the run has a set end time, then use that, otherwise use fallback
         if run.end_time:
-            end_time = datetime.datetime.strftime(run.end_time, '%Y-%m-%d %H:%M:%S')
+            end_time = run.end_time
         else:
             time_delta = datetime.timedelta(minutes=10)
             now = datetime.datetime.now()
