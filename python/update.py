@@ -38,6 +38,11 @@ def print_usage():
             # connection string is given, update_epics.py is called after completion of main parsing
             update.py current_run.log mysql://rcdb@localhost/rcdb  --modules=update_epics
 
+        flags:
+            --verbose - sets log level to logging.DEBUG (default is logging.INFO)
+            --modules=<module1,module2,...> - adds modules to call (example: --modules=update_epics)
+            --udl=<udl> - sets UDL link to sent warnings to
+
 
     <db_connection_string> - is optional. But if it is not set, RCDB_CONNECTION environment variable should be set
 
