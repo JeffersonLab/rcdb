@@ -181,6 +181,10 @@ class RCDBProvider(object):
             :return: Run object corresponding to run number or None if there is no such run in DB
             :rtype: Run or None
         """
+        if isinstance(run_number, Run):
+            return run_number
+
+        run_number = int(run_number)
 
         query = self.session.query(Run).filter(Run.number == run_number)
         return query.first()

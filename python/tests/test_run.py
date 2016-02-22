@@ -50,4 +50,20 @@ class TestRun(unittest.TestCase):
         self.assertEqual(runs[0].number, 1)
         self.assertEqual(runs[1].number, 3)
 
+    def test_get_run_fail_safe(self):
+        run1 = self.db.create_run(1)
+        
+        test_run = self.db.get_run(run1)    # put ubject instead of a number
+        
+        self.assertEqual(run1, test_run)
+
+        test_run = self.db.get_run("1")     # put string which accidentally
+        self.assertEqual(run1, test_run)
+
+        self.assertRaises(ValueError, self.db.get_run, "foo")
+        
+
+        
+
+
 
