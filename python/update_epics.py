@@ -28,18 +28,28 @@
 # This script was originally written by Sean Dobbs (s-dobbs@northwestern.edu), 20 Apr. 2015
 #      Updated: 28 Jan. 2016 (sdobbs)
 #
+import logging
 import os,sys
 import rcdb
 from rcdb.model import ConditionType, Condition, Run
 from epics import caget,caput
 import subprocess
 import datetime
+from rcdb.log_format import BraceMessage as Lf
 
 ######################################
 
 # Master function to update the conditions
 def update_rcdb_conds(db, run):
+
+    log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
+    log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
+
     TOLERANCE = 1.e-5  # constant used for comparisons
+    # Run can be a rcdb.Run object or a run number
+    if not isinstance(run, Run):
+        log.debug(Lf("Getting run by number={}", run))
+        run = db.get_run(Run)
 
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
@@ -50,24 +60,24 @@ def update_rcdb_conds(db, run):
         # save integrated beam current over the whole run
         # use MYA archive commands to calculate average
 
-        # get the start time for the run
-        rundata = db.get_run(run)    
-        begintime = datetime.datetime.strftime(rundata.start_time, '%Y-%m-%d %H:%M:%S')
-        # if the run has a set end time, then use that, otherwise use the current time
-        if rundata.end_time:
-            endtime = datetime.datetime.strftime(rundata.end_time, '%Y-%m-%d %H:%M:%S')
+        # if the run has a set end time, then use that, otherwise use fallback
+        if run.end_time:
+            end_time = datetime.datetime.strftime(run.end_time, '%Y-%m-%d %H:%M:%S')
         else:
-            endtime = datetime.datetime.strftime(datetime.datetime.now(), '%Y-%m-%d %H:%M:%S')  # current date/time
+            time_delta = datetime.timedelta(minutes=10)
+            now = datetime.datetime.now()
+            end_time = now if now - run.start_time < time_delta else run.start_time + time_delta
+
+            log.debug(Lf("No 'run.end_time'. Using '{}' as end_time", end_time))
+
+        # Format begin and end time
+        begin_time_str = datetime.datetime.strftime(run.start_time, '%Y-%m-%d %H:%M:%S')
+        end_time_str = datetime.datetime.strftime(end_time, '%Y-%m-%d %H:%M:%S')
+        log.debug(Lf("Requesting beam_current between  '{}' and '{}'", begin_time_str, end_time_str))
 
         # build myStats command
-        cmds = []
-        cmds.append("myStats")
-        cmds.append("-b")
-        cmds.append(begintime)
-        cmds.append("-e")
-        cmds.append(endtime)
-        cmds.append("-l")
-        cmds.append("IBCAD00CRCUR6")
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-l", "IBCAD00CRCUR6"]
+        log.debug(Lf("Requesting beam_current subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
         # iterate over output
@@ -80,18 +90,17 @@ def update_rcdb_conds(db, run):
             if len(tokens) < 3:
                 continue
             key = tokens[0]
-            value = tokens[2]    ## average value
+            value = tokens[2]      # average value
             if key == "IBCAD00CRCUR6":
                 conditions["beam_current"] = float(value)
-    #except:
-    #    conditions["beam_current"] = -1.
-    except Exception,e:
-        print "Error calculating the beam current: " + str(e)
+
+    except Exception as e:
+        log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_current"] = -1.
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
-        #conditions["beam_energy"] = float(caget("HALLD:p"))
+        # conditions["beam_energy"] = float(caget("HALLD:p"))
         # accelerator claims that measured beam energy isn't reliable 
         # below ~100 nA, so use model energy instead
         conditions["beam_energy"] = float(caget("MMSHLDE"))
@@ -200,12 +209,18 @@ def update_rcdb_conds(db, run):
         conditions["target_type"] = "Unknown"
 
     # Add all the values that we've determined to the RCDB
-    for (key,value) in conditions.items():
+    for (key, value) in conditions.items():
+        log.debug(Lf("Adding cnd '{}'='{}'", key, value))
         db.add_condition(run, key, value, None, True, auto_commit=False)
     db.session.commit()
+    log.debug("Commited to DB. End of update_rcdb_conds()")
 
 # entry point
 if __name__ == "__main__":
+    log = logging.getLogger('rcdb.update')               # create run configuration standard logger
+    log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
+    log.setLevel(logging.DEBUG)                          # print everything. Change to logging.INFO for less output
+
     #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
     #db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
     #db = rcdb.RCDBProvider("mysql://rcdb@gluondb1/rcdb")
