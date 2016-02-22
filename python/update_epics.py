@@ -83,10 +83,11 @@ def update_rcdb_conds(db, run):
             value = tokens[2]    ## average value
             if key == "IBCAD00CRCUR6":
                 conditions["beam_current"] = float(value)
-    except:
+    #except:
+    #    conditions["beam_current"] = -1.
+    except Exception,e:
+        print "Error calculating the beam current: " + str(e)
         conditions["beam_current"] = -1.
-    #except Exception,e:
-    #    print str(e)
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
