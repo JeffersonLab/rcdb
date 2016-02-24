@@ -12,8 +12,7 @@
 
 class DataProvder;
 
-namespace rcdb
-{
+namespace rcdb {
 
     class Condition {
     public:
@@ -28,61 +27,11 @@ namespace rcdb
         rcdb::ValueTypes GetValueType() { return _type.GetValueType(); }
 
 
-        template <class T>
-                T GetValue()
-        {
-                throw rcdb::ValueFormatError("This type is not supported. Use GetValueType() to see the type of this condition value");
-
+        template<class T>
+        T GetValue() {
+            throw rcdb::ValueFormatError(
+                    "This type is not supported. Use GetValueType() to see the type of this condition value");
         }
-
-        template <>  int GetValue<int>() {
-
-                if(GetValueType() != ValueTypes::Int) {
-                        throw rcdb::ValueFormatError("Value type of the condition is not int");
-                }
-                return _int_value;
-        }
-
-        template <>  bool GetValue<bool>() {
-
-            if(GetValueType() != ValueTypes::Bool) {
-                throw rcdb::ValueFormatError("Value type of the condition is not bool");
-            }
-            return _bool_value;
-        }
-
-        template <>  double GetValue<double>() {
-
-                if(GetValueType() != ValueTypes::Int && GetValueType() != ValueTypes::Float) {
-                        throw rcdb::ValueFormatError("Value type of the condition is not 'Float'(double in C++) or int");
-                }
-
-                if(GetValueType() == ValueTypes::Int) return _int_value;
-
-                return _float_value;
-        }
-
-        template <>  std::string GetValue<std::string>() {
-
-                if(GetValueType() != ValueTypes::Json &&
-                   GetValueType() != ValueTypes::String &&
-                   GetValueType() != ValueTypes::Blob) {
-                        throw rcdb::ValueFormatError("Value type of the condition is not String, Json or Blob");
-                }
-
-                return _text_value;
-        }
-
-        template <>  std::chrono::time_point<std::chrono::system_clock>
-            GetValue<std::chrono::time_point<std::chrono::system_clock>>() {
-
-            if(GetValueType() != ValueTypes::Time) {
-                throw rcdb::ValueFormatError("Value type of the condition is not Time");
-            }
-
-            return _time;
-        }
-
 
         void SetId(unsigned long _id) {
             Condition::_id = _id;
@@ -120,9 +69,62 @@ namespace rcdb
         double _float_value;
         bool _bool_value;
         std::chrono::time_point<std::chrono::system_clock> _time;
-        ConditionType& _type;   ///Type of this condition
+        ConditionType &_type;   ///Type of this condition
     };
-}
 
+
+    template<>
+    int Condition::GetValue<int>() {
+
+        if (GetValueType() != ValueTypes::Int) {
+            throw rcdb::ValueFormatError("Value type of the condition is not int");
+        }
+        return _int_value;
+    }
+
+    template<>
+    bool Condition::GetValue<bool>() {
+
+        if (GetValueType() != ValueTypes::Bool) {
+            throw rcdb::ValueFormatError("Value type of the condition is not bool");
+        }
+        return _bool_value;
+    }
+
+    template<>
+    double Condition::GetValue<double>() {
+
+        if (GetValueType() != ValueTypes::Int && GetValueType() != ValueTypes::Float) {
+            throw rcdb::ValueFormatError("Value type of the condition is not 'Float'(double in C++) or int");
+        }
+
+        if (GetValueType() == ValueTypes::Int) return _int_value;
+
+        return _float_value;
+    }
+
+    template<>
+    std::string Condition::GetValue<std::string>() {
+
+        if (GetValueType() != ValueTypes::Json &&
+            GetValueType() != ValueTypes::String &&
+            GetValueType() != ValueTypes::Blob) {
+            throw rcdb::ValueFormatError("Value type of the condition is not String, Json or Blob");
+        }
+
+        return _text_value;
+    }
+
+    template<>
+    std::chrono::time_point<std::chrono::system_clock>
+    Condition::GetValue<std::chrono::time_point<std::chrono::system_clock> >() {
+
+        if (GetValueType() != ValueTypes::Time) {
+            throw rcdb::ValueFormatError("Value type of the condition is not Time");
+        }
+
+        return _time;
+    }
+}
 
 #endif //RCDB_CPP_CONDITION_H

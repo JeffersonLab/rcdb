@@ -13,7 +13,7 @@
 namespace rcdb {
     class SqLiteProvider : public DataProvider {
     public:
-        SqLiteProvider(std::string dbPath) throw :
+        SqLiteProvider(std::string dbPath) :
                 DataProvider(),
                 _db(dbPath),
                 _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time "
@@ -25,8 +25,8 @@ namespace rcdb {
 
             while (query.executeStep()) {
                 const int id = query.getColumn(0);
-                const std::string name = query.getColumn(1); // = query.getColumn(1).getText();
-                const std::string typeStr = query.getColumn(2); // .getColumn(1).getBytes();
+                const std::string name(query.getColumn(1).getText()); // = query.getColumn(1).getText();
+                const std::string typeStr(query.getColumn(2).getText()); // .getColumn(1).getBytes();
 
                 ConditionType conditionType;
                 conditionType.SetId(id);
@@ -72,8 +72,8 @@ namespace rcdb {
                 // Demonstrates how to get some typed column value (and the equivalent explicit call)
                 const int id = query.getColumn(0); // = query.getColumn(0).getInt();
                 //const char*       pvalue = query.getColumn(1); // = query.getColumn(1).getText();
-                const std::string name = query.getColumn(1); // = query.getColumn(1).getText();
-                const std::string type = query.getColumn(2); // .getColumn(1).getBytes();
+                const std::string name(query.getColumn(1).getText()); // = query.getColumn(1).getText();
+                const std::string type(query.getColumn(2).getText()); // .getColumn(1).getBytes();
 
                 std::cout << "row (" << id << ", \"" << name.c_str() << "\"(" << type << ") " << ")\n";
             }

@@ -8,7 +8,7 @@ using namespace rcdb;
 
 
 TEST_CASE("General test of SqLite", "[sqlite]") {
-    SqLiteProvider prov;
+    SqLiteProvider prov("database.sqlite.db");
     prov.Test();
 }
 //
