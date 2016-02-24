@@ -203,7 +203,7 @@ def search():
         if run_from is not None and run_to is not None:
             return redirect(url_for('.index', run_from=run_from, run_to=run_to))
         elif run_from is not None:
-            return redirect(url_for('.info', run_number=int(search_query)))
+            return redirect(url_for('.info', run_number=run_from))
         else:
             return redirect(url_for('.index'))
 
