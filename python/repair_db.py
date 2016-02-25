@@ -1,5 +1,7 @@
 import argparse
 
+from sqlalchemy import func
+
 from rcdb import RCDBProvider
 from rcdb.model import Condition
 from sqlalchemy.orm import aliased
@@ -16,18 +18,36 @@ if __name__ == "__main__":
     # Create RCDBProvider object that connects to DB and provide most of the functions
     db = RCDBProvider(args.connection)
     cts = db.get_condition_types()
-    for ct in cts:
-        print ct, ct.is_many_per_run
 
-        cnd_left = aliased(Condition)
-        cnd_right = aliased(Condition)
+    bad_runs_count = 0
 
-        query = db.session.query(cnd_left, cnd_right)\
-            .filter(cnd_left.condition_type == ct)
+    for run in db.get_runs(10000, 20000):
+        run_is_printed = False      # To print a run number if error is found
+        run.get_condition()
 
-            if i != 0:
-                query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
+        for ct in cts:
+            cnd_count = db.session.query(func.count(Condition.id))\
+                .filter(Condition.type == ct, Condition.run == run).scalar()
 
-        query = query.filter(aliased_cnd[0].run_number >= run_min, aliased_cnd[0].run_number <= run_max)\
-            .join(aliased_cnd[0].run)
+            if cnd_count > 1:
+                if not run_is_printed:
+                    print
+                    print
+                    print "Run = {:<6}, started={}".format(run.number, run.start_time)
+                    run_is_printed = True
+                    bad_runs_count += 1
+
+                print "   {:<20}: count {} ".format(ct.name, cnd_count)
+                conditions = db.session.query(Condition)\
+                    .filter(Condition.type == ct, Condition.run == run).all()
+
+                if conditions[0].value != conditions[1].value:
+                    for condition in conditions:
+                        print "      id={:<7} date={} value={}"\
+                            .format(condition.id, condition.created.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3], bad_runs_count if ct.value_type != "json" else "json")
+
+    print "bad_runs_count=", bad_runs_count
+
+
+
 
