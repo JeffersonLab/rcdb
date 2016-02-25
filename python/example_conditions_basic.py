@@ -6,7 +6,7 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False, description="This is my value")
+db.create_condition_type("my_val", ConditionType.INT_FIELD, "This is my value")
 
 # Add data to database
 db.add_condition(1, "my_val", 1000)

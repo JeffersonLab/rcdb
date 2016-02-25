@@ -283,6 +283,17 @@ class Run(ModelBase):
             if condition_name in self._conditions_by_name.keys() \
             else None
 
+    def get_condition_value(self, condition_name):
+        """ Gets the condition value if such name condition exist for the run. Null otherwise
+
+        :param condition_name: The condition name
+        :type condition_name: string
+        :return: Condition value for this name for run or None
+
+        """
+        cnd = self.get_condition(condition_name)
+        return cnd.value if cnd is not None else None
+
     def __repr__(self):
         return "<Run number='{0}'>".format(self.number)
 
@@ -351,9 +362,6 @@ class ConditionType(ModelBase):
                         nullable=False, default=STRING_FIELD)
     """Type of constant. Might be one of:
      JSON_FIELD, STRING_FIELD, FLOAT_FIELD, INT_FIELD, BOOL_FIELD, TIME_FIELD, BLOB_FIELD"""
-
-    is_many_per_run = Column(Boolean, nullable=False, default=True)
-    """True if the value is allowed many times per run"""
 
     created = Column(DateTime, default=datetime.datetime.now)
     """Time of creation (set automatically)"""
@@ -489,6 +497,9 @@ class Condition(ModelBase):
             self.time = val
         else:
             raise ValueError("Unknown field type! field_type='{}'".format(field_type))
+
+
+
 
     def __repr__(self):
         return "<Condition id='{}', run_number='{}', value={}>".format(self.id, self.run_number, self.value)

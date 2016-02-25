@@ -38,7 +38,7 @@ Write ''event_count''=''1663'' for run ''100'':
 
 <syntaxhighlight lang="python">
 # Once in a lifetime, create a condition type, that defines event_count
-ct = db.create_condition_type("event_count", ConditionType.INT_FIELD, False)
+ct = db.create_condition_type("event_count", ConditionType.INT_FIELD)
 
 # Write condition value to run 100
 db.add_condition(100, "event_count", 1663)
@@ -126,7 +126,7 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # 2. Create condition type. It is done only once
-db.create_condition_type("my_val", ConditionType.INT_FIELD, is_many_per_run=False, description="This is my value")
+db.create_condition_type("my_val", ConditionType.INT_FIELD, "This is my value")
 
 # 3. Add data to database
 db.add_condition(1, "my_val", 1000)
@@ -408,7 +408,6 @@ Lets look ''create_condition_type'' from the example above (we add parameter nam
 <syntaxhighlight lang="python">
 db.create_condition_type(name="my_val",
                          value_type=ConditionType.INT_FIELD,
-                         is_many_per_run=False,
                          description="This is my value")
 </syntaxhighlight>
 
@@ -483,10 +482,10 @@ Lets example it:
 db = RCDBProvider("sqlite:///example.db")
 
 # Crete condition types
-db.create_condition_type("int_val", ConditionType.INT_FIELD, False)
-db.create_condition_type("float_val", ConditionType.FLOAT_FIELD, False)
-db.create_condition_type("bool_val", ConditionType.BOOL_FIELD, False)
-db.create_condition_type("string_val", ConditionType.STRING_FIELD, False)
+db.create_condition_type("int_val", ConditionType.INT_FIELD)
+db.create_condition_type("float_val", ConditionType.FLOAT_FIELD)
+db.create_condition_type("bool_val", ConditionType.BOOL_FIELD)
+db.create_condition_type("string_val", ConditionType.STRING_FIELD)
 
 # Add values to run 1
 db.add_condition(1, "int_val", 1000)
@@ -526,7 +525,7 @@ A time information can be attached to any condition value. Standard python datet
 
 <syntaxhighlight lang="python">
 # Create condition type
-db.create_condition_type("my_val", ConditionType.INT_FIELD, False)
+db.create_condition_type("my_val", ConditionType.INT_FIELD)
 
 # Add value and time information
 db.add_condition(1, "my_val", 2000, datetime(2015, 10, 10, 15, 28, 12, 111111))
@@ -555,7 +554,7 @@ the condition type. In this case ''Condition.value'' field will have time inform
 value parameter of add_condition function:
 
 <syntaxhighlight lang="python">
-db.create_condition_type("lunch_bell_rang", ConditionType.TIME_FIELD, False)
+db.create_condition_type("lunch_bell_rang", ConditionType.TIME_FIELD)
 
 # add value to run 1
 time = datetime(2015, 9, 1, 14, 21, 01)
@@ -594,7 +593,7 @@ Example
 #    1. If run has this condition, with the same value and actual_time the func. DOES NOTHING
 #    2. If run has this conditions but at different time, it adds this condition to DB
 
-db.create_condition_type("multi", ConditionType.INT_FIELD, True)
+db.create_condition_type("multi", ConditionType.INT_FIELD)
 
 time1 = datetime(2015,9,1,14,21,01, 222)
 time2 = datetime(2015,9,1,14,21,01, 333)
@@ -667,8 +666,8 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("list_data", ConditionType.JSON_FIELD, False)
-db.create_condition_type("dict_data", ConditionType.JSON_FIELD, False)
+db.create_condition_type("list_data", ConditionType.JSON_FIELD)
+db.create_condition_type("dict_data", ConditionType.JSON_FIELD)
 
 list_to_store = [1, 2, 3]
 dict_to_store = {"x": 1, "y": 2, "z": 3}
@@ -744,7 +743,7 @@ class Cat(object):
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("cat", ConditionType.JSON_FIELD, False)
+db.create_condition_type("cat", ConditionType.JSON_FIELD)
 
 
 # Create a cat and store in in the DB for run 1
@@ -1160,8 +1159,8 @@ db = rcdb.RCDBProvider("sqlite://")
 rcdb.model.Base.metadata.create_all(db.engine)
 
 # create conditions types
-event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD, False)
-data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD, False)
+event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD)
+data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD)
 
 # create runs and fill values
 for i in range(0, 100):
@@ -1310,7 +1309,7 @@ To commit changes, having <code>db = RCDBProvider(...)</code> you should call <c
 
 <syntaxhighlight lang="python">
 """ Test auto_commit feature that allows to commit changes to DB later"""
-ct = self.db.create_condition_type("ac", ConditionType.INT_FIELD, False)
+ct = self.db.create_condition_type("ac", ConditionType.INT_FIELD)
 
 # Add condition to addition but don't commit changes
 self.db.add_condition(1, ct, 10, auto_commit=False)

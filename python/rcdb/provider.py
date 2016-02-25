@@ -11,7 +11,6 @@ import sys
 from collections import MutableSequence
 
 from rcdb.alias import default_aliases
-from sqlalchemy.sql.elements import and_
 
 from ply.lex import LexToken
 
@@ -151,9 +150,9 @@ class RCDBProvider(object):
             record.table_ids = table_ids.log_id
         elif isinstance(table_ids, list):
             if table_ids:
-                if isinstance(list[0], ModelBase):
+                if isinstance(table_ids[0], ModelBase):
                     record.table_ids = list_to_db_text([item.log_id for item in table_ids])
-                elif isinstance(list[0], str):
+                elif isinstance(table_ids[0], str):
                     record.table_ids = list_to_db_text(table_ids)
         elif isinstance(table_ids, str):
             record.table_ids = table_ids
@@ -291,11 +290,10 @@ class RCDBProvider(object):
         except NoResultFound:
             return []
 
-
     # ------------------------------------------------
     # Creates condition type
     # ------------------------------------------------
-    def create_condition_type(self, name, value_type, is_many_per_run, description=""):
+    def create_condition_type(self, name, value_type, description):
         """
         Creates condition type
 
@@ -304,9 +302,6 @@ class RCDBProvider(object):
 
         :param value_type: It is one of ConditionType.FI
         :type value_type: str
-
-        :param is_many_per_run: if true many condition of the same type can be attached to a one run
-        :type is_many_per_run: bool
 
         :param description: Short description of the condition. 255 chars max
         :type description: basestring
@@ -322,16 +317,15 @@ class RCDBProvider(object):
             ct = query.first()
             assert isinstance(ct, ConditionType)
 
-            if ct.value_type != value_type or ct.is_many_per_run != is_many_per_run:
-                # we've found it, but it differs!
-                if ct.value_type != value_type:
-                    message = "Condition type with this name exists but is_many_per_run flag differs:" \
-                              "Database is_many_per_run={}, new is_many_per_run={}" \
-                        .format(ct.is_many_per_run, is_many_per_run)
+            if ct.value_type != value_type:
+                message = "Condition type with this name exists, but value type is different:" \
+                          "Database value_type={}, new value_type={}".format(ct.value_type, value_type)
 
-                if ct.is_many_per_run != is_many_per_run:
-                    message = "Condition type with this name exists, but value type differs:" \
-                              "Database value_type={}, new value_type={}".format(ct.value_type, value_type)
+                raise OverrideConditionTypeError(message)
+
+            if ct.description != description:
+                message = "Condition type with this name exists, but description is different:" \
+                          "Database description={}, new description={}".format(ct.description, description)
 
                 raise OverrideConditionTypeError(message)
 
@@ -340,31 +334,27 @@ class RCDBProvider(object):
         else:
             # no such ConditionType found in the database
             ct = ConditionType()
-            ct.is_many_per_run = is_many_per_run
             ct.name = name
             ct.value_type = value_type
             ct.description = description
             self.session.add(ct)
             self.session.commit()
-            self.add_log_record(ct, "ConditionType created with name='{}', type='{}', is_many_per_run='{}'"
-                                .format(name, value_type, is_many_per_run), 0)
+            self.add_log_record(ct, "ConditionType created with name='{}', type='{}'"
+                                .format(name, value_type), 0)
             return ct
 
     # ------------------------------------------------
     # Adds condition value to database
     # ------------------------------------------------
-    def add_condition(self, run, key, value, actual_time=None, replace=False, auto_commit=True):
+    def add_condition(self, run, key, value, replace=False, auto_commit=True):
         """ Adds condition value for the run
 
-        What if such condition value is already exists for this run?
-        It depends on 'is_many_per_run'. Another words if it is possible to have many such conditions per run or not.
-
-        Only one value is allowed for a run (is_many_per_run=False) :
-            1. If run has this condition, with the same value and actual_time it does nothing
-            2. If value OR actual_time are different then in DB, function check 'replace' flag and do accordingly
+        Only one value is allowed for a run. If run already has this condition:
+            1. It value is the same the func does nothing
+            2. If value is different than in DB, function check 'replace' flag and do accordingly
 
         Example:
-            db.add_condition_value(1, "event_count", 1000)                  # First addition to DB
+            db.add_condition_value(1, "event_count", 1000)                  # Ok. First addition to DB
             db.add_condition_value(1, "event_count", 1000)                  # Ok. Do nothing, such value already exists
             db.add_condition_value(1, "event_count", 2222)                  # Error. OverrideConditionValueError
             db.add_condition_value(1, "event_count", 2222, replace=True)    # Ok. Replacing existing value
@@ -372,52 +362,28 @@ class RCDBProvider(object):
                 value: 2222
                 time:  None
 
-            time1 = datetime(2015,9,1,14,21,01, 222)
-            time2 = datetime(2015,9,1,14,21,01, 333)
-            db.add_condition_value(1, "timed", 1, time1)  # First addition to DB
-            db.add_condition_value(1, "timed", 1, time1)  # Ok. Do nothing
-            db.add_condition_value(1, "timed", 1, time2)  # Error. Time is different
-            db.add_condition_value(1, "timed", 5, time1)  # Error. Value is different
-            db.add_condition_value(1, "timed", 5, time2, True)  # Ok. Value replaced
+        Performance:
+            Setting auto_commit=False allows to improve performance when adding many conditions for the run
+            Example:
+                for name, value in values_to_add:
+                    db.add_condition_value(run, name, value, auto_commit=False)
 
-            print(db.get_condition_value(1, "timed"))
-                value: 5
-                time:  time2
+                # Commit all added values to DB
+                db.session.commit()
 
-        Many condition values allowed for the run (is_many_per_run=True)
-            1. If run has this condition, with the same value and actual_time the func. DOES NOTHING
-            2. If run has this conditions but at different time, it adds this condition to DB
-            3. If run has this condition at this time
-
-        Example:
-            time1 = datetime(2015,9,1,14,21,01, 222)
-            time2 = datetime(2015,9,1,14,21,01, 333)
-            db.add_condition_value(1, "event_count", 1000)                  # First addition to DB. Time is None
-            db.add_condition_value(1, "event_count", 1000)                  # Ok. Do nothing, such value already exists
-            db.add_condition_value(1, "event_count", 2222)                  # Error. Another value for time None
-            db.add_condition_value(1, "event_count", 2222, replace=True)    # Ok. Replacing existing value for time None
-            db.add_condition_value(1, "event_count", 3333, time1)           # Ok. Value for time1 is added to DB
-            db.add_condition_value(1, "event_count", 4444, time1)           # Error. Value differs for time1
-            db.add_condition_value(1, "event_count", 4444, time2)           # Ok. Add 444 for time2 to DB
-
-            print(db.get_condition_value(1, "event_count"))
-              [0: value=2222; time=None
-               1: value=3333; time=time1
-               2: value=4444; time=time2]
-
-
-        :param run:
         :param run: The run number for this condition value
         :type run: int, Run
+
+        :param value: The value of the condition.
 
         :param key: name of condition or ConditionType
         :type key: str, ConditionType
 
-        :param actual_time:
-        :type actual_time: datetime.datetime
-
         :param replace: If true, function replaces existing value
         :type replace: bool
+
+        :param auto_commit: If true, changes to DB are committed as values are changed.
+                            If false, user should call this.session.commit() to commit the changes
 
         :return: Condition object from DB
         :rtype: Condition
@@ -425,10 +391,13 @@ class RCDBProvider(object):
 
         # get run for the condition
         if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.get_run(run)
+            run_number = run
+            run = self.get_run(run_number)
+        else:
+            run_number = run.number
 
         if not run:
-            message = "No run with run_number='{}' found".format(run)
+            message = "No run with run_number='{}' found".format(run_number)
             raise NoRunFoundError(message)
 
         # get type
@@ -438,91 +407,71 @@ class RCDBProvider(object):
             assert isinstance(key, str)
             ct = self.get_condition_type(key)
 
-        # if we have TIME_FIELD condition type, then value is meant to be the actual time
-        if ct.value_type == ConditionType.TIME_FIELD:
-            actual_time = value
-
-        # validate time
-        if actual_time is not None:
-            assert (isinstance(actual_time, datetime.datetime))
+        # validate value
+        if ct.value_type == ConditionType.FLOAT_FIELD:
+            try:
+                value = float(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits float as value. {}".format(ct, err)
+                raise ValueError(message)
+        elif ct.value_type == ConditionType.INT_FIELD:
+            try:
+                value = int(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits int as value. {}".format(ct, err)
+                raise ValueError(message)
+        elif ct.value_type == ConditionType.TIME_FIELD and not isinstance(value, datetime.datetime):
+                message = "Condition type '{}' awaits datetime as value. '{}' is given".format(ct, type(value))
+                raise ValueError(message)
+        elif ct.value_type == ConditionType.BOOL_FIELD:
+            try:
+                value = bool(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits bool as value. {}".format(ct, err)
+                raise ValueError(message)
 
         # Check! maybe ve have such condition value for this run
-        condition = None
-        db_result = self.get_condition(run, ct)
-        if db_result:
+        db_condition = self.get_condition(run, ct)
 
-            if ct.is_many_per_run:
-                # we have many per run situation
-                assert isinstance(db_result, list)
+        if db_condition is not None:
+            # one per run situation
+            assert isinstance(db_condition, Condition)
 
-                for db_value in db_result:
-                    # we have something...
-                    assert db_value.type is ct
-                    assert isinstance(db_value, Condition)
-                    if ((db_value.time is None) and (actual_time is None)) or (db_value.time == actual_time):
-                        # field have the same time. Check value
-                        if db_value.value != value:
-                            # value mismatch
-                            if replace:
-                                # We have to replace the old value
-                                condition = db_value
-                                break
-                            else:
-                                message = "Condition with such time('{}') already exists for the run_number='{}'" \
-                                          "but the is different. DB saved value='{}', new value='{}'. " \
-                                          "(Add replace=True flag if you want to replace the old value)" \
-                                    .format(actual_time, run, db_value.value, value)
-                                raise OverrideConditionValueError(message)
-                        else:
-                            # we found the same value. Return it
-                            return db_value
+            # if value is float, use precision
+            if ct.value_type == ConditionType.FLOAT_FIELD:
+                # value is float here because of the validation above
+                value_is_differ = abs(db_condition.value - value) <= 1e-14
             else:
-                # one per run situation
-                db_value = db_result
-                assert isinstance(db_value, Condition)
-                if ((db_value.time is None) and actual_time) or \
-                        (db_value.time and (actual_time is None)) or \
-                        (db_value.time != actual_time):
-                    # time mismatch
-                    if replace:
-                        # We have to replace the old value
-                        condition = db_value
-                    else:
-                        message = "Condition with already exists for the run_number='{}'" \
-                                  "but the time is different. DB saved time='{}', new time='{}'. " \
-                                  "(Add replace=True flag if you want to replace the old value)" \
-                            .format(run, db_value.time, actual_time)
-                        raise OverrideConditionValueError(message)
+                value_is_differ = db_condition.value != value
 
-                elif db_value.value != value:
-                    # field have different value
-                    if replace:
-                        # We have to replace the old value
-                        condition = db_value
-                    else:
-                        message = "Condition with already exists for the run_number='{}' " \
-                                  "but the value is different. DB saved value='{}', new value='{}'. " \
-                                  "(Add replace=True flag if you want to replace the old value)" \
-                            .format(run, db_value.value, value)
-
-                        raise OverrideConditionValueError(message)
+            if value_is_differ:
+                if replace:
+                    # We have to replace the old value
+                    db_condition.value = value
+                    db_condition.created = datetime.datetime.now()
+                    if auto_commit:
+                        self.session.commit()
+                        return db_condition
                 else:
-                    # the value and time are the same
-                    return db_value
+                    message = "Condition {} already exists for the run_number='{}' " \
+                              "but the value is different. DB saved value='{}', new value='{}'. " \
+                              "(Add replace=True if you want to replace the old value)" \
+                        .format(ct.name, run, db_condition.value, value)
+                    raise OverrideConditionValueError(message)
 
-        if not condition:
-            # if we are here, we haven't found the field with the same time and have to add
-            condition = Condition()
-            condition.type = ct
-            condition.run = run
-            self.session.add(condition)
+            # values are the same
+            return db_condition
 
-        # finally if we are here, we either have to replace or just created the object
-        # now we have to only add value and time and save it to DB
+        # we haven't found the field in db
+        condition = Condition()
+        condition.type = ct
+        condition.run = run
         condition.value = value
-        condition.time = actual_time
+        self.session.add(condition)
+
         if auto_commit:
             self.session.commit()
+
         return condition
 
     # ------------------------------------------------
@@ -547,7 +496,6 @@ class RCDBProvider(object):
         else:
             run_number = int(run_number)
 
-
         if isinstance(key, ConditionType):
             ct = key
         else:
@@ -557,7 +505,7 @@ class RCDBProvider(object):
         query = self.session.query(Condition). \
             filter(Condition.type == ct, Condition.run_number == run_number)
 
-        return query.all() if ct.is_many_per_run else query.first()
+        return query.first()
 
     def select_runs(self, search_str, run_min=0, run_max=sys.maxsize, sort_desc=False):
         """ Searches RCDB for runs with e
@@ -579,18 +527,22 @@ class RCDBProvider(object):
         all_cnd_types_by_name = {cnd.name: cnd for cnd in all_cnt_types}
         all_cnd_names = [str(key) for key in all_cnd_types_by_name.keys()]
 
+        search_str = str(search_str)
         if '__' in search_str:
             raise QueryFormatError("Query contains restricted symbol: '__'")
+
 
         for alias in default_aliases:
             al_name = "@"+alias.name
             if al_name in search_str:
-                search_str = search_str.replace(al_name, alias.expression)
+                search_str = search_str.replace(al_name, '(' + alias.expression + ')')
+
+        search_str = search_str.replace('\n', ' ')
+        search_str = search_str.replace('\r', ' ')
 
         tokens = [token for token in lexer.tokenize(search_str)]
 
         target_cnd_types = []
-        alchemy_comparisons = []
         names = []
         aliased_cnd_types = []
         aliased_cnd = []
@@ -609,7 +561,8 @@ class RCDBProvider(object):
                 continue
 
             if token.value not in all_cnd_names:
-                raise QueryFormatError("Name '{}' is not found in ConditionTypes".format(token.value))
+                message = "Name '{}' is not found in ConditionTypes".format(token.value)
+                raise QueryFormatError(message)
             else:
                 cnd_name = token.value
                 cnd_type = all_cnd_types_by_name[token.value]
@@ -884,7 +837,6 @@ class ConfigurationProvider(RCDBProvider):
             log.debug(Lf("Board installation id='{}' already associated with run='{}'",
                          board_installation.id, run.number))
 
-
     # ------------------------------------------------
     #
     # ------------------------------------------------
@@ -911,14 +863,13 @@ class ConfigurationProvider(RCDBProvider):
         if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(int(run))
 
-        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
-
         if run.start_time == dtm:
             return
 
+        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
+
         run.start_time = dtm
         self.session.commit()
-        self.add_log_record(run, "Start time changed to '{}' for run '{}'".format(dtm, run.number), run)
 
     # ------------------------------------------------
     #
@@ -930,20 +881,12 @@ class ConfigurationProvider(RCDBProvider):
         if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(int(run))
 
+        if run.end_time == dtm:
+            return
+
         log.debug(Lf("Setting end time '{}' to run '{}'", dtm, run.number))
         run.end_time = dtm
         self.session.commit()
-        log.info(Lf("End time changed to '{}' for run '{}'", dtm, run.number))
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_run_component_statistics(self, run_number, actual_time, comp_name, comp_type, evt_rate, data_rate,
-                                     evt_number):
-        key = COMPONENT_STAT_KEY + comp_name
-        value = {"type": comp_type, "event-rate": evt_rate, "data-rate": data_rate, "event-count": evt_number}
-        self.add_condition(run_number, key, value, actual_time, "dict")
-
 
     # ------------------------------------------------
     #
@@ -960,8 +903,7 @@ class ConfigurationProvider(RCDBProvider):
             if content:
                 return content
             with open(path) as io_file:
-               return io_file.read()
-
+                return io_file.read()
 
         log.debug("Processing configuration file")
 

@@ -6,8 +6,8 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("list_data", ConditionType.JSON_FIELD, is_many_per_run=False)
-db.create_condition_type("dict_data", ConditionType.JSON_FIELD, is_many_per_run=False)
+db.create_condition_type("list_data", ConditionType.JSON_FIELD, "Data list")
+db.create_condition_type("dict_data", ConditionType.JSON_FIELD, "Data dict")
 
 list_to_store = [1, 2, 3]
 dict_to_store = {"x": 1, "y": 2, "z": 3}

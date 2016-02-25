@@ -77,7 +77,7 @@ def create_condition_types(db):
 
     def create_condition_type(name, value_type, description=""):
         all_types_dict[name] if name in all_types_dict.keys() \
-            else db.create_condition_type(name, value_type, False, description)
+            else db.create_condition_type(name, value_type, description)
 
     # get or create condition type
     create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)

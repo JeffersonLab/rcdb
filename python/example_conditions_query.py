@@ -14,9 +14,9 @@ def make_dummy_db():
     print("Dummy memory database created!")
 
     # create conditions types
-    event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD, False)
-    data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD, False)
-    tag_type = db.create_condition_type("tag", ConditionType.STRING_FIELD, False)
+    event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD)
+    data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD)
+    tag_type = db.create_condition_type("tag", ConditionType.STRING_FIELD)
 
     # create runs and fill values
     for i in range(0, 100):

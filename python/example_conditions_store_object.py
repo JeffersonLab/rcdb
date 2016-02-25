@@ -18,7 +18,7 @@ except ImportError:
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("cat", ConditionType.JSON_FIELD, is_many_per_run=False)
+db.create_condition_type("cat", ConditionType.JSON_FIELD, "The Cat lives here")
 
 
 # Create a cat and store in in the DB for run 1

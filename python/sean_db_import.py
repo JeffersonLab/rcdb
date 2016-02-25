@@ -51,8 +51,8 @@ if __name__ == "__main__":
 
     # create conditions
     for cnd_name, cnd_type in columns_to_import.iteritems():
-        db.create_condition_type(cnd_name, cnd_type, False)
-    db.create_condition_type("seandb_event_count", ConditionType.INT_FIELD, False)
+        db.create_condition_type(cnd_name, cnd_type, "")
+    db.create_condition_type("seandb_event_count", ConditionType.INT_FIELD, "Event count by Sean db")
 
     total = 0
     run_min = 742

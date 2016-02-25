@@ -28,7 +28,7 @@ def benchmark_conditions_add(cycles, auto_commit=True):
 
     # Create condition type
     runs = [db.create_run(1), db.create_run(2)]
-    ct = db.create_condition_type("my_val", ConditionType.INT_FIELD, False, "This is my value")
+    ct = db.create_condition_type("my_val", ConditionType.INT_FIELD, "This is my value")
 
     print ("Start {} cycles in benchmark_conditions_add".format(cycles))
 

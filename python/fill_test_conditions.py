@@ -24,9 +24,9 @@ if __name__ == '__main__':
     db = rcdb.ConfigurationProvider(con_srt)
 
     # create several conditions
-    events_num_ct = db.create_condition_type("events_num", ConditionType.INT_FIELD, is_many_per_run=False)
-    events_rate_ct = db.create_condition_type("events_rate", ConditionType.FLOAT_FIELD, is_many_per_run=True)
-    temperature_ct = db.create_condition_type("temperature", ConditionType.INT_FIELD, is_many_per_run=True)
+    events_num_ct = db.create_condition_type("event_count", ConditionType.INT_FIELD)
+    events_rate_ct = db.create_condition_type("events_rate", ConditionType.FLOAT_FIELD)
+    temperature_ct = db.create_condition_type("temperature", ConditionType.INT_FIELD)
 
     # create 100 runs
     random.seed(1)
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
         # fill condition values
         events_num = random.randrange(1, 100000)
-        db.set_condition_value(run_number, "events_num", events_num)
+        db.set_condition_value(run_number, "event_count", events_num)
         db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
         db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
         run = db.create_run(run_number)

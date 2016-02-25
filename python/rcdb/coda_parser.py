@@ -102,13 +102,13 @@ def parse_start_run_data(db, xml_root, auto_commit=True):
     log.info(lf("Run number '{}'", run.number))
 
     # Run type condition
-    db.add_condition(run, DefaultConditions.RUN_TYPE, xml_root.attrib["runtype"], None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.RUN_TYPE, xml_root.attrib["runtype"], True, auto_commit)
 
     # Session
-    db.add_condition(run, DefaultConditions.SESSION, xml_root.attrib["session"], None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.SESSION, xml_root.attrib["session"], True, auto_commit)
 
     # Set the run as not properly finished (We hope that the next section will
-    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, False, None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, False, True, auto_commit)
 
     # Start time
     try:
@@ -130,26 +130,26 @@ def parse_start_run_data(db, xml_root, auto_commit=True):
     xml_event_count = xml_run_start.find('total-evt')
     if xml_event_count is not None:
         event_count = int(xml_event_count.text)
-        db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, None, True, auto_commit)
+        db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, True, auto_commit)
 
     # Components used
     xml_components = xml_run_start.find('components')
     if xml_components is not None:
         components = {comp.attrib['name']: comp.attrib['type'] for comp in xml_components.findall('component')}
-        db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), None, True, auto_commit)
+        db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), True, auto_commit)
 
     # RTVs
     run_config_file = ""
     xml_rtvs = xml_run_start.find('rtvs')
     if xml_rtvs is not None:
         rtvs = {rtv.attrib['name']: rtv.attrib['value'] for rtv in xml_rtvs.findall('rtv')}
-        db.add_condition(run, DefaultConditions.RTVS, json.dumps(rtvs), None, True, auto_commit)
+        db.add_condition(run, DefaultConditions.RTVS, json.dumps(rtvs), True, auto_commit)
 
         # run_config_file
         if RUN_CONFIG_RTV in rtvs.keys():
             run_config_file = rtvs[RUN_CONFIG_RTV]
             run_config = os.path.basename(run_config_file)
-            db.add_condition(run, DefaultConditions.RUN_CONFIG, run_config, None, True, auto_commit)
+            db.add_condition(run, DefaultConditions.RUN_CONFIG, run_config, True, auto_commit)
             log.debug(lf("Run config file extracted from rtvs '{}'", run_config))
 
     return run, run_config_file
@@ -164,6 +164,8 @@ def parse_end_run_data(db, run, xml_root, auto_commit=True):
 
     :param xml_root: ElementTree parsed coda xml file
     :type xml_root: xml.etree.ElementTree
+
+    :param auto_commit: If true each change is committed to DB on each operation
 
     :return: None
 
