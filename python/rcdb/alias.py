@@ -6,7 +6,7 @@ class ConditionSearchAlias(object):
 
 
 default_aliases = [
-    ConditionSearchAlias('is_production', """((run_type == 'hd_all.tsg' or run_type == 'hd_all.tsg.ps') and ('PHYSICS' == daq_run) and beam_current > 2 and event_count > 100000 and (radiator_id !=5 or radiator_id ==0) and solenoid_current > 100)""", "Is production run"),
+    ConditionSearchAlias('is_production', """((run_type == 'hd_all.tsg' or run_type == 'hd_all.tsg_ps' or run_type == 'hd_all.bcal_fcal_st.tsg') and (daq_run == 'PHYSICS' or daq_run == 'EXPERT') and beam_current > 2 and event_count > 100000 and (radiator_id !=5 or radiator_id ==0) and solenoid_current > 100)""", "Is production run"),
 
     ConditionSearchAlias('is_cosmic ', "(run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 1)",
                          "Is cosmic run"),
