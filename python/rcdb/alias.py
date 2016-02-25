@@ -6,17 +6,17 @@ class ConditionSearchAlias(object):
 
 
 default_aliases = [
-    ConditionSearchAlias('is_production', """((run_type == 'hd_all.tsg' or run_type == 'hd_all.tsg_ps' or run_type == 'hd_all.bcal_fcal_st.tsg') and (daq_run == 'PHYSICS' or daq_run == 'EXPERT') and beam_current > 2 and event_count > 100000 and (radiator_id !=5 or radiator_id ==0) and solenoid_current > 100)""", "Is production run"),
+    ConditionSearchAlias('is_production', """((run_type == 'hd_all.tsg' or run_type == 'hd_all.tsg_ps' or run_type == 'hd_all.bcal_fcal_st.tsg') and (daq_run == 'PHYSICS' or daq_run == 'EXPERT') and beam_current > 2 and event_count > 500000 and solenoid_current > 100)""", "Is production run"),
 
     ConditionSearchAlias('is_cosmic ', "(run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 1)",
                          "Is cosmic run"),
 
     ConditionSearchAlias('is_empty_target', "(target_type == 'EMPTY & Ready')", "Target is empty"),
 
-    ConditionSearchAlias('is_amorph_radiator', "(radiator_id == 0 and target_type == 'FULL & Ready')",
+    ConditionSearchAlias('is_amorph_radiator', "((radiator_id == 0 or radiator_id == -1) and target_type == 'FULL & Ready')",
                          "Amorphous Radiator"),
 
-    ConditionSearchAlias('is_coherent_beam', "(radiator_id != 5  and radiator_id != 0)", "Coherent Beam"),
+    ConditionSearchAlias('is_coherent_beam', "((radiator_id != 5  and radiator_id > 0) and target_type == 'FULL & Ready')", "Coherent Beam"),
 
     ConditionSearchAlias('is_field_off', "(solenoid_current < 100)", " Field Off"),
 
