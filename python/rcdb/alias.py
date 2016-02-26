@@ -18,7 +18,7 @@ default_aliases = [
 
     ConditionSearchAlias('is_empty_target', "target_type == 'EMPTY & Ready'", "Target is empty"),
 
-    ConditionSearchAlias('is_amorph_radiator', "radiator_id in [0, -1] and target_type == 'FULL & Ready'",
+    ConditionSearchAlias('is_amorph_radiator', "radiator_index == -1 and radiator_type != 'None' and target_type == 'FULL & Ready'",
                          "Amorphous Radiator"),
 
     ConditionSearchAlias('is_coherent_beam', "(radiator_id != 5  and radiator_id > 0) and target_type == 'FULL & Ready'", "Coherent Beam"),
