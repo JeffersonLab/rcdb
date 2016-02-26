@@ -46,6 +46,13 @@
         {{ table.default_run_table(runs, DefaultConditions) }}
     </div>
     {{ render_pagination(pagination) }}
+    {% if performance %}
+        <div id="performance" class="text-muted text-center">
+
+        </div>
+    {% endif %}
+
+
 </div>
 <!-- Modal -->
 <div class="modal fade " id="selectedRunsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -82,6 +89,32 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/clipboard.min.js') }}"></script>
     <script>
         new Clipboard('.copy-runs-btn');
+
+        {% if performance %}
+            var perfPrepareTime = {{performance["preparation"]}}.toFixed(3);
+            var perfQueryTime = {{ performance["query"] }}.toFixed(3);
+            var perfSelectTime = {{ performance["selection"] }}.toFixed(3);
+
+
+            var perfExplanation = " Preparations=" + perfPrepareTime.toString() +
+                              " | DB query=" + perfQueryTime.toString() +
+                              " | Run selection=" + perfSelectTime.toString();
+
+            if (typeof window.performance != 'undefined') // Any scope
+            {
+                var queryStartTime = {{ performance["start_time_stamp"] }} - window.performance.timing.navigationStart;
+                var loadTime = window.performance.timing.responseEnd- window.performance.timing.navigationStart;
+                var pageRender = loadTime - perfPrepareTime - perfQueryTime - perfSelectTime;
+                perfExplanation = " Begin query at=" + (queryStartTime/1000.0).toFixed(3) + " |" + perfExplanation;
+
+                perfExplanation += " | Page generation=" + (pageRender/1000.0).toFixed(3).toString() +
+                                   " | Total=" + (loadTime/1000.0).toFixed(3).toString();
+            }
+
+            perfExplanation = "Timing:" + perfExplanation;
+
+            $("#performance").text(perfExplanation);
+        {% endif %}
 
         var table = $('#runs-table').DataTable( {
                 responsive: true,

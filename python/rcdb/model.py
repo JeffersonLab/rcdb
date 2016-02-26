@@ -389,6 +389,23 @@ class ConditionType(ModelBase):
             .join(Condition, Condition.run_number == Run.number)\
             .filter(Condition.type == self)
 
+    def get_condition_alias_value_field(self, alias):
+        """ Gets appropriate aliased(Condition).xxx_value field according to type """
+        field = None
+        if self.value_type == ConditionType.INT_FIELD:
+            field = alias.int_value
+        if self.value_type == ConditionType.STRING_FIELD \
+                or self.value_type == ConditionType.JSON_FIELD \
+                or self.value_type == ConditionType.BLOB_FIELD:
+            field = alias.text_value
+        if self.value_type == ConditionType.FLOAT_FIELD:
+            field = alias.float_value
+        if self.value_type == ConditionType.BOOL_FIELD:
+            field = alias.bool_value
+        if self.value_type == ConditionType.TIME_FIELD:
+            field = alias.time
+        return field
+
     @hybrid_property
     def value_field(self):
         """ Gets appropriate Condition.xxx_value field according to type """

@@ -9,6 +9,7 @@ import re
 import logging
 import sys
 from collections import MutableSequence
+from time import mktime
 
 from rcdb.alias import default_aliases
 
@@ -16,6 +17,7 @@ from ply.lex import LexToken
 
 from log_format import BraceMessage as Lf
 from rcdb import lexer
+from rcdb.stopwatch import StopWatchTimer
 from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError, \
     QueryFormatError
 import sqlalchemy.orm
@@ -198,7 +200,7 @@ class RCDBProvider(object):
         :type run_max: int
         :type rum_min: int
         """
-        return self.session.query(Run).filter(Run.number >= rum_min, Run.number <= run_max)\
+        return self.session.query(Run).filter(Run.number >= rum_min, Run.number <= run_max) \
             .order_by(Run.number).all()
 
     # ------------------------------------------------
@@ -421,8 +423,8 @@ class RCDBProvider(object):
                 message = "Condition type '{}' awaits int as value. {}".format(ct, err)
                 raise ValueError(message)
         elif ct.value_type == ConditionType.TIME_FIELD and not isinstance(value, datetime.datetime):
-                message = "Condition type '{}' awaits datetime as value. '{}' is given".format(ct, type(value))
-                raise ValueError(message)
+            message = "Condition type '{}' awaits datetime as value. '{}' is given".format(ct, type(value))
+            raise ValueError(message)
         elif ct.value_type == ConditionType.BOOL_FIELD:
             try:
                 value = bool(value)
@@ -518,6 +520,9 @@ class RCDBProvider(object):
         :return: List of runs matching criteria
         :rtype: list(Run)
         """
+        start_time_stamp = int(mktime(datetime.datetime.now().timetuple()) * 1000)
+        preparation_sw = StopWatchTimer()
+        preparation_sw.start()
 
         if run_min > run_max:
             run_min, run_max = run_max, run_min
@@ -531,9 +536,8 @@ class RCDBProvider(object):
         if '__' in search_str:
             raise QueryFormatError("Query contains restricted symbol: '__'")
 
-
         for alias in default_aliases:
-            al_name = "@"+alias.name
+            al_name = "@" + alias.name
             if al_name in search_str:
                 search_str = search_str.replace(al_name, '(' + alias.expression + ')')
 
@@ -583,12 +587,11 @@ class RCDBProvider(object):
         search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
 
         for (i, alias_cnd) in enumerate(aliased_cnd):
-            query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)\
-
+            query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)
             if i != 0:
                 query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
 
-        query = query.filter(aliased_cnd[0].run_number >= run_min, aliased_cnd[0].run_number <= run_max)\
+        query = query.filter(aliased_cnd[0].run_number >= run_min, aliased_cnd[0].run_number <= run_max) \
             .join(aliased_cnd[0].run)
 
         # apply sorting
@@ -600,7 +603,15 @@ class RCDBProvider(object):
         # print runs
         compiled_search_eval = compile(search_eval, '<string>', 'eval')
 
+        preparation_sw.stop()
+        query_sw = StopWatchTimer()
+        query_sw.start()
+
         values = query.all()
+
+        query_sw.stop()
+        selection_sw = StopWatchTimer()
+        selection_sw.start()
 
         sel_runs = []
 
@@ -611,19 +622,29 @@ class RCDBProvider(object):
             if eval(compiled_search_eval):
                 sel_runs.append(run)
 
+        selection_sw.stop()
         result = RunSelectionResult(sel_runs)
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
+        result.performance["preparation"] = preparation_sw.elapsed
+        result.performance["query"] = query_sw.elapsed
+        result.performance["selection"] = selection_sw.elapsed
+        result.performance["start_time_stamp"] = start_time_stamp
+
         return result
 
 
 class RunSelectionResult(MutableSequence):
     """Define a list format, which I can customize"""
+
     def __init__(self, runs=None):
         super(RunSelectionResult, self).__init__()
         self.filter_condition_types = []
         self.filter_condition_names = []
         self.selected_conditions = []
+
+        js_now = int(mktime(datetime.datetime.now().timetuple())* 1000)
+        self.performance = {"preparation": 0, "query": 0, "selection": 0, "start_time_stamp": js_now}
 
         if not (runs is None):
             self.runs = list(runs)
@@ -657,13 +678,10 @@ class RunSelectionResult(MutableSequence):
         self.insert(list_idx, val)
 
 
-
-
 class ConfigurationProvider(RCDBProvider):
     """
     RCDB data provider that uses SQLAlchemy for accessing databases
     """
-
 
     # ------------------------------------------------
     #
@@ -740,7 +758,6 @@ class ConfigurationProvider(RCDBProvider):
             return installation
         else:
             return query.first()
-
 
     # ------------------------------------------------
     #
@@ -899,6 +916,7 @@ class ConfigurationProvider(RCDBProvider):
         :param path: Path of the file
         :param run: Run number
         """
+
         def get_content():
             if content:
                 return content
@@ -920,10 +938,10 @@ class ConfigurationProvider(RCDBProvider):
         if overwrite:
             # If we have to potentially overwrite the file, we have to apply another logic
             # First, we look at file with this name in this run
-            query = self.session.query(ConfigurationFile)\
-                    .filter(ConfigurationFile.runs.contains(run))\
-                    .filter(ConfigurationFile.path == path)\
-                    .order_by(desc(ConfigurationFile.id))   # we want latest
+            query = self.session.query(ConfigurationFile) \
+                .filter(ConfigurationFile.runs.contains(run)) \
+                .filter(ConfigurationFile.path == path) \
+                .order_by(desc(ConfigurationFile.id))  # we want latest
             if query.count():
                 # There are file to overwrite!
                 conf_file = query.first()

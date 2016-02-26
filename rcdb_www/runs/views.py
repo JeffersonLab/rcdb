@@ -3,6 +3,9 @@ import re
 import urllib2
 
 import sys
+from time import mktime, time
+
+import datetime
 
 from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, jsonify
 # from werkzeug import check_password_hash, generate_password_hash
@@ -10,6 +13,7 @@ import rcdb
 from collections import defaultdict
 from rcdb import DefaultConditions
 from rcdb.model import Run, BoardInstallation, Condition, ConditionType
+from rcdb.stopwatch import StopWatchTimer
 from rcdb_www.pagination import Pagination
 from sqlalchemy import func
 from sqlalchemy.orm import subqueryload, joinedload
@@ -31,6 +35,10 @@ PER_PAGE = 500
 @mod.route('/page/<int:page>', defaults={'run_from': -1, 'run_to': -1})
 @mod.route('/<int:run_from>-<int:run_to>', defaults={'page': 1})
 def index(page, run_from, run_to):
+
+    start_time_stamp = int(time() * 1000)
+    preparation_sw = StopWatchTimer()
+    preparation_sw.start()
 
     condition_types = g.tdb.get_condition_types()
     query = g.tdb.session.query(Run)
@@ -56,11 +64,21 @@ def index(page, run_from, run_to):
     # Create pagination
     pagination = Pagination(page, per_page, count)
 
+    preparation_sw.stop()
+    query_sw = StopWatchTimer()
+    query_sw.start()
     # Get runs from query
     runs = query.options(subqueryload(Run.conditions))\
         .order_by(Run.number.desc())\
         .slice(pagination.item_limit_from, pagination.item_limit_to)\
         .all()
+    query_sw.stop()
+    performance = {
+        "preparation": preparation_sw.elapsed,
+        "query": query_sw.elapsed,
+        "selection": 0.0,
+        "start_time_stamp": start_time_stamp,
+    }
 
     return render_template("runs/index.html", runs=runs,
                            DefaultConditions=DefaultConditions,
@@ -68,8 +86,8 @@ def index(page, run_from, run_to):
                            condition_types=condition_types,
                            run_from=-1,
                            run_to=-1,
-                           search_query="")
-    pass
+                           search_query="",
+                           performance=performance)
 
 
 @mod.route('/conditions/<int:run_number>')
@@ -229,7 +247,8 @@ def search():
                            condition_types=condition_types,
                            run_from=run_from,
                            run_to=run_to if run_to != sys.maxint else -1,
-                           search_query=search_query)
+                           search_query=search_query,
+                           performance=result.performance)
 
 
 
