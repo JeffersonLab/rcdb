@@ -185,14 +185,12 @@ def parse_end_run_data(db, run, xml_root, auto_commit=True):
 
     db.add_run_end_time(run, end_time)
 
-
-
     # Set the run as properly finished
-    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, True, None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, True, True, auto_commit)
 
     # Number of events
     event_count = int(xml_run_end.find("total-evt").text)
-    db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, True, auto_commit)
 
     # Components used
     xml_components = xml_run_end.find('components')
@@ -217,8 +215,8 @@ def parse_end_run_data(db, run, xml_root, auto_commit=True):
             components[xml_component.attrib['name']] = xml_component.attrib['type']
             component_stats[xml_component.attrib['name']] = stats
 
-        db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), None, True, auto_commit)
-        db.add_condition(run, DefaultConditions.COMPONENT_STATS, json.dumps(component_stats), None, True, auto_commit)
+        db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), True, auto_commit)
+        db.add_condition(run, DefaultConditions.COMPONENT_STATS, json.dumps(component_stats), True, auto_commit)
 
 
 def parse_end_comment(db, run, xml_root, auto_commit=True):
@@ -259,7 +257,7 @@ def parse_end_comment(db, run, xml_root, auto_commit=True):
                        "No '-----' separated part found. The comment is '{}'", end_comment))
         user_comment = end_comment
 
-    db.add_condition(run, DefaultConditions.USER_COMMENT, user_comment, None, True, auto_commit)
+    db.add_condition(run, DefaultConditions.USER_COMMENT, user_comment, True, auto_commit)
 
 
 

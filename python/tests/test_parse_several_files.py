@@ -38,3 +38,12 @@ class TestParseSeveralFiles(unittest.TestCase):
         run, run_config_file = parse_file(self.db, os.path.join(self.this_dir, "10340_run.log"))
 
         self.assertEqual(run.number, 10340)
+
+    def test_parse_intermediate_file(self):
+        """Test of create_condition_type function"""
+
+        # Create condition type
+        run, run_config_file = parse_file(self.db, os.path.join(self.this_dir, "large_run.log"))
+
+        self.assertEqual(run.number, 10292)
+        self.assertTrue(run.get_condition_value("is_valid_run_end"))
