@@ -11,7 +11,7 @@ from datetime import datetime
 
 
 # setup logger
-log = logging.getLogger('rcdb.update')               # create run configuration standard logger
+log = logging.getLogger('rcdb')               # create run configuration standard logger
 log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
 log.setLevel(logging.INFO)                           # print everything. Change to logging.INFO for less output
 
