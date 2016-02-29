@@ -196,6 +196,18 @@ def update_rcdb_conds(db, run):
             conditions["ps_converter"] = "5x10-3 RL"
     except:
         conditions["ps_converter"] = "Unknown"
+    #  Polarimeter converter
+    try: 
+        if abs(float(caget("hd:polarimeter_at_home")) - 1.) < TOLERANCE:
+            conditions["polarimeter_converter"] = "Retracted"
+        elif abs(float(caget("hd:polarimeter_at_a")) - 1.) < TOLERANCE:
+            conditions["polarimeter_converter"] = "Be 50um"
+        elif abs(float(caget("hd:polarimeter_at_b")) - 1.) < TOLERANCE:
+            conditions["polarimeter_converter"] = "Be 75um"
+        elif abs(float(caget("hd:polarimeter_at_c")) - 1.) < TOLERANCE:
+            conditions["polarimeter_converter"] = "Be 750um"
+    except:
+        conditions["polarimeter_converter"] = "Unknown"
     # hydrogen target status
     # caget HLD:TGT:status.ZRST   // OFF
     # caget HLD:TGT:status.ONST   // Cooling
