@@ -532,6 +532,8 @@ class RCDBProvider(object):
         all_cnd_types_by_name = {cnd.name: cnd for cnd in all_cnt_types}
         all_cnd_names = [str(key) for key in all_cnd_types_by_name.keys()]
 
+        # PHASE 1: getting what to search from search_str
+
         search_str = str(search_str)
         if '__' in search_str:
             raise QueryFormatError("Query contains restricted symbol: '__'")
@@ -579,6 +581,7 @@ class RCDBProvider(object):
                 aliased_cnd.append(aliased(Condition))
                 aliased_cnd_types.append(aliased(ConditionType))
 
+        # PHASE 2: Database query
         query = self.session.query()
 
         if not names_count:
@@ -600,9 +603,6 @@ class RCDBProvider(object):
         else:
             query = query.order_by(desc(aliased_cnd[0].run_number))
 
-        # print runs
-        compiled_search_eval = compile(search_eval, '<string>', 'eval')
-
         preparation_sw.stop()
         query_sw = StopWatchTimer()
         query_sw.start()
@@ -610,8 +610,12 @@ class RCDBProvider(object):
         values = query.all()
 
         query_sw.stop()
+
         selection_sw = StopWatchTimer()
         selection_sw.start()
+
+        # PHASE 3: Selecting runs
+        compiled_search_eval = compile(search_eval, '<string>', 'eval')
 
         sel_runs = []
 
@@ -623,7 +627,7 @@ class RCDBProvider(object):
                 sel_runs.append(run)
 
         selection_sw.stop()
-        result = RunSelectionResult(sel_runs)
+        result = RunSelectionResult(sel_runs, self)
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
         result.performance["preparation"] = preparation_sw.elapsed
@@ -637,16 +641,22 @@ class RCDBProvider(object):
 class RunSelectionResult(MutableSequence):
     """Define a list format, which I can customize"""
 
-    def __init__(self, runs=None):
+    def __init__(self, runs=None, db=None):
         super(RunSelectionResult, self).__init__()
         self.filter_condition_types = []
         self.filter_condition_names = []
         self.selected_conditions = []
+        self.db = db
 
         js_now = int(mktime(datetime.datetime.now().timetuple())* 1000)
-        self.performance = {"preparation": 0, "query": 0, "selection": 0, "start_time_stamp": js_now}
+        self.performance = {"preparation": 0,
+                            "query": 0,
+                            "selection": 0,
+                            "start_time_stamp": js_now,
+                            "get_conditions": 0,
+                            "tabling_values": 0}
 
-        if not (runs is None):
+        if runs is not None:
             self.runs = list(runs)
         else:
             self.runs = list()
@@ -676,6 +686,93 @@ class RunSelectionResult(MutableSequence):
     def append(self, val):
         list_idx = len(self.runs)
         self.insert(list_idx, val)
+
+    def get_values(self, condition_names, insert_run_number=False):
+
+        if self.db is None or not self.runs:
+            return [[]]
+
+        target_cnd_names = condition_names
+
+        sw = StopWatchTimer()
+        sw.start()
+
+        all_cnt_types = self.db.get_condition_types()
+        all_cnd_types_by_name = {cnd.name: cnd for cnd in all_cnt_types}
+
+        # getting target conditions types and sorting them by id
+        target_cnd_types = [all_cnd_types_by_name[cnd_name] for cnd_name in target_cnd_names]
+        target_cnd_types = sorted(target_cnd_types, key=lambda x: x.id)
+        target_cnd_types_len = len(target_cnd_types)
+
+        ids = [ct.id for ct in target_cnd_types]
+        run_numbers = [r.number for r in self.runs]
+
+        query = self.db.session.query(Condition)\
+            .filter(Condition._condition_type_id.in_(ids), Condition.run_number.in_(run_numbers))\
+            .order_by(Condition.run_number, Condition._condition_type_id)
+
+        conditions = query.all()
+
+        # performance measure
+        sw.stop()
+        self.performance["get_conditions"] = sw.elapsed
+        sw = StopWatchTimer()
+        sw.start()
+
+        rows = []
+
+        def get_empty_row(run_number=0):
+            if insert_run_number:
+                return [run_number] + ([None] * target_cnd_types_len)
+            else:
+                return [None] * target_cnd_types_len
+
+        type_index = 0
+        prev_run = conditions[0].run_number
+        conditions_iter = 0
+        conditions_len = len(conditions)
+
+        row = get_empty_row(self.runs[0].number)
+        run_index=0
+
+        while self.runs[run_index].number != prev_run:
+            rows.append(row)
+            run_index += 1
+            row = get_empty_row(self.runs[run_index].number)
+
+        for condition in conditions:
+            assert isinstance(condition, Condition)
+            conditions_iter += 1
+
+            type_id = condition._condition_type_id
+            if condition.run_number != prev_run or conditions_len == conditions_iter:
+                rows.append(row)
+                prev_run = condition.run_number
+
+                while self.runs[run_index].number != prev_run:
+                    rows.append(row)
+                    run_index += 1
+                    row = get_empty_row(self.runs[run_index].number)
+
+                if conditions_len != conditions_iter:
+                    type_index = 0
+
+            while type_index < target_cnd_types_len and type_id != target_cnd_types[type_index].id:
+                type_index += 1
+                if type_index == target_cnd_types_len:
+                    type_index = 0
+
+            if insert_run_number:
+                row[type_index + 1] = condition
+            else:
+                row[type_index] = condition
+
+        # performance measure
+        sw.stop()
+        self.performance["tabling_values"] = sw.elapsed
+        return rows
+
 
 
 class ConfigurationProvider(RCDBProvider):
