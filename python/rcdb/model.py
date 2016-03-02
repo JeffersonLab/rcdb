@@ -463,6 +463,10 @@ class Condition(ModelBase):
     type = relationship("ConditionType", back_populates="values")
     """:type: ConditionType"""
 
+    @hybrid_property
+    def condition_type_id(self):
+        return self._condition_type_id
+
     created = Column(DateTime, default=datetime.datetime.now)
 
     @hybrid_property

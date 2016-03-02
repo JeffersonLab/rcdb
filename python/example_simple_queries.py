@@ -23,8 +23,11 @@ if __name__ == "__main__":
     db = RCDBProvider(args.connection_string)
 
     # Select production runs with event_count > 0.5M
-    runs = db.select_runs("@is_production and event_count > 500000", 10000, 20000)
+    result = db.select_runs("@is_production and event_count > 500000", 10000, 20000)
 
     # Iterate through results
-    for run in runs:
+    for run in result:
         print run.number, run.get_condition_value("event_count")
+
+    # Another way of getting values
+    rows = result.get_values(["event_count", "polarization_direction", "beam_current"])

@@ -702,6 +702,13 @@ class RunSelectionResult(MutableSequence):
 
         # getting target conditions types and sorting them by id
         target_cnd_types = [all_cnd_types_by_name[cnd_name] for cnd_name in target_cnd_names]
+        ct_id_to_user_defined_order = {}
+        for cnd_type in target_cnd_types:
+            for i in range (0, len(condition_names)):
+                if cnd_type.name == condition_names[i]:
+                    ct_id_to_user_defined_order[cnd_type.id] = i
+                    break
+
         target_cnd_types = sorted(target_cnd_types, key=lambda x: x.id)
         target_cnd_types_len = len(target_cnd_types)
 
@@ -709,8 +716,8 @@ class RunSelectionResult(MutableSequence):
         run_numbers = [r.number for r in self.runs]
 
         query = self.db.session.query(Condition)\
-            .filter(Condition._condition_type_id.in_(ids), Condition.run_number.in_(run_numbers))\
-            .order_by(Condition.run_number, Condition._condition_type_id)
+            .filter(Condition.condition_type_id.in_(ids), Condition.run_number.in_(run_numbers))\
+            .order_by(Condition.run_number, Condition.condition_type_id)
 
         conditions = query.all()
 
@@ -724,6 +731,7 @@ class RunSelectionResult(MutableSequence):
 
         def get_empty_row(run_number=0):
             if insert_run_number:
+                # noinspection PyTypeChecker
                 return [run_number] + ([None] * target_cnd_types_len)
             else:
                 return [None] * target_cnd_types_len
@@ -747,7 +755,6 @@ class RunSelectionResult(MutableSequence):
 
             type_id = condition._condition_type_id
             if condition.run_number != prev_run or conditions_len == conditions_iter:
-                rows.append(row)
                 prev_run = condition.run_number
 
                 while self.runs[run_index].number != prev_run:
@@ -763,10 +770,11 @@ class RunSelectionResult(MutableSequence):
                 if type_index == target_cnd_types_len:
                     type_index = 0
 
+            cell_index = ct_id_to_user_defined_order[target_cnd_types[type_index].id]
             if insert_run_number:
-                row[type_index + 1] = condition
+                row[cell_index + 1] = condition.value
             else:
-                row[type_index] = condition
+                row[cell_index] = condition.value
 
         # performance measure
         sw.stop()
