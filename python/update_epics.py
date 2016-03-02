@@ -163,22 +163,24 @@ def update_rcdb_conds(db, run):
     conditions["status"] = -1;
     # Collimator diameter
     try: 
-        if abs(float(caget("hd:collimator_at_block")) - 1.) < TOLERANCE:
+        if abs(int(caget("hd:collimator_at_block"))) == 1:
             conditions["collimator_diameter"] = "Blocking"
-        elif abs(float(caget("hd:collimator_at_a")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:collimator_at_a"))) == 1:
             conditions["collimator_diameter"] = "3.4mm hole"
-        elif abs(float(caget("hd:collimator_at_b")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:collimator_at_b"))) == 1:
             conditions["collimator_diameter"] = "5.0mm hole"
+        else:
+            conditions["collimator_diameter"] = "Unknown"
     except:
         conditions["collimator_diameter"] = "Unknown"
     # Amorphous radiator
     if len(conditions["radiator_type"]) == 0:    # is non-zero only if amorphous, diamond name set earlier
         try: 
-            if abs(float(caget("hd:radiator_at_a")) - 1.) < TOLERANCE:
+            if abs(int(caget("hd:radiator_at_a"))) == 1:
                 conditions["radiator_type"] = "2x10-5 RL"
-            elif abs(float(caget("hd:radiator_at_b")) - 1.) < TOLERANCE:
+            elif abs(int(caget("hd:radiator_at_b"))) == 1:
                 conditions["radiator_type"] = "1x10-4 RL"
-            elif abs(float(caget("hd:radiator_at_c")) - 1.) < TOLERANCE:
+            elif abs(int(caget("hd:radiator_at_c"))) == 1:
                 conditions["radiator_type"] = "3x10-4 RL"
             else:
                 conditions["radiator_type"] = "None"
@@ -186,26 +188,30 @@ def update_rcdb_conds(db, run):
             conditions["radiator_type"] = "Unknown"
     #  PS converter
     try: 
-        if abs(float(caget("hd:converter_at_home")) - 1.) < TOLERANCE:
+        if abs(int(caget("hd:converter_at_home"))) == 1:
             conditions["ps_converter"] = "Retracted"
-        elif abs(float(caget("hd:converter_at_a")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:converter_at_a"))) == 1:
             conditions["ps_converter"] = "1x10-3 RL"
-        elif abs(float(caget("hd:converter_at_b")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:converter_at_b"))) == 1:
             conditions["ps_converter"] = "3x10-4 RL"
-        elif abs(float(caget("hd:converter_at_c")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:converter_at_c"))) == 1:
             conditions["ps_converter"] = "5x10-3 RL"
+        else:
+            conditions["ps_converter"] = "Unknown"
     except:
         conditions["ps_converter"] = "Unknown"
     #  Polarimeter converter
     try: 
-        if abs(float(caget("hd:polarimeter_at_home")) - 1.) < TOLERANCE:
+        if abs(int(caget("hd:polarimeter_at_home"))) == 1:
             conditions["polarimeter_converter"] = "Retracted"
-        elif abs(float(caget("hd:polarimeter_at_a")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:polarimeter_at_a"))) == 1:
             conditions["polarimeter_converter"] = "Be 50um"
-        elif abs(float(caget("hd:polarimeter_at_b")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:polarimeter_at_b"))) == 1:
             conditions["polarimeter_converter"] = "Be 75um"
-        elif abs(float(caget("hd:polarimeter_at_c")) - 1.) < TOLERANCE:
+        elif abs(int(caget("hd:polarimeter_at_c"))) == 1:
             conditions["polarimeter_converter"] = "Be 750um"
+        else:
+            conditions["polarimeter_converter"] = "Unknown"
     except:
         conditions["polarimeter_converter"] = "Unknown"
     # hydrogen target status
