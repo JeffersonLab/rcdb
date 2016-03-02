@@ -509,7 +509,7 @@ class RCDBProvider(object):
 
         return query.first()
 
-    def select_runs(self, search_str, run_min=0, run_max=sys.maxsize, sort_desc=False):
+    def select_runs(self, search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
         """ Searches RCDB for runs with e
 
         :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
@@ -526,6 +526,25 @@ class RCDBProvider(object):
 
         if run_min > run_max:
             run_min, run_max = run_max, run_min
+
+        # PHASE 0 - Maybe there is no query?!
+        if not search_str or not search_str.strip():
+            # If no query, just use get_runs function and return the result
+            preparation_sw.stop()
+            query_sw = StopWatchTimer()
+            query_sw.start()
+            sel_runs = self.get_runs(run_min, run_max)
+            query_sw.stop()
+
+            result = RunSelectionResult(sel_runs, self)
+            result.filter_condition_names = []
+            result.filter_condition_types = []
+            result.performance["preparation"] = preparation_sw.elapsed
+            result.performance["query"] = query_sw.elapsed
+            result.performance["selection"] = 0
+            result.performance["start_time_stamp"] = start_time_stamp
+
+            return result
 
         # get all condition types
         all_cnt_types = self.get_condition_types()
@@ -692,6 +711,17 @@ class RunSelectionResult(MutableSequence):
         if self.db is None or not self.runs:
             return [[]]
 
+        # Condition names... are just one name?
+        if isinstance(condition_names, basestring):
+            condition_names = [condition_names]
+
+        # No condition names?
+        if not condition_names:
+            if insert_run_number:
+                return [[run.number] for run in self.runs]
+            else:
+                return [[] for run in self.runs]
+
         target_cnd_names = condition_names
 
         sw = StopWatchTimer()
@@ -751,10 +781,9 @@ class RunSelectionResult(MutableSequence):
 
         for condition in conditions:
             assert isinstance(condition, Condition)
-            conditions_iter += 1
 
             type_id = condition._condition_type_id
-            if condition.run_number != prev_run or conditions_len == conditions_iter:
+            if condition.run_number != prev_run:
                 prev_run = condition.run_number
 
                 while self.runs[run_index].number != prev_run:
@@ -762,8 +791,7 @@ class RunSelectionResult(MutableSequence):
                     run_index += 1
                     row = get_empty_row(self.runs[run_index].number)
 
-                if conditions_len != conditions_iter:
-                    type_index = 0
+                type_index = 0
 
             while type_index < target_cnd_types_len and type_id != target_cnd_types[type_index].id:
                 type_index += 1
@@ -775,6 +803,17 @@ class RunSelectionResult(MutableSequence):
                 row[cell_index + 1] = condition.value
             else:
                 row[cell_index] = condition.value
+
+        # We have alwais have to
+        rows.append(row)
+        run_index += 1
+
+        # It may happen that we run out of selected conditions, because condition is not set for all runs after
+        # for example we have run=> condision   1=>x, 2=>y, 3=>None, 4=>None. DB will select only x and y conditions
+        # and 2 rows [[1],[2]], while it should [[1],[2],[None],[None]]. So we have to put missing rows in the end
+        while run_index<len(self.runs):
+            rows.append(get_empty_row(self.runs[run_index].number))
+            run_index +=1
 
         # performance measure
         sw.stop()
