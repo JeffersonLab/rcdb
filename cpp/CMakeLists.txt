@@ -6,8 +6,10 @@ project(rcdb_cpp)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(include)
+include_directories(include/SQLite)
 
 set(SOURCE_FILES
+        src/SQLite/sqlite3.c
         src/SQLiteCpp/Backup.cpp
         src/SQLiteCpp/Column.cpp
         src/SQLiteCpp/Database.cpp
@@ -25,4 +27,4 @@ set(SOURCE_FILES
         include/RCDB/DataProvider.h include/RCDB/Condition.h include/RCDB/Exceptions.h include/RCDB/MySqlConnectionInfo.h)
 
 add_executable(test_rcdb_cpp ${SOURCE_FILES})
-target_link_libraries(test_rcdb_cpp mysqlclient sqlite3)
+target_link_libraries(test_rcdb_cpp mysqlclient dl pthread)
