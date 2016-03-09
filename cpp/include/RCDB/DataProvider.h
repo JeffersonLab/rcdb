@@ -6,6 +6,7 @@
 #define RCDB_CPP_DATAPROVIDER_H
 
 #include <vector>
+#include <memory>
 #include <bits/stl_map.h>
 
 #include "ConditionType.h"
@@ -16,8 +17,14 @@ namespace rcdb {
 
     class DataProvider {
     public:
+        /** Gets conditions by conditionType (@see GetRun and SetRun) */
+        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) = 0;
+
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        virtual Condition GetCondition(const std::string& name) = 0;
+        std::unique_ptr<Condition> GetCondition(const std::string& name)
+        {
+            return GetCondition(_typesByName[name]);
+        }
 
         uint64_t GetRun() const {
             return _run;
@@ -30,8 +37,6 @@ namespace rcdb {
     protected:
 
 
-        virtual void LoadConditionTypes() = 0;
-
         DataProvider() { }
 
         DataProvider(const DataProvider &) = default;               // Copy constructor
@@ -41,7 +46,7 @@ namespace rcdb {
         virtual ~DataProvider() { }                                 // Destructor
 
         std::vector<ConditionType> _types;                          /// Condition types
-        std::map<std::string, ConditionType> _nameTypeMap;          /// Condition types mapped by name
+        std::map<std::string, ConditionType> _typesByName;          /// Condition types mapped by name
         uint64_t _run;
     private:
         bool mAreConditionTypesLoaded;

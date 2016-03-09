@@ -69,8 +69,6 @@ def fix_no_daq_run(db, execute):
         db.session.commit()
 
 
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Check RCDB data for errors and fixing it")
     parser.add_argument("-e", "--execute", action="store_true",

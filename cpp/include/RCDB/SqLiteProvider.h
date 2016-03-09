@@ -8,6 +8,7 @@
 
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
+#include <memory>
 #include "DataProvider.h"
 
 namespace rcdb {
@@ -22,7 +23,6 @@ namespace rcdb {
             //Fill types
             SQLite::Statement query(_db, "SELECT id, name, value_type FROM condition_types");
 
-
             while (query.executeStep()) {
                 const int id = query.getColumn(0);
                 const std::string name(query.getColumn(1).getText()); // = query.getColumn(1).getText();
@@ -33,20 +33,55 @@ namespace rcdb {
                 conditionType.SetName(name);
                 conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
                 _types.push_back(conditionType);
-                _nameTypeMap[name]=conditionType;
+                _typesByName[name]=conditionType;
             }
         }
 
         SqLiteProvider(SqLiteProvider &&) = default;                    // Move constructor
-
         SqLiteProvider &operator=(SqLiteProvider &&) & = default;       // Move assignment operator
-        virtual ~SqLiteProvider() {
-
-        }                     // Destructor
+        virtual ~SqLiteProvider() { }                                   // Destructor
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        virtual Condition GetCondition(const std::string& name) override
+        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) override
         {
+            _getConditionQuery.reset();
+            _getConditionQuery.bind(0, _run);
+            _getConditionQuery.bind(1, cndType.GetId());
+            while (_getConditionQuery.executeStep()) {
+                const int id = _getConditionQuery.getColumn(0);
+
+
+                switch (cndType.GetValueType()) {
+                    case ValueTypes::Bool:
+                        if(1)
+                    case ValueTypes::Json:
+                        return std::string("json");
+                    case ValueTypes::String:
+                        return std::string("string");
+                    case ValueTypes::Float:
+                        return std::string("float");
+                    case ValueTypes::Int:
+                        return std::string("int");
+                    case ValueTypes::Time:
+                        return std::string("time");
+                    case ValueTypes::Blob:
+                        return std::string("blob");
+                    default:
+                        throw std::logic_error("ValueTypes type is something different than one of possible values");
+                }
+
+                const std::string name(_getConditionQuery.getColumn(1).getText()); // = query.getColumn(1).getText();
+                const std::string typeStr(query.getColumn(2).getText()); // .getColumn(1).getBytes();
+
+                ConditionType conditionType;
+                conditionType.SetId(id);
+                conditionType.SetName(name);
+                conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
+                _types.push_back(conditionType);
+                _typesByName[name]=conditionType;
+            }
+
+
 
         }
 

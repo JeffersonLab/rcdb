@@ -1218,7 +1218,8 @@ python $RCDB_HOME/python/example_conditions_query.py
 
 
 
-== Logging ==
+==
+ ==
 
 RCDB have a logging system which stores some information about what is going on in the same database in *'log_records'*
 table.
