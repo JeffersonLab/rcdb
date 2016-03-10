@@ -17,7 +17,7 @@ namespace rcdb {
         SqLiteProvider(std::string dbPath) :
                 DataProvider(),
                 _db(dbPath),
-                _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time "
+                _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time_value "
                                         "FROM conditions WHERE run_number = ? AND condition_type_id = ?")
         {
             //Fill types
