@@ -422,7 +422,7 @@ class ConditionType(ModelBase):
         if self.value_type == ConditionType.BOOL_FIELD:
             field = Condition.bool_value
         if self.value_type == ConditionType.TIME_FIELD:
-            field = Condition.time
+            field = Condition.time_value
         return field
 
     def __repr__(self):
@@ -455,7 +455,7 @@ class Condition(ModelBase):
     int_value = Column(Integer, nullable=False, default=0)
     float_value = Column(Float, nullable=False, default=0.0)
     bool_value = Column(Boolean, nullable=False, default=False)
-    time = Column(DateTime, nullable=True, default=None)
+    time_value = Column(DateTime, nullable=True, default=None)
 
     run_number = Column(Integer, ForeignKey('runs.number'))
     run = relationship("Run",  back_populates="conditions")
@@ -498,7 +498,7 @@ class Condition(ModelBase):
         if field_type == ConditionType.BOOL_FIELD:
             return self.bool_value
         if field_type == ConditionType.TIME_FIELD:
-            return self.time
+            return self.time_value
         return self.text_value
 
     @value.setter
@@ -516,7 +516,7 @@ class Condition(ModelBase):
         elif field_type == ConditionType.BOOL_FIELD:
             self.bool_value = val
         elif field_type == ConditionType.TIME_FIELD:
-            self.time = val
+            self.time_value = val
         else:
             raise ValueError("Unknown field type! field_type='{}'".format(field_type))
 
@@ -524,10 +524,10 @@ class Condition(ModelBase):
         return "<Condition id='{}', run_number='{}', value={}>".format(self.id, self.run_number, self.value)
 
 
-class SchemaVersionHistory(ModelBase):
-    __tablename__ = 'conditions'
+class SchemaVersion(ModelBase):
+    __tablename__ = 'schema_versions'
     version = Column(Integer,  primary_key=True, autoincrement=False)
-    created = Column(DateTime, server_default=func.now())
+    created = Column(DateTime, default=datetime.datetime.now)
     comment = Column(String(255), nullable=True)
 
 

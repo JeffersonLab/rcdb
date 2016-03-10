@@ -9,8 +9,8 @@ class TestRun(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.db = rcdb.RCDBProvider("sqlite://")
-        rcdb.model.Base.metadata.create_all(self.db.engine)
+        self.db = rcdb.RCDBProvider("sqlite://", check_version=False)
+        rcdb.provider.destroy_all_create_schema(self.db)
         runs = {}
         # create runs
         for i in range(1, 6):

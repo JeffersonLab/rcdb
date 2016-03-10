@@ -14,8 +14,8 @@ class TestConditions(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.db = rcdb.RCDBProvider("sqlite://")
-        rcdb.model.Base.metadata.create_all(self.db.engine)
+        self.db = rcdb.RCDBProvider("sqlite://", check_version=False)
+        rcdb.provider.destroy_all_create_schema(self.db)
         # create run
         self.db.create_run(1)
 
@@ -92,7 +92,7 @@ class TestConditions(unittest.TestCase):
         val = self.db.get_condition(1, "single")
         self.assertEqual(val.value, 2222)
         self.assertEqual(val.int_value, 2222)
-        self.assertIsNone(val.time)
+        self.assertIsNone(val.time_value)
 
         # Add time information to the
         val = self.db.add_condition(1, "single", 2222, replace=True)
@@ -174,7 +174,7 @@ class TestConditions(unittest.TestCase):
         # get from DB
         val = self.db.get_condition(1, "lunch_bell_rang")
         self.assertEqual(val.value, time)
-        self.assertEqual(val.time, time)
+        self.assertEqual(val.time_value, time)
         print val.value
 
     def test_use_run_instead_of_run_number(self):

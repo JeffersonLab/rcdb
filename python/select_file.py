@@ -23,7 +23,7 @@ condition = db.get_condition(1, "my_val")
 print condition
 print "value =", condition.value
 print "name  =", condition.name
-print "time  =", condition.time
+print "time  =", condition.time_value
 
 
 # Getting type information

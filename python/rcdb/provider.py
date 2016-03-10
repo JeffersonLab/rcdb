@@ -19,6 +19,7 @@ from ply.lex import LexToken
 from log_format import BraceMessage as Lf
 from rcdb import lexer
 from rcdb.stopwatch import StopWatchTimer
+from sqlalchemy.exc import OperationalError
 from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError, \
     QueryFormatError
 import sqlalchemy.orm
@@ -41,7 +42,7 @@ log = logging.getLogger("rcdb.provider")
 class RCDBProvider(object):
     """ RCDB data provider that uses SQLAlchemy for accessing databases """
 
-    def __init__(self, connection_string=None, user_name=""):
+    def __init__(self, connection_string=None, user_name="", check_version=True):
         self._is_connected = False
         self.path_name_regex = re.compile('^[\w\-_]+$', re.IGNORECASE)
         self._connection_string = ""
@@ -57,10 +58,20 @@ class RCDBProvider(object):
                 self.user_name = os.environ["RCDB_USER"]
 
         if connection_string:
-            self.connect(connection_string)
+            self.connect(connection_string, check_version)
         """:type : Session """
 
-
+    # ------------------------------------------------
+    # Check DB version
+    # ------------------------------------------------
+    def is_acceptable_sql_version(self):
+        """Check if connected SQL schema is of the right version"""
+        try:
+            return bool(self.session.query(func.count(SchemaVersion.version))\
+                            .filter(SchemaVersion.version == rcdb.SQL_SCHEMA_VERSION)\
+                            .scalar())
+        except OperationalError:
+            return False
 
     # ------------------------------------------------
     # Connects to database using connection string
@@ -94,12 +105,8 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-            # count User records, without
-            # using a subquery.
-            match = self.session.query(func.count(SchemaVersionHistory.version))\
-                        .filter(SchemaVersionHistory.version == rcdb.SQL_SCHEMA_VERSION)\
-                        .scalar()
-            if not match:
+
+            if not self.is_acceptable_sql_version():
                 message = "SQL schema version doesn't match. " \
                           "Probably RCDB is connecting with wrong, empty or older/newer DB"
                 raise rcdb.errors.SqlSchemaVersionError(message)
@@ -1163,7 +1170,7 @@ def destroy_all_create_schema(db):
     """
     assert isinstance(db, RCDBProvider)
     rcdb.model.Base.metadata.create_all(db.engine)
-    v = SchemaVersionHistory()
+    v = SchemaVersion()
     v.version = rcdb.SQL_SCHEMA_VERSION
     v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
     db.session.add(v)
