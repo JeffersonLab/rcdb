@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from .provider import RCDBProvider
 from .provider import ConfigurationProvider
 from .errors import OverrideConditionTypeError, NoConditionTypeFound
-from .errors import OverrideConditionValueError, NoRunFoundError
+from .errors import OverrideConditionValueError, NoRunFoundError, SqlSchemaVersionError
 from sqlalchemy.orm.exc import NoResultFound
 from constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
 
@@ -17,6 +17,7 @@ blob_delimiter = "|"
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
 
+SQL_SCHEMA_VERSION = 1
 
 # -------------------------------------------------
 # function Convert list to DB text representation

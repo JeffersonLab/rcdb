@@ -11,6 +11,7 @@ import sys
 from collections import MutableSequence
 from time import mktime
 
+import rcdb
 from rcdb.alias import default_aliases
 
 from ply.lex import LexToken
@@ -59,10 +60,12 @@ class RCDBProvider(object):
             self.connect(connection_string)
         """:type : Session """
 
+
+
     # ------------------------------------------------
     # Connects to database using connection string
     # ------------------------------------------------
-    def connect(self, connection_string="mysql+mysqlconnector://rcdb@127.0.0.1/rcdb"):
+    def connect(self, connection_string="mysql+mysqlconnector://rcdb@127.0.0.1/rcdb", check_version=True):
         """
         Connects to database using connection string
 
@@ -90,6 +93,18 @@ class RCDBProvider(object):
         self._is_connected = True
         self._connection_string = connection_string
 
+        if check_version:
+            # count User records, without
+            # using a subquery.
+            match = self.session.query(func.count(SchemaVersionHistory.version))\
+                        .filter(SchemaVersionHistory.version == rcdb.SQL_SCHEMA_VERSION)\
+                        .scalar()
+            if not match:
+                message = "SQL schema version doesn't match. " \
+                          "Probably RCDB is connecting with wrong, empty or older/newer DB"
+                raise rcdb.errors.SqlSchemaVersionError(message)
+
+
     # ------------------------------------------------
     # Closes connection to data
     # ------------------------------------------------
@@ -110,6 +125,7 @@ class RCDBProvider(object):
         :rtype: bool
         """
         return self._is_connected
+
 
     # ------------------------------------------------
     # Connection string that was used
@@ -1137,3 +1153,18 @@ class ConfigurationProvider(RCDBProvider):
             log.debug(Lf("|- File already associated with run'{}'", run))
 
         return conf_file
+
+
+def destroy_all_create_schema(db):
+    """
+    Creates RCDB schema in database. Used for test purpuses
+    :param db: RCDBProvider provider
+    :return:
+    """
+    assert isinstance(db, RCDBProvider)
+    rcdb.model.Base.metadata.create_all(db.engine)
+    v = SchemaVersionHistory()
+    v.version = rcdb.SQL_SCHEMA_VERSION
+    v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
+    db.session.add(v)
+    db.session.commit()

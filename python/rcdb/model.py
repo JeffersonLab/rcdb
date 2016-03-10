@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker, reconstructor, object_session
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.expression import desc
 from sqlalchemy.ext.declarative import declared_attr
+from sqlalchemy.sql.expression import func
 
 Base = declarative_base()
 
@@ -519,11 +520,15 @@ class Condition(ModelBase):
         else:
             raise ValueError("Unknown field type! field_type='{}'".format(field_type))
 
-
-
-
     def __repr__(self):
         return "<Condition id='{}', run_number='{}', value={}>".format(self.id, self.run_number, self.value)
+
+
+class SchemaVersionHistory(ModelBase):
+    __tablename__ = 'conditions'
+    version = Column(Integer,  primary_key=True, autoincrement=False)
+    created = Column(DateTime, server_default=func.now())
+    comment = Column(String(255), nullable=True)
 
 
 class LogRecord(ModelBase):
@@ -589,5 +594,4 @@ def db_text_to_dic(value_str):
 
 def db_text_to_float_dic(value_str):
     return {key: float(value) for key, value in db_text_to_dic(value_str).items()}
-
 
