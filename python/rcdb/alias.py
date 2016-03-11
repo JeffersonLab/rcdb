@@ -10,10 +10,11 @@ default_aliases = [
                                              daq_run in ['PHYSICS', 'EXPERT'] and
                                              beam_current > 2 and
                                              event_count > 500000 and
-                                             solenoid_current > 100""",
+                                             solenoid_current > 100 and
+                                             collimator_diameter != 'Blocking'""",
                          "Is production run"),
 
-    ConditionSearchAlias('is_cosmic', "run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 1",
+    ConditionSearchAlias('is_cosmic', "(run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 1) or (radiator_type == 'RETRACTED' and collimator_diameter == 'Blocking')",
                          "Is cosmic run"),
 
     ConditionSearchAlias('is_empty_target', "target_type == 'EMPTY & Ready'", "Target is empty"),
@@ -26,6 +27,8 @@ default_aliases = [
     ConditionSearchAlias('is_field_off', "solenoid_current < 100", " Field Off"),
 
     ConditionSearchAlias('is_field_on', "solenoid_current >= 100", " Field On"),
+
+    ConditionSearchAlias('status_approved_long', "status == 2", "Run status = approved (long)"),
 
     ConditionSearchAlias('status_approved', "status == 1", "Run status = approved"),
 
