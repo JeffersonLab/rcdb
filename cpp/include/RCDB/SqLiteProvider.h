@@ -44,45 +44,63 @@ namespace rcdb {
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) override
         {
+            // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
+            static const int bool_column = 1;
+            static const int float_column = 2;
+            static const int int_column = 3;
+            static const int text_column = 4;
+            static const int time_column = 5;
+            uint64_t typeId = cndType.GetId();
+            uint64_t run = _run;
+
             _getConditionQuery.reset();
-            _getConditionQuery.bind(0, _run);
-            _getConditionQuery.bind(1, cndType.GetId());
+            _getConditionQuery.clearBindings();
+            _getConditionQuery.bind(1, (sqlite3_int64&)run);
+            _getConditionQuery.bind(2, (sqlite3_int64&)typeId);
+
+
             while (_getConditionQuery.executeStep()) {
                 const int id = _getConditionQuery.getColumn(0);
-
+                std::unique_ptr<Condition> condition(new Condition((ConditionType &) cndType));
+                condition->SetId(id);
 
                 switch (cndType.GetValueType()) {
                     case ValueTypes::Bool:
-                        if(1)
+                        if(_getConditionQuery.isColumnNull(bool_column)) return std::unique_ptr<Condition>();
+                        condition->SetBoolValue(_getConditionQuery.getColumn(bool_column).getInt());
+                        return condition;
                     case ValueTypes::Json:
-                        return std::string("json");
                     case ValueTypes::String:
-                        return std::string("string");
-                    case ValueTypes::Float:
-                        return std::string("float");
-                    case ValueTypes::Int:
-                        return std::string("int");
-                    case ValueTypes::Time:
-                        return std::string("time");
                     case ValueTypes::Blob:
-                        return std::string("blob");
+                        if(_getConditionQuery.isColumnNull(text_column)) return std::unique_ptr<Condition>();
+                        condition->SetTextValue(_getConditionQuery.getColumn(text_column).getText());
+                        return condition;
+                    case ValueTypes::Float:
+                        if(_getConditionQuery.isColumnNull(float_column)) return std::unique_ptr<Condition>();
+                        condition->SetFloatValue(_getConditionQuery.getColumn(float_column).getDouble());
+                        return condition;
+                    case ValueTypes::Int:
+                        if(_getConditionQuery.isColumnNull(int_column)) return std::unique_ptr<Condition>();
+                        condition->SetIntValue(_getConditionQuery.getColumn(int_column).getInt());
+                        return condition;
+                    case ValueTypes::Time:
+                        if(_getConditionQuery.isColumnNull(time_column)) return std::unique_ptr<Condition>();
+                        condition->SetTime(
+                                std::chrono::system_clock::from_time_t(
+                                        _getConditionQuery.getColumn(int_column).getInt64()));
+                        return condition;
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
                 }
-
-                const std::string name(_getConditionQuery.getColumn(1).getText()); // = query.getColumn(1).getText();
-                const std::string typeStr(query.getColumn(2).getText()); // .getColumn(1).getBytes();
-
-                ConditionType conditionType;
-                conditionType.SetId(id);
-                conditionType.SetName(name);
-                conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
-                _types.push_back(conditionType);
-                _typesByName[name]=conditionType;
             }
 
+            return std::unique_ptr<Condition>(); //Empty ptr
+        }
 
-
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        std::unique_ptr<Condition> GetCondition(const std::string& name)
+        {
+            return GetCondition(_typesByName[name]);
         }
 
         void Test() {
@@ -120,8 +138,6 @@ namespace rcdb {
         }
 
     protected:
-        void LoadConditionTypes() override {
-        }
 
     private:
         SqLiteProvider(const SqLiteProvider &);             // disable Copy constructor

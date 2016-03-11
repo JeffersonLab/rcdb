@@ -28,8 +28,9 @@ namespace rcdb {
         MySqlProvider &operator=(MySqlProvider &&) & = default;       // Move assignment operator
         virtual ~MySqlProvider() override { }
 
-        Condition GetCondition(const std::string& name) override {
-
+        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) override
+        {
+            return std::unique_ptr<Condition>();
         }
 
         // ...
@@ -167,8 +168,6 @@ namespace rcdb {
         }
 
     protected:
-        void LoadConditionTypes() override {
-        }
 
 
     private:

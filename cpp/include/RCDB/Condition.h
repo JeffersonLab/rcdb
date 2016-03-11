@@ -125,7 +125,7 @@ namespace rcdb {
             Condition::_bool_value = _bool_value;
         }
 
-        void SetTime(const std::chrono::time_point<std::chrono::system_clock> &_time) {
+        void SetTime(std::chrono::time_point<std::chrono::system_clock> _time) {
             Condition::_time = _time;
         }
 
