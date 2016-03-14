@@ -1,0 +1,70 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Board configuration for {} {} run {}'.format(board_config.board.board_type, board_config.board.serial, run_number) %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="blog-header"><h3 class="blog-title">Configuration for run {{ run_number }}</h3></div>
+
+    <table class="table-condensed">
+        <tr>
+            <th>Type</th>
+            <th>Serial</th>
+            <th>Crate</th>
+            <th>Slot</th>
+        </tr>
+        <tr>
+            <td>{{board_config.board.board_type }}</td>
+            <td><a href="{{ url_for("boards.info",board_id=board_config.board_id) }}">{{board_config.board.serial }}</a></td>
+            <td>
+                <!-- Single button -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
+                        {{board_install.crate.name }}&nbsp;&nbsp;<span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="{{ url_for("crates.info",crate_id=board_install.crate.id) }}">General info</a></li>
+                        <li><a href="{{ url_for("runs.info",run_number=run_number, _anchor='crate_' + board_install.crate.name) }}">In run {{ run_number }}</a></li>
+                    </ul>
+                </div>
+            </td>
+            <td>{{board_install.slot }}</td>
+        </tr>
+    </table>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">Per channel data</div>
+
+        <!-- Table -->
+        <table class="table table-striped table-bordered ">
+            <tr class="info">
+                <th rowspan="2">Name</th>
+                <th colspan="16">Channel</th>
+            </tr>
+            <tr class="info">
+                {% for index in range(16) %} <th>  {{ index }} </th>{% endfor %}
+            </tr>
+
+            <!-- DAC VALUES -->
+            <tr>
+                <td>DAC</td>
+                {% for value in board_config.dac_preset.values %}
+                <td>{{ value }}</td>
+                {% endfor %}
+            </tr>
+        </table>
+    </div>
+
+
+    <div class="well">
+
+    </div>
+
+    <i class="glyphicon glyphicon-search"></i>
+
+</div>
+
+{% endblock %}

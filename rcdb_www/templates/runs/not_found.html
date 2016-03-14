@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Run ' + run_number|string + ' is not found' %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="blog-header">
+        <h3 class="blog-title">
+            Run {{ run_number }} is not found
+        </h3>
+    </div>
+    <p>But we found runs:</p>
+    <ul class="pager" id="pager">
+        {% if prev_run %}
+            <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">Previous {{ prev_run.number }}</a></li>
+        {% endif %}
+        {% if next_run %}
+            <li><a href="{{ url_for('.info', run_number=next_run.number) }}">Next {{ next_run.number }}</a></li>
+        {% endif %}
+    </ul>
+
+</div>
+
+{% endblock %}

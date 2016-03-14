@@ -1,0 +1,21 @@
+##
+# SQLite SConstcipt files
+#
+##
+Import('default_env')
+env = default_env.Clone()
+
+env.Append(LIBS = ['sqlite3'])
+
+lib_sources = [
+    "Backup.cpp",
+    "Column.cpp",
+    "Database.cpp",
+    "Statement.cpp",
+    "Transaction.cpp"
+    ]
+
+rcdb_sqlite_cpp_lib = env.StaticLibrary('rcdb_sqlite_cpp_lib', source = lib_sources, LIBPATH='#lib', CPPFLAGS = '-fPIC')
+#ccdb_sqlite_install = env.Install('#lib', ccdb_sqlite_lib)
+
+Export('rcdb_sqlite_cpp_lib')

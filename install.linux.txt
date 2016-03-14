@@ -1,0 +1,46 @@
+ENVIRONMENT CONFIGURATION
+=========================
+
+For Bash just run
+	
+	source environment.bash
+	
+For csh RCDB_HOME path should be set to RunConfDB directory (where are
+environment.* scripts located). Then run 
+	
+	source environment.csh
+
+ 
+
+MYSQL CONFIGURE
+===================
+ 
+Create database structure: 
+ 
+    mysql -u root -p < schema.mysql.sql
+    
+Create user and give privilegies:
+    
+    mysql -u root -p
+    CREATE USER rcdb;
+    GRANT ALL PRIVILEGES ON rcdb.* TO 'rcdb'@'localhost';
+
+
+TEST
+====
+To start www site run script from RunConfDB home directory 
+
+	python start_www.py
+	
+The output should be:
+    * Running on http://127.0.0.1:5000/
+    * Restarting with reloader
+ 
+Open above address in your browser. 
+
+To add sample records run
+
+    python $RCDB_HOME/python/fill_test_runs.py
+
+	
+    

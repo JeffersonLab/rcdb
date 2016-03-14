@@ -1,0 +1,245 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Run {0} information'.format(run.number) %}
+
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/jquery.jsonview.css') }}">
+{% endblock %}
+
+{% block container %}
+
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="lead blog-header">
+        <div class="row">
+            <h1 class="blog-title col-sm-3">{{ run.number }}</h1>
+
+            <h2 class="col-sm-7" style="margin-top:50px">
+                    Events:
+                    {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                        {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                    {% else %}
+                        0
+                    {% endif %}
+            </h2>
+            <div class="col-sm-2 text-right" style="margin-top:50px">
+                {% if prev_run %}
+                    <a class="btn btn-default" href="{{ url_for('.info', run_number=prev_run.number) }}" role="button">< {{ prev_run.number }}</a>
+                {% endif %}
+                {% if next_run %}
+                    <a class="btn btn-default" href="{{ url_for('.info', run_number=next_run.number) }}" role="button">{{ next_run.number }} ></a>
+                {% endif %}
+            </div>
+        </div>
+
+
+        <!-- TIME -->
+        <p class="lead blog-description">
+            {% if run.start_time %}
+                Start &nbsp; {{ run.start_time }}
+            {% else %}
+                No start info
+            {% endif %}
+            &nbsp;&nbsp;&nbsp;
+            {% if run.end_time %}
+                End {{ run.end_time }}
+            {% else %}
+                No end info
+            {% endif %}
+            &nbsp;&nbsp;&nbsp;
+            {% if run.end_time and run.start_time %}
+                Length {{ run.end_time - run.start_time }}
+            {% endif %}
+        </p>
+
+    </div>
+
+
+    <!-- PAGER -->
+
+
+
+
+    <div class="row" id="content">
+        <!-- CONTENT BAR -->
+        <div class="col-sm-10 blog-main" id="central_bar">
+            <!-- FILES ITERATION -->
+            <div class="blog-post" id="files_sec">
+                <h2 class="blog-post-title">Files</h2>
+                <table class="table table-striped">
+                    {% for file in run.files %}
+                    <tr>
+                        <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }}</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="blog-post">
+                <p class="blog-post-meta">All conditions</p>
+                <div class="panel ">
+                    <table class="table my-table">
+                        <tr class="text-info">
+                            <th >Name</th>
+                            <th style="display:block;min-width:70%;clear:both" >Value</th>
+                        </tr>
+                        {% for condition in conditions %}
+                            <!-- skip comment records -->
+                            <tr>
+                                <td>{{ condition.name }}</td>
+                                <td>
+
+                                    {% if condition.value_type == 'json'%}
+                                        <button type="button" class="btn btn-info btn-xs next-toggle">show json</button>
+                                        <div datatype="json" style="display: none">{{ condition.value }}</div>
+                                    {% else %}
+                                        {{ condition.value }}
+                                    {% endif %}
+
+                                </td>
+
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            </div><!-- /.blog-post -->
+
+                    <!-- COMPONENTS iteration -->
+            {% if component_stats %}
+                <div class="blog-post" id="files_sec">
+                    <h3 class="blog-post-title">Components</h3>
+                    <table class="table table-striped">
+                        <tr>
+                            <th>Name</th>
+                            <th>Event count</th>
+                            <th>Event rate</th>
+                            <th>Data rate</th>
+                        </tr>
+                        {% for comp_name in component_sorted_keys %}
+                            {% set stats =  component_stats[comp_name]%}
+                        <tr>
+                            <td>{{ comp_name }}</td>
+                            <td>{{ stats["evt-number"] }}</td>
+                            <td>{{ stats["evt-rate"]|round(2, 'floor') }}</td>
+                            <td>{{ stats["data-rate"]|round(2, 'floor') }}</td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+            {% endif %} <!--if component_stats-->
+
+            <!-- CRATES ITERATION -->
+            <div class="blog-post" id="crates_sec">
+                {% for crate in board_installs_by_crate.keys() %}
+                <a name="crate_{{ crate.name }}"></a>
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h3>{{ crate.name }}</h3></div>
+                    One two three!
+                    <table class="table table-striped">
+                        <tr class="small">
+                            <th>Slot</th>
+                            <th style="width: 100%">Board</th>
+                            <th>Config</th>
+                        </tr>
+                        {% for board_install in board_installs_by_crate[crate] %}
+                        <tr>
+                            <td>{{ board_install.slot }}</td>
+                            <td>
+                                <a class="btn" href="{{ url_for("boards.info", board_id=board_install.board_id) }}">
+                                    {{ board_install.board.board_type }} {{ board_install.board.serial }}
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-default btn-xs" href="{{ url_for("boards.board_in_run", board_id=board_install.board_id, run_number=run.number) }}">
+                                    {{ board_install.version }}
+                                    <span class="glyphicon glyphicon-eye-open "></span>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </div>
+                {% endfor %}
+            </div>
+
+
+            <ul class="pager" id="pager">
+                {% if prev_run %}
+                    <li><a href="{{ url_for('.info', run_number=prev_run.number) }}">< {{ prev_run.number }}</a></li>
+                {% endif %}
+                {% if next_run %}
+                    <li><a href="{{ url_for('.info', run_number=next_run.number) }}">{{ next_run.number }} ></a></li>
+                {% endif %}
+            </ul>
+
+        </div><!-- /.blog-main -->
+
+        <!-- SIDE BAR -->
+        <div class="col-sm-2 blog-sidebar" id="side_bar">
+            <h1></h1>
+            <!-- START COMMENT -->
+            {% if DefaultConditions.USER_COMMENT in conditions_by_name.keys() %}
+            <div class="sidebar-module sidebar-module-inset">
+                <h4>User comment</h4>
+                <p>{{ conditions_by_name[DefaultConditions.USER_COMMENT].value }}</p>
+            </div>
+            {% endif %}
+            <div class="sidebar-module">
+                <h4>Info:</h4>
+
+
+                <table class="table table-no-border table-condensed ">
+                    {% macro build_condition_row(name) %}
+                        {% if name in conditions_by_name %}
+                            <tr><td class="row"><strong>{{ name }}</strong></td><td style="white-space: nowrap">{{ conditions_by_name[name].value }}</td></tr>
+                        {% endif %}
+                    {% endmacro %}
+                    {{  build_condition_row(DefaultConditions.IS_VALID_RUN_END) }}
+                    {{  build_condition_row(DefaultConditions.RUN_TYPE) }}
+                    {{  build_condition_row(DefaultConditions.RUN_CONFIG) }}
+                    {{  build_condition_row(DefaultConditions.DAQ_SETUP) }}
+                    {{  build_condition_row('daq_run') }}
+                    {{  build_condition_row('daq_config') }}
+                </table>
+
+            </div>
+
+            <!-- -->
+            <div class="sidebar-module">
+                <h4>Statistics</h4>
+                <table class="table table-no-border table-condensed ">
+                    {{  build_condition_row(DefaultConditions.EVENT_COUNT) }}
+                    {{  build_condition_row(DefaultConditions.EVENT_RATE) }}
+                </table>
+                <!-- killed dogs are here
+                <ol class="list-unstyled">
+                    <li><a href="#">name1 value1</a></li>
+                    <li><a href="#">name2 value2</a></li>
+                    <li><a href="#">name3 value3</a></li>
+                </ol>
+                -->
+            </div>
+        </div><!-- /.blog-sidebar -->
+    </div><!-- /.row -->
+</div><!-- /.container -->
+
+{% endblock %}
+
+
+{% block js_btm %}
+    {{ super() }}
+
+    <script src="{{ url_for('static', filename='js/jquery.jsonview.js') }}"></script>
+    <script>
+    $( "[datatype='json']" ).each( function( i, el ) {
+        var elem = $( el );
+        var json_parsed = jQuery.parseJSON( elem.text() );
+        elem.JSONView(json_parsed);
+    });
+    $(".next-toggle").click(function() {
+        $(this).preventDefault = true;
+        $(this).next().fadeToggle();
+    });
+    </script>
+{% endblock %}

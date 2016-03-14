@@ -1,0 +1,28 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'Condition List' %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="blog-header"><h3 class="blog-title">Condition list</h3></div>
+
+    <table class="table">
+        <tr>
+            <th style="width: 5%">Type</th>
+            <th  >Name</th>
+            <th style="width: 70%"  >Description</th>
+        </tr>
+
+        {% for condition in conditions %}
+        <tr>
+            <td> <span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
+            <td>{{ condition.name }}</td>
+            <td>{{ condition.description }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</div>
+{% endblock %}
