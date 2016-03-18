@@ -13,8 +13,8 @@ class TestRun(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.db = rcdb.ConfigurationProvider("sqlite://")
-        rcdb.model.Base.metadata.create_all(self.db.engine)
+        self.db = rcdb.ConfigurationProvider("sqlite://", check_version=False)
+        rcdb.provider.destroy_all_create_schema(self.db)
         # create run
         self.db.create_run(1)
         self.db.create_run(2)

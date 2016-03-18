@@ -18,8 +18,8 @@ class TestCodaParser(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.db = rcdb.ConfigurationProvider("sqlite://")
-        rcdb.model.Base.metadata.create_all(self.db.engine)
+        self.db = rcdb.ConfigurationProvider("sqlite://", check_version=False)
+        rcdb.provider.destroy_all_create_schema(self.db)
         # create run
         self.this_dir = os.path.dirname(inspect.getfile(test_run))
         self.this_dir = os.path.normpath(self.this_dir)
