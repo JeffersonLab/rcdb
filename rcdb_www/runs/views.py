@@ -251,6 +251,56 @@ def search():
                            performance=result.performance)
 
 
+@mod.route('/search2', methods=['GET'])
+def search():
+    run_range = request.args.get('rr', '')
+    search_query = request.args.get('q', '')
+    columns = request.args.get('c', '')
+
+    columns = columns.split(',')
+
+    run_from_str = request.args.get('runFrom', '')
+    run_to_str = request.args.get('runTo', '')
+    if run_from_str or run_to_str:
+        run_range = run_from_str + "-" + run_to_str
+
+    args = {}
+    run_from, run_to = _parse_run_range(run_range)
+
+    if not search_query or not search_query.strip():
+        if run_from is not None and run_to is not None:
+            return redirect(url_for('.index', run_from=run_from, run_to=run_to))
+        elif run_from is not None:
+            return redirect(url_for('.info', run_number=run_from))
+        else:
+            return redirect(url_for('.index'))
+
+    if run_from is None:
+        run_from = 0
+
+    if run_to is None:
+        run_to = sys.maxint
+
+    try:
+        result = g.tdb.select_runs(search_query, run_to, run_from, sort_desc=True)
+    except Exception as err:
+        flash("Error in performing request: {}".format(err), 'danger')
+        return redirect(url_for('.index'))
+        # Create pagination
+    pagination = Pagination(1, len(result.runs), len(result.runs))
+    condition_types = g.tdb.get_condition_types()
+    all_cnd_types_by_name = {cnd.name: cnd for cnd in condition_types}
+    column_condition_types = [all_cnd_types_by_name[column] for column in columns]
+
+    return render_template("runs/custom_column.html",
+                           rows=result.get_values(columns, True),
+                           column_condition_types=column_condition_types,
+                           pagination=pagination,
+                           condition_types=condition_types,
+                           run_from=run_from,
+                           run_to=run_to if run_to != sys.maxint else -1,
+                           search_query=search_query,
+                           performance=result.performance)
 
 
 

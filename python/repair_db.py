@@ -4,13 +4,13 @@ from sqlalchemy import func
 
 from rcdb import RCDBProvider
 from rcdb.model import Condition, ConditionType
-from sqlalchemy.orm import aliased
+
 
 def fix_double_runs(db, execute):
     cts = db.get_condition_types()
 
     bad_runs_count = 0
-    bad_runs_with_valid_end_count = 0;
+    bad_runs_with_valid_end_count = 0
 
     for run in db.get_runs(10000, 20000):
         run_is_printed = False  # To print a run number if error is found
@@ -86,6 +86,3 @@ if __name__ == "__main__":
         fix_double_runs(db, args.execute)
     elif args.action == 'no_daq_run':
         fix_no_daq_run(db, args.execute)
-
-
-

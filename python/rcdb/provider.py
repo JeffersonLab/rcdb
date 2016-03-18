@@ -67,8 +67,8 @@ class RCDBProvider(object):
     def is_acceptable_sql_version(self):
         """Check if connected SQL schema is of the right version"""
         try:
-            return bool(self.session.query(func.count(SchemaVersion.version))\
-                            .filter(SchemaVersion.version == rcdb.SQL_SCHEMA_VERSION)\
+            return bool(self.session.query(func.count(SchemaVersion.version))
+                            .filter(SchemaVersion.version == rcdb.SQL_SCHEMA_VERSION)
                             .scalar())
         except OperationalError:
             return False
@@ -84,6 +84,10 @@ class RCDBProvider(object):
         mysql://<username>:<password>@<mysql.address>:<port> <database>
         sqlite:///path/to/file.sqlite
 
+        If check_version is FALSE, then the function doesn't check if database really has RCDB schema (tables).
+        So if you need to connect to empty or old DB to create tables or update schema
+
+        :param check_version: If False the database version is not checked a
         :param connection_string: connection string
         :type connection_string: str
         """
@@ -632,7 +636,7 @@ class RCDBProvider(object):
         search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
 
         for (i, alias_cnd) in enumerate(aliased_cnd):
-            query = query.add_entity(alias_cnd).filter(alias_cnd._condition_type_id == target_cnd_types[i].id)
+            query = query.add_entity(alias_cnd).filter(alias_cnd.condition_type_id == target_cnd_types[i].id)
             if i != 0:
                 query = query.filter(alias_cnd.run_number == aliased_cnd[0].run_number)
 
@@ -690,7 +694,7 @@ class RunSelectionResult(MutableSequence):
         self.selected_conditions = []
         self.db = db
 
-        js_now = int(mktime(datetime.datetime.now().timetuple())* 1000)
+        js_now = int(mktime(datetime.datetime.now().timetuple()) * 1000)
         self.performance = {"preparation": 0,
                             "query": 0,
                             "selection": 0,
@@ -729,6 +733,7 @@ class RunSelectionResult(MutableSequence):
         list_idx = len(self.runs)
         self.insert(list_idx, val)
 
+    # noinspection PyUnresolvedReferences
     def get_values(self, condition_names, insert_run_number=False):
 
         if self.db is None or not self.runs:
@@ -743,6 +748,7 @@ class RunSelectionResult(MutableSequence):
             if insert_run_number:
                 return [[run.number] for run in self.runs]
             else:
+                # noinspection PyUnusedLocal
                 return [[] for run in self.runs]
 
         target_cnd_names = condition_names
@@ -757,7 +763,7 @@ class RunSelectionResult(MutableSequence):
         target_cnd_types = [all_cnd_types_by_name[cnd_name] for cnd_name in target_cnd_names]
         ct_id_to_user_defined_order = {}
         for cnd_type in target_cnd_types:
-            for i in range (0, len(condition_names)):
+            for i in range(0, len(condition_names)):
                 if cnd_type.name == condition_names[i]:
                     ct_id_to_user_defined_order[cnd_type.id] = i
                     break
@@ -791,11 +797,9 @@ class RunSelectionResult(MutableSequence):
 
         type_index = 0
         prev_run = conditions[0].run_number
-        conditions_iter = 0
-        conditions_len = len(conditions)
 
         row = get_empty_row(self.runs[0].number)
-        run_index=0
+        run_index = 0
 
         while self.runs[run_index].number != prev_run:
             rows.append(row)
@@ -805,7 +809,7 @@ class RunSelectionResult(MutableSequence):
         for condition in conditions:
             assert isinstance(condition, Condition)
 
-            type_id = condition._condition_type_id
+            type_id = condition.condition_type_id
             if condition.run_number != prev_run:
                 prev_run = condition.run_number
 
@@ -827,22 +831,21 @@ class RunSelectionResult(MutableSequence):
             else:
                 row[cell_index] = condition.value
 
-        # We have alwais have to
+        # We have always have to
         rows.append(row)
         run_index += 1
 
         # It may happen that we run out of selected conditions, because condition is not set for all runs after
-        # for example we have run=> condision   1=>x, 2=>y, 3=>None, 4=>None. DB will select only x and y conditions
+        # for example we have run=> condition   1=>x, 2=>y, 3=>None, 4=>None. DB will select only x and y conditions
         # and 2 rows [[1],[2]], while it should [[1],[2],[None],[None]]. So we have to put missing rows in the end
-        while run_index<len(self.runs):
+        while run_index < len(self.runs):
             rows.append(get_empty_row(self.runs[run_index].number))
-            run_index +=1
+            run_index += 1
 
         # performance measure
         sw.stop()
         self.performance["tabling_values"] = sw.elapsed
         return rows
-
 
 
 class ConfigurationProvider(RCDBProvider):
@@ -873,6 +876,7 @@ class ConfigurationProvider(RCDBProvider):
     def obtain_crate(self, name):
         """
         Gets or creates crate with the name
+        :param name: Crate name
         """
         query = self.session.query(Crate).filter(Crate.name == name)
         if not query.count():
