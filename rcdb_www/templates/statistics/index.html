@@ -6,6 +6,32 @@
 
 <div class="container">
 
+    <div class="blog-header"><h3 class="blog-title">Database schema version</h3></div>
+
+    <table class="table">
+        <!-- Run count -->
+        <tr><td>Version</td><td>Time of update</td><td>Comments</td></tr>
+        {% for db_version in db_versions %}
+            <tr>
+                <td>
+                    {% if loop.first %}
+                        <strong> {{ db_version.version }} </strong> &lt;
+                    {% else %}
+                        {{ db_version.version }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ db_version.created }}
+                </td>
+                <td>
+                    {{ db_version.comment }}
+                </td>
+            </tr>
+        {% endfor %}
+
+
+
+
     <div class="blog-header"><h3 class="blog-title">Statistics</h3></div>
 
     <table class="table">

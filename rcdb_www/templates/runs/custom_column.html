@@ -1,4 +1,4 @@
-{% import 'default_run_table.html' as table%}
+{% import 'custom_column_run_table.html' as table%}
 {% from 'render_pagination.html' import render_pagination %}
 {% import 'run_search_box.html' as search_box%}
 
@@ -43,7 +43,7 @@
         </div>
         <div class="panel-body" >
         </div>
-        {{ table.default_run_table(rows, column_condition_types) }}
+        {{ table.custom_column_run_table(rows, column_condition_types) }}
     </div>
     {{ render_pagination(pagination) }}
     {% if performance %}
@@ -141,7 +141,7 @@
                         text: 'Make my analysis and submit papers',
                         action: function () {
 
-                            alert("Submitting runs to the farm... [done]\nMaking analysis... [done]\nDiscussing on meetings........... [done]\nPresenting the results... [done]\nSubmitting to arxiv.org... [done]\nSubmitting to physrev... [done]\nSubmitting to British Medical Journal... [done]\n Job is done. Wait mails from reviewers." );
+                            alert("No. Still yet not working..." );
                         }
                     }
                 ],

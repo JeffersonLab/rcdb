@@ -28,7 +28,7 @@ def natural_sort_key(l):
     return sorted(l, key = alphanum_key)
 
 
-PER_PAGE = 500
+PER_PAGE = 200
 
 
 @mod.route('/', defaults={'page': 1, 'run_from': -1, 'run_to': -1})
@@ -252,7 +252,7 @@ def search():
 
 
 @mod.route('/search2', methods=['GET'])
-def search():
+def search2():
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
     columns = request.args.get('c', '')
@@ -292,6 +292,17 @@ def search():
     all_cnd_types_by_name = {cnd.name: cnd for cnd in condition_types}
     column_condition_types = [all_cnd_types_by_name[column] for column in columns]
 
+    # Getting additional values and marking the run
+    info_rows = result.get_values([DefaultConditions.IS_VALID_RUN_END]),
+    for i, run in enumerate(result.runs):
+        is_valid_run_end, = tuple(info_rows[i])
+        run.is_valid_run_end = is_valid_run_end if is_valid_run_end is not None else False
+        if i == 0 and run.end_time and not is_valid_run_end:
+            run.is_active = True if (datetime.now() - run.end_time).total_seconds() < 120 else False
+        else:
+            run.is_active = False
+
+
     return render_template("runs/custom_column.html",
                            rows=result.get_values(columns, True),
                            column_condition_types=column_condition_types,
@@ -300,7 +311,8 @@ def search():
                            run_from=run_from,
                            run_to=run_to if run_to != sys.maxint else -1,
                            search_query=search_query,
-                           performance=result.performance)
+                           performance=result.performance,
+                           columns=columns)
 
 
 

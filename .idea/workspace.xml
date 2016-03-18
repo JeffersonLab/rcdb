@@ -12,17 +12,21 @@
     </ADDITIONAL_GENERATION_ENVIRONMENT>
   </component>
   <component name="ChangeListManager">
-    <list default="true" readonly="true" id="65081ea8-ad67-452d-8d0c-56c1c2919996" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/python/reindex_db.py" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/dataSources.xml" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" />
+    <list default="true" id="65081ea8-ad67-452d-8d0c-56c1c2919996" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/rcdb.iml" afterPath="$PROJECT_DIR$/.idea/rcdb.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/rcdb/provider.py" afterPath="$PROJECT_DIR$/python/rcdb/provider.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/repair_db.py" afterPath="$PROJECT_DIR$/python/repair_db.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py" afterPath="$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/helpers.py" afterPath="$PROJECT_DIR$/python/tests/helpers.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_coda_parser.py" afterPath="$PROJECT_DIR$/python/tests/test_coda_parser.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_config_files.py" afterPath="$PROJECT_DIR$/python/tests/test_config_files.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_run.py" afterPath="$PROJECT_DIR$/python/tests/test_run.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/runs/views.py" afterPath="$PROJECT_DIR$/rcdb_www/runs/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/static/css/main.css" afterPath="$PROJECT_DIR$/rcdb_www/static/css/main.css" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/statistics/views.py" afterPath="$PROJECT_DIR$/rcdb_www/statistics/views.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/statistics/index.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/statistics/index.html" />
     </list>
     <list id="521e3420-e912-4bdc-9525-e42d65681bdb" name="Failed commit: Default" comment="Refactoring and cleanup" />
     <ignored path="rcdb_cpp.iws" />
@@ -37,13 +41,13 @@
   </component>
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests__1_.coverage" NAME="Unittests in tests (1) Coverage Results" MODIFIED="1456170034632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$elton_test2.coverage" NAME="elton_test2 Coverage Results" MODIFIED="1455565726972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_test_parse_several_files.coverage" NAME="Unittests in test_parse_several_files Coverage Results" MODIFIED="1455736927053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests.coverage" NAME="Unittests in tests Coverage Results" MODIFIED="1458326033471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$intelligent_query.coverage" NAME="intelligent_query Coverage Results" MODIFIED="1455570527440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1456337490175" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests.coverage" NAME="Unittests in tests Coverage Results" MODIFIED="1455906818579" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$repair_db.coverage" NAME="repair_db Coverage Results" MODIFIED="1456342436939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1458330076548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests__1_.coverage" NAME="Unittests in tests (1) Coverage Results" MODIFIED="1456170034632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$repair_db.coverage" NAME="repair_db Coverage Results" MODIFIED="1458325141401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_test_parse_several_files.coverage" NAME="Unittests in test_parse_several_files Coverage Results" MODIFIED="1455736927053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
   </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
@@ -57,8 +61,8 @@
       <file leaf-file-name="base.html" pinned="true" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/templates/layouts/base.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-205.3077">
-              <caret line="314" column="65" selection-start-line="314" selection-start-column="65" selection-end-line="314" selection-end-column="65" />
+            <state vertical-scroll-proportion="-21.11111">
+              <caret line="122" column="48" selection-start-line="122" selection-start-column="48" selection-end-line="122" selection-end-column="48" />
               <folding />
             </state>
           </provider>
@@ -67,18 +71,18 @@
       <file leaf-file-name="main.css" pinned="true" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/static/css/main.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="222" column="26" selection-start-line="222" selection-start-column="26" selection-end-line="222" selection-end-column="26" />
+            <state vertical-scroll-proportion="-2.0">
+              <caret line="79" column="20" selection-start-line="79" selection-start-column="20" selection-end-line="79" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="true" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="296" column="71" selection-start-line="295" selection-start-column="27" selection-end-line="296" selection-end-column="73" />
+            <state vertical-scroll-proportion="0.33333334">
+              <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
@@ -89,40 +93,48 @@
       <file leaf-file-name="custom_column_run_table.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-7.8461537">
-              <caret line="36" column="69" selection-start-line="36" selection-start-column="69" selection-end-line="36" selection-end-column="69" />
+            <state vertical-scroll-proportion="18.0">
+              <caret line="0" column="61" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="61" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="model.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.781638">
-              <caret line="69" column="69" selection-start-line="69" selection-start-column="69" selection-end-line="69" selection-end-column="69" />
-              <folding>
-                <marker date="1458134361485" expanded="true" signature="2059:2121" placeholder="SELECT count... missing_value" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="reindex_db.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/reindex_db.py">
+      <file leaf-file-name="serving.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/werkzeug/serving.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="691" column="0" selection-start-line="691" selection-start-column="0" selection-end-line="691" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/mysql/__init__.py">
+      <file leaf-file-name="pydev_monkey.py" pinned="false" current-in-tab="false">
+        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_monkey.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="520" column="0" selection-start-line="520" selection-start-column="0" selection-end-line="520" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="default_run_table.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/default_run_table.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="10.666667">
+              <caret line="38" column="32" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="custom_column.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-85.22222">
+              <caret line="143" column="63" selection-start-line="143" selection-start-column="63" selection-end-line="143" selection-end-column="63" />
               <folding />
             </state>
           </provider>
@@ -132,18 +144,20 @@
         <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="759" column="35" selection-start-line="759" selection-start-column="35" selection-end-line="759" selection-end-column="35" />
+              <caret line="803" column="20" selection-start-line="803" selection-start-column="20" selection-end-line="803" selection-end-column="20" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="default_run_table.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rcdb_www/templates/default_run_table.html">
+      <file leaf-file-name="model.py" pinned="true" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="9.384615">
-              <caret line="38" column="32" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="43" />
-              <folding />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="530" column="48" selection-start-line="528" selection-start-column="4" selection-end-line="530" selection-end-column="48" />
+              <folding>
+                <marker date="1458324559774" expanded="true" signature="2059:2121" placeholder="SELECT count... missing_value" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -183,10 +197,8 @@
         <option value="$PROJECT_DIR$/python/elton_test2.py" />
         <option value="$PROJECT_DIR$/python/rcdb/__init__.py" />
         <option value="$PROJECT_DIR$/rcdb_www/__init__.py" />
-        <option value="$PROJECT_DIR$/rcdb_www/static/css/main.css" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/runs/info.html" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/default_run_table.html" />
-        <option value="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" />
         <option value="$PROJECT_DIR$/python/tests/10340_run.log" />
         <option value="$PROJECT_DIR$/python/tests/test_helpers.py" />
         <option value="$PROJECT_DIR$/python/tests/test_parse_several_files.py" />
@@ -195,7 +207,6 @@
         <option value="$PROJECT_DIR$/rcdb_www/templates/runs/index.html" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/run_search_box.html" />
         <option value="$PROJECT_DIR$/python/rcdb/alias.py" />
-        <option value="$PROJECT_DIR$/python/tests/test_run.py" />
         <option value="$PROJECT_DIR$/python/intelligent_query.py" />
         <option value="$PROJECT_DIR$/python/update_epics.py" />
         <option value="$PROJECT_DIR$/environment.zsh" />
@@ -204,11 +215,20 @@
         <option value="$PROJECT_DIR$/python/repair_db.py" />
         <option value="$PROJECT_DIR$/alembic/env.py" />
         <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
-        <option value="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
-        <option value="$PROJECT_DIR$/rcdb_www/runs/views.py" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/custom_columns_run_table.html" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html" />
         <option value="$PROJECT_DIR$/python/rcdb_reindex_db.py" />
+        <option value="$PROJECT_DIR$/python/tests/test_run.py" />
+        <option value="$PROJECT_DIR$/python/tests/helpers.py" />
+        <option value="$PROJECT_DIR$/python/tests/test_config_files.py" />
+        <option value="$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py" />
+        <option value="$PROJECT_DIR$/python/tests/test_coda_parser.py" />
+        <option value="$PROJECT_DIR$/rcdb_www/statistics/views.py" />
+        <option value="$PROJECT_DIR$/rcdb_www/static/css/main.css" />
+        <option value="$PROJECT_DIR$/rcdb_www/templates/statistics/index.html" />
+        <option value="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" />
+        <option value="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
+        <option value="$PROJECT_DIR$/rcdb_www/runs/views.py" />
       </list>
     </option>
   </component>
@@ -218,10 +238,9 @@
     <detection-done>true</detection-done>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="1296" />
-    <option name="height" value="776" />
+    <option name="x" value="-1" />
+    <option name="width" value="1922" />
+    <option name="height" value="1055" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -288,7 +307,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -307,94 +326,17 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="github" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="github" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_www" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="runs" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="github" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="github" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="github" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="alembic" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="D:/Tools/Git/bin/git.exe" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../trunk/rcdb/python/rcdb/model.py" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/../trunk/rcdb/python/rcdb/model.py" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -409,7 +351,7 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.repair_db">
+  <component name="RunManager" selected="Python.start_www">
     <configuration default="false" name="start_www" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -513,6 +455,17 @@
       <option name="PUREUNITTEST" value="true" />
       <option name="PARAMS" value="" />
       <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="true" type="BashConfigurationType" factoryName="Bash">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="/bin/bash" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <module name="" />
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="DjangoTestsConfigurationType" factoryName="Django tests">
@@ -744,10 +697,10 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.repair_db" />
-        <item index="1" class="java.lang.String" itemvalue="Python.start_www" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in tests (1)" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in tests" />
+        <item index="0" class="java.lang.String" itemvalue="Python.start_www" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in tests" />
+        <item index="2" class="java.lang.String" itemvalue="Python.repair_db" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in tests (1)" />
         <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in test_parse_several_files" />
       </list>
     </recent_temporary>
@@ -867,16 +820,16 @@
       <option name="project" value="LOCAL" />
       <updated>1458134976776</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="First DB migration is generated">
+      <created>1458324806890</created>
+      <option name="number" value="00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1458324806890</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_test_parse_several_files - 2016.02.17 at 14h 22m 08s.xml">
-      <configuration name="Unittests in test_parse_several_files" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.02.17 at 16h 09m 20s.xml">
-      <configuration name="Unittests in tests" configurationId="tests" />
-    </history-entry>
     <history-entry file="Unittests_in_tests - 2016.02.17 at 16h 09m 57s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
@@ -884,6 +837,18 @@
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
     <history-entry file="Unittests_in_tests - 2016.02.19 at 13h 33m 45s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 19m 11s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 21m 07s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 33m 12s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 33m 55s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
     <history-entry file="Unittests_in_tests_(1) - 2016.02.19 at 14h 17m 10s.xml">
@@ -897,29 +862,29 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1296" height="776" extended-state="6" />
-    <editor active="true" />
+    <frame x="-1" y="0" width="1922" height="1055" extended-state="6" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17475729" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17662753" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28340518" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297414" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32970452" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32970452" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286638" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286638" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.51077586" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2497332" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3281493" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3275862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39978448" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3286638" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297414" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39978448" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -953,76 +918,27 @@
     <MESSAGE value="Keys description added" />
     <MESSAGE value="Fixed #11" />
     <MESSAGE value="Set Git for PyCharm RCDB project" />
-    <option name="LAST_COMMIT_MESSAGE" value="Set Git for PyCharm RCDB project" />
+    <MESSAGE value="First DB migration is generated" />
+    <option name="LAST_COMMIT_MESSAGE" value="First DB migration is generated" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="1" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="python-line">
+          <url>file://$PROJECT_DIR$/python/rcdb/provider.py</url>
+          <line>800</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+      <option name="time" value="6" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/python/example_conditions_store_object.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="16" selection-start-line="0" selection-start-column="16" selection-end-line="0" selection-end-column="16" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/conditions.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="31.703703">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/login.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="63" column="20" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="22" column="51" selection-start-line="22" selection-start-column="51" selection-end-line="22" selection-end-column="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/info.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="3.0370371">
-          <caret line="197" column="78" selection-start-line="197" selection-start-column="78" selection-end-line="197" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/tests/10340_run.log">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="868" column="0" selection-start-line="868" selection-start-column="0" selection-end-line="868" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/helpers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="11" selection-start-line="0" selection-start-column="7" selection-end-line="0" selection-end-column="11" />
         </state>
       </provider>
     </entry>
@@ -1033,33 +949,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_parse_several_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="33" column="8" selection-start-line="33" selection-start-column="8" selection-end-line="33" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/sqlalchemy/sql/sqltypes.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="346" column="11" selection-start-line="346" selection-start-column="11" selection-end-line="346" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/static/css/main.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="222" column="26" selection-start-line="222" selection-start-column="26" selection-end-line="222" selection-end-column="26" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/layouts/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-205.3077">
-          <caret line="314" column="65" selection-start-line="314" selection-start-column="65" selection-end-line="314" selection-end-column="65" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1099,13 +992,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_run.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="32" selection-start-line="55" selection-start-column="32" selection-end-line="55" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/sean_db_import.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.6407119">
@@ -1131,13 +1017,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_config_files.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.3592881">
-          <caret line="39" column="34" selection-start-line="39" selection-start-column="34" selection-end-line="39" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -1198,65 +1077,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="103" column="0" selection-start-line="103" selection-start-column="0" selection-end-line="103" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#14#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../zzzeek-alembic-08f38f4ff71a/zzzeek-alembic-08f38f4ff71a/alembic/config.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-11.853659">
-          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../zzzeek-alembic-08f38f4ff71a/zzzeek-alembic-08f38f4ff71a/alembic/context.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13821138">
-          <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../zzzeek-alembic-08f38f4ff71a/zzzeek-alembic-08f38f4ff71a/alembic/command.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.4650407">
-          <caret line="58" column="12" selection-start-line="58" selection-start-column="12" selection-end-line="58" selection-end-column="12" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../zzzeek-alembic-08f38f4ff71a/zzzeek-alembic-08f38f4ff71a/alembic/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.38699186">
-          <caret line="14" column="48" selection-start-line="14" selection-start-column="48" selection-end-line="14" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../../zzzeek-alembic-08f38f4ff71a/zzzeek-alembic-08f38f4ff71a/alembic/op.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16585366">
-          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-14.730769">
-          <caret line="46" column="10" selection-start-line="46" selection-start-column="10" selection-end-line="46" selection-end-column="10" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_coda_parser.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5252032">
-          <caret line="29" column="43" selection-start-line="29" selection-start-column="43" selection-end-line="29" selection-end-column="43" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1264,9 +1084,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08292683">
           <caret line="3" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1274,7 +1091,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35934958">
           <caret line="15" column="0" selection-start-line="3" selection-start-column="0" selection-end-line="8" selection-end-column="79" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1282,35 +1098,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.22113821">
           <caret line="41" column="31" selection-start-line="41" selection-start-column="31" selection-end-line="41" selection-end-column="31" />
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/default_run_table.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="9.384615">
-          <caret line="38" column="32" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="43" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="296" column="71" selection-start-line="295" selection-start-column="27" selection-end-line="296" selection-end-column="73" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.8461537">
-          <caret line="36" column="69" selection-start-line="36" selection-start-column="69" selection-end-line="36" selection-end-column="69" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1330,30 +1117,215 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="759" column="35" selection-start-line="759" selection-start-column="35" selection-end-line="759" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/alembic/env.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="2.5260546">
           <caret line="63" column="38" selection-start-line="63" selection-start-column="38" selection-end-line="63" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/helpers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.24242425">
+          <caret line="8" column="44" selection-start-line="8" selection-start-column="44" selection-end-line="8" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_config_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="41" column="35" selection-start-line="41" selection-start-column="35" selection-end-line="41" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_parse_several_files.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="36" selection-start-line="21" selection-start-column="36" selection-end-line="21" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_run.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="56" selection-start-line="12" selection-start-column="56" selection-end-line="12" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.228572">
+          <caret line="22" column="56" selection-start-line="22" selection-start-column="56" selection-end-line="22" selection-end-column="56" />
           <folding>
-            <element signature="e#0#37#0" expanded="true" />
+            <element signature="e#245#267#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_sql_schema_version.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="34" column="8" selection-start-line="34" selection-start-column="8" selection-end-line="34" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_select_runs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="12" column="56" selection-start-line="11" selection-start-column="47" selection-end-line="12" selection-end-column="56" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.781638">
-          <caret line="69" column="69" selection-start-line="69" selection-start-column="69" selection-end-line="69" selection-end-column="69" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="530" column="48" selection-start-line="528" selection-start-column="4" selection-end-line="530" selection-end-column="48" />
           <folding>
-            <marker date="1458134361485" expanded="true" signature="2059:2121" placeholder="SELECT count... missing_value" />
+            <marker date="1458324559774" expanded="true" signature="2059:2121" placeholder="SELECT count... missing_value" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/layouts/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.11111">
+          <caret line="122" column="48" selection-start-line="122" selection-start-column="48" selection-end-line="122" selection-end-column="48" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/static/css/main.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.0">
+          <caret line="79" column="20" selection-start-line="79" selection-start-column="20" selection-end-line="79" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/statistics/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-16.0">
+          <caret line="27" column="21" selection-start-line="27" selection-start-column="21" selection-end-line="27" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/statistics/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="46" selection-start-line="21" selection-start-column="46" selection-end-line="21" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.4848485">
+          <caret line="23" column="56" selection-start-line="23" selection-start-column="44" selection-end-line="23" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/tests/test_coda_parser.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="56" selection-start-line="21" selection-start-column="56" selection-end-line="21" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/render_pagination.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file:///usr/lib/python2.7/socket.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="223" column="0" selection-start-line="223" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/werkzeug/debug/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="87" column="0" selection-start-line="87" selection-start-column="0" selection-end-line="87" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/werkzeug/serving.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="691" column="0" selection-start-line="691" selection-start-column="0" selection-end-line="691" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/flask/app.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="1460" column="0" selection-start-line="1460" selection-start-column="0" selection-end-line="1460" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="803" column="20" selection-start-line="803" selection-start-column="20" selection-end-line="803" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_monkey.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="520" column="0" selection-start-line="520" selection-start-column="0" selection-end-line="520" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="18.0">
+          <caret line="0" column="61" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="61" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/default_run_table.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="10.666667">
+          <caret line="38" column="32" selection-start-line="37" selection-start-column="28" selection-end-line="37" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-85.22222">
+          <caret line="143" column="63" selection-start-line="143" selection-start-column="63" selection-end-line="143" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33333334">
+          <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
           </folding>
         </state>
       </provider>
