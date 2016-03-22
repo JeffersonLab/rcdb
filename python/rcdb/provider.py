@@ -676,6 +676,7 @@ class RCDBProvider(object):
         result = RunSelectionResult(sel_runs, self)
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
+        result.sort_desc = sort_desc
         result.performance["preparation"] = preparation_sw.elapsed
         result.performance["query"] = query_sw.elapsed
         result.performance["selection"] = selection_sw.elapsed
@@ -693,6 +694,7 @@ class RunSelectionResult(MutableSequence):
         self.filter_condition_names = []
         self.selected_conditions = []
         self.db = db
+        self.sort_desc = False
 
         js_now = int(mktime(datetime.datetime.now().timetuple()) * 1000)
         self.performance = {"preparation": 0,
@@ -772,7 +774,10 @@ class RunSelectionResult(MutableSequence):
         target_cnd_types_len = len(target_cnd_types)
 
         ids = [ct.id for ct in target_cnd_types]
-        run_numbers = [r.number for r in self.runs]
+
+        runs_asc = self.runs if not self.sort_desc else list(reversed(self.runs))
+
+        run_numbers = [r.number for r in runs_asc]
 
         query = self.db.session.query(Condition)\
             .filter(Condition.condition_type_id.in_(ids), Condition.run_number.in_(run_numbers))\
@@ -780,15 +785,17 @@ class RunSelectionResult(MutableSequence):
 
         conditions = query.all()
 
-        # performance measure
+        # performance measurement
         sw.stop()
         self.performance["get_conditions"] = sw.elapsed
         sw = StopWatchTimer()
         sw.start()
 
+        # create empty rows
         rows = []
 
         def get_empty_row(run_number=0):
+            """Creates empty rows properly"""
             if insert_run_number:
                 # noinspection PyTypeChecker
                 return [run_number] + ([None] * target_cnd_types_len)
@@ -798,13 +805,13 @@ class RunSelectionResult(MutableSequence):
         type_index = 0
         prev_run = conditions[0].run_number
 
-        row = get_empty_row(self.runs[0].number)
+        row = get_empty_row(runs_asc[0].number)
         run_index = 0
 
-        while self.runs[run_index].number != prev_run:
+        while runs_asc[run_index].number != prev_run:
             rows.append(row)
             run_index += 1
-            row = get_empty_row(self.runs[run_index].number)
+            row = get_empty_row(runs_asc[run_index].number)
 
         for condition in conditions:
             assert isinstance(condition, Condition)
@@ -813,10 +820,10 @@ class RunSelectionResult(MutableSequence):
             if condition.run_number != prev_run:
                 prev_run = condition.run_number
 
-                while self.runs[run_index].number != prev_run:
+                while runs_asc[run_index].number != prev_run:
                     rows.append(row)
                     run_index += 1
-                    row = get_empty_row(self.runs[run_index].number)
+                    row = get_empty_row(runs_asc[run_index].number)
 
                 type_index = 0
 
@@ -838,13 +845,16 @@ class RunSelectionResult(MutableSequence):
         # It may happen that we run out of selected conditions, because condition is not set for all runs after
         # for example we have run=> condition   1=>x, 2=>y, 3=>None, 4=>None. DB will select only x and y conditions
         # and 2 rows [[1],[2]], while it should [[1],[2],[None],[None]]. So we have to put missing rows in the end
-        while run_index < len(self.runs):
-            rows.append(get_empty_row(self.runs[run_index].number))
+        while run_index < len(runs_asc):
+            rows.append(get_empty_row(runs_asc[run_index].number))
             run_index += 1
 
         # performance measure
         sw.stop()
         self.performance["tabling_values"] = sw.elapsed
+
+        if self.sort_desc:
+            rows.reverse()
         return rows
 
 

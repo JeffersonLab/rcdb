@@ -13,20 +13,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="65081ea8-ad67-452d-8d0c-56c1c2919996" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/rcdb.iml" afterPath="$PROJECT_DIR$/.idea/rcdb.iml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/.name" afterPath="$PROJECT_DIR$/.idea/.name" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py" afterPath="$PROJECT_DIR$/alembic/versions/34ba183eda63_conditions_time_time_value_sql_schema_.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/helpers.py" afterPath="$PROJECT_DIR$/python/tests/helpers.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_coda_parser.py" afterPath="$PROJECT_DIR$/python/tests/test_coda_parser.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_config_files.py" afterPath="$PROJECT_DIR$/python/tests/test_config_files.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_run.py" afterPath="$PROJECT_DIR$/python/tests/test_run.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/runs/views.py" afterPath="$PROJECT_DIR$/rcdb_www/runs/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/static/css/main.css" afterPath="$PROJECT_DIR$/rcdb_www/static/css/main.css" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/statistics/views.py" afterPath="$PROJECT_DIR$/rcdb_www/statistics/views.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/rcdb_www/templates/statistics/index.html" afterPath="$PROJECT_DIR$/rcdb_www/templates/statistics/index.html" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/rcdb/provider.py" afterPath="$PROJECT_DIR$/python/rcdb/provider.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python/tests/test_select_runs.py" afterPath="$PROJECT_DIR$/python/tests/test_select_runs.py" />
     </list>
     <list id="521e3420-e912-4bdc-9525-e42d65681bdb" name="Failed commit: Default" comment="Refactoring and cleanup" />
     <ignored path="rcdb_cpp.iws" />
@@ -42,9 +32,9 @@
   <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/rcdb_cpp$elton_test2.coverage" NAME="elton_test2 Coverage Results" MODIFIED="1455565726972" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests.coverage" NAME="Unittests in tests Coverage Results" MODIFIED="1458326033471" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests.coverage" NAME="Unittests in tests Coverage Results" MODIFIED="1458592256433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$intelligent_query.coverage" NAME="intelligent_query Coverage Results" MODIFIED="1455570527440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
-    <SUITE FILE_PATH="coverage/rcdb_cpp$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1458330076548" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/rcdb_cpp$start_www.coverage" NAME="start_www Coverage Results" MODIFIED="1458592171616" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_tests__1_.coverage" NAME="Unittests in tests (1) Coverage Results" MODIFIED="1456170034632" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$repair_db.coverage" NAME="repair_db Coverage Results" MODIFIED="1458325141401" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python" />
     <SUITE FILE_PATH="coverage/rcdb_cpp$Unittests_in_test_parse_several_files.coverage" NAME="Unittests in test_parse_several_files Coverage Results" MODIFIED="1455736927053" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/python/tests" />
@@ -78,14 +68,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="true" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="true" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.33333334">
-              <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
               <folding>
                 <element signature="e#0#11#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="test_select_runs.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/python/tests/test_select_runs.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-5.7714286">
+              <caret line="149" column="29" selection-start-line="149" selection-start-column="29" selection-end-line="149" selection-end-column="29" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -95,26 +95,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="18.0">
               <caret line="0" column="61" selection-start-line="0" selection-start-column="9" selection-end-line="0" selection-end-column="61" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="serving.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/python/werkzeug/serving.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="691" column="0" selection-start-line="691" selection-start-column="0" selection-end-line="691" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pydev_monkey.py" pinned="false" current-in-tab="false">
-        <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_monkey.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="520" column="0" selection-start-line="520" selection-start-column="0" selection-end-line="520" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -140,11 +120,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="provider.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="provider.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="803" column="20" selection-start-line="803" selection-start-column="20" selection-end-line="803" selection-end-column="20" />
+            <state vertical-scroll-proportion="-0.11644658">
+              <caret line="538" column="8" selection-start-line="538" selection-start-column="8" selection-end-line="538" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -214,7 +194,6 @@
         <option value="$PROJECT_DIR$/../parse_coda_log" />
         <option value="$PROJECT_DIR$/python/repair_db.py" />
         <option value="$PROJECT_DIR$/alembic/env.py" />
-        <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/custom_columns_run_table.html" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/custom_column_run_table.html" />
         <option value="$PROJECT_DIR$/python/rcdb_reindex_db.py" />
@@ -229,6 +208,8 @@
         <option value="$PROJECT_DIR$/rcdb_www/templates/layouts/base.html" />
         <option value="$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html" />
         <option value="$PROJECT_DIR$/rcdb_www/runs/views.py" />
+        <option value="$PROJECT_DIR$/python/rcdb/provider.py" />
+        <option value="$PROJECT_DIR$/python/tests/test_select_runs.py" />
       </list>
     </option>
   </component>
@@ -312,17 +293,31 @@
         <subPane>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
+              <option name="myItemId" value="rcdb" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
-              <option name="myItemId" value="rcdb_cpp" />
+              <option name="myItemId" value="rcdb" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="github" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="rcdb" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="github" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="python" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -351,7 +346,7 @@
       <recent name="$PROJECT_DIR$/src" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.start_www">
+  <component name="RunManager" selected="Python tests.Unittests in tests">
     <configuration default="false" name="start_www" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -697,8 +692,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.start_www" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in tests" />
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in tests" />
+        <item index="1" class="java.lang.String" itemvalue="Python.start_www" />
         <item index="2" class="java.lang.String" itemvalue="Python.repair_db" />
         <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in tests (1)" />
         <item index="4" class="java.lang.String" itemvalue="Python tests.Unittests in test_parse_several_files" />
@@ -826,63 +821,81 @@
       <option name="project" value="LOCAL" />
       <updated>1458324806890</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Web site update for newer DB schema">
+      <created>1458330198471</created>
+      <option name="number" value="00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1458330198471</updated>
+    </task>
+    <task id="LOCAL-00020" summary="First DB migration is updated for older database">
+      <created>1458330213004</created>
+      <option name="number" value="00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1458330213004</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Unit tests adapted to shcema version check">
+      <created>1458330235328</created>
+      <option name="number" value="00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1458330235328</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unittests_in_tests - 2016.02.17 at 16h 09m 57s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.18 at 15h 44m 12s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.02.17 at 16h 12m 27s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 15h 23m 25s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.02.19 at 13h 33m 45s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 15h 26m 26s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 19m 11s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 15h 28m 28s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 21m 07s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 15h 29m 24s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 33m 12s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 16h 13m 36s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests - 2016.03.18 at 14h 33m 55s.xml">
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 16h 22m 48s.xml">
       <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests_(1) - 2016.02.19 at 14h 17m 10s.xml">
-      <configuration name="Unittests in tests (1)" configurationId="tests" />
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 16h 23m 41s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests_(1) - 2016.02.22 at 14h 39m 55s.xml">
-      <configuration name="Unittests in tests (1)" configurationId="tests" />
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 16h 28m 02s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
-    <history-entry file="Unittests_in_tests_(1) - 2016.02.22 at 14h 40m 35s.xml">
-      <configuration name="Unittests in tests (1)" configurationId="tests" />
+    <history-entry file="Unittests_in_tests - 2016.03.21 at 16h 30m 58s.xml">
+      <configuration name="Unittests in tests" configurationId="tests" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="0" width="1922" height="1055" extended-state="6" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17662753" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.28340518" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297414" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286638" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3286638" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.51077586" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2497332" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3275862" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17662753" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2497332" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2497332" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39978448" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39978448" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="CMake" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32889965" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3297414" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -919,18 +932,21 @@
     <MESSAGE value="Fixed #11" />
     <MESSAGE value="Set Git for PyCharm RCDB project" />
     <MESSAGE value="First DB migration is generated" />
-    <option name="LAST_COMMIT_MESSAGE" value="First DB migration is generated" />
+    <MESSAGE value="Web site update for newer DB schema" />
+    <MESSAGE value="First DB migration is updated for older database" />
+    <MESSAGE value="Unit tests adapted to shcema version check" />
+    <option name="LAST_COMMIT_MESSAGE" value="Unit tests adapted to shcema version check" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="python-line">
-          <url>file://$PROJECT_DIR$/python/rcdb/provider.py</url>
-          <line>800</line>
-          <option name="timeStamp" value="5" />
+          <url>file://$PROJECT_DIR$/python/tests/test_select_runs.py</url>
+          <line>157</line>
+          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="6" />
+      <option name="time" value="7" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1174,14 +1190,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/tests/test_select_runs.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="56" selection-start-line="11" selection-start-column="47" selection-end-line="12" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/python/rcdb/model.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1280,14 +1288,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="803" column="20" selection-start-line="803" selection-start-column="20" selection-end-line="803" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydev_monkey.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1312,6 +1312,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+          <folding>
+            <element signature="e#0#11#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/rcdb_www/templates/runs/custom_column.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-85.22222">
@@ -1320,13 +1330,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/rcdb_www/runs/views.py">
+    <entry file="file://$PROJECT_DIR$/python/tests/test_select_runs.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33333334">
-          <caret line="30" column="12" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="-5.7714286">
+          <caret line="149" column="29" selection-start-line="149" selection-start-column="29" selection-end-line="149" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python/rcdb/provider.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-0.11644658">
+          <caret line="538" column="8" selection-start-line="538" selection-start-column="8" selection-end-line="538" selection-end-column="8" />
+          <folding />
         </state>
       </provider>
     </entry>

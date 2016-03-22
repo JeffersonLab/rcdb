@@ -140,6 +140,30 @@ class TestRun(unittest.TestCase):
         awaited_rows = [[None], ['my only value'], [None], [None]]
         self.assertEqual(rows, awaited_rows)
 
+    def test_select_runs_sort_order(self):
+        """Test sort_desc parameter"""
+        result = self.db.select_runs("a>0", sort_desc=True)
+        run_numbers = [run.number for run in result.runs]
+        awaited_run_numbers = [9, 4, 3, 2, 1]
+        self.assertEqual(run_numbers, awaited_run_numbers)
+
+        result = self.db.select_runs(run_min=3, run_max=5, sort_desc=True)
+        run_numbers = [run.number for run in result.runs]
+        awaited_run_numbers = [3, 4, 3]
+        self.assertEqual(run_numbers, awaited_run_numbers)
+
+    def test_get_values_order_desc(self):
+        """Test getting values in descending order"""
+
+        rows = self.db.select_runs(run_min=3, run_max=5, sort_desc=True).get_values(['e', 'a', 'd'], True)
+        print rows
+        awaited_rows = [[5, None, None, 'bang'],
+                        [4, '[1,2,3]', 4, 'hoho'],
+                        [3, None, 3, None],
+                        ]
+        self.assertEqual(rows, awaited_rows)
+
+
 
 
 
