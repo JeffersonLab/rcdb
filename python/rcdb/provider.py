@@ -220,15 +220,22 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Gets Runs in range [rum_min, run_max]
     # ------------------------------------------------
-    def get_runs(self, rum_min, run_max):
+    def get_runs(self, rum_min, run_max, sort_desc=False):
 
         """ Gets all runs that rum_min<= run.number <= run_max
 
+        :param sort_desc: If True result runs will be sorted by descending run-number
         :type run_max: int
         :type rum_min: int
         """
-        return self.session.query(Run).filter(Run.number >= rum_min, Run.number <= run_max) \
-            .order_by(Run.number).all()
+        query = self.session.query(Run).filter(Run.number >= rum_min, Run.number <= run_max)
+
+        if sort_desc:
+            query = query.order_by(Run.number.desc())
+        else:
+            query = query.order_by(Run.number)
+
+        return query.all()
 
     # ------------------------------------------------
     # Gets Run or returns None
@@ -560,10 +567,11 @@ class RCDBProvider(object):
             preparation_sw.stop()
             query_sw = StopWatchTimer()
             query_sw.start()
-            sel_runs = self.get_runs(run_min, run_max)
+            sel_runs = self.get_runs(run_min, run_max, sort_desc)
             query_sw.stop()
 
             result = RunSelectionResult(sel_runs, self)
+            result.sort_desc = sort_desc
             result.filter_condition_names = []
             result.filter_condition_types = []
             result.performance["preparation"] = preparation_sw.elapsed
@@ -795,7 +803,9 @@ class RunSelectionResult(MutableSequence):
         rows = []
 
         def get_empty_row(run_number=0):
-            """Creates empty rows properly"""
+            """Creates empty rows properly
+            :param run_number: run number to add
+            """
             if insert_run_number:
                 # noinspection PyTypeChecker
                 return [run_number] + ([None] * target_cnd_types_len)

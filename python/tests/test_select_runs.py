@@ -149,7 +149,7 @@ class TestRun(unittest.TestCase):
 
         result = self.db.select_runs(run_min=3, run_max=5, sort_desc=True)
         run_numbers = [run.number for run in result.runs]
-        awaited_run_numbers = [3, 4, 3]
+        awaited_run_numbers = [5, 4, 3]
         self.assertEqual(run_numbers, awaited_run_numbers)
 
     def test_get_values_order_desc(self):
