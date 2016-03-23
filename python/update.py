@@ -18,6 +18,10 @@ log.setLevel(logging.INFO)                           # print everything. Change 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
 
+
+
+
+
 # noinspection SqlDialectInspection
 def print_usage():
     print("""

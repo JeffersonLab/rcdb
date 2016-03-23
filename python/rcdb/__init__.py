@@ -20,6 +20,18 @@ blob_delimiter_replacement = "&delimiter;"
 SQL_SCHEMA_VERSION = 1
 
 # -------------------------------------------------
+# class holding a context of the update operations
+# -------------------------------------------------
+class UpdateContext(object):
+    """Updates context"""
+
+    def __init__(self, db, context):
+        self.db = db
+        self.context = context          # Context in which daq is called '', 'start', 'update', 'end'
+        self.run = None                 # Run object
+
+
+# -------------------------------------------------
 # function Convert list to DB text representation
 # -------------------------------------------------
 def list_to_db_text(values):
