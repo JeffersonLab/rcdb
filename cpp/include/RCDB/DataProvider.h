@@ -20,6 +20,8 @@ namespace rcdb {
         /** Gets conditions by conditionType (@see GetRun and SetRun) */
         virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) = 0;
 
+
+
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         std::unique_ptr<Condition> GetCondition(const std::string& name)
         {

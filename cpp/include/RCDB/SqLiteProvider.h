@@ -16,10 +16,12 @@ namespace rcdb {
     public:
         SqLiteProvider(std::string dbPath) :
                 DataProvider(),
-                _db(dbPath),
+                _db(ParseConnectionString(dbPath)),
                 _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time_value "
                                         "FROM conditions WHERE run_number = ? AND condition_type_id = ?")
         {
+
+
             //Fill types
             SQLite::Statement query(_db, "SELECT id, name, value_type FROM condition_types");
 
@@ -35,6 +37,18 @@ namespace rcdb {
                 _types.push_back(conditionType);
                 _typesByName[name]=conditionType;
             }
+        }
+
+        static std::string ParseConnectionString(std::string connectionStr)
+        {
+            auto typePos = connectionStr.find("sqlite:///");
+            if(typePos==std::string::npos) {
+                throw ConnectionStringError("ERROR. SQLite connection string must begin with 'sqlite:///'");
+            }
+
+            connectionStr.erase(0,9);
+
+            return connectionStr;
         }
 
         SqLiteProvider(SqLiteProvider &&) = default;                    // Move constructor
@@ -67,7 +81,7 @@ namespace rcdb {
                 switch (cndType.GetValueType()) {
                     case ValueTypes::Bool:
                         if(_getConditionQuery.isColumnNull(bool_column)) return std::unique_ptr<Condition>();
-                        condition->SetBoolValue(_getConditionQuery.getColumn(bool_column).getInt());
+                        condition->SetBoolValue((bool)_getConditionQuery.getColumn(bool_column).getInt());
                         return condition;
                     case ValueTypes::Json:
                     case ValueTypes::String:
@@ -140,8 +154,8 @@ namespace rcdb {
     protected:
 
     private:
-        SqLiteProvider(const SqLiteProvider &);             // disable Copy constructor
-        SqLiteProvider &operator=(const SqLiteProvider &);  // disable Copy assignment operator
+        SqLiteProvider(const SqLiteProvider &) = delete;             // disable Copy constructor
+        SqLiteProvider &operator=(const SqLiteProvider &) = delete;  // disable Copy assignment operator
 
         SQLite::Database _db;
         SQLite::Statement _getConditionQuery;

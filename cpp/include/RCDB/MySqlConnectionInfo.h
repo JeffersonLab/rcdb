@@ -23,7 +23,7 @@ namespace rcdb
         std::string	Password;
         std::string Database;
         std::string	HostName;
-        int		Port;
+        unsigned int		Port;
 
     };
 

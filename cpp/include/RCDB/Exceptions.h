@@ -23,11 +23,11 @@ namespace rcdb
     /**
     * Value format error is thrown when you try to read value of Condition using the wrong type
     */
-    class MySqlConnectionStringError: public std::logic_error
+    class ConnectionStringError: public std::logic_error
     {
     public:
-        explicit MySqlConnectionStringError(const char* message): logic_error(message) {}
-        explicit MySqlConnectionStringError(const std::string& message): logic_error(message) {}
+        explicit ConnectionStringError(const char* message): logic_error(message) {}
+        explicit ConnectionStringError(const std::string& message): logic_error(message) {}
     };
 }
 
