@@ -4,6 +4,7 @@
 import logging
 from rcdb.model import ConditionType, Condition, Run
 
+
 log = logging.getLogger('rcdb.coda_parser')         # create run configuration standard logger
 
 

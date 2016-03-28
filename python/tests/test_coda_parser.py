@@ -3,15 +3,7 @@ import os
 from datetime import datetime
 import test_run
 import unittest
-import rcdb
-import rcdb.model
-from rcdb.model import ConditionType, Condition, Run
 from rcdb.coda_parser import parse_file, CodaRunLogParseResult
-
-import logging
-
-# logging.basicConfig()
-# logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 
 class TestCodaParser(unittest.TestCase):
