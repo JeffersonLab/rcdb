@@ -156,7 +156,6 @@ class TestRun(unittest.TestCase):
         """Test getting values in descending order"""
 
         rows = self.db.select_runs(run_min=3, run_max=5, sort_desc=True).get_values(['e', 'a', 'd'], True)
-        print rows
         awaited_rows = [[5, None, None, 'bang'],
                         [4, '[1,2,3]', 4, 'hoho'],
                         [3, None, 3, None],

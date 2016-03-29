@@ -140,21 +140,8 @@ class TestConditions(unittest.TestCase):
         for i in range(101, 110):
             self.db.create_run(i)
             self.db.add_condition(i, "one", (i-100)*10)
-            print self.db.add_condition(i, "two", (i-100)*100).int_value
+            self.db.add_condition(i, "two", (i-100)*100)
 
-        print ct.run_query.filter(ct.value_field > 300).filter(ct.value_field < 900).all()
-
-        print self.db.session.query(Run).join(Run.conditions).filter((Condition.type == ct) & (Condition.int_value < 200)).all()
-
-        runs = self.db.session.query(Run).join(Run.conditions).join(Condition.type)\
-            .filter(Run.number > 105)\
-            .filter(((ConditionType.name == "two") & (Condition.int_value < 900)) | ((ConditionType.name == "one") & (Condition.int_value > 200)))
-
-        print type(ConditionType.name == "haha")
-
-        print str(runs)
-
-        print runs.all()
 
     def test_usage_of_string_values(self):
         self.db.create_condition_type("string_val", ConditionType.STRING_FIELD, "")
@@ -175,7 +162,7 @@ class TestConditions(unittest.TestCase):
         val = self.db.get_condition(1, "lunch_bell_rang")
         self.assertEqual(val.value, time)
         self.assertEqual(val.time_value, time)
-        print val.value
+
 
     def test_use_run_instead_of_run_number(self):
 

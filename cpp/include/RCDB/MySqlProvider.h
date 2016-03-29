@@ -72,7 +72,7 @@ namespace rcdb {
         virtual ~MySqlProvider() override { }
 
         /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
-        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) override
+        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType, uint64_t runNumber) override
         {
             using namespace std;
 
@@ -83,10 +83,10 @@ namespace rcdb {
             static const int text_column = 4;
             static const int time_column = 5;
             uint64_t typeId = cndType.GetId();
-            uint64_t run = _run;
+            uint64_t run = runNumber;
 
             string query = string("SELECT id, bool_value, float_value, int_value, text_value, time_value FROM conditions WHERE run_number =") +
-                           to_string(_run) +
+                           to_string(runNumber) +
                            string(" AND condition_type_id = ") +
                            to_string(cndType.GetId());
 
@@ -143,9 +143,9 @@ namespace rcdb {
         }
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        std::unique_ptr<Condition> GetCondition(const std::string& name)
+        std::unique_ptr<Condition> GetCondition(const std::string& name, uint64_t runNumber)
         {
-            return GetCondition(_typesByName[name]);
+            return GetCondition(_typesByName[name], runNumber);
         }
 
         void Test() {

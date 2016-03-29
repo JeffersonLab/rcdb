@@ -6,7 +6,7 @@
 
 namespace rcdb
 {
-    ///Internal temporary class to pass connection info to mysql provider
+    ///Internal temporary class to pass MySQL connection info to mysql provider
     class MySQLConnectionInfo
     {
     public:

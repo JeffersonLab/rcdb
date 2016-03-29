@@ -6,19 +6,16 @@ import argparse
 from rcdb import ConditionType
 
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("path", help="Path of the sqlite database to create")
-    args = parser.parse_args()
+def create_db_structure(db):
+    """Creates schema and fill it with values
 
-    print ("create database:")
-    print args.path
-    if os.path.exists(args.path):
-        print "Such file already exists. Remove it first or give another path"
-        exit(1)
+    :param db: rcdb.RCDBProvider for the database
+    :type db: rcdb.RCDBProvider
+    """
+    assert isinstance(db, rcdb.RCDBProvider)
 
-    db = rcdb.RCDBProvider("sqlite:///"+args.path, check_version=False)
     rcdb.provider.destroy_all_create_schema(db)
+
     # create run
     db.create_run(1)
     db.create_run(2)
@@ -50,4 +47,35 @@ if __name__ == "__main__":
 
     db.add_condition(1, "blob_cnd", "F4D1")
     db.add_condition(2, "blob_cnd", "1235")
+
+    # Run with not all conditions filled
+    db.create_run(3)
+    db.add_condition(3, "float_cnd", -0.2)
+    db.add_condition(3, "int_cnd", 20)
+
+
+if __name__ == "__main__":
+
+    # Tell the dangers!
+
+    print "This script is to create DB schema and fill it with test values to run UNIT TESTS"
+    print "(!) WARNING the database structure will be removed and recreated. All data will be lost"
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("connection_str", help="Connection string to the database")
+    args = parser.parse_args()
+
+    connection_str = args.connection_str
+
+    # validate SQLite link
+    if connection_str.startswith("sqlite") and os.path.exists(connection_str[10:]):
+        print "Such file already exists. Remove it first or give another path"
+        exit(1)
+
+    # Connection to DB
+    db = rcdb.RCDBProvider(connection_str, check_version=False)
+
+    # Create DB structure
+    create_db_structure(db)
+
     print("database created")

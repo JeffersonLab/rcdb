@@ -18,23 +18,14 @@ namespace rcdb {
     class DataProvider {
     public:
         /** Gets conditions by conditionType (@see GetRun and SetRun) */
-        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType) = 0;
-
-
+        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType, uint64_t runNumber) = 0;
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        std::unique_ptr<Condition> GetCondition(const std::string& name)
+        std::unique_ptr<Condition> GetCondition(const std::string& name, uint64_t runNumber)
         {
-            return GetCondition(_typesByName[name]);
+            return GetCondition(_typesByName[name], runNumber);
         }
 
-        uint64_t GetRun() const {
-            return _run;
-        }
-
-        void SetRun(uint64_t _run) {
-            DataProvider::_run = _run;
-        }
 
     protected:
 
@@ -49,7 +40,7 @@ namespace rcdb {
 
         std::vector<ConditionType> _types;                          /// Condition types
         std::map<std::string, ConditionType> _typesByName;          /// Condition types mapped by name
-        uint64_t _run;
+
     private:
         bool mAreConditionTypesLoaded;
     };

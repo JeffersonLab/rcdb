@@ -38,9 +38,28 @@ namespace rcdb{
             {
                 _provider.reset(new MySqlProvider(_connectionString));
             }
+        }
 
+        bool IsConnected()
+        {
+            return _provider.get() != nullptr;
+        }
+
+        void Close()
+        {
 
         }
+
+        uint64_t GetRun() const {
+            return _run;
+        }
+
+        void SetRun(uint64_t _run) {
+            DataProvider::_run = _run;
+        }
+
+
+
 
 
 
@@ -50,7 +69,7 @@ namespace rcdb{
         std::mutex _mutex;    /// This class  uses this mutex
 
 
-
+        uint64_t _run;
         Connection(const Connection &) = delete;               // disable Copy constructor
         Connection &operator=(const Connection &) = delete;    // disable Copy assignment
 

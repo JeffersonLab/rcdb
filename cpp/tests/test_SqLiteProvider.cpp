@@ -3,21 +3,34 @@
 //
 #include "catch.hpp"
 #include "RCDB/SqLiteProvider.h"
+#include <cstdlib>
 
 using namespace rcdb;
 
 
 TEST_CASE("General test of SqLite", "[sqlite]") {
     using namespace std;
-    string path("/home/romanov/gluex/rcdb/rcdb/rcdb/python/tests/test.sqlite.db");
+
+    const char* env = std::getenv("RCDB_TEST_CONNECTION");
+    if(!env) {
+        FAIL("Environment variable RCDB_TEST_CONNECTION is not set");
+    }
+
+
+    if(string(env).find("sqlite://") == string::npos) {
+        // The test only works with SQLite
+        return;
+    }
+
+    string path(env);
     SqLiteProvider prov(path);
-    prov.SetRun(1);
-    auto cnd = prov.GetCondition(string("int_cnd"));
+
+    auto cnd = prov.GetCondition(string("int_cnd"), 1);
     REQUIRE(cnd);
     REQUIRE(cnd->ToInt() == 5);
 
-    prov.SetRun(99999999999);
-    cnd = prov.GetCondition(string("int_cnd"));
+
+    cnd = prov.GetCondition(string("int_cnd"), 99999999999);
     REQUIRE_FALSE(cnd);
 
 

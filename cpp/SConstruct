@@ -47,8 +47,8 @@ help = """
 {HEADER}{BOLD}RCDB build scripts options:{ENDC}
 (default values are shown)
 
-{OKBLUE}with-tests{ENDC}={OKGREEN}true{ENDC}   Build unit tests. Will be as ./bin/test_rcdb_cpp
-{OKBLUE}with-mysql{ENDC}={OKGREEN}true{ENDC}   Build with MySql support
+{BOLD}{OKBLUE}with-tests{ENDC}={OKGREEN}true{ENDC}   Build unit tests. Will be as ./bin/test_rcdb_cpp
+{BOLD}{OKBLUE}with-mysql{ENDC}={OKGREEN}true{ENDC}   Build with MySql support
 
 """.format(
 HEADER = HEADER, OKBLUE = OKBLUE, OKGREEN = OKGREEN, WARNING = WARNING,
@@ -72,7 +72,8 @@ Export('default_env')
 #default_env.Repository('src')
 
 #Attach SConsctipts
-SConscript('src/SQLiteCpp/SConscript', 'default_env', variant_dir='tmp/SQLiteCpp', duplicate=0)
+SConscript('src/SQLite/SConscript', 'default_env', variant_dir='tmp/SqLite', duplicate=0)
+SConscript('src/SQLiteCpp/SConscript', 'default_env', variant_dir='tmp/SqLiteCpp', duplicate=0)
 SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
 
 
