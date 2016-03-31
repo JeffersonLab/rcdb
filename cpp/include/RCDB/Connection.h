@@ -42,21 +42,25 @@ namespace rcdb{
 
         bool IsConnected()
         {
+            std::lock_guard<std::mutex> guard(_mutex);
             return _provider.get() != nullptr;
         }
 
         void Close()
         {
-
+            std::lock_guard<std::mutex> guard(_mutex);
+            _provider.reset();
         }
 
         uint64_t GetRun() const {
             return _run;
         }
 
-        void SetRun(uint64_t _run) {
-            DataProvider::_run = _run;
+        void SetRun(uint64_t run) {
+            _run = run;
         }
+
+
 
 
 

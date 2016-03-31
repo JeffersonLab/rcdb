@@ -56,7 +56,7 @@ namespace rcdb {
         virtual ~SqLiteProvider() { }                                   // Destructor
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType, uint64_t runNumber) override
+        virtual std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType& cndType) override
         {
             // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
             static const int bool_column = 1;
@@ -112,9 +112,9 @@ namespace rcdb {
         }
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        std::unique_ptr<Condition> GetCondition(const std::string& name, uint64_t runNumber)
+        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
         {
-            return GetCondition(_typesByName[name], runNumber);
+            return GetCondition(runNumber, _typesByName[name]);
         }
 
         void Test() {

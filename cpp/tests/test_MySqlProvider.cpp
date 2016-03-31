@@ -26,12 +26,12 @@ TEST_CASE("General test of MySql", "[mysql]") {
 
     MySqlProvider prov(env_p);
 
-    auto cnd = prov.GetCondition(string("int_cnd"), 1);
+    auto cnd = prov.GetCondition(1, string("int_cnd"));
     REQUIRE(cnd);
     REQUIRE(cnd->ToInt() == 5);
 
 
-    cnd = prov.GetCondition(string("int_cnd"), 99999999999);
+    cnd = prov.GetCondition(99999999999, string("int_cnd"));
     REQUIRE_FALSE(cnd);
 
 

@@ -72,7 +72,7 @@ namespace rcdb {
         virtual ~MySqlProvider() override { }
 
         /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
-        virtual std::unique_ptr<Condition> GetCondition(const ConditionType& cndType, uint64_t runNumber) override
+        virtual std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType& cndType) override
         {
             using namespace std;
 
@@ -143,9 +143,9 @@ namespace rcdb {
         }
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */
-        std::unique_ptr<Condition> GetCondition(const std::string& name, uint64_t runNumber)
+        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
         {
-            return GetCondition(_typesByName[name], runNumber);
+            return GetCondition(runNumber, _typesByName[name]);
         }
 
         void Test() {
