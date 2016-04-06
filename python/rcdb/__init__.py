@@ -19,16 +19,35 @@ blob_delimiter_replacement = "&delimiter;"
 
 SQL_SCHEMA_VERSION = 1
 
+
+class UpdateReasons(object):
+    """Class holds a default values of UpdateContext.reason field
+    Attributes:
+        START -  means update goes after 'GO', beginning of the data taking
+        UPDATE - after run in started, RCDB is being update each minute. That is how it is done
+        END -    after run is ended
+        """
+    START = 'start'
+    UPDATE = 'update'
+    END = 'end'
+
+
 # -------------------------------------------------
 # class holding a context of the update operations
 # -------------------------------------------------
 class UpdateContext(object):
-    """Updates context"""
+    """Updates context
 
-    def __init__(self, db, context):
+        Attributes:
+            self.db - RCDBProvider with connection
+            self.reason - one of UpdateReasons or empty string
+            self.run - Run object
+    """
+
+    def __init__(self, db, reason):
         self.db = db
-        self.context = context          # Context in which daq is called '', 'start', 'update', 'end'
-        self.run = None                 # Run object
+        self.reason = reason          # Context in which daq is called '', 'start', 'update', 'end'
+        self.run = None               # Run object
 
 
 # -------------------------------------------------

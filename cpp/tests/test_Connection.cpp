@@ -1,24 +1,20 @@
 #include "catch.hpp"
-#include "RCDB/MySqlProvider.h"
+#include "RCDB/Connection.h"
 #include <cstdlib>
 
 
 using namespace rcdb;
 using namespace std;
 
-TEST_CASE("General test of MySql", "[mysql]") {
+TEST_CASE("General test of Connection", "[connection]") {
 
     const char* env_p = std::getenv("RCDB_TEST_CONNECTION");
     if(!env_p) {
         FAIL("Environment variable RCDB_TEST_CONNECTION is not set");
     }
 
-    if(string(env_p).find("mysql://") == string::npos) {
-        // The test only works with MySQL
-        return;
-    }
 
-    MySqlProvider prov(env_p);
+    Connection prov(env_p);
 
     auto cnd = prov.GetCondition(1, string("int_cnd"));
     REQUIRE(cnd);
@@ -28,3 +24,4 @@ TEST_CASE("General test of MySql", "[mysql]") {
     cnd = prov.GetCondition(99999999999, string("int_cnd"));
     REQUIRE_FALSE(cnd);
 }
+

@@ -13,6 +13,7 @@ cpp_folder = os.path.join(this_folder, "cpp")
 cpp_bin_folder = os.path.join(cpp_folder, "bin")
 cpp_test_executable = os.path.join(cpp_bin_folder, "rcdb_test_cpp")
 
+
 def load_tests(loader, tests, pattern):
     return loader.discover(python_tests_folder)
 

@@ -60,6 +60,19 @@ namespace rcdb{
             _run = run;
         }
 
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType& cndType)
+        {
+
+            return _provider->GetCondition(runNumber, cndType);
+        }
+
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
+        {
+            return GetCondition(runNumber, name);
+        }
+
 
 
 

@@ -24,7 +24,7 @@ set(SOURCE_FILES
         tests/test_MySqlProvider.cpp
         include/RCDB/SqLiteProvider.h
         tests/test_SqLiteProvider.cpp
-        include/RCDB/DataProvider.h include/RCDB/Condition.h include/RCDB/Exceptions.h include/RCDB/MySqlConnectionInfo.h include/RCDB/Connection.h)
+        include/RCDB/DataProvider.h include/RCDB/Condition.h include/RCDB/Exceptions.h include/RCDB/MySqlConnectionInfo.h include/RCDB/Connection.h tests/test_Connection.cpp)
 
 add_executable(test_rcdb_cpp ${SOURCE_FILES})
 target_link_libraries(test_rcdb_cpp mysqlclient dl pthread)
