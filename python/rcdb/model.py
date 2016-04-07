@@ -425,6 +425,53 @@ class ConditionType(ModelBase):
             field = Condition.time_value
         return field
 
+    def convert_value(self, value):
+        # validate value
+        if self.value_type == ConditionType.FLOAT_FIELD:
+            try:
+                value = float(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits float as value. {}".format(self, err)
+                raise ValueError(message)
+        elif self.value_type == ConditionType.INT_FIELD:
+            try:
+                value = int(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits int as value. {}".format(self, err)
+                raise ValueError(message)
+        elif self.value_type == ConditionType.TIME_FIELD and not isinstance(value, datetime.datetime):
+            message = "Condition type '{}' awaits datetime as value. '{}' is given".format(self, type(value))
+            raise ValueError(message)
+        elif self.value_type == ConditionType.BOOL_FIELD:
+            try:
+                value = bool(value)
+            except ValueError as err:
+                message = "Condition type '{}' awaits bool as value. {}".format(self, err)
+                raise ValueError(message)
+        return value
+
+    def values_are_equal(self, left_value, right_value):
+        """Function compares 2 values and return true if values are differ.
+        The function takes in account floating point comparison if value_type is FLOAT_FIELD
+        Also it validates both values
+
+        :param left_value: Left value. Could be Condition object
+        :param right_value: Right value. Could be Condition object"""
+
+        if isinstance(left_value, Condition):
+            left_value = left_value.value
+        if isinstance(right_value, Condition):
+            right_value = right_value.value
+
+        left_value = self.convert_value(left_value)
+        right_value = self.convert_value(right_value)
+
+        # if value is float, use precision
+        if self.value_type == ConditionType.FLOAT_FIELD:
+            return is_close(left_value, right_value)
+        else:
+            return left_value == right_value
+
     def __repr__(self):
         return "<ConditionType id='{}', name='{}', value_type={}>"\
                 .format(self.id, self.name, self.value_type)
@@ -460,13 +507,9 @@ class Condition(ModelBase):
     run_number = Column(Integer, ForeignKey('runs.number'))
     run = relationship("Run",  back_populates="conditions")
 
-    _condition_type_id = Column('condition_type_id', Integer, ForeignKey('condition_types.id'))
+    condition_type_id = Column('condition_type_id', Integer, ForeignKey('condition_types.id'))
     type = relationship("ConditionType", back_populates="values")
     """:type: ConditionType"""
-
-    @hybrid_property
-    def condition_type_id(self):
-        return self._condition_type_id
 
     created = Column(DateTime, default=datetime.datetime.now)
 
@@ -595,3 +638,19 @@ def db_text_to_dic(value_str):
 def db_text_to_float_dic(value_str):
     return {key: float(value) for key, value in db_text_to_dic(value_str).items()}
 
+
+def is_close(a, b, rel_tol=1e-09, abs_tol=0.0):
+    """PEP 0485 -- A Function for testing approximate equality
+    :param b: 1st value to compare
+    :param a: 2nd value to compare
+    :param rel_tol: is a relative tolerance, it is multiplied by the greater of the magnitudes of the two arguments;
+    :param abs_tol: is an absolute tolerance that is applied as-is in all cases. If the difference is less than either
+    of those tolerances, the values are considered equal
+
+    rel_tol is a relative tolerance, it is multiplied by the greater of the magnitudes of the two arguments;
+    as the values get larger, so does the allowed difference between them while still considering them equal.
+    abs_tol is an absolute tolerance that is applied as-is in all cases. If the difference is less than either
+    of those tolerances, the values are considered equal
+
+    """
+    return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)

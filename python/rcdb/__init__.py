@@ -46,8 +46,8 @@ class UpdateContext(object):
 
     def __init__(self, db, reason):
         self.db = db
-        self.reason = reason          # Context in which daq is called '', 'start', 'update', 'end'
-        self.run = None               # Run object
+        self.reason = reason  # Context in which daq is called '', 'start', 'update', 'end'
+        self.run = None  # Run object
 
 
 # -------------------------------------------------
@@ -125,5 +125,3 @@ def create_condition_types(db):
                           "True if a run has valid run-end record. "
                           "False means the run was aborted/crashed at some point")
     create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of ")
-
-

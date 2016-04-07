@@ -142,7 +142,6 @@ class TestConditions(unittest.TestCase):
             self.db.add_condition(i, "one", (i-100)*10)
             self.db.add_condition(i, "two", (i-100)*100)
 
-
     def test_usage_of_string_values(self):
         self.db.create_condition_type("string_val", ConditionType.STRING_FIELD, "")
         self.db.add_condition(1, "string_val", "test test")
@@ -172,33 +171,6 @@ class TestConditions(unittest.TestCase):
 
         self.assertEqual(val.run_number, 2)
 
-    def test_auto_commit_false(self):
-        """ Test auto_commit feature that allows to commit changes to DB later and"""
-        ct = self.db.create_condition_type("ac", ConditionType.INT_FIELD, "")
-
-        # Add condition to addition but don't commit changes
-        self.db.add_condition(1, ct, 10, auto_commit=False)
-
-        # But the object is selectable already
-        val = self.db.get_condition(1, ct)
-        self.assertEqual(val.value, 10)
-
-        # Commit session. Now "ac"=10 is stored in the DB
-        self.db.session.commit()
-
-        # Now we deffer committing changes to DB. Object is in SQLAlchemy cache
-        self.db.add_condition(1, ct, 20, True, False)
-        self.db.add_condition(1, ct, 30, True, False)
-
-        # If we select this object, SQLAlchemy gives us changed version
-        val = self.db.get_condition(1, ct)
-        self.assertEqual(val.value, 30)
-
-        # Roll back changes
-        self.db.session.rollback()
-        val = self.db.get_condition(1, ct)
-        self.assertEqual(val.value, 10)
-
     def test_get_condition(self):
         self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
         self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
@@ -210,11 +182,21 @@ class TestConditions(unittest.TestCase):
     def test_double_penetration(self):
         self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
         self.db.create_run(5665)
-        self.db.add_condition(5665, "one", 10, None, True)
-        self.db.add_condition(5665, "one", 10, None, True)
+        self.db.add_condition(5665, "one", 10)
+        self.db.add_condition(5665, "one", 10)
         run = self.db.get_run(5665)
 
         self.assertEqual(len(run.conditions), 1)
+
+    def test_add_conditions_list_tuples(self):
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
+        run = self.db.create_run(5665)
+        result = self.db.add_conditions(5665, [("one", 10), ("two", 20)])
+        self.assertEqual(len(run.conditions), 2)
+        self.assertEqual(len(result), 2)
+        self.assertSequenceEqual(result, run.conditions)
+
 
 
 
