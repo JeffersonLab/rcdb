@@ -188,14 +188,28 @@ class TestConditions(unittest.TestCase):
 
         self.assertEqual(len(run.conditions), 1)
 
-    def test_add_conditions_list_tuples(self):
+    def test_add_conditions_list_lists(self):
         self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
         self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
         run = self.db.create_run(5665)
-        result = self.db.add_conditions(5665, [("one", 10), ("two", 20)])
+        result = self.db.add_conditions(5665, [["one", 10], ["two", 20]])
         self.assertEqual(len(run.conditions), 2)
         self.assertEqual(len(result), 2)
         self.assertSequenceEqual(result, run.conditions)
+
+    def test_add_conditions_dict(self):
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
+        run = self.db.create_run(5665)
+        result = self.db.add_conditions(5665, {"one": 10, "two": 20})
+        self.assertEqual(len(run.conditions), 2)
+        self.assertEqual(len(result), 2)
+        self.assertSequenceEqual(result, run.conditions)
+
+    def test_add_conditions_failure(self):
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
+        self.assertRaises(KeyError, self.db.add_conditions, 1, [["one", 10], ["one", 20]])
+
 
 
 

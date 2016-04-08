@@ -1,14 +1,14 @@
+import json
+import logging
+
+from rcdb import UpdateContext, UpdateReasons, DefaultConditions
+from rcdb.coda_parser import CodaRunLogParseResult
+from rcdb.log_format import BraceMessage as Lf
+from rcdb.provider import RCDBProvider
 
 
 # Setup logger
-import logging
-
-from rcdb import UpdateContext, UpdateReasons
-from rcdb.coda_parser import CodaRunLogParseResult
-from rcdb.model import ConditionType, Condition, Run
-from rcdb.provider import RCDBProvider
-from rcdb.log_format import BraceMessage as Lf
-log = logging.getLogger('rcdb.coda_parser')         # create run configuration standard logger
+log = logging.getLogger('rcdb.update_coda')         # create run configuration standard logger
 
 
 def update_coda_conditions(context, parse_result):
@@ -33,47 +33,65 @@ def update_coda_conditions(context, parse_result):
 
     if context.reason == UpdateReasons.END and not db.get_run(parse_result.run_number):
         log.info(Lf("Run '{}' is not found in DB. But the update reason is end of run. "
-                    "Considering there where no GO. Just prestart and Stop ", parse_result.run_number))
+                    "Considering there where no GO. Only prestart and then Stop ", parse_result.run_number))
         return
 
     run = db.create_run(parse_result.run_number)
 
-
-    # Run number
+    conditions = []
 
     # Run type condition
-    db.add_condition(run, DefaultConditions.RUN_TYPE, xml_root.attrib["runtype"], True, auto_commit)
+    if parse_result.run_type is not None:
+        conditions.append((DefaultConditions.RUN_TYPE, parse_result.run_type))
 
-    # Session
-    db.add_condition(run, DefaultConditions.SESSION, xml_root.attrib["session"], True, auto_commit)
+    # Session (like hdops)
+    if parse_result.session is not None:
+        conditions.append((DefaultConditions.SESSION, parse_result.session))
 
     # Set the run as not properly finished (We hope that the next section will
-    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, False, True, auto_commit)
+    if parse_result.has_run_end is not None:
+        conditions.append((DefaultConditions.IS_VALID_RUN_END, parse_result.has_run_end))
 
-    # Start time
-    db.add_run_start_time(run, start_time)
+    # The number of events in the run
+    if parse_result.event_count is not None:
+        conditions.append((DefaultConditions.EVENT_COUNT, parse_result.event_count))
 
-    # First, we set update time as run end if we have End time we overwrite it
-    db.add_run_end_time(run, update_time)
+    # a list of names of <components> section . E.g. ['ROCBCAL13', 'ROCFDC11', ...]
+    if parse_result.components is not None:
+        conditions.append((DefaultConditions.COMPONENTS, json.dumps(parse_result.components)))
 
-    # End time
-    db.add_run_end_time(run, end_time)
-
-    # Event number
-    db.add_condition(run, DefaultConditions.EVENT_COUNT, event_count, True, auto_commit)
-
-    # Components used
-    db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), True, auto_commit)
+    # dictionary with contents of the <components> section
+    if parse_result.component_stats is not None:
+        conditions.append((DefaultConditions.COMPONENT_STATS, json.dumps(parse_result.component_stats)))
 
     # RTVs
-    db.add_condition(run, DefaultConditions.RTVS, json.dumps(rtvs), True, auto_commit)
+    if parse_result.rtvs is not None:
+        conditions.append((DefaultConditions.RTVS, json.dumps(parse_result.rtvs)))
 
-    # Set the run as properly finished
-    db.add_condition(run, DefaultConditions.IS_VALID_RUN_END, True, True, auto_commit)
+    # Daq comment by user
+    if parse_result.user_comment is not None:
+        conditions.append((DefaultConditions.USER_COMMENT, parse_result.user_comment))
 
-    # Number of events
-    db.add_condition(run, DefaultConditions.COMPONENTS, json.dumps(components), True, auto_commit)
-    db.add_condition(run, DefaultConditions.COMPONENT_STATS, json.dumps(component_stats), True, auto_commit)
+    # config file name. E.g. TRG_COSMIC_BCAL_raw_cdc_b1
+    if parse_result.run_config is not None:
+        conditions.append((DefaultConditions.RUN_CONFIG, parse_result.run_config))
 
+    # SAVE CONDITIONS
+    db.add_conditions(run, conditions, replace=True)
 
-    db.add_condition(run, DefaultConditions.USER_COMMENT, user_comment, True, auto_commit)
+    log.info(Lf("update_coda: Saved {} conditions to DB", len(conditions)))
+
+    # Start and end times
+    if parse_result.start_time is not None:
+        run.start_time = parse_result.start_time     # Time of the run start
+        log.info(Lf("Run start time is {}", parse_result.start_time))
+
+    if parse_result.end_time is not None:
+        run.end_time = parse_result.end_time         # Time of the run end
+        log.info(Lf("Run end time is {}. Set from end_time record", parse_result.end_time))
+    else:
+        if parse_result.update_time is not None:
+            run.end_time = parse_result.update_time  # Fallback, set time when the coda log file is written as end time
+            log.info(Lf("Run end time is {}. Set from update_time record", parse_result.update_time))
+
+    db.session.commit()     # Save run times
