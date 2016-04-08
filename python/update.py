@@ -118,6 +118,8 @@ def parse_files():
         except Exception as ex:
             log.warn("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
 
+    log.debug("End of update")
+
 
 # entry point
 if __name__ == "__main__":
