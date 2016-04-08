@@ -229,8 +229,9 @@ def update_rcdb_conds(db, run):
     # Add all the values that we've determined to the RCDB
     for (key, value) in conditions.items():
         log.debug(Lf("Adding cnd '{}'='{}'", key, value))
-        db.add_condition(run, key, value, True, auto_commit=False)
-    db.session.commit()
+
+    db.add_conditions(run, conditions, True)
+
     log.debug("Committed to DB. End of update_rcdb_conds()")
 
 # entry point

@@ -27,8 +27,6 @@ class TestParseSeveralFiles(unittest.TestCase):
     def tearDown(self):
         self.db.disconnect()
 
-    def tearDown(self):
-        self.db.disconnect()
 
     @unittest.skip("rework of how coda files are parsed")
     def test_parse_intermediate_file(self):
