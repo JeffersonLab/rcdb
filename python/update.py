@@ -11,6 +11,8 @@ from datetime import datetime
 
 
 # setup logger
+from update_coda import update_coda_conditions
+
 log = logging.getLogger('rcdb')               # create run configuration standard logger
 log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
 log.setLevel(logging.DEBUG)                           # print everything. Change to logging.INFO for less output
@@ -71,37 +73,56 @@ def parse_files():
         print_usage()
         sys.exit(2)
 
-    must_update_epics = True if "--modules=update_epics" in sys.argv else False
+    must_update_epics = True if "--update=epics,coda" in sys.argv else False
     log.setLevel(logging.DEBUG if "--verbose" in sys.argv else logging.INFO)
+
+    update_reason = ""
+
+    if "--reason=start" in sys.argv:
+        update_reason = 'start'
+    if "--reason=update" in sys.argv:
+        update_reason = 'update'
+    if "--reason=end" in sys.argv:
+        update_reason = 'end'
 
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
+    # Create update context
+    update_context = rcdb.UpdateContext(db, update_reason)
+
     # Parse coda xml and save to DB
     log.debug(lf("Parsing coda_xml_log_file='{}'", coda_xml_log_file))
+    coda_parse_result = coda_parser.parse_file(coda_xml_log_file)
 
-    run, run_config_file = coda_parser.parse_file(db, coda_xml_log_file)
-    log.debug(lf("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'", coda_xml_log_file, run, run_config_file))
+    run_number = coda_parse_result.run_number
+    run_config_file = coda_parse_result.run_config_file
+    log.debug(lf("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'",
+                 coda_xml_log_file, run_number, run_config_file))
 
+    # Conditions from coda file save to DB
+    update_coda_conditions(update_context, coda_parse_result)
+
+    # Save coda file to DB
     log.debug(lf("Adding coda_xml_log_file to DB", ))
-    db.add_configuration_file(run, coda_xml_log_file, overwrite=True)
+    db.add_configuration_file(run_number, coda_xml_log_file, overwrite=True)
 
     log.debug(lf("Adding run_config_file to DB", ))
     # Parse run configuration file and save to DB
     if run_config_file:
         if os.path.isfile(run_config_file) and os.access(run_config_file, os.R_OK):
             # mmm just save for now
-            db.add_configuration_file(run, run_config_file)
+            db.add_configuration_file(run_number, run_config_file)
         else:
             log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
 
     # Get EPICS variables
-    if must_update_epics and run:
+    if must_update_epics and run_number:
         log.debug(lf("Performing update_epics.py", ))
         # noinspection PyBroadException
         try:
             import update_epics
-            update_epics.update_rcdb_conds(db, run)
+            update_epics.update_rcdb_conds(db, run_number)
         except Exception as ex:
             log.warn("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
 
