@@ -1,28 +1,20 @@
-import sys, os
-import xml.etree.ElementTree as ET
 import logging
-import rcdb
+import os
+import sys
 
-from rcdb.log_format import BraceMessage as lf
+import rcdb
 from rcdb import ConfigurationProvider
 from rcdb import coda_parser
-
-from datetime import datetime
-
+from rcdb.log_format import BraceMessage as lf
 
 # setup logger
 from update_coda import update_coda_conditions
 
-log = logging.getLogger('rcdb')               # create run configuration standard logger
-log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
-log.setLevel(logging.DEBUG)                           # print everything. Change to logging.INFO for less output
+log = logging.getLogger('rcdb')                     # create run configuration standard logger
+log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
+log.setLevel(logging.DEBUG)                         # print everything. Change to logging.INFO for less output
 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
-
-
-
-
-
 
 # noinspection SqlDialectInspection
 def print_usage():
