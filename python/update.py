@@ -103,6 +103,7 @@ def parse_files():
 
     coda_parse_result = coda_parser.parse_file(coda_xml_log_file)
 
+
     run_number = coda_parse_result.run_number
     run_config_file = coda_parse_result.run_config_file
     log.debug(F("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'",
