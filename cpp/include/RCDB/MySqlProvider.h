@@ -6,7 +6,7 @@
 #define RCDB_CPP_MYSQLRCDBCONNECTION_H
 
 //#include <mysql/my_global.h>
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include <exception>
 #include <stdexcept>
 #include "DataProvider.h"

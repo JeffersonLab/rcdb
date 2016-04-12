@@ -59,7 +59,7 @@ print(help)
 #Create 'default' environment. Other environments will be a copy of this one
 default_env = Environment(
     #>> CCDB related default staff <<
-    CPPPATH = ['#include', '#src', '/usr/include'], #, '#include/SQLite'],
+    CPPPATH = ['#include', '#include/SQLite', '#src', '/usr/include'], #, '#include/SQLite'],
     ENV = os.environ,
     CXXFLAGS = '-std=c++11',
 )

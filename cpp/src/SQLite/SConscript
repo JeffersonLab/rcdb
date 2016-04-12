@@ -10,7 +10,7 @@ lib_sources = [
     "sqlite3.c",
 ]
 
-rcdb_sqlite_lib = env.StaticLibrary('rcdb_sqlite_lib', source = lib_sources, LIBPATH='#lib', CPPFLAGS = '-fPIC')
-ccdb_sqlite_install = env.Install('#lib', rcdb_sqlite_lib)
+rcdb_sqlite_lib = env.StaticLibrary('rcdb_sqlite_lib', source = lib_sources, LIBS=['pthread', 'dl', 'm'], LIBPATH='#lib', CPPFLAGS = '-fPIC')
+rcdb_sqlite_install = env.Install('#lib', rcdb_sqlite_lib)
 
 Export('rcdb_sqlite_lib')

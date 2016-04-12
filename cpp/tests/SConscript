@@ -2,8 +2,10 @@
 # Tests SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_sqlite_cpp_lib')
+Import('default_env', 'rcdb_sqlite_cpp_lib', 'rcdb_sqlite_lib')
 env = default_env.Clone()
+env.Append(LIBPATH='#lib')
+env.Append(LIBS=[rcdb_sqlite_cpp_lib, rcdb_sqlite_lib, 'mysqlclient'])
 
 #Configure environment to create tests
 test_sources = [
@@ -17,14 +19,14 @@ test_sources = [
 if ARGUMENTS.get("with-mysql","true")=="true":
     #User wants mysql!
     print
-    print "Building CCDB using MySQL dependencies"
-    print "To build CCDB without mysql dependencies. Run scons with 'with-mysql=false'"
+    print "Building RCDB using MySQL dependencies"
+    print "To build RCDB without mysql dependencies. Run scons with 'with-mysql=false'"
     print
 
     if not WhereIs("mysql_config"):
         print
         print 	"ERROR. Can't find 'mysql_config' utility which is needed to build CCDB with MySQL support."
-        print 	"Two options is possible to build CCDB:"
+        print 	"Two options is possible to build RCDB:"
         print   "  1. Install mysql_config (RHEL has it in mysql-devel package, Ubuntu in libmysqlclient-dev)"
         print   "  2. Build CCDB without MySQL dependencies (use 'mysql=no' scons flag)"
         print
@@ -34,12 +36,14 @@ if ARGUMENTS.get("with-mysql","true")=="true":
         "test_MySqlProvider.cpp",]
 
     test_sources.extend(mysql_sources)
-    env.Append(CPPDEFINES='CCDB_MYSQL')
+    env.Append(CPPDEFINES='RCDB_MYSQL')
     env.ParseConfig('mysql_config --libs --cflags')
+    env.ParseFlags('mysql_config --include')
+    print env.Dump()
 else:
     print "CCDB is being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
 
 
 #Making tests
-rcdb_tests_program = env.Program('rcdb_test_cpp', source = test_sources, LIBS=[rcdb_sqlite_cpp_lib, 'sqlite3', 'mysqlclient'], LIBPATH='#lib')
+rcdb_tests_program = env.Program('rcdb_test_cpp', source = test_sources)
 rcdb_tests_install = env.Install('#bin', rcdb_tests_program)
