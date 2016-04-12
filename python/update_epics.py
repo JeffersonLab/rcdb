@@ -49,7 +49,7 @@ def update_rcdb_conds(db, run):
     # Run can be a rcdb.Run object or a run number
     if not isinstance(run, Run):
         log.debug(Lf("Getting run by number={}", run))
-        run = db.get_run(Run)
+        run = db.get_run(run)
 
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
