@@ -2,6 +2,8 @@ import logging
 import os
 import sys
 import argparse
+from datetime import datetime
+import time
 
 import rcdb
 from rcdb import ConfigurationProvider, UpdateReasons
@@ -11,9 +13,10 @@ from rcdb.log_format import BraceMessage as F
 # setup logger
 from update_coda import update_coda_conditions
 
-log = logging.getLogger('rcdb')                     # create run configuration standard logger
-log.addHandler(logging.StreamHandler(sys.stdout))   # add console output for logger
-log.setLevel(logging.DEBUG)                         # print everything. Change to logging.INFO for less output
+log = logging.getLogger('rcdb')  # create run configuration standard logger
+log.addHandler(logging.StreamHandler(sys.stdout))  # add console output for logger
+log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less output
+
 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
@@ -50,6 +53,15 @@ def print_usage():
 
 
 def parse_files():
+    # We will use this to identify this process in logs. Is done for investigation of double messages
+    script_start_datetime = datetime.now()
+    script_start_time = time.time()
+    script_name = os.urandom(8).encode('hex')
+    script_pid = os.getpid()
+    script_ppid = os.getppid()
+    script_uid = os.getuid()
+    script_start_clock = time.clock()
+
     # check we have arguments
     if len(sys.argv) < 2:
         print("ERROR! Please provide a path to xml data file")
@@ -62,6 +74,8 @@ def parse_files():
     parser.add_argument("--reason", help="Reason of the update. 'start', 'update', 'end' or ''", default="")
     parser.add_argument("--update", help="Comma separated, modules to update", default="")
     parser.add_argument("-c", "--connection", help="The connection string (like mysql://rcdb@localhost/rcdb)")
+    parser.add_argument("--udl", help="UDL link to send messages to UDL logging")
+
     args = parser.parse_args()
 
     # Figure out the parameters
@@ -95,6 +109,11 @@ def parse_files():
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
+    db.add_log_record("", "Opened connection. Scrpt start time: '{}', uname: '{}', pid: '{}', ppid: '{}', "
+                          "uid: '{}', reason: '{}', update: '{}'".format(
+                            script_start_datetime, script_name, script_pid, script_ppid,
+                            script_uid, update_reason, args.update), 0)
+
     # Create update context
     update_context = rcdb.UpdateContext(db, update_reason)
 
@@ -103,11 +122,16 @@ def parse_files():
 
     coda_parse_result = coda_parser.parse_file(coda_xml_log_file)
 
-
     run_number = coda_parse_result.run_number
     run_config_file = coda_parse_result.run_config_file
     log.debug(F("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'",
                 coda_xml_log_file, run_number, run_config_file))
+
+    # >oO DEBUG log message
+    now_clock = time.clock()
+    db.add_log_record("", "'{}':Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}', clocks='{}', time: '{}'"
+                      .format(script_name, coda_xml_log_file, run_number, run_config_file, run_number,
+                              now_clock - script_start_clock, datetime.now()), run_number)
 
     # Conditions from coda file save to DB
     if "coda" in update_parts:
@@ -136,12 +160,27 @@ def parse_files():
         log.debug(F("Performing update_epics.py", ))
         # noinspection PyBroadException
         try:
+            epics_start_clock = time.clock()
             import update_epics
-            update_epics.update_rcdb_conds(db, run_number)
+            conditions = update_epics.update_rcdb_conds(db, run_number)
+            epics_end_clock = time.clock()
+            # >oO DEBUG log message
+            db.add_log_record("",
+                              "'{}': Update epics. beam_current='{}', ecpics_clocks='{}' clocks='{}', time: '{}'"
+                              .format(script_name,  conditions["beam_current"], epics_end_clock - epics_start_clock,
+                                      epics_end_clock - script_start_clock, datetime.now()), run_number)
+
         except Exception as ex:
             log.warn("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
 
     log.debug("End of update")
+
+    # >oO DEBUG log message
+    now_clock = time.clock()
+    db.add_log_record("",
+                      "'{}': End of update. Script proc clocks='{}', wall time: '{}', datetime: '{}'"
+                      .format(script_name, now_clock - script_start_clock, time.time() - script_start_time,
+                              datetime.now()), run_number)
 
 
 # entry point

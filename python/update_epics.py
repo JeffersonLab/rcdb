@@ -233,6 +233,7 @@ def update_rcdb_conds(db, run):
     db.add_conditions(run, conditions, True)
 
     log.debug("Committed to DB. End of update_rcdb_conds()")
+    return conditions
 
 # entry point
 if __name__ == "__main__":
