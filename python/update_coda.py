@@ -76,6 +76,14 @@ def update_coda_conditions(context, parse_result):
     if parse_result.run_config is not None:
         conditions.append((DefaultConditions.RUN_CONFIG, parse_result.run_config))
 
+    # Filename of the last evio file written by CODA ER
+    if parse_result.evio_last_file is not None:
+        conditions.append(('evio_last_file', parse_result.evio_last_file))
+
+    # The number of evio files written by CODA Event Recorder
+    if parse_result.evio_files_count is not None:
+        conditions.append(('evio_files_count', parse_result.evio_files_count))
+
     # SAVE CONDITIONS
     db.add_conditions(run, conditions, replace=True)
 

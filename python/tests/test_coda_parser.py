@@ -57,3 +57,8 @@ class TestCodaParser(unittest.TestCase):
         self.assertEqual(result.has_run_end, True)
         self.assertEqual(result.end_time, awaited_end_time)
         self.assertIn('monitoring test', result.user_comment)
+
+    def test_evio_files(self):
+        result = parse_file(os.path.join(self.this_dir, "10340_run.log"))
+        self.assertEqual(result.evio_files_count, 2)
+        self.assertEqual(result.evio_last_file, "hd_rawdata_010340_001.evio")

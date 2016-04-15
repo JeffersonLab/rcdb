@@ -31,6 +31,9 @@ class CodaRunLogParseResult(object):
         self.run_config_file = None      # config file with full path. E.g. /home/.../TRG_COSMIC_BCAL_raw_cdc_b1.conf
         self.run_config = None           # config file name. E.g. TRG_COSMIC_BCAL_raw_cdc_b1
         self.user_comment = None         # Daq comment by user
+        self.evio_last_file = None       # Filename of the last evio file written by CODA ER
+        self.evio_files_count = None     # The number of evio files written by CODA Event Recorder
+
 
 
 def parse_file(filename):
@@ -211,8 +214,23 @@ def parse_components(parse_result, xml_components):
             find_stat("max-evt-size", float)  # <max-evt-size>0</max-evt-size>
             find_stat("average-evt-size", float)  # <average-evt-size>0</average-evt-size>
 
-            components[xml_component.attrib['name']] = xml_component.attrib['type']
+            component_type = xml_component.attrib['type']
+            components[xml_component.attrib['name']] = component_type
             component_stats[xml_component.attrib['name']] = stats
+
+            if component_type == 'ER':
+                last_file_xml = xml_component.find('out-file')
+                if last_file_xml is not None and last_file_xml.text:
+                    last_file = last_file_xml.text
+                    # the last file is something like: hd_rawdata_011410_055.evio
+                    u_pos = last_file.rfind('_')
+                    d_pos = last_file.find('.')
+                    # noinspection PyBroadException
+                    try:
+                        parse_result.evio_files_count = int(last_file[u_pos + 1:d_pos]) + 1
+                    except:
+                        log.warning(Lf("Can't parse file index for '{}' file", last_file))
+                    parse_result.evio_last_file = last_file
 
         parse_result.components = components
         parse_result.component_stats = component_stats
