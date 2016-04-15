@@ -1,4 +1,20 @@
-# rcdb
-Run Condition DataBase
+##RCDB
+Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
-The code isn't moved to GitHUB yet. Please, use this repository to file bugs and share your ideas using Issues. 
+The interfaces available are:
+- Web site
+- Command line interface (CLI)
+- Python API
+- C++ API
+- Possibly JAVA API
+
+####Documentation:
+https://github.com/JeffersonLab/rcdb/wiki
+
+####Web site:
+One can visit HallD RCDB Web site as demo:  
+https://halldweb.jlab.org/rcdb/
+
+####SQLite db:
+Daily updated SQLite database is available here:  
+https://halldweb.jlab.org/dist/rcdb.sqlite
