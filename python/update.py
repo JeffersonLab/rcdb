@@ -4,6 +4,7 @@ import sys
 import argparse
 from datetime import datetime
 import time
+import traceback
 
 import rcdb
 from rcdb import ConfigurationProvider, UpdateReasons
@@ -109,10 +110,16 @@ def parse_files():
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
-    db.add_log_record("", "Opened connection. Scrpt start time: '{}', uname: '{}', pid: '{}', ppid: '{}', "
-                          "uid: '{}', reason: '{}', update: '{}'".format(
-                            script_start_datetime, script_name, script_pid, script_ppid,
-                            script_uid, update_reason, args.update), 0)
+    db.add_log_record("", "'{}': Start. '{}', reason: '{}', update: '{}, 'pid: '{}', ppid: '{}', uid: '{}', "
+                          .format(
+                                script_name,
+                                script_start_datetime,
+                                update_reason,
+                                args.update,
+                                script_pid,
+                                script_ppid,
+                                script_uid,
+                            ), 0)
 
     # Create update context
     update_context = rcdb.UpdateContext(db, update_reason)
@@ -156,22 +163,29 @@ def parse_files():
     # Parse run configuration file and save to DB
 
     # Get EPICS variables
+    epics_start_clock = time.clock()
     if 'epics' in update_parts and run_number:
         log.debug(F("Performing update_epics.py", ))
         # noinspection PyBroadException
         try:
-            epics_start_clock = time.clock()
             import update_epics
             conditions = update_epics.update_rcdb_conds(db, run_number)
             epics_end_clock = time.clock()
             # >oO DEBUG log message
             db.add_log_record("",
-                              "'{}': Update epics. beam_current='{}', ecpics_clocks='{}' clocks='{}', time: '{}'"
-                              .format(script_name,  conditions["beam_current"], epics_end_clock - epics_start_clock,
+                              "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
+                              .format(script_name, conditions["beam_current"], epics_end_clock - epics_start_clock,
                                       epics_end_clock - script_start_clock, datetime.now()), run_number)
 
         except Exception as ex:
             log.warn("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
+            epics_end_clock = time.clock()
+
+            # >oO DEBUG log message
+            db.add_log_record("",
+                              "'{}': ERROR update epics. error: '{}' trace: '{}' ||epics_clocks:'{}' clocks:'{}' time: '{}'"
+                              .format(script_name, str(ex), traceback.format_exc(),  epics_end_clock - epics_start_clock,
+                                      epics_end_clock - script_start_clock, datetime.now()), run_number)
 
     log.debug("End of update")
 
