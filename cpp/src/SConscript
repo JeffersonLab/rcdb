@@ -1,22 +1,26 @@
 ##
-# Tests SConstcipt files
+# RCDB library SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_s_lib', 'with_mysql')
+Import('default_env')
 env = default_env.Clone()
-env.Append(LIBPATH='#lib')
-env.Append(LIBS=[rcdb_s_lib])
 
-#Configure environment to create tests
-test_sources = [
-    "catch.cpp",
-    "test_ConditionType.cpp",
-    "test_SqLiteProvider.cpp",
+env.Append(CPPFLAGS = '-fPIC')
+env.Append(LIBS=['pthread', 'dl', 'm'])
+
+sources = [
+    "SQLite/sqlite3.c",
+    "SQLiteCpp/Backup.cpp",
+    "SQLiteCpp/Column.cpp",
+    "SQLiteCpp/Database.cpp",
+    "SQLiteCpp/Statement.cpp",
+    "SQLiteCpp/Transaction.cpp"
 ]
+
 
 #Build with mysql or no?
 #Read user flag for using mysql dependencies or not
-if with_mysql:
+if ARGUMENTS.get("with-mysql","true")=="true":
     #User wants mysql!
     print
     print "Building RCDB using MySQL dependencies"
@@ -32,18 +36,25 @@ if with_mysql:
         print
         Exit()
 
-    mysql_sources = [
-        "test_MySqlProvider.cpp",]
+    # No MySQL sources at this moment. So skip next 2 lines
+    # mysql_sources = ["test_MySqlProvider.cpp",]
+    # sources.extend(mysql_sources)
 
-    test_sources.extend(mysql_sources)
     env.Append(CPPDEFINES='RCDB_MYSQL')
     env.ParseConfig('mysql_config --libs --cflags')
     env.ParseFlags('mysql_config --include')
-
 else:
     print "CCDB is being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
 
 
-#Making tests
-rcdb_tests_program = env.Program('rcdb_test_cpp', source = test_sources)
-rcdb_tests_install = env.Install('#bin', rcdb_tests_program)
+# Making dynamic library
+rcdb_lib = env.Library('rcdb_lib',  source = sources)
+rcdb_lib_install = env.Install('#lib', rcdb_lib)
+
+# Making static library
+rcdb_s_lib = env.StaticLibrary('rcdb_s_lib',  source = sources)
+rcdb_s_lib_install = env.Install('#lib', rcdb_s_lib)
+
+# Export all
+Export('rcdb_lib')
+Export('rcdb_s_lib')

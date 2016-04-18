@@ -31,6 +31,9 @@ def supports_color():
         return False
     return True
 
+def bool_to_colored_str(value):
+    return "{OKGREEN}true{ENDC}" if value else "{FAIL}false{ENDC}"
+
 
 if supports_color():
     HEADER = '\033[95m'
@@ -43,14 +46,18 @@ if supports_color():
     UNDERLINE = '\033[4m'
 
 
-help = """
+with_mysql = ARGUMENTS.get("with-mysql","true")=="true"
+with_tests = ARGUMENTS.get("with-tests","false")=="true"
+
+
+
+help = ("""
 {HEADER}{BOLD}RCDB build scripts options:{ENDC}
-(default values are shown)
 
-{BOLD}{OKBLUE}with-tests{ENDC}={OKGREEN}true{ENDC}   Build unit tests. Will be as ./bin/test_rcdb_cpp
-{BOLD}{OKBLUE}with-mysql{ENDC}={OKGREEN}true{ENDC}   Build with MySql support
+{BOLD}{OKBLUE}with-tests{ENDC}="""+bool_to_colored_str(with_tests)+""" \tBuild unit tests. Will be as ./bin/test_rcdb_cpp
+{BOLD}{OKBLUE}with-mysql{ENDC}="""+bool_to_colored_str(with_mysql)+""" \tBuild with MySql support
 
-""".format(
+""").format(
 HEADER = HEADER, OKBLUE = OKBLUE, OKGREEN = OKGREEN, WARNING = WARNING,
 FAIL = FAIL, ENDC = ENDC, BOLD = BOLD, UNDERLINE = UNDERLINE)
 
@@ -66,15 +73,16 @@ default_env = Environment(
 
 
 #Export 'default' environment for everything that wishes to use it
-Export('default_env')
+Export('default_env', 'with_mysql')
 
 #Create 'working' environment
 #default_env.Repository('src')
 
 #Attach SConsctipts
-SConscript('src/SQLite/SConscript', 'default_env', variant_dir='tmp/SqLite', duplicate=0)
-SConscript('src/SQLiteCpp/SConscript', 'default_env', variant_dir='tmp/SqLiteCpp', duplicate=0)
-SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
+SConscript('src/SConscript', 'default_env', variant_dir='tmp/RcdbLib', duplicate=0)
+
+if with_tests:
+    SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
 
 
 
