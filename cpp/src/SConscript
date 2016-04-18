@@ -48,13 +48,13 @@ else:
 
 
 # Making dynamic library
-rcdb_lib = env.Library('rcdb_lib',  source = sources)
-rcdb_lib_install = env.Install('#lib', rcdb_lib)
+rcdb_shared_lib = env.SharedLibrary(target='rcdb',  source = sources)
+rcdb_shared_lib_install = env.Install('#lib', rcdb_shared_lib)
 
 # Making static library
-rcdb_s_lib = env.StaticLibrary('rcdb_s_lib',  source = sources)
-rcdb_s_lib_install = env.Install('#lib', rcdb_s_lib)
+rcdb_static_lib = env.StaticLibrary(target='rcdb',  source = sources)
+rcdb_static_lib_install = env.Install('#lib', rcdb_static_lib)
 
 # Export all
-Export('rcdb_lib')
-Export('rcdb_s_lib')
+Export('rcdb_shared_lib')
+Export('rcdb_static_lib')

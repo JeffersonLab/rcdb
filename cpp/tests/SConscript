@@ -2,10 +2,10 @@
 # Tests SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_s_lib', 'with_mysql')
+Import('default_env', 'rcdb_static_lib', 'with_mysql')
 env = default_env.Clone()
 env.Append(LIBPATH='#lib')
-env.Append(LIBS=[rcdb_s_lib])
+env.Append(LIBS=[rcdb_static_lib])
 
 #Configure environment to create tests
 test_sources = [
