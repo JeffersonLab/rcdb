@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <memory>
-#include <bits/stl_map.h>
+#include <map>
 
 #include "ConditionType.h"
 #include "Condition.h"
@@ -27,6 +27,8 @@ namespace rcdb {
         }
 
 
+        virtual ~DataProvider() { }                                 // Destructor
+
     protected:
 
 
@@ -36,7 +38,7 @@ namespace rcdb {
         DataProvider(DataProvider &&) = default;                    // Move constructor
         DataProvider &operator=(const DataProvider &) & = default;  // Copy assignment operator
         DataProvider &operator=(DataProvider &&) & = default;       // Move assignment operator
-        virtual ~DataProvider() { }                                 // Destructor
+
 
         std::vector<ConditionType> _types;                          /// Condition types
         std::map<std::string, ConditionType> _typesByName;          /// Condition types mapped by name

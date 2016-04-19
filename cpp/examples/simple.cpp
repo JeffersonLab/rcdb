@@ -23,15 +23,18 @@ int main ( int argc, char *argv[] )
     // Create DB connection
     rcdb::Connection connection(connection_str);
 
-    // Get condition with name int_cnd for run 1.
-    // Change it to event_count and run for 10452 if you connect to a real database
-    auto cnd = connection.GetCondition(1, "int_cnd");
+    // Get condition by run and name
+    // Set:
+    // run = 10452, 'event_count' if you connect to a real database
+    // run = 1, 'int_cnd' if you connect to a test database
+    //auto cnd = connection.GetCondition(1, "int_cnd");
+    auto cnd = connection.GetCondition(10452, "event_count");
 
     //cnd will be null if no such condition saved for the run
     if(!cnd)
     {
         cout<<"The condition is not found for the run"<<endl;
-        return 1;
+        return 2;
     }
 
     // get the value!
