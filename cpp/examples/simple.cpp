@@ -19,7 +19,6 @@ int main ( int argc, char *argv[] )
     }
     string connection_str(argv[1]);
 
-
     // Create DB connection
     rcdb::Connection connection(connection_str);
 
