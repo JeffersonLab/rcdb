@@ -2,8 +2,11 @@
   <dictionary name="romanov">
     <words>
       <w>evio</w>
+      <w>fcntl</w>
+      <w>interprocess</w>
       <w>proc</w>
       <w>rcdb</w>
+      <w>umask</w>
     </words>
   </dictionary>
 </component>
