@@ -1,42 +1,84 @@
 import shlex
 
-SECTION_GLOBAL="GLOBAL"
-SECTION_TRIGGER="TRIGGER"
-SECTION_HEADER="=========================="
 
-section_names = [SECTION_GLOBAL, SECTION_TRIGGER, ]
+class ConfigSection(object):
+    def __init__(self, name):
+        self.name = name
+        self.lines = []
+        self.entities = {}
 
-class ConfigParser:
+
+class ConfigFileParseResult(object):
     """
-    Parses config file
+    Result of parsing the config file
     """
 
-
-
-    def __init__(self):
+    def __init__(self, section_names):
+        self.section_names = section_names
         self.sections = {}
         self.found_section_names = []
 
-    def parse(self, content):
-        """
-        :param content: Content to parse
-        :type content: str
-        :return:
-        """
 
-        lines = [l.strip() for l in content.splitlines() if l]
-        current_section = ""
+def parse_file(filename, section_names):
+    """
+    Opens and parses config file
 
-        for line in lines:
+    :return: ConfigParserResult (it is filled after parsing the file)
+    """
 
-            if line.startswith('----') or line.startswith('===='):
-                continue
+    with file(filename) as f:
+        content = f.read()
+    return parse_content(content, section_names)
 
-            tokens = shlex.split(line)
-            if not tokens:
-                continue
 
-            #if tokens[0] in section_names[l]
+def parse_content(content, section_names):
+    """
+    :param section_names: List of section names. Like TRIGGER, FDC, CDC ...
+    :param content: Content to parse
+    :type content: str
+    :return: ConfigParserResult
+    """
+    result = ConfigFileParseResult(section_names)
+
+    lines = [l.strip() for l in content.splitlines() if l]
+    current_section = None
+
+    for line in lines:
+
+        if line.startswith('----') or line.startswith('===='):
+            continue
+
+        # Split tokens by lexical rules
+        tokens = shlex.split(line, True)
+
+        # Skip if there is no tokens
+        if not tokens:
+            continue
+
+        # Is this a section name?
+        if tokens[0] in section_names:
+            current_section = ConfigSection(tokens[0])
+            result.sections[current_section.name] = current_section
+            result.found_section_names.append(current_section.name)
+            continue
+
+        # If we are here, it is a regular line. Is there defined section?
+        if current_section is None:
+            continue
+
+        current_section.lines.append(tokens)
+
+        if len(tokens) > 1:
+            current_section.entities[tokens[0]] = tokens[1:]
+
+    return result
+
+
+
+
+
+
+
 
 
 

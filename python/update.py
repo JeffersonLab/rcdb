@@ -22,6 +22,12 @@ log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
 
+SECTION_GLOBAL="GLOBAL"
+SECTION_TRIGGER="TRIGGER"
+SECTION_HEADER="=========================="
+
+section_names = [SECTION_GLOBAL, SECTION_TRIGGER, ]
+
 # noinspection SqlDialectInspection
 def print_usage():
     print("""
