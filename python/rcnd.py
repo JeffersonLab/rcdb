@@ -99,15 +99,8 @@ def show_value(db, run_number, name):
     if not result:
         return
 
-    if ct.is_many_per_run:
-        conditions = result
-        for condition in conditions:
-            print condition.time
-            print condition.value
-            print
-    else:
-        condition = result
-        print condition.value
+    condition = result
+    print condition.value
 
 
 def show_run_conditions(db, run_number):
