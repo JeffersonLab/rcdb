@@ -59,6 +59,38 @@ def print_usage():
     """)
 
 
+def try_set_interprocess_lock():
+    """
+    Sets fcntl lock, so that it is possible to control other instances running
+
+    :return: True if lock is set. False if other process has locked the file already
+    """
+    import fcntl, os, stat, tempfile
+
+    app_name = 'rcdb_daq_update'  # <-- Customize this value
+
+    # Establish lock file settings
+    lf_name = '.{}.lock'.format(app_name)
+    lf_path = os.path.join(tempfile.gettempdir(), lf_name)
+    lf_flags = os.O_WRONLY | os.O_CREAT
+    lf_mode = stat.S_IWUSR | stat.S_IWGRP | stat.S_IWOTH  # This is 0o222, i.e. 146
+
+    # Create lock file
+    # Regarding umask, see https://stackoverflow.com/a/15015748/832230
+    umask_original = os.umask(0)
+    try:
+        lf_fd = os.open(lf_path, lf_flags, lf_mode)
+    finally:
+        os.umask(umask_original)
+
+    # Try locking the file
+    try:
+        fcntl.lockf(lf_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return True
+    except IOError:
+        return False
+
+
 def parse_files():
     # We will use this to identify this process in logs. Is done for investigation of double messages
     script_start_datetime = datetime.now()
@@ -82,6 +114,7 @@ def parse_files():
     parser.add_argument("--update", help="Comma separated, modules to update", default="")
     parser.add_argument("-c", "--connection", help="The connection string (like mysql://rcdb@localhost/rcdb)")
     parser.add_argument("--udl", help="UDL link to send messages to UDL logging")
+    parser.add_argument("--ipl", help="Use inter-process lock, that allows ", action="store_true")
 
     args = parser.parse_args()
 
@@ -113,19 +146,48 @@ def parse_files():
     update_reason = args.reason
     log.debug(F("update_reason = '{}'", update_reason))
 
+    # Use interprocess lock?
+    use_interprocess_lock = args.ipl
+
+    script_info = "'{script_start_datetime}', reason: '{reason}', parts: '{parts}, " \
+                  "'pid: '{pid}', ppid: '{ppid}', uid: '{uid}', " \
+                  .format(
+                        script_start_datetime=script_start_datetime,
+                        reason=update_reason,
+                        parts=args.update,
+                        pid=script_pid,
+                        ppid=script_ppid,
+                        uid=script_uid)
+
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
-    db.add_log_record("", "'{}': Start. '{}', reason: '{}', update: '{}, 'pid: '{}', ppid: '{}', uid: '{}', "
-                          .format(
-                                script_name,
-                                script_start_datetime,
-                                update_reason,
-                                args.update,
-                                script_pid,
-                                script_ppid,
-                                script_uid,
-                            ), 0)
+    if use_interprocess_lock:
+        lock_success = try_set_interprocess_lock()
+        wait_count = 0
+        while not lock_success:
+            # We failed to obtain the lock. Some other instance of this script is running now.
+            if update_reason == UpdateReasons.UPDATE:
+                log.info("The other instance is running. Since update_reason = update we just exit")
+                exit(0)
+
+            time.sleep(1)
+            wait_count += 1
+            if wait_count > 10:
+                log.error(F("The other instance is running. Since this update reason is '{}', "
+                            "this instance waited > 10s for the other one to end. But it still holds the lock",
+                            update_reason))
+
+                # this is major problem. We'll try send it to DB before exit
+                db.add_log_record("",
+                                  "'{}': Exit!. The other instance is running. This instance waited > 10s! {}"
+                                  .format(
+                                      script_name,
+                                      script_info), 0)
+                exit(1)
+
+    # >oO DB logging
+    db.add_log_record("", "'{}': Start. {}".format(script_name, script_info), 0)
 
     # Create update context
     update_context = rcdb.UpdateContext(db, update_reason)
@@ -163,6 +225,10 @@ def parse_files():
             # mmm just save for now
             log.debug(F("Adding run_config_file to DB", ))
             db.add_configuration_file(run_number, run_config_file)
+
+            if "config" in update_parts:
+                log.debug(F("Parsing run_config_file", ))
+
         else:
             log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
 
