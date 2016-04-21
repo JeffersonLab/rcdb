@@ -18,7 +18,7 @@ set(SOURCE_FILES
         src/SQLite/sqlite3.c
         src/SQLiteCpp/Backup.cpp
         src/SQLiteCpp/Column.cpp
-        src/SQLiteCpp/Database.cpp
+        src/SQLiteCpp/Database.cppе
         src/SQLiteCpp/Statement.cpp
         src/SQLiteCpp/Transaction.cpp
 

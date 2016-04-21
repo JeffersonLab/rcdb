@@ -2,7 +2,7 @@ import json
 import logging
 
 from rcdb import UpdateContext, UpdateReasons, DefaultConditions
-from rcdb.coda_parser import CodaRunLogParseResult
+from halld_rcdb.main_config_parser import ConfigFileParseResult
 from rcdb.log_format import BraceMessage as Lf
 from rcdb.provider import RCDBProvider
 
@@ -21,7 +21,7 @@ def update_coda_conditions(context, parse_result):
     # read xml file and get root and run-start element
 
     # Some assertions in the beginning
-    assert isinstance(parse_result, CodaRunLogParseResult)
+    assert isinstance(parse_result, ConfigFileParseResult)
     assert isinstance(context, UpdateContext)
     assert isinstance(context.db, RCDBProvider)
     db = context.db

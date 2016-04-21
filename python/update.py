@@ -220,7 +220,7 @@ def parse_files():
     db.add_configuration_file(run_number, coda_xml_log_file, overwrite=True)
 
     # Add run configuration file to DB... if it is run-start update
-    if update_reason == UpdateReasons.START and run_config_file:
+    if update_reason == UpdateReasons.START and "config" in update_parts and run_config_file:
         if os.path.isfile(run_config_file) and os.access(run_config_file, os.R_OK):
             # mmm just save for now
             log.debug(F("Adding run_config_file to DB", ))
@@ -255,9 +255,11 @@ def parse_files():
 
             # >oO DEBUG log message
             db.add_log_record("",
-                              "'{}': ERROR update epics. error: '{}' trace: '{}' ||epics_clocks:'{}' clocks:'{}' time: '{}'"
-                              .format(script_name, str(ex), traceback.format_exc(),  epics_end_clock - epics_start_clock,
-                                      epics_end_clock - script_start_clock, datetime.now()), run_number)
+                              "'{}': ERROR update epics. Error type: '{}' message: '{}' trace: '{}' "
+                              "||epics_clocks:'{}' clocks:'{}' time: '{}'"
+                              .format(script_name, type(ex), ex.message, traceback.format_exc(),
+                                      epics_end_clock - epics_start_clock, epics_end_clock - script_start_clock,
+                                      datetime.now()), run_number)
 
     log.debug("End of update")
 
@@ -265,7 +267,9 @@ def parse_files():
     now_clock = time.clock()
     db.add_log_record("",
                       "'{}': End of update. Script proc clocks='{}', wall time: '{}', datetime: '{}'"
-                      .format(script_name, now_clock - script_start_clock, time.time() - script_start_time,
+                      .format(script_name,
+                              now_clock - script_start_clock,
+                              time.time() - script_start_time,
                               datetime.now()), run_number)
 
 

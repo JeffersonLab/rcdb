@@ -4,7 +4,7 @@ import shlex
 class ConfigSection(object):
     def __init__(self, name):
         self.name = name
-        self.lines = []
+        self.rows = []
         self.entities = {}
 
 
@@ -66,10 +66,13 @@ def parse_content(content, section_names):
         if current_section is None:
             continue
 
-        current_section.lines.append(tokens)
+        current_section.rows.append(tokens)
 
         if len(tokens) > 1:
-            current_section.entities[tokens[0]] = tokens[1:]
+            if len(tokens) == 2:
+                current_section.entities[tokens[0]] = tokens[1]
+            else:
+                current_section.entities[tokens[0]] = tokens[1:]
 
     return result
 

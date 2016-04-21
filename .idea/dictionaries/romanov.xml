@@ -2,6 +2,7 @@
   <dictionary name="romanov">
     <words>
       <w>evio</w>
+      <w>fadc</w>
       <w>fcntl</w>
       <w>interprocess</w>
       <w>proc</w>
