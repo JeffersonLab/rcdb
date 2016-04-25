@@ -44,8 +44,6 @@ def update_run_config_conditions(context, parse_result):
     if parse_result.cdc_fadc125_mode is not None:
         conditions.append(('cdc_fadc125_mode', parse_result.cdc_fadc125_mode))
 
-    print context.run
-
     # SAVE CONDITIONS
     db.add_conditions(context.run, conditions, replace=True)
 

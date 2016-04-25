@@ -176,6 +176,8 @@ def parse_files():
 
             time.sleep(1)
             wait_count += 1
+            log.debug(F("{script_name}: Waiting lock for {waited}s", script_name=script_name, waited=wait_count))
+
             if wait_count > 10:
                 log.error(F("The other instance is running. Since this update reason is '{}', "
                             "this instance waited > 10s for the other one to end. But it still holds the lock",
@@ -188,6 +190,7 @@ def parse_files():
                                       script_name,
                                       script_info), 0)
                 exit(1)
+            lock_success = try_set_interprocess_lock()
 
     # >oO DB logging
     db.add_log_record("", "'{}': Start. {}".format(script_name, script_info), 0)
@@ -230,7 +233,8 @@ def parse_files():
 
     # Add run configuration file to DB... if it is run-start update
     if args.run_config_file:
-        log.debug(F("--run-config-file is provided. Using this as a path to run_config_file:", args.run_config_file))
+        log.debug(F("Flag --run-config-file is provided. Using this as a path to run_config_file: '{}'",
+                    args.run_config_file))
         run_config_file = args.run_config_file
 
     if update_reason in [UpdateReasons.START, UpdateReasons.UNKNOWN] and "config" in update_parts and run_config_file:
@@ -241,10 +245,11 @@ def parse_files():
 
             log.debug("Parsing run_config_file")
             run_config_parse_result = parse_run_config_file(run_config_file)
-            print type(run_config_parse_result)
+
             log.debug("Parsed run_config_file. Updating conditions")
             update_run_config_conditions(update_context, run_config_parse_result)
-            log.debug("run_config_file conditions updated")
+
+            log.debug("Updated run_config_file conditions")
         else:
             log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
 
