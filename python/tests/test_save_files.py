@@ -9,7 +9,7 @@ import test_run
 from rcdb.model import Run, ConfigurationFile
 
 
-class TestRun(unittest.TestCase):
+class TestSaveFiles(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     @unittest.skip("rework of how coda files are parsed")
