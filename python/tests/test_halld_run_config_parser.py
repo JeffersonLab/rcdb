@@ -1,7 +1,7 @@
 import inspect
 import os
 from datetime import datetime
-import test_run
+import test_get_runs
 import unittest
 from rcdb.halld_daq_config_parser import parse_file, CodaRunLogParseResult
 
@@ -10,7 +10,7 @@ class TestDaqConfigParser(unittest.TestCase):
     """ Tests TestDaqConfigParser classes and their operations in provider"""
 
     def setUp(self):
-        self.this_dir = os.path.dirname(inspect.getfile(test_run))
+        self.this_dir = os.path.dirname(inspect.getfile(test_get_runs))
         self.this_dir = os.path.normpath(self.this_dir)
 
     def test_parse_daq_config_file(self):

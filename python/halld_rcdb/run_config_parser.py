@@ -25,8 +25,16 @@ class HallDMainConfigParseResult(object):
 
 
 def parse_file(file_name):
-
     parse_result = rcdb.config_parser.parse_file(file_name, section_names)
+    return _process_parse_result(parse_result, file_name)
+
+
+def parse_content(content):
+    parse_result = rcdb.config_parser.parse_content(content, section_names)
+    return _process_parse_result(parse_result)
+
+
+def _process_parse_result(parse_result, file_name=""):
 
     result = HallDMainConfigParseResult(parse_result)
 
@@ -56,6 +64,8 @@ def parse_file(file_name):
                 log.warning(F("Cant convert CDC:FADC125_MODE value '{}' to int", cdc_section.entities['FADC125_MODE']))
     else:
         log.warning(F("CDC section is not found in '{}'", file_name))
+
+    return result
 
 
 

@@ -13,6 +13,8 @@ from rcdb.log_format import BraceMessage as F
 
 # setup logger
 from update_coda import update_coda_conditions
+from update_run_config import update_run_config_conditions
+from halld_rcdb.run_config_parser import parse_file as parse_run_config_file
 
 log = logging.getLogger('rcdb')  # create run configuration standard logger
 log.addHandler(logging.StreamHandler(sys.stdout))  # add console output for logger
@@ -115,7 +117,7 @@ def parse_files():
     parser.add_argument("-c", "--connection", help="The connection string (like mysql://rcdb@localhost/rcdb)")
     parser.add_argument("--udl", help="UDL link to send messages to UDL logging")
     parser.add_argument("--ipl", help="Use inter-process lock, that allows ", action="store_true")
-
+    parser.add_argument("--run-config-file", help="Set custom path to run config file", default="")
     args = parser.parse_args()
 
     # Figure out the parameters
@@ -162,6 +164,7 @@ def parse_files():
     # Open DB connection
     db = ConfigurationProvider(con_string)
 
+    # Ensure only one such process is running, to avoid duplicated records. See issues #25 #20 #19 on GitHub
     if use_interprocess_lock:
         lock_success = try_set_interprocess_lock()
         wait_count = 0
@@ -198,6 +201,7 @@ def parse_files():
     coda_parse_result = coda_parser.parse_file(coda_xml_log_file)
 
     run_number = coda_parse_result.run_number
+
     run_config_file = coda_parse_result.run_config_file
     log.debug(F("Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}'",
                 coda_xml_log_file, run_number, run_config_file))
@@ -215,20 +219,32 @@ def parse_files():
     else:
         log.debug(F("Skipping to add coda conditions to DB. Use --update=...,coda to update it", ))
 
+    update_context.run = db.get_run(run_number)
+    if update_context.run is None:
+        log.warning(F("No DB record for run '{}' is found! Further updates look impossible"))
+        update_context.run = run_number
+
     # Save coda file to DB
     log.debug(F("Adding coda_xml_log_file to DB", ))
     db.add_configuration_file(run_number, coda_xml_log_file, overwrite=True)
 
     # Add run configuration file to DB... if it is run-start update
-    if update_reason == UpdateReasons.START and "config" in update_parts and run_config_file:
+    if args.run_config_file:
+        log.debug(F("--run-config-file is provided. Using this as a path to run_config_file:", args.run_config_file))
+        run_config_file = args.run_config_file
+
+    if update_reason in [UpdateReasons.START, UpdateReasons.UNKNOWN] and "config" in update_parts and run_config_file:
         if os.path.isfile(run_config_file) and os.access(run_config_file, os.R_OK):
             # mmm just save for now
             log.debug(F("Adding run_config_file to DB", ))
             db.add_configuration_file(run_number, run_config_file)
 
-            if "config" in update_parts:
-                log.debug(F("Parsing run_config_file", ))
-
+            log.debug("Parsing run_config_file")
+            run_config_parse_result = parse_run_config_file(run_config_file)
+            print type(run_config_parse_result)
+            log.debug("Parsed run_config_file. Updating conditions")
+            update_run_config_conditions(update_context, run_config_parse_result)
+            log.debug("run_config_file conditions updated")
         else:
             log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
 

@@ -4,7 +4,6 @@ import unittest
 
 import rcdb
 import rcdb.model
-import test_run
 
 from rcdb.model import Run, ConfigurationFile
 

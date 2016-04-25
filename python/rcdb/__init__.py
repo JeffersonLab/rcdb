@@ -30,6 +30,7 @@ class UpdateReasons(object):
     START = 'start'
     UPDATE = 'update'
     END = 'end'
+    UNKNOWN = ''
 
 
 # -------------------------------------------------
@@ -47,7 +48,7 @@ class UpdateContext(object):
     def __init__(self, db, reason):
         self.db = db
         self.reason = reason  # Context in which daq is called '', 'start', 'update', 'end'
-        self.run = None  # Run object
+        self.run = None       # Run object
 
 
 # -------------------------------------------------
