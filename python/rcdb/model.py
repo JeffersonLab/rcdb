@@ -14,6 +14,7 @@ from sqlalchemy.sql.expression import func
 
 Base = declarative_base()
 
+
 class ModelBase(Base):
     __abstract__ = True
 
@@ -158,7 +159,6 @@ class TriggerMaskPreset(PerChannelPresetMixin, Base):
     __tablename__ = 'trigger_masks'
 
 
-
 # --------------------------------------------
 # class
 # --------------------------------------------
@@ -183,8 +183,8 @@ class BoardConfiguration(ModelBase):
     dac_preset_id = Column(Integer, ForeignKey('dac_presets.id'), nullable=True)
     dac_preset = relationship("DacPreset")
 
-    #_parameters_id = Column("board_parameters_id", Integer, ForeignKey('board_parameters.id'), nullable=True)
-    #parameter_preset = relationship("BoardParameterPreset")
+    # _parameters_id = Column("board_parameters_id", Integer, ForeignKey('board_parameters.id'), nullable=True)
+    # parameter_preset = relationship("BoardParameterPreset")
 
     board_id = Column(Integer, ForeignKey('boards.id'))
     board = relationship("Board", back_populates="configs")
@@ -217,9 +217,9 @@ class Run(ModelBase):
 
     number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
 
-
     #
-    board_configs = relationship("BoardConfiguration", secondary=_board_conf_have_runs_association,                              back_populates="runs")
+    board_configs = relationship("BoardConfiguration", secondary=_board_conf_have_runs_association,
+                                 back_populates="runs")
     """[BoardConfiguration]: Link to board channels and etc. configured for the run"""
 
     #
@@ -386,8 +386,8 @@ class ConditionType(ModelBase):
 
     @property
     def run_query(self):
-        return object_session(self).query(Run)\
-            .join(Condition, Condition.run_number == Run.number)\
+        return object_session(self).query(Run) \
+            .join(Condition, Condition.run_number == Run.number) \
             .filter(Condition.type == self)
 
     def get_condition_alias_value_field(self, alias):
@@ -473,8 +473,8 @@ class ConditionType(ModelBase):
             return left_value == right_value
 
     def __repr__(self):
-        return "<ConditionType id='{}', name='{}', value_type={}>"\
-                .format(self.id, self.name, self.value_type)
+        return "<ConditionType id='{}', name='{}', value_type={}>" \
+            .format(self.id, self.name, self.value_type)
 
 
 all_value_types = [
@@ -505,7 +505,7 @@ class Condition(ModelBase):
     time_value = Column(DateTime, nullable=True, default=None)
 
     run_number = Column(Integer, ForeignKey('runs.number'))
-    run = relationship("Run",  back_populates="conditions")
+    run = relationship("Run", back_populates="conditions")
 
     condition_type_id = Column('condition_type_id', Integer, ForeignKey('condition_types.id'))
     type = relationship("ConditionType", back_populates="values")
@@ -524,7 +524,6 @@ class Condition(ModelBase):
     @hybrid_property
     def value_type(self):
         return self.type.value_type
-
 
     @hybrid_property
     def value(self):
@@ -551,7 +550,7 @@ class Condition(ModelBase):
         if field_type == ConditionType.INT_FIELD:
             self.int_value = val
         elif field_type == ConditionType.STRING_FIELD \
-                or field_type == ConditionType.JSON_FIELD\
+                or field_type == ConditionType.JSON_FIELD \
                 or field_type == ConditionType.BLOB_FIELD:
             self.text_value = val
         elif field_type == ConditionType.FLOAT_FIELD:
@@ -569,7 +568,7 @@ class Condition(ModelBase):
 
 class SchemaVersion(ModelBase):
     __tablename__ = 'schema_versions'
-    version = Column(Integer,  primary_key=True, autoincrement=False)
+    version = Column(Integer, primary_key=True, autoincrement=False)
     created = Column(DateTime, default=datetime.datetime.now)
     comment = Column(String(255), nullable=True)
 
@@ -590,6 +589,16 @@ class LogRecord(ModelBase):
 
     def __repr__(self):
         return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)
+
+
+run_periods = {
+    "2016-02": (10000, 19999, "28 Jan 2016 - 24 Apr 2016   Commissioning, 12 GeV e-"),
+    "2015-12": (3939, 4807,   "01 Dec 2015 - 28 Jan 2016   Commissioning, 12 GeV e-, Cosmics"),
+    "2015-06": (3386, 3938,   "29 May 2015 - 01 Dec 2015   Cosmics"),
+    "2015-03": (2607, 3385,   "11 Mar 2015 - 29 May 2015   Commissioning, 5.5 GeV e-"),
+    "2015-01": (2440, 2606,   "06 Feb 2015 - 11 Mar 2015   Cosmics"),
+    "2014-10": (630, 2439,    "28 Oct 2014 - 21 Dec 2014   Commissioning, 10 GeV e-"),
+}
 
 
 # -------------------------------------------------

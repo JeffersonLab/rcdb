@@ -3,37 +3,29 @@ import sys
 import posixpath
 
 import click
+from rcdb.app_context import RcdbApplicationContext
+from rcdb import RCDBProvider
 
 
-class RcdbCmdContext(object):
+pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
 
-    def __init__(self, home):
-        self.home = home
-        self.config = {}
-        self.verbose = False
-
-    def set_config(self, key, value):
-        self.config[key] = value
-        if self.verbose:
-            click.echo('  config[%s] = %s' % (key, value), file=sys.stderr)
-
-    def __repr__(self):
-        return '<Repo %r>' % self.home
-
-
-pass_repo = click.make_pass_decorator(RcdbCmdContext)
+def get_default_config_path():
+    return os.path.join(os.path.expanduser('~'), '.rcdb_user')
 
 
 @click.group()
-@click.option('--repo-home', envvar='REPO_HOME', default='.repo',
-              metavar='PATH', help='Changes the repository folder location.')
+@click.option('--user-config', envvar='RCDB_USER_CONFIG', default=get_default_config_path,
+              metavar='PATH', help='Changes the user config location.')
+@click.option('--connection', '-c', envvar='RCDB_CONNECTION', help='Database connection string',
+              default=None, required=True)
+
 @click.option('--config', nargs=2, multiple=True,
               metavar='KEY VALUE', help='Overrides a config key/value pair.')
 @click.option('--verbose', '-v', is_flag=True, help='Enables verbose mode.')
 @click.version_option('1.0')
 @click.pass_context
-def cli(ctx, repo_home, config, verbose):
-    """Repo is a command line tool that showcases how to build complex
+def cli(ctx, user_config, connection, config, verbose):
+    """'rcdb' is a command line tool that showcases how to build complex
     command line interfaces with Click.
 
     This tool is supposed to look like a distributed version control
@@ -42,10 +34,48 @@ def cli(ctx, repo_home, config, verbose):
     # Create a repo object and remember it as as the context object.  From
     # this point onwards other commands can refer to it by using the
     # @pass_repo decorator.
-    ctx.obj = RcdbCmdContext(os.path.abspath(repo_home))
+    ctx.obj = RcdbApplicationContext(os.path.abspath(user_config), connection)
     ctx.obj.verbose = verbose
     for key, value in config:
         ctx.obj.set_config(key, value)
+
+
+@cli.command()
+@click.argument('search', required=False)
+@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
+@pass_rcdb_context
+def ls(context, search, is_long):
+    """Lists condition
+
+
+    """
+    db = context.db
+    assert isinstance(db, RCDBProvider)
+    cnd_types = db.get_condition_types_by_name()
+    names = sorted(cnd_types.keys())
+    if search:
+        names = [n for n in names if search in n]
+
+    longest_len = len(max(names, key=len))
+    for name in names:
+        cnd_type = cnd_types[name]
+        click.echo("{0:<{1}}   {2}".format(name, longest_len, cnd_type.description))
+
+
+def cat():
+    pass
+
+def dump():
+    pass
+
+def sel():
+    pass
+
+def plot():
+    pass
+
+def cfg():
+    pass
 
 
 @cli.command()
@@ -55,7 +85,7 @@ def cli(ctx, repo_home, config, verbose):
               help='Makes a checkout shallow or deep.  Deep by default.')
 @click.option('--rev', '-r', default='HEAD',
               help='Clone a specific revision instead of HEAD.')
-@pass_repo
+@pass_rcdb_context
 def clone(repo, src, dest, shallow, rev):
     """Clones a repository.
 
@@ -74,7 +104,7 @@ def clone(repo, src, dest, shallow, rev):
 
 @cli.command()
 @click.confirmation_option()
-@pass_repo
+@pass_rcdb_context
 def delete(repo):
     """Deletes a repository.
 
@@ -90,7 +120,7 @@ def delete(repo):
 @click.option('--email', prompt='E-Mail',
               help='The developer\'s email address')
 @click.password_option(help='The login password.')
-@pass_repo
+@pass_rcdb_context
 def setuser(repo, username, email, password):
     """Sets the user credentials.
 
@@ -107,7 +137,7 @@ def setuser(repo, username, email, password):
               help='The commit message.  If provided multiple times each '
               'argument gets converted into a new line.')
 @click.argument('files', nargs=-1, type=click.Path())
-@pass_repo
+@pass_rcdb_context
 def commit(repo, files, message):
     """Commits outstanding changes.
 
@@ -141,7 +171,7 @@ def commit(repo, files, message):
               help='forcibly copy over an existing managed file')
 @click.argument('src', nargs=-1, type=click.Path())
 @click.argument('dst', type=click.Path())
-@pass_repo
+@pass_rcdb_context
 def copy(repo, src, dst, force):
     """Copies one or multiple files to a new location.  This copies all
     files from SRC to DST.

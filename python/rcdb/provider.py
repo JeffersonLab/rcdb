@@ -45,6 +45,7 @@ class RCDBProvider(object):
         self.session = None
         self._cnd_types_cache = None
         self._cnd_types_by_name = None
+        self.aliases = default_aliases
 
         # username for record
         self.user_name = user_name
@@ -654,7 +655,7 @@ class RCDBProvider(object):
         if '__' in search_str:
             raise QueryFormatError("Query contains restricted symbol: '__'")
 
-        for alias in default_aliases:
+        for alias in self.aliases:
             al_name = "@" + alias.name
             if al_name in search_str:
                 search_str = search_str.replace(al_name, '(' + alias.expression + ')')
