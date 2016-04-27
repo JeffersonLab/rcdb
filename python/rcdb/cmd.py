@@ -97,9 +97,11 @@ def _process_sel_args(args, ):
 @cli.command()
 @click.argument('query')
 @click.argument('views_or_runs', nargs=-1)
+@click.option('--dump', '-d', 'is_dump_view', is_flag=True,
+              help='Display results as to export to file. No borders, "#" comments')
 #@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 @pass_rcdb_context
-def sel(rcdb_context, query, views_or_runs):
+def sel(rcdb_context, query, views_or_runs, is_dump_view):
     """ Command allows to select runs and get values from it"""
     assert isinstance(rcdb_context.db, RCDBProvider)
     args = [str(query)]
@@ -123,7 +125,28 @@ def sel(rcdb_context, query, views_or_runs):
     conditions_to_show = view.split()
 
     values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, True)
-    print values
+
+    if not is_dump_view:
+        try:
+            from prettytable import PrettyTable
+
+            table = PrettyTable(["run_num"] + conditions_to_show)
+            for row in values:
+                table.add_row(row)
+            click.echo(table)
+            return
+        except ImportError:
+            click.echo("# (!) no prettytable module is installed. Using regular table")
+            is_dump_view = True
+
+    click.echo("#! {}".format(" ".join(["run_num"].extend(conditions_to_show))))
+    for row in values:
+        click.echo(" ".join(row))
+
+
+
+
+
 
 
 @cli.command()
