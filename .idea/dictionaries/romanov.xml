@@ -2,6 +2,7 @@
   <dictionary name="romanov">
     <words>
       <w>cosmics</w>
+      <w>descr</w>
       <w>evio</w>
       <w>fadc</w>
       <w>fcntl</w>

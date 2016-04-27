@@ -291,6 +291,16 @@ class RCDBProvider(object):
         return run
 
     # ------------------------------------------------
+    # Get run periods
+    # ------------------------------------------------
+    def get_run_periods(self):
+        """Returns dict with run-periods
+
+        :return: dict with {"name":(run_min, run_max, description)}
+        """
+        return rcdb.model.run_periods
+
+    # ------------------------------------------------
     # Returns condition type
     # ------------------------------------------------
     def get_condition_type(self, name):
