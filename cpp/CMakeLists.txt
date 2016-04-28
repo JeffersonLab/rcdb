@@ -22,6 +22,23 @@ set(SOURCE_FILES
         src/SQLiteCpp/Statement.cpp
         src/SQLiteCpp/Transaction.cpp
 
+        include/RCDB/ConditionType.h
+        include/RCDB/MySqlProvider.h
+        include/RCDB/SqLiteProvider.h
+        include/RCDB/DataProvider.h
+        include/RCDB/Condition.h
+        include/RCDB/Exceptions.h
+        include/RCDB/MySqlConnectionInfo.h
+        include/RCDB/Connection.h
+        )
+
+SET(EXAMPLES_SOURCE_FILES
+        ${SOURCE_FILES}
+        examples/simple.cpp
+        )
+
+SET(TEST_SOURCE_FILES
+        ${SOURCE_FILES}
 
         include/RCDB/ConditionType.h
         include/RCDB/MySqlProvider.h
@@ -32,11 +49,6 @@ set(SOURCE_FILES
         include/RCDB/MySqlConnectionInfo.h
         include/RCDB/Connection.h
 
-        )
-
-SET(TEST_SOURCE_FILES
-        ${SOURCE_FILES}
-
         tests/test_Connection.cpp
         tests/test_ConditionType.cpp
         tests/test_MySqlProvider.cpp
@@ -46,12 +58,11 @@ SET(TEST_SOURCE_FILES
         tests/catch.cpp
         )
 
-SET(EXAMPLES_SOURCE_FILES
-        ${SOURCE_FILES}
-        examples/simple.cpp
-        )
+
+
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES} )
 add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES} )
+
 target_link_libraries(test_rcdb_cpp mysqlclient dl pthread)
 target_link_libraries(examples_rcdb_cpp mysqlclient dl pthread)

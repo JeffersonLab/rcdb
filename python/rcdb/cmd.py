@@ -25,15 +25,14 @@ def get_default_config_path():
 @click.version_option('1.0')
 @click.pass_context
 def cli(ctx, user_config, connection, config, verbose):
-    """'rcdb' is a command line tool that showcases how to build complex
-    command line interfaces with Click.
+    """'rcdb' is a RCDB (run conditions database) command line tool
 
-    This tool is supposed to look like a distributed version control
-    system to show how something like this can be structured.
+    This tool allows to select runs and get values as well as manage RCDB values
     """
-    # Create a repo object and remember it as as the context object.  From
+
+    # Create a rcdb_app_context object and remember it as as the context object.  From
     # this point onwards other commands can refer to it by using the
-    # @pass_repo decorator.
+    # @pass_rcdb_context decorator.
     ctx.obj = RcdbApplicationContext(os.path.abspath(user_config), connection)
     ctx.obj.verbose = verbose
     for key, value in config:
@@ -99,9 +98,10 @@ def _process_sel_args(args, ):
 @click.argument('views_or_runs', nargs=-1)
 @click.option('--dump', '-d', 'is_dump_view', is_flag=True,
               help='Display results as to export to file. No borders, "#" comments')
-#@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
+@click.option('--desc/--asc', '-d/-a', 'is_descending', default=False,
+              help="Sort order of run number descending or ascending")
 @pass_rcdb_context
-def sel(rcdb_context, query, views_or_runs, is_dump_view):
+def sel(rcdb_context, query, views_or_runs, is_dump_view, is_descending):
     """ Command allows to select runs and get values from it"""
     assert isinstance(rcdb_context.db, RCDBProvider)
     args = [str(query)]
@@ -124,7 +124,7 @@ def sel(rcdb_context, query, views_or_runs, is_dump_view):
 
     conditions_to_show = view.split()
 
-    values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, True)
+    values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, is_descending)
 
     if not is_dump_view:
         try:
@@ -177,14 +177,15 @@ def plot(rcdb_context, query, views_or_runs):
 
     conditions_to_show = view.split()
 
+    import matplotlib.pyplot as plt
+
     values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, True)
     x_col = [v[0] for v in values]
-    y_col = [v[1] for v in values]
+    plot_data = [x_col, [v[1] for v in values], "ro"]
 
-    import matplotlib.pyplot as plt
-    plt.plot(x_col, y_col,"ro")
-    #plt.axis([0, 6, 0, 20])
+    plt.plot(*plot_data, label=conditions_to_show[0])
     plt.show()
+
 
 def cfg():
     pass
