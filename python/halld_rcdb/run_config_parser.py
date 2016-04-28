@@ -21,14 +21,14 @@ class HallDMainConfigParseResult(object):
 
         self.trigger_eq = []
         self.trigger_type = []
-        self.cdc_fadc125_mode = -1
+        self.cdc_fadc125_mode = None
         self.trigger_ts_type = None
         self.trigger_ts_gtp_pres = None     # TS_GTP_PRES Prescaling factors for each line
-        self.trigger_ts_coin_wind           # --type int --description "TS_COIN_WIND Trigger merging window"
-        self.trigger_ts_sync_int            # --type int --description "TS_SYNC_INT Period for SYNC events"
-        self.trigger_block_level            # --type int --description "BLOCKLEVEL"
-        self.trigger_buffer_level           # --type int --description "BUFFERLEVEL from TRIGGER section"
-        self.fcal_fadc250_params            # --type json --description "some FADC250_* parameters from FCAL section of run config"
+        self.trigger_ts_coin_wind  = None   # --type int --description "TS_COIN_WIND Trigger merging window"
+        self.trigger_ts_sync_int   = None   # --type int --description "TS_SYNC_INT Period for SYNC events"
+        self.trigger_block_level   = None   # --type int --description "BLOCKLEVEL"
+        self.trigger_buffer_level  = None   # --type int --description "BUFFERLEVEL from TRIGGER section"
+        #self.fcal_fadc250_params            # --type json --description "some FADC250_* parameters from FCAL section of run config"
 
 
 
