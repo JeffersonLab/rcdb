@@ -18,7 +18,7 @@ set(SOURCE_FILES
         src/SQLite/sqlite3.c
         src/SQLiteCpp/Backup.cpp
         src/SQLiteCpp/Column.cpp
-        src/SQLiteCpp/Database.cppе
+        src/SQLiteCpp/Database.cpp
         src/SQLiteCpp/Statement.cpp
         src/SQLiteCpp/Transaction.cpp
 
@@ -30,6 +30,8 @@ set(SOURCE_FILES
         include/RCDB/Exceptions.h
         include/RCDB/MySqlConnectionInfo.h
         include/RCDB/Connection.h
+        include/RCDB/StringUtils.h
+        include/RCDB/ConfigParser.h
         )
 
 SET(EXAMPLES_SOURCE_FILES
@@ -48,6 +50,8 @@ SET(TEST_SOURCE_FILES
         include/RCDB/Exceptions.h
         include/RCDB/MySqlConnectionInfo.h
         include/RCDB/Connection.h
+        include/RCDB/StringUtils.h
+        include/RCDB/ConfigParser.h
 
         tests/test_Connection.cpp
         tests/test_ConditionType.cpp
@@ -56,7 +60,7 @@ SET(TEST_SOURCE_FILES
 
         tests/catch.hpp
         tests/catch.cpp
-        )
+        tests/test_ConfigParser.cpp)
 
 
 
