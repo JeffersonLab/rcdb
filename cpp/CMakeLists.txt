@@ -37,7 +37,7 @@ set(SOURCE_FILES
 SET(EXAMPLES_SOURCE_FILES
         ${SOURCE_FILES}
         examples/simple.cpp
-        )
+        include/RCDB/RcdbFile.cpp include/RCDB/RcdbFile.h)
 
 SET(TEST_SOURCE_FILES
         ${SOURCE_FILES}
