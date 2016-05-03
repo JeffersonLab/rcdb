@@ -7,10 +7,11 @@
 
 #include <string>
 #include <memory>
+#include <mutex>
+
 #include "DataProvider.h"
 #include "SqLiteProvider.h"
 #include "MySqlProvider.h"
-#include <mutex>
 
 namespace rcdb{
 
@@ -20,7 +21,6 @@ namespace rcdb{
         Connection(std::string connectionStr, bool immediateConnect= true):
                 _connectionString(connectionStr)
         {
-
             if (immediateConnect){
                 Connect();
             }
@@ -30,12 +30,10 @@ namespace rcdb{
         {
             std::lock_guard<std::mutex> guard(_mutex);
 
-            if(_connectionString.find("sqlite:///") == 0)
-            {
+            if(_connectionString.find("sqlite:///") == 0) {
                 _provider.reset(new SqLiteProvider(_connectionString));
             }
-            else
-            {
+            else {
                 _provider.reset(new MySqlProvider(_connectionString));
             }
         }
@@ -73,11 +71,11 @@ namespace rcdb{
             return _provider->GetCondition(runNumber, name);
         }
 
-
-
-
-
-
+        /** Gets file (with content) by name and run (@see GetRun and SetRun) */
+        std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name)
+        {
+            return _provider->GetFile(runNumber, name);
+        }
 
 
     private:

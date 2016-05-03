@@ -32,12 +32,14 @@ set(SOURCE_FILES
         include/RCDB/Connection.h
         include/RCDB/StringUtils.h
         include/RCDB/ConfigParser.h
+        include/RCDB/RcdbFile.h
         )
 
 SET(EXAMPLES_SOURCE_FILES
         ${SOURCE_FILES}
-        examples/simple.cpp
-        include/RCDB/RcdbFile.cpp include/RCDB/RcdbFile.h)
+        #examples/simple.cpp
+        examples/get_trigger_params.cpp
+        )
 
 SET(TEST_SOURCE_FILES
         ${SOURCE_FILES}

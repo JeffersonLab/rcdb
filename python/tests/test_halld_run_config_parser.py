@@ -25,5 +25,3 @@ class TestDaqConfigParser(unittest.TestCase):
         self.assertEqual(result.trigger_equation[0], ['PS', '35', '10', '1'])
         self.assertEqual(len(result.trigger_type), 9)
         self.assertEqual(result.trigger_type[0], ['PS', '440', '5', '1300', '1900', '1100', '0', '3'])
-
-

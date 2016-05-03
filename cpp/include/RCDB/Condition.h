@@ -9,6 +9,7 @@
 #include "Exceptions.h"
 #include <chrono>
 #include <string>
+#include "rapidjson/document.h"
 
 class DataProvder;
 
@@ -78,6 +79,25 @@ namespace rcdb {
             }
 
             return _text_value;
+        }
+
+        rapidjson::Document ToJsonDocument()
+        {
+            using namespace rapidjson;
+
+            if (GetValueType() != ValueTypes::Json) {
+                throw rcdb::ValueFormatError("Value type of the condition is not Json");
+            }
+
+            Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
+
+
+            // "normal" parsing, decode strings to new buffers. Can use other input stream via ParseStream().
+            if (document.Parse(_text_value.c_str()).HasParseError()) {
+                throw rcdb::ValueFormatError("Error while parsing JSon");
+            }
+
+            return document;
         }
 
 

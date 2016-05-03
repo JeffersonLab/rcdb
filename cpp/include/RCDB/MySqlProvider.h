@@ -142,6 +142,55 @@ namespace rcdb {
             return std::unique_ptr<Condition>(); //Empty ptr
         }
 
+
+
+        /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
+        virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name) override
+        {
+            using namespace std;
+
+            // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
+
+            uint64_t run = runNumber;
+
+            string query = string( "SELECT files.id AS files_id, "
+                                   "       files.path AS files_path, "
+                                   "       files.sha256 AS files_sha256, "
+                                   "       files.content AS files_content "
+                                   "FROM files, files_have_runs AS files_have_runs_1 "
+                                   "WHERE files.path = '" + name + "' AND files.id = files_have_runs_1.files_id "
+                                   "      AND " + to_string(run) + " = files_have_runs_1.run_number "
+                                   "ORDER BY files.id DESC");
+
+            // Query condition types
+            if (mysql_query(_connection.get(), query.c_str())) {
+
+                throw logic_error(mysql_error(_connection.get()));
+            }
+
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+                    result(mysql_store_result(_connection.get()), &mysql_free_result);
+
+            if (!result) {
+                throw logic_error(mysql_error(_connection.get()));
+            }
+
+            // Iterate the results and fill ConditionType objects list
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result.get()))) {
+
+                uint64_t id = stoul(row[0]);
+                string path(row[1]);     // files.path AS files_path
+                string sha256(row[2]);   // files.sha256 AS files_sha256
+                string content(row[3]);  // files.content AS files_content
+
+                std::unique_ptr<RcdbFile> file(new RcdbFile(id, path, sha256, content));
+                return file;
+            }
+
+            return std::unique_ptr<RcdbFile>(); //Empty ptr
+        }
+
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
         {

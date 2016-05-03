@@ -19,7 +19,7 @@ TRIGGER
 
 
 TS_TRIG_TYPE  6
-
+TS_TRIG_TYPE  7
 
 TS_FP_INPUTS  3   9  10  12
 
@@ -48,8 +48,8 @@ TEST_CASE("Test of config parser", "[config_parser]") {
     auto result = ConfigParser::Parse(TestConfig, sections);
 
     REQUIRE(result.Sections.size() == 2);
-    REQUIRE(result.Sections["TRIGGER"].Rows.size() == 4);
-
+    REQUIRE(result.Sections["TRIGGER"].Rows.size() == 5);
+    REQUIRE(result.Sections["TRIGGER"].NameValues["TS_TRIG_TYPE"] == "7");
 }
 
 

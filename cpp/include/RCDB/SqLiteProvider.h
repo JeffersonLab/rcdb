@@ -10,6 +10,7 @@
 #include <iostream>
 #include <memory>
 #include "DataProvider.h"
+#include "RcdbFile.h"
 
 namespace rcdb {
     class SqLiteProvider : public DataProvider {
@@ -22,12 +23,13 @@ namespace rcdb {
                 _getFileQuery(_db, "SELECT files.id AS files_id, "
                                    "       files.path AS files_path, "
                                    "       files.sha256 AS files_sha256, "
-                                   "       files.content AS files_content"
+                                   "       files.content AS files_content "
                                    "FROM files, files_have_runs AS files_have_runs_1 "
                                    "WHERE files.path = ? AND files.id = files_have_runs_1.files_id "
                                    "      AND ? = files_have_runs_1.run_number "
                                    "ORDER BY files.id DESC")
         {
+
 
 
             //Fill types
@@ -54,7 +56,7 @@ namespace rcdb {
                 throw ConnectionStringError("ERROR. SQLite connection string must begin with 'sqlite:///'");
             }
 
-            connectionStr.erase(0,9);
+            connectionStr.erase(0,10);
 
             return connectionStr;
         }
@@ -117,6 +119,28 @@ namespace rcdb {
             }
 
             return std::unique_ptr<Condition>(); //Empty ptr
+        }
+
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name) override
+        {
+            _getFileQuery.reset();
+            _getFileQuery.clearBindings();
+            _getFileQuery.bind(1, name.c_str());
+            _getFileQuery.bind(2, (sqlite3_int64&)runNumber);
+
+
+            while (_getFileQuery.executeStep()) {
+                const uint64_t id = _getFileQuery.getColumn(0).getInt64();
+                const std::string path(_getFileQuery.getColumn(1).getText());     // files.path AS files_path
+                const std::string sha256(_getFileQuery.getColumn(2).getText());   // files.sha256 AS files_sha256
+                const std::string content(_getFileQuery.getColumn(3).getText());  // files.content AS files_content
+
+                std::unique_ptr<RcdbFile> file(new RcdbFile(id, path, sha256, content));
+                return file;
+            }
+
+            return std::unique_ptr<RcdbFile>(); //Empty ptr
         }
 
         /** Gets conditions by name and run (@see GetRun and SetRun) */

@@ -20,7 +20,8 @@ namespace rcdb
 
         std::string Name;
         std::vector<std::vector<std::string> > Rows;
-        std::map<std::string, std::string> Entities;
+        std::map<std::string, std::string> NameValues;
+        std::map<std::string, std::vector<std::string>> NameVectors;
     };
 
     //Result of parsing the config file
@@ -30,7 +31,9 @@ namespace rcdb
 
         ConfigFileParseResult(std::vector<std::string> SectionNames)
         {
-
+            for(auto sectionName: SectionNames) {
+                SectionNames.push_back(sectionName);
+            }
         }
         std::vector<std::string> SectionNames;
         std::map<std::string, rcdb::ConfigSection> Sections;
@@ -104,8 +107,20 @@ namespace rcdb
                 // We have a name-value pair
                 if (tokens.size() == 2)
                 {
-                    currentSection.Entities[tokens[0]] = tokens[1];
+                    currentSection.NameValues[tokens[0]] = tokens[1];
                 }
+
+                // We have a name-value pair
+                if (tokens.size() > 2)
+                {
+                    vector<string> values;
+                    for(size_t i=1; i<tokens.size(); i++ ){
+                        values.push_back(tokens[i]);
+                    }
+
+                    currentSection.NameVectors[tokens[0]] = values;
+                }
+
             }
             // Save the section we filled
             if (currentSection.Name != "") {
