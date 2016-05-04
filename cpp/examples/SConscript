@@ -1,0 +1,34 @@
+##
+# Tests SConstcipt files
+#
+##
+Import('default_env', 'rcdb_static_lib', 'with_mysql')
+env = default_env.Clone()
+env.Append(LIBPATH='#lib')
+env.Append(LIBS=[rcdb_static_lib])
+
+#Build with mysql or no?
+#Read user flag for using mysql dependencies or not
+if with_mysql:
+    if not WhereIs("mysql_config"):
+        print
+        print 	"ERROR. Can't find 'mysql_config' utility which is needed to build RCDB with MySQL support."
+        print 	"Two options is possible to build RCDB:"
+        print   "  1. Install mysql_config (RHEL has it in mysql-devel package, Ubuntu in libmysqlclient-dev)"
+        print   "  2. Build CCDB without MySQL dependencies (use 'mysql=no' scons flag)"
+        print
+        Exit()
+
+    env.Append(CPPDEFINES='RCDB_MYSQL')
+    env.ParseConfig('mysql_config --libs --cflags')
+    env.ParseFlags('mysql_config --include')
+
+
+
+# example from  simple.cpp
+env.Program('exmpl_simple', source = ["simple.cpp"])
+env.Install('#bin', 'exmpl_simple')
+
+# example from  get_trigger_params.cpp
+env.Program('exmpl_get_trigger_params', source = ["get_trigger_params.cpp"])
+env.Install('#bin', 'exmpl_get_trigger_params')

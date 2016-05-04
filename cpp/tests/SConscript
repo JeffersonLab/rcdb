@@ -25,10 +25,10 @@ if with_mysql:
 
     if not WhereIs("mysql_config"):
         print
-        print 	"ERROR. Can't find 'mysql_config' utility which is needed to build CCDB with MySQL support."
+        print 	"ERROR. Can't find 'mysql_config' utility which is needed to build RCDB with MySQL support."
         print 	"Two options is possible to build RCDB:"
-        print   "  1. Install mysql_config (RHEL has it in mysql-devel package, Ubuntu in libmysqlclient-dev)"
-        print   "  2. Build CCDB without MySQL dependencies (use 'mysql=no' scons flag)"
+        print   "  1. Install mysql_config (RHEL 'mysql-devel' package, Ubuntu 'libmysqlclient-dev')"
+        print   "  2. Build RCDB without MySQL dependencies (use 'with-mysql=false' scons flag)"
         print
         Exit()
 
@@ -41,7 +41,7 @@ if with_mysql:
     env.ParseFlags('mysql_config --include')
 
 else:
-    print "CCDB is being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
+    print "RCDB is being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
 
 
 #Making tests

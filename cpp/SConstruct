@@ -48,6 +48,7 @@ if supports_color():
 
 with_mysql = ARGUMENTS.get("with-mysql","true")=="true"
 with_tests = ARGUMENTS.get("with-tests","false")=="true"
+with_examples = ARGUMENTS.get("with-examples","false")=="true"
 
 
 
@@ -56,6 +57,7 @@ help = ("""
 
 {BOLD}{OKBLUE}with-tests{ENDC}="""+bool_to_colored_str(with_tests)+""" \tBuild unit tests. Will be as ./bin/test_rcdb_cpp
 {BOLD}{OKBLUE}with-mysql{ENDC}="""+bool_to_colored_str(with_mysql)+""" \tBuild with MySql support
+{BOLD}{OKBLUE}with-examples{ENDC}="""+bool_to_colored_str(with_examples)+""" \tBuild with examples. Will be in ./bin
 
 """).format(
 HEADER = HEADER, OKBLUE = OKBLUE, OKGREEN = OKGREEN, WARNING = WARNING,
@@ -83,6 +85,9 @@ SConscript('src/SConscript', 'default_env', variant_dir='tmp/RcdbLib', duplicate
 
 if with_tests:
     SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)
+
+if with_examples:
+    SConscript('examples/SConscript', 'default_env', variant_dir='tmp/Examples', duplicate=0)
 
 
 
