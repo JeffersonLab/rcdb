@@ -1,4 +1,5 @@
-#This CMakeList.txt file is in order
+#(!) this CMake build system IS experimental and is made mostly for using CLion IDE.
+# Scons - is the main RCDB make system, so please use it in order to build rcdb.lib and examples
 
 cmake_minimum_required(VERSION 3.4)
 project(rcdb_cpp)

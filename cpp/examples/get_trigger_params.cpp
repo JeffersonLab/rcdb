@@ -57,7 +57,7 @@ int main ( int argc, char *argv[] )
         return 1;
     }
     string connection_str(argv[1]);         // Get a connection string from arguments
-    uint64_t runNumber = atoi(argv[2]);             // The run number, we work with
+    int runNumber = atoi(argv[2]);             // The run number, we work with
 
 
 
