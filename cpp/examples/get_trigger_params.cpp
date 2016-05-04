@@ -49,13 +49,15 @@ int main ( int argc, char *argv[] )
     using namespace std;
 
     // ==> 0. PREPARE
-    if ( argc != 2 ) {
-        cout<<"usage: "<< argv[0] <<" <connection_string>" << endl;
-        cout<<"example: "<< argv[0] <<" mysql://rcdb@hallddb.jlab.org/rcdb" << endl;
+    if ( argc != 3 ) {
+        cout<<"This example gets some trigger parameters for a specified run"<<endl;
+        cout<<"usage: "<< argv[0] <<" <connection_string> <run_number>"<<endl;
+        cout<<"exmpl: "<< argv[0] <<" mysql://rcdb@hallddb.jlab.org/rcdb 10200"<<endl;
+
         return 1;
     }
     string connection_str(argv[1]);         // Get a connection string from arguments
-    uint64_t runNumber = 10200;             // The run number, we work with
+    uint64_t runNumber = atoi(argv[2]);             // The run number, we work with
 
 
 
@@ -66,6 +68,11 @@ int main ( int argc, char *argv[] )
 
     // ==> 2. Get rtvs condition, that contains config file name for the given run
     auto rtvsCondition = connection.GetCondition(runNumber, "rtvs");    // Get condition by run and name
+    if(!rtvsCondition) {
+        cout<<"'rtvs' condition is not set for run "<<runNumber<<endl;
+        return 2;
+    }
+
 
     auto json = rtvsCondition->ToJsonDocument();                        // The CODA rtvs is serialized as JSon dictionary.
 
@@ -78,7 +85,7 @@ int main ( int argc, char *argv[] )
     if(!file) {                                                         // If there is no such file, null is returned
         cout<<"File with name: "<< fileName
             <<" doesn't exist (not associated) with run: "<< runNumber << endl;
-        return 1;
+        return 3;
     }
 
 
