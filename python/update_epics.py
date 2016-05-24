@@ -94,9 +94,30 @@ def update_rcdb_conds(db, run):
             if key == "IBCAD00CRCUR6":
                 conditions["beam_current"] = float(value)
 
+        # also, get the current excluding periods when the beam is off
+        # we define this as the periods where the BCM reads 5 - 5000 nA
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "5:5000", "-l", "IBCAD00CRCUR6"]
+        log.debug(Lf("Requesting beam_current subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]      # average value
+            if key == "IBCAD00CRCUR6":
+                conditions["beam_on_current"] = float(value)
+
     except Exception as e:
         log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_current"] = -1.
+        conditions["beam_on_current"] = -1.
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
@@ -118,6 +139,10 @@ def update_rcdb_conds(db, run):
     except:
         conditions["radiator_id"] = -1.
 
+    # Set a reasonable default for polarization direction - it should only be set
+    # otherwise if we have a diamond radiator
+    conditions["polarization_direction"] = "N/A"
+        
     # only save information about the diamond radiator (or whatever is in the goniometer)
     # if the amorphous radiator is not in
     # yes, ID #5 is the retracted state
@@ -130,10 +155,9 @@ def update_rcdb_conds(db, run):
                 conditions["polarization_direction"] = "PARA"
             elif polarization_dir == 2:
                 conditions["polarization_direction"] = "PERP"
-            else:
-                conditions["polarization_direction"] = "UNKNOWN"
         except:
-            conditions["polarization_direction"] = "UNKNOWN"
+            conditions["polarization_direction"] = "N/A"
+            
         # Coherent peak location
         try:
             conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
@@ -152,7 +176,6 @@ def update_rcdb_conds(db, run):
 
     else:
         conditions["coherent_peak"] = -1.
-        conditions["polarization_direction"] = "N/A"
         conditions["radiator_index"] = -1
         conditions["radiator_type"] = ""
 
