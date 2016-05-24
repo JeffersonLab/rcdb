@@ -118,6 +118,10 @@ def update_rcdb_conds(db, run):
     except:
         conditions["radiator_id"] = -1.
 
+    # Set a reasonable default for polarization direction - it should only be set
+    # otherwise if we have a diamond radiator
+    conditions["polarization_direction"] = "N/A"
+        
     # only save information about the diamond radiator (or whatever is in the goniometer)
     # if the amorphous radiator is not in
     # yes, ID #5 is the retracted state
@@ -130,10 +134,9 @@ def update_rcdb_conds(db, run):
                 conditions["polarization_direction"] = "PARA"
             elif polarization_dir == 2:
                 conditions["polarization_direction"] = "PERP"
-            else:
-                conditions["polarization_direction"] = "UNKNOWN"
         except:
-            conditions["polarization_direction"] = "UNKNOWN"
+            conditions["polarization_direction"] = "N/A"
+            
         # Coherent peak location
         try:
             conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
@@ -152,7 +155,6 @@ def update_rcdb_conds(db, run):
 
     else:
         conditions["coherent_peak"] = -1.
-        conditions["polarization_direction"] = "N/A"
         conditions["radiator_index"] = -1
         conditions["radiator_type"] = ""
 
