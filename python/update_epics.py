@@ -94,9 +94,30 @@ def update_rcdb_conds(db, run):
             if key == "IBCAD00CRCUR6":
                 conditions["beam_current"] = float(value)
 
+        # also, get the current excluding periods when the beam is off
+        # we define this as the periods where the BCM reads 5 - 5000 nA
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "5:5000", "-l", "IBCAD00CRCUR6"]
+        log.debug(Lf("Requesting beam_current subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]      # average value
+            if key == "IBCAD00CRCUR6":
+                conditions["beam_on_current"] = float(value)
+
     except Exception as e:
         log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_current"] = -1.
+        conditions["beam_on_current"] = -1.
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
