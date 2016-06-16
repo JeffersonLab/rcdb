@@ -5,7 +5,7 @@ if ("$called" != "") then
     set name=$called[2]
     echo echo $name >! /tmp/rcdb_csh.tmp
     set name=`source /tmp/rcdb_csh.tmp`
-    rm /tmp/rcdb_csh.tmp
+    rm -f /tmp/rcdb_csh.tmp
     if ("$name" != "") then
 	set full_path=`readlink -f $name`
 	set full_path=`dirname $full_path`
