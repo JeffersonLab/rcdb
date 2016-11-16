@@ -82,8 +82,8 @@ namespace rcdb {
             static const int int_column = 3;
             static const int text_column = 4;
             static const int time_column = 5;
-            uint64_t typeId = cndType.GetId();
-            uint64_t run = runNumber;
+            //uint64_t typeId = cndType.GetId();
+            //uint64_t run = runNumber;
 
             string query = string("SELECT id, bool_value, float_value, int_value, text_value, time_value FROM conditions WHERE run_number =") +
                            to_string(runNumber) +
@@ -231,8 +231,8 @@ namespace rcdb {
                 printf("\n");
             }
 
-            (result);
-            (con);
+            //(result);
+            //(con);
         }
 
         static MySQLConnectionInfo ParseConnectionString(std::string conStr)
