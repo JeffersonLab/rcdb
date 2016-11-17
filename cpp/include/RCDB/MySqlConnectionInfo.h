@@ -13,8 +13,8 @@ namespace rcdb
         MySQLConnectionInfo()
                 :UserName(""),
                  Password(""),
-                 HostName(""),
                  Database(""),
+                 HostName(""),
                  Port(0)
         {
         }

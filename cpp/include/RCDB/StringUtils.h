@@ -201,7 +201,7 @@ public:
         //clear output
         tokens.clear();
         bool stringIsStarted = false; //Indicates that we meet '"' and looking for second one
-        bool isSlash = false; //indicates if \ sign is happen to shield the quote or anothe slash
+        //bool isSlash = false; //indicates if \ sign is happen to shield the quote or anothe slash
         std::string readValue="";
         //iterate through string
         for(size_t i=0; i<source.length(); i++)

@@ -79,8 +79,8 @@ namespace rcdb {
 
             _getConditionQuery.reset();
             _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64&)run);
-            _getConditionQuery.bind(2, (sqlite3_int64&)typeId);
+            _getConditionQuery.bind(1, (sqlite3_int64)run);
+            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
 
 
             while (_getConditionQuery.executeStep()) {
@@ -127,7 +127,7 @@ namespace rcdb {
             _getFileQuery.reset();
             _getFileQuery.clearBindings();
             _getFileQuery.bind(1, name.c_str());
-            _getFileQuery.bind(2, (sqlite3_int64&)runNumber);
+            _getFileQuery.bind(2, (sqlite3_int64)runNumber);
 
 
             while (_getFileQuery.executeStep()) {
@@ -157,8 +157,8 @@ namespace rcdb {
 
             _getConditionQuery.reset();
             _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64&)run);
-            _getConditionQuery.bind(2, (sqlite3_int64&)typeId);
+            _getConditionQuery.bind(1, (sqlite3_int64)run);
+            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
 
 
             while (_getConditionQuery.executeStep()) {
