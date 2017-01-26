@@ -48,7 +48,7 @@ namespace rcdb {
         std::map<std::string, ConditionType> _typesByName;          /// Condition types mapped by name
 
     private:
-        bool mAreConditionTypesLoaded;
+        //bool mAreConditionTypesLoaded;
     };
 
 
