@@ -142,12 +142,18 @@ def update_rcdb_conds(db, run):
     # Set a reasonable default for polarization direction - it should only be set
     # otherwise if we have a diamond radiator
     conditions["polarization_direction"] = "N/A"
+
+    # set global radiator name
+    try:
+        conditions["radiator_type"] = caget("hd:radiator:uname")
+    except:
+        conditions["radiator_type"] = None
         
     # only save information about the diamond radiator (or whatever is in the goniometer)
     # if the amorphous radiator is not in
-    # yes, ID #5 is the retracted state
+    # yes, ID #1 is the retracted state, ID #2 is the blank state
     # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
-    if conditions["radiator_id"] != 5:
+    if conditions["radiator_id"] != 1 and conditions["radiator_id"] != 2:
         # Polarization direction - parallel or perpendicular to floor
         try:
             polarization_dir = int(caget("HD:CBREM:PLANE"))
@@ -164,10 +170,11 @@ def update_rcdb_conds(db, run):
         except:
             conditions["coherent_peak"] = -1.
         # Diamond name
-        try:
-            conditions["radiator_type"] = caget("HD:GONI:RADIATOR_NAME")
-        except:
-            conditions["radiator_type"] = ""
+        if conditions["radiator_type"] is None:
+            try:
+                conditions["radiator_type"] = caget("HD:GONI:RADIATOR_NAME")
+            except:
+                conditions["radiator_type"] = ""
         # index of radiator position in goniometer
         try:
             conditions["radiator_index"] = caget("HD:GONI:RADIATOR_INDEX")
@@ -178,6 +185,23 @@ def update_rcdb_conds(db, run):
         conditions["coherent_peak"] = -1.
         conditions["radiator_index"] = -1
         conditions["radiator_type"] = ""
+
+
+    # set polarization angle
+    conditions["polarization_angle"] = None
+    if conditions["radiator_type"].find("0/90") >= 0:
+        if conditions["polarization_direction"] == "PARA":
+            conditions["polarization_angle"] = 0.
+        elif conditions["polarization_direction"] == "PERP":
+            conditions["polarization_angle"] = 90.
+    elif conditions["radiator_type"].find("45/135") >= 0:
+        if conditions["polarization_direction"] == "PARA":
+            conditions["polarization_angle"] = 45.
+        elif conditions["polarization_direction"] == "PERP":
+            conditions["polarization_angle"] = 135.
+
+    if conditions["polarization_angle"] == None:
+        conditions["polarization_angle"] = -1.
 
     # Estimated luminosity factor - updated calculation in progress
     # conditions["luminosity"] = -1.
@@ -197,18 +221,19 @@ def update_rcdb_conds(db, run):
     except:
         conditions["collimator_diameter"] = "Unknown"
     # Amorphous radiator
-    if len(conditions["radiator_type"]) == 0:    # is non-zero only if amorphous, diamond name set earlier
-        try: 
-            if abs(int(caget("hd:radiator_at_a"))) == 1:
-                conditions["radiator_type"] = "2x10-5 RL"
-            elif abs(int(caget("hd:radiator_at_b"))) == 1:
-                conditions["radiator_type"] = "1x10-4 RL"
-            elif abs(int(caget("hd:radiator_at_c"))) == 1:
-                conditions["radiator_type"] = "3x10-4 RL"
-            else:
-                conditions["radiator_type"] = "None"
-        except:
-            conditions["radiator_type"] = "Unknown"
+    if conditions["radiator_type"] is None:
+        if len(conditions["radiator_type"]) == 0:    # is non-zero only if amorphous, diamond name set earlier
+            try: 
+                if abs(int(caget("hd:radiator_at_a"))) == 1:
+                    conditions["radiator_type"] = "2x10-5 RL"
+                elif abs(int(caget("hd:radiator_at_b"))) == 1:
+                    conditions["radiator_type"] = "1x10-4 RL"
+                elif abs(int(caget("hd:radiator_at_c"))) == 1:
+                    conditions["radiator_type"] = "3x10-4 RL"
+                else:
+                    conditions["radiator_type"] = "None"
+            except:
+                conditions["radiator_type"] = "Unknown"
     #  PS converter
     try: 
         if abs(int(caget("hd:converter_at_home"))) == 1:
