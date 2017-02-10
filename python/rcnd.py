@@ -193,7 +193,7 @@ def write_value(db, run_number, name, value, replace):
         exit(1)
 
     ct = db.get_condition_type(name)
-    db.add_condition(run, ct, value, None, replace)
+    db.add_condition(run, ct, value, replace)
     print ("Written '{}' to run number {}".format(name, run_number))
 
 
