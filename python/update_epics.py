@@ -39,20 +39,10 @@ from rcdb.log_format import BraceMessage as Lf
 
 ######################################
 
-# Master function to update the conditions
-def update_rcdb_conds(db, run):
-
-    log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
-    log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
-
-    TOLERANCE = 1.e-5  # constant used for comparisons
-    # Run can be a rcdb.Run object or a run number
-    if not isinstance(run, Run):
-        log.debug(Lf("Getting run by number={}", run))
-        run = db.get_run(run)
-
+def update_beam_currents(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
+
     # Beam current - uses the primary BCM, IBCAD00CRCUR6
     # We could also use the following: IPM5C11.VAL,IPM5C11A.VAL,IPM5C11B.VAL,IPM5C11C.VAL
     try: 
@@ -94,6 +84,12 @@ def update_rcdb_conds(db, run):
             if key == "IBCAD00CRCUR6":
                 conditions["beam_current"] = float(value)
 
+    except Exception as e:
+        log.warn(Lf("Error in a beam_current request : '{}'", e))
+        conditions["beam_current"] = -1.
+
+
+    try: 
         # also, get the current excluding periods when the beam is off
         # we define this as the periods where the BCM reads 5 - 5000 nA
         cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "5:5000", "-l", "IBCAD00CRCUR6"]
@@ -103,6 +99,7 @@ def update_rcdb_conds(db, run):
         # iterate over output
         n = 0
         for line in p.stdout:
+            print line.strip()
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -116,8 +113,15 @@ def update_rcdb_conds(db, run):
 
     except Exception as e:
         log.warn(Lf("Error in a beam_current request : '{}'", e))
-        conditions["beam_current"] = -1.
         conditions["beam_on_current"] = -1.
+
+    return conditions
+
+
+def setup_run_conds(run):
+    # Build mapping of conditions to add to the RCDB, key is name of condition
+    conditions = {}
+
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
@@ -274,6 +278,30 @@ def update_rcdb_conds(db, run):
     except:
         conditions["target_type"] = "Unknown"
 
+    return conditions
+
+
+# Master function to update the conditions
+def update_rcdb_conds(db, run, reason):
+
+    log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
+    log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
+
+    TOLERANCE = 1.e-5  # constant used for comparisons
+    # Run can be a rcdb.Run object or a run number
+    if not isinstance(run, Run):
+        log.debug(Lf("Getting run by number={}", run))
+        run = db.get_run(run)
+
+    # Build mapping of conditions to add to the RCDB, key is name of condition
+    conditions = {}
+
+    if reason == "start":
+        conditions.update( setup_run_conds(run) )
+
+    if reason == "update" or reason == "end":
+        conditions.update( update_beam_currents(run) )
+
     # Add all the values that we've determined to the RCDB
     for (key, value) in conditions.items():
         log.debug(Lf("Adding cnd '{}'='{}'", key, value))
@@ -291,8 +319,8 @@ if __name__ == "__main__":
 
     #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
     #db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
-    #db = rcdb.RCDBProvider("mysql://rcdb@gluondb1/rcdb")
-    update_rcdb_conds(db, int(sys.argv[1]))
+    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%sys.argv[1])
+    update_rcdb_conds(db, int(sys.argv[2]), "update")
 
     #query = db.session.query(Run).filter(Run.number > 9999)
     #print query.all() 
