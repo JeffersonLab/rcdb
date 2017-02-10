@@ -262,7 +262,7 @@ def parse_files():
         # noinspection PyBroadException
         try:
             import update_epics
-            conditions = update_epics.update_rcdb_conds(db, run_number)
+            conditions = update_epics.update_rcdb_conds(db, run_number, update_reason)
             epics_end_clock = time.clock()
             # >oO DEBUG log message
             db.add_log_record("",
