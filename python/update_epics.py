@@ -184,7 +184,9 @@ def setup_run_conds(run):
             conditions["radiator_index"] = caget("HD:GONI:RADIATOR_INDEX")
         except:
             conditions["radiator_index"] = -1.
-
+        # fix polarization_direction for amorphous radiator in goniometer
+        if conditions["radiator_type"].find("Al") >= 0:
+            conditions["polarization_direction"] = "N/A"
     else:
         conditions["coherent_peak"] = -1.
         conditions["radiator_index"] = -1
