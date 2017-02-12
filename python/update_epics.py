@@ -39,7 +39,7 @@ from rcdb.log_format import BraceMessage as Lf
 
 ######################################
 
-def update_beam_currents(run):
+def update_beam_currents(run, log):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
@@ -302,7 +302,7 @@ def update_rcdb_conds(db, run, reason):
         conditions.update( setup_run_conds(run) )
 
     if reason == "update" or reason == "end":
-        conditions.update( update_beam_currents(run) )
+        conditions.update( update_beam_currents(run, log) )
 
     # Add all the values that we've determined to the RCDB
     for (key, value) in conditions.items():
