@@ -39,7 +39,7 @@ from rcdb.log_format import BraceMessage as Lf
 
 ######################################
 
-def update_beam_currents(run):
+def update_beam_currents(run, log):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
@@ -184,7 +184,9 @@ def setup_run_conds(run):
             conditions["radiator_index"] = caget("HD:GONI:RADIATOR_INDEX")
         except:
             conditions["radiator_index"] = -1.
-
+        # fix polarization_direction for amorphous radiator in goniometer
+        if conditions["radiator_type"].find("Al") >= 0:
+            conditions["polarization_direction"] = "N/A"
     else:
         conditions["coherent_peak"] = -1.
         conditions["radiator_index"] = -1
@@ -200,9 +202,9 @@ def setup_run_conds(run):
             conditions["polarization_angle"] = 90.
     elif conditions["radiator_type"].find("45/135") >= 0:
         if conditions["polarization_direction"] == "PARA":
-            conditions["polarization_angle"] = 45.
-        elif conditions["polarization_direction"] == "PERP":
             conditions["polarization_angle"] = 135.
+        elif conditions["polarization_direction"] == "PERP":
+            conditions["polarization_angle"] = 45.
 
     if conditions["polarization_angle"] == None:
         conditions["polarization_angle"] = -1.
@@ -300,7 +302,7 @@ def update_rcdb_conds(db, run, reason):
         conditions.update( setup_run_conds(run) )
 
     if reason == "update" or reason == "end":
-        conditions.update( update_beam_currents(run) )
+        conditions.update( update_beam_currents(run, log) )
 
     # Add all the values that we've determined to the RCDB
     for (key, value) in conditions.items():
