@@ -265,7 +265,8 @@ def parse_files():
             conditions = update_epics.update_rcdb_conds(db, run_number, update_reason)
             epics_end_clock = time.clock()
             # >oO DEBUG log message
-            db.add_log_record("",
+            if "beam_currnt" in conditions:
+                db.add_log_record("",
                               "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
                               .format(script_name, conditions["beam_current"], epics_end_clock - epics_start_clock,
                                       epics_end_clock - script_start_clock, datetime.now()), run_number)
