@@ -265,10 +265,10 @@ def parse_files():
             conditions = update_epics.update_rcdb_conds(db, run_number, update_reason)
             epics_end_clock = time.clock()
             # >oO DEBUG log message
-            if "beam_current" in conditions:
-                db.add_log_record("",
+            
+            db.add_log_record("",
                               "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
-                              .format(script_name, conditions["beam_current"], epics_end_clock - epics_start_clock,
+                              .format(script_name, conditions["beam_current"] if "beam_current" in conditions else "--", epics_end_clock - epics_start_clock,
                                       epics_end_clock - script_start_clock, datetime.now()), run_number)
 
         except Exception as ex:
