@@ -200,9 +200,9 @@ def setup_run_conds(run):
             conditions["polarization_angle"] = 90.
     elif conditions["radiator_type"].find("45/135") >= 0:
         if conditions["polarization_direction"] == "PARA":
-            conditions["polarization_angle"] = 45.
-        elif conditions["polarization_direction"] == "PERP":
             conditions["polarization_angle"] = 135.
+        elif conditions["polarization_direction"] == "PERP":
+            conditions["polarization_angle"] = 45.
 
     if conditions["polarization_angle"] == None:
         conditions["polarization_angle"] = -1.
