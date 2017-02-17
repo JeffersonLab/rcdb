@@ -18,10 +18,12 @@ default_aliases = [
 
     ConditionSearchAlias('is_empty_target', "target_type == 'EMPTY & Ready'", "Target is empty"),
 
-    ConditionSearchAlias('is_amorph_radiator', "radiator_index == -1 and radiator_type != 'None' and target_type == 'FULL & Ready'",
-                         "Amorphous Radiator"),
-
-    ConditionSearchAlias('is_coherent_beam', "(radiator_id != 5  and radiator_id > 0) and target_type == 'FULL & Ready'", "Coherent Beam"),
+    # These should be true starting in 2017.  Need to check to make sure that 2016 data is accurate...
+    ConditionSearchAlias('is_amorph_radiator', "polarization_angle < 0.",  "Amorphous Radiator"),                         
+    ConditionSearchAlias('is_coherent_beam', "polarization_angle >= 0.", "Coherent Beam"),
+    #ConditionSearchAlias('is_amorph_radiator', "radiator_index == -1 and radiator_type != 'None' and target_type == 'FULL & Ready'",
+    #                     "Amorphous Radiator"),
+    #ConditionSearchAlias('is_coherent_beam', "(radiator_id != 5  and radiator_id > 0) and target_type == 'FULL & Ready'", "Coherent Beam"),
 
     ConditionSearchAlias('is_field_off', "solenoid_current < 100", " Field Off"),
 
