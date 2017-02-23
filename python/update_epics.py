@@ -39,7 +39,7 @@ from rcdb.log_format import BraceMessage as Lf
 
 ######################################
 
-def update_beam_currents(run, log):
+def update_beam_conditions(run, log):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
@@ -115,6 +115,34 @@ def update_beam_currents(run, log):
         log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_on_current"] = -1.
 
+
+    try: 
+        # also, get the current excluding periods when the beam is off
+        # we define this as the periods where the BCM reads 5 - 5000 nA
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "5:5000", "-l", "HALLD:pX"]
+        log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            print line.strip()
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]      # average value
+            if key == "HALLD:pX":
+                conditions["beam_energy"] = float(value)
+
+    except Exception as e:
+        log.warn(Lf("Error in a beam_energy request : '{}'", e))
+        conditions["beam_energy"] = -1.
+
+
     return conditions
 
 
@@ -122,13 +150,11 @@ def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
-    # Beam energy - HALLD:p gives the measured beam energy
+    # Beam energy - HALLD:pX gives the corrected measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
-        # conditions["beam_energy"] = float(caget("HALLD:p"))
-        # accelerator claims that measured beam energy isn't reliable 
-        # below ~100 nA, so use model energy instead
-        conditions["beam_energy"] = float(caget("MMSHLDE"))
+        conditions["beam_energy"] = float(caget("HALLD:pX"))
+        #conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
     # Solenoid current
@@ -302,7 +328,7 @@ def update_rcdb_conds(db, run, reason):
         conditions.update( setup_run_conds(run) )
 
     if reason == "update" or reason == "end":
-        conditions.update( update_beam_currents(run, log) )
+        conditions.update( update_beam_conditions(run, log) )
 
     # Add all the values that we've determined to the RCDB
     for (key, value) in conditions.items():
