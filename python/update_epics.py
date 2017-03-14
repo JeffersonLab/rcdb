@@ -118,8 +118,8 @@ def update_beam_conditions(run, log):
 
     try: 
         # also, get the current excluding periods when the beam is off
-        # we define this as the periods where the BCM reads 5 - 5000 nA
-        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "5:5000", "-l", "HALLD:pX"]
+        # we define this as the periods where the BCM reads 50 - 5000 nA
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "50:5000", "-l", "HALLD:p"]
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
