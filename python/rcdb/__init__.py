@@ -19,6 +19,8 @@ blob_delimiter_replacement = "&delimiter;"
 
 SQL_SCHEMA_VERSION = 1
 
+SQL_ALEMBIC_VERSION = ''
+
 
 class UpdateReasons(object):
     """Class holds a default values of UpdateContext.reason field

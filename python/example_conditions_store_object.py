@@ -10,7 +10,7 @@ class Cat(object):
 try:
     import jsonpickle
 except ImportError:
-    print "no jsonpickle modele installed. It is required for this example"
+    print "no jsonpickle module installed. It is required for this example"
     exit(1)
 
 

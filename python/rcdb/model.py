@@ -569,7 +569,7 @@ class Condition(ModelBase):
 class SchemaVersion(ModelBase):
     __tablename__ = 'schema_versions'
     version = Column(Integer, primary_key=True, autoincrement=False)
-    created = Column(DateTime, default=datetime.datetime.now)
+    created = Column(DateTime)
     comment = Column(String(255), nullable=True)
 
 

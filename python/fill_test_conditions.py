@@ -24,9 +24,9 @@ if __name__ == '__main__':
     db = rcdb.ConfigurationProvider(con_srt)
 
     # create several conditions
-    events_num_ct = db.create_condition_type("event_count", ConditionType.INT_FIELD)
-    events_rate_ct = db.create_condition_type("events_rate", ConditionType.FLOAT_FIELD)
-    temperature_ct = db.create_condition_type("temperature", ConditionType.INT_FIELD)
+    events_num_ct = db.create_condition_type("event_count", ConditionType.INT_FIELD, "Number of events in run")
+    events_rate_ct = db.create_condition_type("events_rate", ConditionType.FLOAT_FIELD, "Daq events rate")
+    temperature_ct = db.create_condition_type("temperature", ConditionType.INT_FIELD, "Temperature of the Sun")
 
     # create 100 runs
     random.seed(1)
@@ -40,17 +40,8 @@ if __name__ == '__main__':
 
         # fill condition values
         events_num = random.randrange(1, 100000)
-        db.set_condition_value(run_number, "event_count", events_num)
-        db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
-        db.set_condition_value(run_number, events_rate_ct, events_num/float(run_length))
-        run = db.create_run(run_number)
-        db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=1))
-        db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=2))
-        db.set_condition_value(run_number, temperature_ct, run.start_time + datetime.timedelta(seconds=3))
+        db.add_condition(run_number, "event_count", events_num)
+        db.add_condition(run_number, events_rate_ct, events_num/float(run_length))
+        db.add_condition(run_number, temperature_ct, random.randrange(19, 32))
 
         time_cursor += datetime.timedelta(minutes=1)   # 1 minute to next run
-
-
-
-    
-
