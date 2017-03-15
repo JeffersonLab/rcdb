@@ -1,5 +1,4 @@
 .idea/misc.xml
-.idea/python.iml
-*.iml
+.idea/*.iml
 out/
 gen/
