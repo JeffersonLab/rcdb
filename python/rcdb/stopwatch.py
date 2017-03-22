@@ -1,5 +1,6 @@
 import timeit
 
+
 class StopWatchTimer:
     def __init__(self, func=timeit.default_timer):
         self.elapsed = 0.0
