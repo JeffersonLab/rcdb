@@ -404,8 +404,25 @@ class ConditionType(ModelBase):
         if self.value_type == ConditionType.BOOL_FIELD:
             field = alias.bool_value
         if self.value_type == ConditionType.TIME_FIELD:
-            field = alias.time
+            field = alias.time_value
         return field
+
+    def get_value_field_name(self):
+        """ Gets appropriate aliased(Condition).xxx_value field according to type """
+        name = None
+        if self.value_type == ConditionType.INT_FIELD:
+            name = 'int_value'
+        if self.value_type == ConditionType.STRING_FIELD \
+                or self.value_type == ConditionType.JSON_FIELD \
+                or self.value_type == ConditionType.BLOB_FIELD:
+            name = 'text_value'
+        if self.value_type == ConditionType.FLOAT_FIELD:
+            name = 'float_value'
+        if self.value_type == ConditionType.BOOL_FIELD:
+            name = 'bool_value'
+        if self.value_type == ConditionType.TIME_FIELD:
+            name = 'time_value'
+        return name
 
     @hybrid_property
     def value_field(self):
