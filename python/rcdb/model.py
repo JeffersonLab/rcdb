@@ -609,7 +609,7 @@ class LogRecord(ModelBase):
 
 
 run_periods = {
-    "2017-01": (30000, 39999, "23 Jan 2017 - 13 Mar 2016   12 GeV e-"),
+    "2017-01": (30000, 39999, "23 Jan 2017 - 13 Mar 2017   12 GeV e-"),
     "2016-10": (20000, 29999, "15 Sep 2016 - 21 Dec 2016   12 GeV e-"),
     "2016-02": (10000, 19999, "28 Jan 2016 - 24 Apr 2016   Commissioning, 12 GeV e-"),
     "2015-12": (3939, 4807,   "01 Dec 2015 - 28 Jan 2016   Commissioning, 12 GeV e-, Cosmics"),
