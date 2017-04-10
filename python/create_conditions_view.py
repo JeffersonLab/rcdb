@@ -9,15 +9,17 @@ Test script that create conditions_view for all existing conditions
 
 """
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=description)
-    parser.add_argument("-c", "--connection", default=os.environ.get('RCDB_CONNECTION', None), help="Connection string for mysql database")
+    # Get connection string from arguments
+    parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")
+    parser.add_argument("connection_string",
+                        nargs='?',
+                        help="RCDB connection string mysql://rcdb@localhost/rcdb",
+                        default="mysql://rcdb@hallddb.jlab.org/rcdb")
     args = parser.parse_args()
-    if not args.connection:
-        print("Set RCDB connection to run the script")
-        exit(1)
 
-    print ("creating database:")
-    db = rcdb.RCDBProvider(args.connection, check_version=False)
+    # Open DB connection
+    db = rcdb.RCDBProvider(args.connection_string)
+
     condition_types = db.get_condition_types()
 
     query = "SELECT runs.number run" + os.linesep
