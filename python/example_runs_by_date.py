@@ -49,9 +49,6 @@ def get_runs_by_date(db, query, run_min=0, run_max=sys.maxint):
     # we want it to be just a vector with values [84235408L, 51150478L, 35548286L, ...]
     event_counts = [ec[0] for ec in event_counts]
 
-    # Here we can see exact performance budget. All in seconds
-    # >oO DEBUG print("Performance: ", result.performance)
-
     # construct data by date
     data_by_date = {}
     for run, event_count in zip(result, event_counts):
@@ -85,7 +82,7 @@ if __name__ == "__main__":
 
     data_by_date, performance = get_runs_by_date(db, "@status_approved and @is_production", run_min, run_max)
 
-    # print performance. All is in seconds
+    # Here we can see exact performance budget. All in seconds
     print("Performance([sec]) is: ", performance)
 
     # print resulting array
