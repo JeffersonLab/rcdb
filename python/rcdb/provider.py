@@ -11,6 +11,8 @@ import sys
 from collections import MutableSequence
 from time import mktime
 
+from sqlalchemy import text
+
 import rcdb
 from rcdb.alias import default_aliases
 
@@ -408,7 +410,7 @@ class RCDBProvider(object):
                 self.session.commit()
                 # clear cache
                 self._cnd_types_cache = None
-                self._cnd_types_by_name = None;
+                self._cnd_types_by_name = None
             except:
                 self.session.rollback()
                 raise
@@ -581,7 +583,7 @@ class RCDBProvider(object):
         # 5. Commit changes
         self.session.commit()
 
-        return result+ignore_list
+        return result + ignore_list
 
     # ------------------------------------------------
     # Gets condition
@@ -625,11 +627,10 @@ class RCDBProvider(object):
         :param search_str: Search pattern
         :type search_str: str
         :return: List of runs matching criteria
-        :rtype: list(Run)
+        :rtype: RunSelectionResult
         """
         start_time_stamp = int(mktime(datetime.datetime.now().timetuple()) * 1000)
         preparation_sw = StopWatchTimer()
-        preparation_sw.start()
 
         if run_min > run_max:
             run_min, run_max = run_max, run_min
@@ -639,7 +640,6 @@ class RCDBProvider(object):
             # If no query, just use get_runs function and return the result
             preparation_sw.stop()
             query_sw = StopWatchTimer()
-            query_sw.start()
             sel_runs = self.get_runs(run_min, run_max, sort_desc)
             query_sw.stop()
 
@@ -732,14 +732,12 @@ class RCDBProvider(object):
 
         preparation_sw.stop()
         query_sw = StopWatchTimer()
-        query_sw.start()
 
         values = query.all()
 
         query_sw.stop()
 
         selection_sw = StopWatchTimer()
-        selection_sw.start()
 
         # PHASE 3: Selecting runs
         compiled_search_eval = compile(search_eval, '<string>', 'eval')
@@ -762,6 +760,188 @@ class RCDBProvider(object):
         result.performance["query"] = query_sw.elapsed
         result.performance["selection"] = selection_sw.elapsed
         result.performance["start_time_stamp"] = start_time_stamp
+
+        return result
+
+    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
+        """ Searches RCDB for runs with e
+
+        :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
+        :param run_min: minimum run to search
+        :param run_max: maximum run to search
+        :param search_str: Search pattern
+        :type search_str: str
+        :return: List of runs matching criteria
+        :rtype: list(Run)
+        """
+        start_time_stamp = int(mktime(datetime.datetime.now().timetuple()) * 1000)
+        total_sw = StopWatchTimer()
+        preparation_sw = StopWatchTimer()
+
+        if run_min > run_max:
+            run_min, run_max = run_max, run_min
+
+        # PHASE 0 - Maybe there is no query?!
+        if not search_str or not search_str.strip():
+            # If no query, just use get_runs function and return the result
+            preparation_sw.stop()
+            query_sw = StopWatchTimer()
+            sel_runs = self.get_runs(run_min, run_max, sort_desc)
+            query_sw.stop()
+
+            result = RunSelectionResult(sel_runs, self)
+            result.sort_desc = sort_desc
+            result.filter_condition_names = []
+            result.filter_condition_types = []
+            result.performance["preparation"] = preparation_sw.elapsed
+            result.performance["query"] = query_sw.elapsed
+            result.performance["selection"] = 0
+            result.performance["start_time_stamp"] = start_time_stamp
+
+            return result
+
+        # get all condition types
+        all_cnd_types_by_name = self.get_condition_types_by_name()
+        all_cnd_names = [str(key) for key in all_cnd_types_by_name.keys()]
+
+        # PHASE 1: getting what to search from search_str
+
+        search_str = str(search_str)
+        if '__' in search_str:
+            raise QueryFormatError("Query contains restricted symbol: '__'")
+
+        for alias in self.aliases:
+            al_name = "@" + alias.name
+            if al_name in search_str:
+                search_str = search_str.replace(al_name, '(' + alias.expression + ')')
+
+        search_str = search_str.replace('\n', ' ')
+        search_str = search_str.replace('\r', ' ')
+
+        tokens = [token for token in lexer.tokenize(search_str)]
+
+        target_cnd_types = []
+        names = []
+        names_count = 1     # because run_number is always 1-st so index 0 is for it
+        for token in tokens:
+            if token.type in lexer.rcdb_query_restricted:
+                raise QueryFormatError("Query contains restricted symbol: '{}'".format(token.value))
+
+            if token.type != "NAME":
+                continue
+
+            if token.value == 'math':
+                continue
+
+            if token.value == 'startswith':
+                continue
+
+            if token.value not in all_cnd_names:
+                message = "Name '{}' is not found in ConditionTypes".format(token.value)
+                raise QueryFormatError(message)
+            else:
+                cnd_name = token.value
+                cnd_type = all_cnd_types_by_name[token.value]
+                isinstance(cnd_type, ConditionType)
+
+                target_cnd_types.append(cnd_type)
+
+                token.value = "values[{}]".format(names_count)
+                names_count += 1
+
+                names.append(cnd_name)
+
+        # values table
+        val_indexes = []
+        for name in val_names:
+            if name in names:
+                val_indexes.append(names.index(name))
+            else:
+                cnd_type = all_cnd_types_by_name[name]
+                target_cnd_types.append(cnd_type)
+                val_indexes.append(names_count)
+                names_count += 1
+                names.append(name)
+
+        # PHASE 2: Database query
+        query = self.session.query()
+
+        query = "SELECT  runs.number run" + os.linesep
+        query_joins = " FROM runs " + os.linesep
+        for ct in target_cnd_types:
+            assert isinstance(ct, ConditionType)
+            table_name = ct.name + "_table"
+            query += "  ,{}.{} {}{}".format(table_name, ct.get_value_field_name(), ct.name, os.linesep)
+            query_joins += "  LEFT JOIN conditions {0} " \
+                           "  ON {0}.run_number = runs.number AND {0}.condition_type_id = {1}{2}" \
+                .format(table_name, ct.id, os.linesep)
+
+        mighty_query = query + os.linesep \
+                       + query_joins + os.linesep \
+                       + " WHERE runs.number >= :run_min AND runs.number <=:run_max"
+        print("QUERY:")
+
+        if not sort_desc:
+            mighty_query = mighty_query + os.linesep + "ORDER BY runs.number"
+        else:
+            mighty_query = mighty_query + os.linesep + "ORDER BY runs.number DESC"
+
+        print(mighty_query)
+        preparation_sw.stop()
+        query_sw = StopWatchTimer()
+
+        sql = text(mighty_query)
+        # sql.bindparams(run_number=30000)
+        result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
+
+        query_sw.stop()
+
+        if not names_count:
+            return None
+
+        search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
+        print search_eval
+
+        selection_sw = StopWatchTimer()
+
+        # PHASE 3: Selecting runs
+        compiled_search_eval = compile(search_eval, '<string>', 'eval')
+
+        sel_runs = []
+
+        result_table = []
+
+        for values in result:
+
+            run = values[0]
+            if eval(compiled_search_eval):
+                sel_runs.append(run)
+                result_row = [run]
+                for i in val_indexes:
+                    val = values[i]
+                    result_row.append(val)
+                result_table.append(result_row)
+
+
+
+        selection_sw.stop()
+        total_sw.stop()
+        result = RunSelectionResult(sel_runs, self)
+        result.filter_condition_names = names
+        result.filter_condition_types = target_cnd_types
+        result.sort_desc = sort_desc
+        result.performance["preparation"] = preparation_sw.elapsed
+        result.performance["query"] = query_sw.elapsed
+        result.performance["selection"] = selection_sw.elapsed
+        result.performance["select_values_total"] = total_sw.elapsed
+        result.performance["start_time_stamp"] = start_time_stamp
+
+        print result.performance
+
+        for row in result_table:
+            print row
+
+
 
         return result
 
@@ -837,7 +1017,6 @@ class RunSelectionResult(MutableSequence):
         target_cnd_names = condition_names
 
         sw = StopWatchTimer()
-        sw.start()
 
         all_cnt_types = self.db.get_condition_types()
         all_cnd_types_by_name = {cnd.name: cnd for cnd in all_cnt_types}
@@ -870,7 +1049,6 @@ class RunSelectionResult(MutableSequence):
         sw.stop()
         self.performance["get_conditions"] = sw.elapsed
         sw = StopWatchTimer()
-        sw.start()
 
         # create empty rows
         rows = []
