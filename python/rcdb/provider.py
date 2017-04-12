@@ -766,6 +766,7 @@ class RCDBProvider(object):
     def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
         """ Searches RCDB for runs with e
 
+        :param val_names: list of conditions names to select
         :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
         :param run_min: minimum run to search
         :param run_max: maximum run to search
@@ -866,6 +867,7 @@ class RCDBProvider(object):
         # PHASE 2: Database query
         query = self.session.query()
 
+        # build query
         query = "SELECT  runs.number run" + os.linesep
         query_joins = " FROM runs " + os.linesep
         for ct in target_cnd_types:
@@ -879,19 +881,16 @@ class RCDBProvider(object):
         mighty_query = query + os.linesep \
                        + query_joins + os.linesep \
                        + " WHERE runs.number >= :run_min AND runs.number <=:run_max"
-        print("QUERY:")
 
         if not sort_desc:
             mighty_query = mighty_query + os.linesep + "ORDER BY runs.number"
         else:
             mighty_query = mighty_query + os.linesep + "ORDER BY runs.number DESC"
 
-        print(mighty_query)
         preparation_sw.stop()
         query_sw = StopWatchTimer()
 
         sql = text(mighty_query)
-        # sql.bindparams(run_number=30000)
         result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
 
         query_sw.stop()
@@ -906,26 +905,20 @@ class RCDBProvider(object):
         # PHASE 3: Selecting runs
         compiled_search_eval = compile(search_eval, '<string>', 'eval')
 
-        sel_runs = []
-
         result_table = []
 
         for values in result:
-
             run = values[0]
             if eval(compiled_search_eval):
-                sel_runs.append(run)
                 result_row = [run]
                 for i in val_indexes:
                     val = values[i]
                     result_row.append(val)
                 result_table.append(result_row)
 
-
-
         selection_sw.stop()
         total_sw.stop()
-        result = RunSelectionResult(sel_runs, self)
+        result = RcdbSelectionResult(result_table, self)
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
         result.sort_desc = sort_desc
@@ -934,13 +927,6 @@ class RCDBProvider(object):
         result.performance["selection"] = selection_sw.elapsed
         result.performance["start_time_stamp"] = start_time_stamp
         result.performance["total"] = total_sw.elapsed
-
-        print (result.performance)
-
-        for row in result_table:
-            print (row)
-
-
 
         return result
 

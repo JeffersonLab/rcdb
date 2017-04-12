@@ -34,5 +34,10 @@ if __name__ == "__main__":
     # for row in result:
     # print row
 
-    db.select_values(['event_count', 'daq_run'], "@is_production", 30000)
+    result = db.select_values(['event_count', 'daq_run', 'beam_energy', 'beam_current'], "@is_production", 30000)
+
+    print (result.performance)
+
+    for row in result:
+        print (row)
 
