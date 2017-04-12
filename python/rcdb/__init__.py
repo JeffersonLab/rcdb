@@ -8,7 +8,7 @@ from .provider import ConfigurationProvider
 from .errors import OverrideConditionTypeError, NoConditionTypeFound
 from .errors import OverrideConditionValueError, NoRunFoundError, SqlSchemaVersionError
 from sqlalchemy.orm.exc import NoResultFound
-from constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
+from rcdb.constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
 
 # This thing separates cells in data blob
 blob_delimiter = "|"

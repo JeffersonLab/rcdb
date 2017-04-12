@@ -18,7 +18,7 @@ from rcdb.alias import default_aliases
 
 from ply.lex import LexToken
 
-from log_format import BraceMessage as Lf
+from rcdb.log_format import BraceMessage as Lf
 from rcdb import lexer
 from rcdb.stopwatch import StopWatchTimer
 from sqlalchemy.exc import OperationalError
@@ -27,9 +27,9 @@ from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFound
 import sqlalchemy.orm
 from sqlalchemy.orm import joinedload, aliased
 
-from model import *
+from rcdb.model import *
 
-import file_archiver
+import rcdb.file_archiver
 from sqlalchemy.orm.exc import NoResultFound
 
 log = logging.getLogger("rcdb.provider")
@@ -93,7 +93,7 @@ class RCDBProvider(object):
 
         try:
             self.engine = sqlalchemy.create_engine(connection_string)
-        except ImportError, err:
+        except ImportError as err:
             # sql alchemy uses MySQLdb by default. But it might be not install in the system
             # in such case we fallback to mysqlconnector which is embedded in CCDB
             if connection_string.startswith("mysql://") and "No module named MySQLdb" in repr(err):
@@ -900,7 +900,6 @@ class RCDBProvider(object):
             return None
 
         search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
-        print search_eval
 
         selection_sw = StopWatchTimer()
 
@@ -933,21 +932,74 @@ class RCDBProvider(object):
         result.performance["preparation"] = preparation_sw.elapsed
         result.performance["query"] = query_sw.elapsed
         result.performance["selection"] = selection_sw.elapsed
-        result.performance["select_values_total"] = total_sw.elapsed
         result.performance["start_time_stamp"] = start_time_stamp
+        result.performance["total"] = total_sw.elapsed
 
-        print result.performance
+        print (result.performance)
 
         for row in result_table:
-            print row
+            print (row)
 
 
 
         return result
 
-
-class RunSelectionResult(MutableSequence):
+class RcdbSelectionResult(MutableSequence):
     """Define a list format, which I can customize"""
+
+    def __init__(self, rows=None, db=None):
+        super(RcdbSelectionResult, self).__init__()
+        self.filter_condition_types = []
+        self.filter_condition_names = []
+        self.selected_conditions = []
+        self.db = db
+        self.sort_desc = False
+
+        js_now = int(mktime(datetime.datetime.now().timetuple()) * 1000)
+        self.performance = {"preparation": 0,
+                            "query": 0,
+                            "selection": 0,
+                            "start_time_stamp": js_now,
+                            "get_conditions": 0,
+                            "tabling_values": 0,
+                            "total":0
+                            }
+
+        if rows is not None:
+            self.rows = list(rows)
+        else:
+            self.rows = list()
+
+    def __len__(self):
+        return len(self.rows)
+
+    def __getitem__(self, ii):
+        return self.rows[ii]
+
+    def __delitem__(self, ii):
+        del self.rows[ii]
+
+    def __setitem__(self, ii, val):
+        self.rows[ii] = val
+        return self.rows[ii]
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return """<RCDBSelectionResult filer_cnd_names:{}, Runs:{}>""".format(self.filter_condition_names, self.rows)
+
+    def insert(self, ii, val):
+        self.rows.insert(ii, val)
+
+    def append(self, val):
+        list_idx = len(self.rows)
+        self.insert(list_idx, val)
+
+
+
+class RunSelectionResult(RcdbSelectionResult):
+    """"""
 
     def __init__(self, runs=None, db=None):
         super(RunSelectionResult, self).__init__()
@@ -1369,10 +1421,10 @@ class ConfigurationProvider(RCDBProvider):
 
         if content is None:
             log.debug(Lf("|- Content is None, assuming using file '{}'", path))
-            check_sum = file_archiver.get_file_sha256(path)
+            check_sum = rcdb.file_archiver.get_file_sha256(path)
         else:
             log.debug(Lf("|- Content is NOT none, using it to put to DB", path))
-            check_sum = file_archiver.get_string_sha256(content)
+            check_sum = rcdb.file_archiver.get_string_sha256(content)
 
         if not isinstance(run, Run):  # run is given as run number not Run object
             run = self.create_run(run)

@@ -12,7 +12,6 @@ from rcdb.model import run_periods
 from sqlalchemy import text, bindparam, Integer
 
 if __name__ == "__main__":
-    print sys.argv
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")
     parser.add_argument("connection_string",
