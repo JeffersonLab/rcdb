@@ -132,7 +132,8 @@ tokens = [
     'DBL_RANG_EQ',
     'DBL_STAR_EQ',
     'DBL_SLASH_EQ',
-] + reserved.values()
+]
+tokens.extend(reserved.values())
 
 t_AT = r'@'
 t_DOT = r'\.'
@@ -396,9 +397,9 @@ if __name__ == '__main__':
         while 1:
             tok = lexer.token()
             if tok is None:
-                print tok
+                print (tok)
                 break
-            print tok
+            print (tok)
 
     while 1:
         try:
