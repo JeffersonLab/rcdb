@@ -1,6 +1,6 @@
 import click
 from rcdb import RCDBProvider
-
+import sys
 
 class RcdbApplicationContext(object):
 

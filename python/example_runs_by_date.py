@@ -77,7 +77,7 @@ if __name__ == "__main__":
     db = RCDBProvider(args.connection_string)
 
     # Get runs from run period
-    run_min, run_max, description = run_periods["2016-02"]
+    run_min, run_max, description = db.get_run_period("2016-02")
     print("Selecting runs {}-{} from run period: '{}'".format(run_min, run_max, description))
 
     data_by_date, performance = get_runs_by_date(db, "@status_approved and @is_production", run_min, run_max)
