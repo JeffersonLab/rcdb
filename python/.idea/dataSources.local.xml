@@ -2,7 +2,13 @@
 <project version="4">
   <component name="dataSourceStorageLocal">
     <data-source name="rcdb@hallddb.jlab.org" uuid="5708474f-0a4d-4399-a3e1-7252a418f502">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <database-info product="MySQL" version="5.5.50-MariaDB" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.40 ( Revision: 402933ef52cad9aa82624e80acbea46e3a701ce6 )">
+        <extra-name-characters>#@</extra-name-characters>
+        <identifier-quote-string>`</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
+      <user-name>rcdb</user-name>
+      <introspection-schemas>*:rcdb</introspection-schemas>
     </data-source>
     <data-source name="data_monitoring@hallddb.jlab.org" uuid="ad416f9c-a3a7-44ea-b350-4e1a853f738e">
       <database-info product="MySQL" version="5.5.50-MariaDB" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.40 ( Revision: 402933ef52cad9aa82624e80acbea46e3a701ce6 )">
