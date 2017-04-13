@@ -90,6 +90,9 @@ class DefaultConditions(object):
     EVENT_COUNT = 'event_count'
     RUN_TYPE = 'run_type'
     RUN_CONFIG = 'run_config'
+    RUN_LENGTH = 'run_length'
+    RUN_START_TIME = 'run_start_time'
+    RUN_END_TIME = 'run_end_time'
     DAQ_SETUP = 'daq_setup'
     SESSION = 'session'
     USER_COMMENT = 'user_comment'
@@ -97,7 +100,6 @@ class DefaultConditions(object):
     COMPONENT_STATS = 'component_stats'
     RTVS = 'rtvs'
     IS_VALID_RUN_END = 'is_valid_run_end'
-    RUN_LENGTH = 'run_length'
 
 
 def create_condition_types(db):
@@ -127,4 +129,7 @@ def create_condition_types(db):
     create_condition_type(DefaultConditions.IS_VALID_RUN_END, ConditionType.BOOL_FIELD,
                           "True if a run has valid run-end record. "
                           "False means the run was aborted/crashed at some point")
-    create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of ")
+    create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of the run ")
+    create_condition_type(DefaultConditions.RUN_START_TIME, ConditionType.TIME_FIELD, "Run start time ")
+    create_condition_type(DefaultConditions.RUN_END_TIME, ConditionType.TIME_FIELD, "Run end time (last CODA update)")
+

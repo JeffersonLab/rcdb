@@ -20,6 +20,13 @@ class RcdbApplicationContext(object):
         return '<Repo %r>' % self.home
 
 
+class RcdbAdminApplicationContext(RcdbApplicationContext):
+
+    def __init__(self, home, connection_str):
+        super(RcdbAdminApplicationContext).__init__(home, connection_str)
+
+
+
 def parse_run_range(run_range_str, run_periods=None):
     """ Parses run range, returning a pair (run_from, run_to) or (run_from, None) or (None, None)
 
