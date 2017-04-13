@@ -5,13 +5,13 @@ The script result is something like:
 
 Selecting runs 10000-19999 from run period: '28 Jan 2016 - 24 Apr 2016   Commissioning, 12 GeV e-'
 '2016-02-20' has 6 runs 10391 - 10399
-		10391	2016-02-20 07:29:04   84235408
-		10392	2016-02-20 10:33:11   51150478		
-		...
+        10391   2016-02-20 07:29:04   84235408
+        10392   2016-02-20 10:33:11   51150478		
+        ...
 '2016-02-21' has 10 runs 10412 - 10436
-		10412	2016-02-21 02:42:24   59020003
-		10414	2016-02-21 05:00:05   21921629
-		...
+        10412   2016-02-21 02:42:24   59020003
+        10414   2016-02-21 05:00:05   21921629
+        ...
 ...
 
 Usage:
@@ -21,7 +21,6 @@ Usage:
 import argparse
 import sys
 from rcdb import RCDBProvider
-from rcdb.model import run_periods
 
 
 def get_runs_by_date(db, query, run_min=0, run_max=sys.maxint):
