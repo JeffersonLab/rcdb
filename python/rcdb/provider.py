@@ -301,6 +301,16 @@ class RCDBProvider(object):
         return rcdb.model.run_periods
 
     # ------------------------------------------------
+    # Get run periods
+    # ------------------------------------------------
+    def get_run_period(self, name):
+        """Returns dict with run-periods
+        :param name: Run period name in form of YYYY-MM, like 2016-02
+        :return: dict with {"name":(run_min, run_max, description)}
+        """
+        return rcdb.model.run_periods[str(name)]
+
+    # ------------------------------------------------
     # Returns condition type
     # ------------------------------------------------
     def get_condition_type(self, name):
@@ -761,13 +771,17 @@ class RCDBProvider(object):
 
         return result
 
-    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False, run_column=True):
+    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False,
+                      insert_run_number=True, runs=None):
         """ Searches RCDB for runs with e
 
+        
         :param val_names: list of conditions names to select
         :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
         :param run_min: minimum run to search
-        :param run_max: maximum run to search
+        :param run_max: maximum run to search        
+        :param runs: May be a list of runs to search from. In this case run_min and run_max are not used
+        :param insert_run_number: If True the first column of the result will be a run number
         :param search_str: Search pattern
         :type search_str: str
         :return: List of runs matching criteria
@@ -847,6 +861,15 @@ class RCDBProvider(object):
         # PHASE 2: Database query
         query = self.session.query()
 
+        # do we have a list of runs?
+        if runs:
+            runs = [run.number if isinstance(run, Run) else int(run) for run in runs]
+            where_clause = " WHERE runs.number in ({})".format(','.join([str(run) for run in runs]))
+        else:
+            where_clause = " WHERE runs.number >= :run_min AND runs.number <=:run_max"
+
+
+
         # build query
         query = "SELECT  runs.number run" + os.linesep
         query_joins = " FROM runs " + os.linesep
@@ -860,7 +883,7 @@ class RCDBProvider(object):
 
         mighty_query = query + os.linesep \
                        + query_joins + os.linesep \
-                       + " WHERE runs.number >= :run_min AND runs.number <=:run_max"
+                       + where_clause
 
         if not sort_desc:
             mighty_query = mighty_query + os.linesep + "ORDER BY runs.number"
@@ -871,7 +894,10 @@ class RCDBProvider(object):
         query_sw = StopWatchTimer()
 
         sql = text(mighty_query)
-        result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
+        if runs:
+            result = self.session.connection().execute(sql)     # runs are already in query
+        else:
+            result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
 
         query_sw.stop()
 
@@ -892,7 +918,7 @@ class RCDBProvider(object):
         for values in result:
             run = values[0]
             if not search_eval or eval(compiled_search_eval):
-                result_row = [run] if run_column else []
+                result_row = [run] if insert_run_number else []
                 for i in val_indexes:
                     val = values[i]
                     result_row.append(val)

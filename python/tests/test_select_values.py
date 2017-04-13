@@ -83,13 +83,18 @@ class TestRun(unittest.TestCase):
 
     def test_select_values_no_filter(self):
         """Test of Run in db function"""
-        result = self.db.select_values(['a', 'd'], run_min=4, run_column=False)
+        result = self.db.select_values(['a', 'd'], run_min=4, insert_run_number=False)
         self.assertEqual(result.rows, [[4, u'hoho'], [None, u'bang'], [9, u'mew']])
 
     def test_select_values_desc_order(self):
         """Test of Run in db function"""
-        result = self.db.select_values(['a', 'd'], run_min=4, run_column=False, sort_desc=True)
+        result = self.db.select_values(['a', 'd'], run_min=4, insert_run_number=False, sort_desc=True)
         self.assertEqual(result.rows, [[9, u'mew'], [None, u'bang'], [4, u'hoho']])
+
+    def test_select_values_by_run(self):
+        """Test of Run in db function"""
+        result = self.db.select_values(['a', 'd'], runs=[9, self.db.get_run(4)], insert_run_number=False)
+        self.assertEqual(result.rows, [[4, u'hoho'], [9, u'mew']])
 
 
 
