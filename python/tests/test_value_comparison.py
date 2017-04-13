@@ -1,10 +1,7 @@
-from datetime import datetime
 import unittest
 import rcdb
 import rcdb.model
-from rcdb.model import ConditionType, Condition, Run
-
-import logging
+from rcdb.model import ConditionType
 
 
 class TestValueComparison(unittest.TestCase):
@@ -36,4 +33,3 @@ class TestValueComparison(unittest.TestCase):
         self.assertFalse(ctf.values_are_equal(3.15, "3.14"))
 
         self.assertTrue(ctf.values_are_equal(3, 3))
-

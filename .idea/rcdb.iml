@@ -8,10 +8,14 @@
     <orderEntry type="jdk" jdkName="Python 2.7.12 (D:\Tools\Anaconda\2\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Jinja2" />
     <option name="TEMPLATE_FOLDERS">
       <list>
+        <option value="$MODULE_DIR$/python/jinja2/testsuite/res/templates" />
         <option value="$MODULE_DIR$/rcdb_www/templates" />
       </list>
     </option>

@@ -4,33 +4,31 @@ Documentation for this module.
 More details.
 """
 import os
-
 import re
 import logging
 import sys
-from collections import MutableSequence
 from time import mktime
+from collections import MutableSequence
 
 from sqlalchemy import text
-
-import rcdb
-from rcdb.alias import default_aliases
+from sqlalchemy.exc import OperationalError
 
 from ply.lex import LexToken
 
+import sqlalchemy.orm
+from sqlalchemy.orm import joinedload, aliased
+from sqlalchemy.orm.exc import NoResultFound
+
+import rcdb
+import rcdb.file_archiver
+from rcdb.alias import default_aliases
 from rcdb.log_format import BraceMessage as Lf
 from rcdb import lexer
 from rcdb.stopwatch import StopWatchTimer
-from sqlalchemy.exc import OperationalError
-from .errors import OverrideConditionTypeError, NoConditionTypeFound, NoRunFoundError, OverrideConditionValueError, \
-    QueryFormatError
-import sqlalchemy.orm
-from sqlalchemy.orm import joinedload, aliased
-
+from rcdb.errors import OverrideConditionTypeError, NoConditionTypeFound, \
+    NoRunFoundError, OverrideConditionValueError, QueryFormatError
 from rcdb.model import *
 
-import rcdb.file_archiver
-from sqlalchemy.orm.exc import NoResultFound
 
 log = logging.getLogger("rcdb.provider")
 
@@ -763,7 +761,7 @@ class RCDBProvider(object):
 
         return result
 
-    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
+    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False, run_column=True):
         """ Searches RCDB for runs with e
 
         :param val_names: list of conditions names to select
@@ -773,7 +771,7 @@ class RCDBProvider(object):
         :param search_str: Search pattern
         :type search_str: str
         :return: List of runs matching criteria
-        :rtype: list(Run)
+        :rtype: RcdbSelectionResult
         """
         start_time_stamp = int(mktime(datetime.datetime.now().timetuple()) * 1000)
         total_sw = StopWatchTimer()
@@ -782,24 +780,6 @@ class RCDBProvider(object):
         if run_min > run_max:
             run_min, run_max = run_max, run_min
 
-        # PHASE 0 - Maybe there is no query?!
-        if not search_str or not search_str.strip():
-            # If no query, just use get_runs function and return the result
-            preparation_sw.stop()
-            query_sw = StopWatchTimer()
-            sel_runs = self.get_runs(run_min, run_max, sort_desc)
-            query_sw.stop()
-
-            result = RunSelectionResult(sel_runs, self)
-            result.sort_desc = sort_desc
-            result.filter_condition_names = []
-            result.filter_condition_types = []
-            result.performance["preparation"] = preparation_sw.elapsed
-            result.performance["query"] = query_sw.elapsed
-            result.performance["selection"] = 0
-            result.performance["start_time_stamp"] = start_time_stamp
-
-            return result
 
         # get all condition types
         all_cnd_types_by_name = self.get_condition_types_by_name()
@@ -903,14 +883,16 @@ class RCDBProvider(object):
         selection_sw = StopWatchTimer()
 
         # PHASE 3: Selecting runs
-        compiled_search_eval = compile(search_eval, '<string>', 'eval')
+        if search_eval:
+            # did user set search string at all?
+            compiled_search_eval = compile(search_eval, '<string>', 'eval')
 
         result_table = []
 
         for values in result:
             run = values[0]
-            if eval(compiled_search_eval):
-                result_row = [run]
+            if not search_eval or eval(compiled_search_eval):
+                result_row = [run] if run_column else []
                 for i in val_indexes:
                     val = values[i]
                     result_row.append(val)
