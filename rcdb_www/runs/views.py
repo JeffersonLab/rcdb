@@ -38,7 +38,6 @@ def index(page, run_from, run_to):
 
     start_time_stamp = int(time() * 1000)
     preparation_sw = StopWatchTimer()
-    preparation_sw.start()
 
     condition_types = g.tdb.get_condition_types()
     query = g.tdb.session.query(Run)
@@ -66,7 +65,6 @@ def index(page, run_from, run_to):
 
     preparation_sw.stop()
     query_sw = StopWatchTimer()
-    query_sw.start()
     # Get runs from query
     runs = query.options(subqueryload(Run.conditions))\
         .order_by(Run.number.desc())\

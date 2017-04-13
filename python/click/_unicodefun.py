@@ -94,7 +94,7 @@ def _verify_python3_env():
         else:
             extra += (
                 'This system lists a couple of UTF-8 supporting locales that\n'
-                'you can pick from.  The following suitable locales were\n'
+                'you can pick from.  The following suitable locales where\n'
                 'discovered: %s'
             ) % ', '.join(sorted(good_locales))
 
@@ -114,6 +114,5 @@ def _verify_python3_env():
 
     raise RuntimeError('Click will abort further execution because Python 3 '
                        'was configured to use ASCII as encoding for the '
-                       'environment.  Either run this under Python 2 or '
-                       'consult http://click.pocoo.org/python3/ for '
-                       'mitigation steps.' + extra)
+                       'environment.  Consult http://click.pocoo.org/python3/'
+                       'for mitigation steps.' + extra)

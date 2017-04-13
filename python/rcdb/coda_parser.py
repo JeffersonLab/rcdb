@@ -6,7 +6,7 @@ from rcdb.log_format import BraceMessage as Lf
 
 # Setup logger
 log = logging.getLogger('rcdb.coda_parser')         # create run configuration standard logger
-
+log.addHandler(logging.NullHandler())
 
 # run config file name in rtvs collection
 RUN_CONFIG_RTV = '%(config)'
@@ -33,7 +33,6 @@ class CodaRunLogParseResult(object):
         self.user_comment = None         # Daq comment by user
         self.evio_last_file = None       # Filename of the last evio file written by CODA ER
         self.evio_files_count = None     # The number of evio files written by CODA Event Recorder
-
 
 
 def parse_file(filename):
