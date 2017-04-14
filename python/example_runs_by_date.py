@@ -40,26 +40,21 @@ def get_runs_by_date(db, query, run_min=0, run_max=sys.maxint):
     assert isinstance(db, RCDBProvider)
 
     # Select production runs with event_count > 0.5M
-    result = db.select_runs(query, run_min, run_max)
-    event_counts = result.get_values("event_count", insert_run_number=False)
-
-    # at this point event_counts is a table of one column and many rows
-    # like [[84235408L], [51150478L], [35548286L], ...]
-    # we want it to be just a vector with values [84235408L, 51150478L, 35548286L, ...]
-    event_counts = [ec[0] for ec in event_counts]
+    result_table = db.select_values(['run_start_time', 'event_count'], query, run_min, run_max)
 
     # construct data by date
     data_by_date = {}
-    for run, event_count in zip(result, event_counts):
-        run_date = run.start_time.date()
+    for row in result_table:
+        run, run_start_time, event_count = tuple(row)
+        run_date = run_start_time.date()
 
         # is there the key already?
         if run_date not in data_by_date:
             data_by_date[run_date] = []
 
         # add data to corresponding date
-        data_by_date[run_date].append((run.number, run.start_time, event_count))
-    return data_by_date, result.performance
+        data_by_date[run_date].append((run, run_start_time, event_count))
+    return data_by_date, result_table.performance
 
 
 if __name__ == "__main__":
