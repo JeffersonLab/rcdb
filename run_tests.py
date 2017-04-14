@@ -2,7 +2,7 @@ import os
 import unittest
 import inspect
 import subprocess
-
+import sys.path
 
 this_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 python_folder = os.path.join(this_folder, "python")
@@ -10,6 +10,10 @@ python_tests_folder = os.path.join(python_folder, "tests")
 cpp_folder = os.path.join(this_folder, "cpp")
 cpp_bin_folder = os.path.join(cpp_folder, "bin")
 cpp_test_executable = os.path.join(cpp_bin_folder, "rcdb_test_cpp")
+
+
+# This is for travis
+sys.path.append(python_folder)
 
 
 def load_tests(loader, tests, pattern):
