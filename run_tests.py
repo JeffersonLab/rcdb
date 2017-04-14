@@ -2,7 +2,7 @@ import os
 import unittest
 import inspect
 import subprocess
-import sys.path
+import sys
 
 this_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 python_folder = os.path.join(this_folder, "python")
@@ -23,7 +23,8 @@ def load_tests(loader, tests, pattern):
 if __name__ == "__main__":
     result = unittest.main(exit=False)
     if not result.result.wasSuccessful():
-        print "ERROR. Python tests are not passed"
+        print("ERROR. Python tests are not passed")
+        exit(1)
 
     print
     print "Running C++ tests with SQLite"
