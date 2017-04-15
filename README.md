@@ -1,4 +1,4 @@
-##RCDB
+## RCDB
 
 [![Build Status](https://travis-ci.org/JeffersonLab/rcdb.svg?branch=master)](https://travis-ci.org/JeffersonLab/rcdb)
 
@@ -11,13 +11,13 @@ The interfaces available are:
 - C++ API
 - Possibly JAVA API
 
-####Documentation:
+#### Documentation:
 https://github.com/JeffersonLab/rcdb/wiki
 
-####Web site:
+#### Web site:
 One can visit HallD RCDB Web site as demo:  
 https://halldweb.jlab.org/rcdb/
 
-####SQLite db:
+#### SQLite db:
 Daily updated SQLite database is available here:  
 https://halldweb.jlab.org/dist/rcdb.sqlite
