@@ -16,7 +16,7 @@ from sqlalchemy.exc import OperationalError
 from ply.lex import LexToken
 
 import sqlalchemy.orm
-from sqlalchemy.orm import joinedload, aliased
+from sqlalchemy.orm import aliased
 from sqlalchemy.orm.exc import NoResultFound
 
 import rcdb
@@ -774,7 +774,6 @@ class RCDBProvider(object):
     def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False,
                       insert_run_number=True, runs=None):
         """ Searches RCDB for runs with e
-
         
         :param val_names: list of conditions names to select
         :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
@@ -793,7 +792,6 @@ class RCDBProvider(object):
 
         if run_min > run_max:
             run_min, run_max = run_max, run_min
-
 
         # get all condition types
         all_cnd_types_by_name = self.get_condition_types_by_name()
@@ -868,8 +866,6 @@ class RCDBProvider(object):
         else:
             where_clause = " WHERE runs.number >= :run_min AND runs.number <=:run_max"
 
-
-
         # build query
         query = "SELECT  runs.number run" + os.linesep
         query_joins = " FROM runs " + os.linesep
@@ -912,6 +908,8 @@ class RCDBProvider(object):
         if search_eval:
             # did user set search string at all?
             compiled_search_eval = compile(search_eval, '<string>', 'eval')
+        else:
+            compiled_search_eval = None
 
         result_table = []
 
@@ -937,6 +935,7 @@ class RCDBProvider(object):
         result.performance["total"] = total_sw.elapsed
 
         return result
+
 
 class RcdbSelectionResult(MutableSequence):
     """Define a list format, which I can customize"""
@@ -989,7 +988,6 @@ class RcdbSelectionResult(MutableSequence):
     def append(self, val):
         list_idx = len(self.rows)
         self.insert(list_idx, val)
-
 
 
 class RunSelectionResult(RcdbSelectionResult):
