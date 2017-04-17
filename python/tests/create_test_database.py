@@ -15,43 +15,66 @@ def create_db_structure(db):
     assert isinstance(db, rcdb.RCDBProvider)
 
     rcdb.provider.destroy_all_create_schema(db)
+    runs = {}
+    # create runs
+    for i in range(1, 6):
+        runs[i] = db.create_run(i)
 
-    # create run
-    db.create_run(1)
-    db.create_run(2)
-    db.create_condition_type("bool_cnd", ConditionType.BOOL_FIELD, "bool condition")
-    db.create_condition_type("json_cnd", ConditionType.JSON_FIELD, "JSon condition")
-    db.create_condition_type("string_cnd", ConditionType.STRING_FIELD, "string condition")
-    db.create_condition_type("float_cnd", ConditionType.FLOAT_FIELD, "float condition")
-    db.create_condition_type("int_cnd", ConditionType.INT_FIELD, "Int condition")
-    db.create_condition_type("time_cnd", ConditionType.TIME_FIELD, "Time condition")
-    db.create_condition_type("blob_cnd", ConditionType.BLOB_FIELD, "BLOB condition")
+    runs[9] = db.create_run(9)
 
-    db.add_condition(1, "bool_cnd", True)
-    db.add_condition(2, "bool_cnd", False)
+    db.create_condition_type("a", ConditionType.INT_FIELD, "Test condition 'a'")
+    db.create_condition_type("b", ConditionType.FLOAT_FIELD, "Test condition 'b'")
+    db.create_condition_type("c", ConditionType.BOOL_FIELD, "Test condition 'v'")
+    db.create_condition_type("d", ConditionType.STRING_FIELD, "Test condition 'd'")
+    db.create_condition_type("e", ConditionType.JSON_FIELD, "Test condition 'e'")
+    db.create_condition_type("f", ConditionType.STRING_FIELD, "Test condition 'f'")
+    db.create_condition_type("g", ConditionType.BLOB_FIELD, "Test condition 'g'")
 
-    db.add_condition(1, "json_cnd", '{"firstName":"John", "lastName":"Doe"}')
-    db.add_condition(2, "json_cnd", '{"firstName":"Elton", "lastName":"Smith"}')
+    # create conditions
+    db.add_condition(1, "a", 1)
+    db.add_condition(2, "a", 2)
+    db.add_condition(3, "a", 3)
+    db.add_condition(4, "a", 4)
+    db.add_condition(9, "a", 9)
 
-    db.add_condition(1, "string_cnd", "hey")
-    db.add_condition(2, "string_cnd", "ho")
+    db.add_condition(1, "b", 1.01)
+    db.add_condition(2, "b", 7.0 / 3.0)
+    db.add_condition(3, "b", 2.55)
+    db.add_condition(4, "b", 1.64)
+    db.add_condition(5, "b", 2.32)
+    db.add_condition(9, "b", 2.02)
 
-    db.add_condition(1, "float_cnd", 0.1)
-    db.add_condition(2, "float_cnd", 2.2)
+    db.add_condition(1, "c", False)
+    db.add_condition(2, "c", True)
+    db.add_condition(3, "c", True)
+    db.add_condition(4, "c", True)
+    db.add_condition(5, "c", False)
+    db.add_condition(9, "c", True)
 
-    db.add_condition(1, "int_cnd", 5)
-    db.add_condition(2, "int_cnd", 10)
+    db.add_condition(1, "d", "haha")
+    db.add_condition(4, "d", "hoho")
+    db.add_condition(5, "d", "bang")
+    db.add_condition(9, "d", "mew")
 
-    db.add_condition(1, "time_cnd", datetime(2009, 1, 6, 15, 8, 24, 78915))
-    db.add_condition(2, "time_cnd", datetime(2010, 1, 2, 3, 4, 5, 6))
+    db.add_condition(1, "e", '{"a":1}')
+    db.add_condition(4, "e", "[1,2,3]")
+    db.add_condition(9, "e", '[3,2,{"b":5}]')
 
-    db.add_condition(1, "blob_cnd", "F4D1")
-    db.add_condition(2, "blob_cnd", "1235")
+    db.add_condition(4, "f", "my only value")
 
-    # Run with not all conditions filled
-    db.create_run(3)
-    db.add_condition(3, "float_cnd", -0.2)
-    db.add_condition(3, "int_cnd", 20)
+    db.add_condition(5, "g", "aGVsbG8gd29ybGQ=")
+
+    """
+    run |     a     |     b     |     c     |      d     |     e         |     f         |     g  
+    -----------------------------------------------------------------------------------------------------   
+      1 | 1         | 1.01      | False     | haha       | {"a":1}       | None          | None   
+      2 | 2         | 2.333...  | True      | None       | None          | None          | None   
+      3 | 3         | 2.55      | True      | None       | None          | None          | None   
+      4 | 4         | 1.64      | True      | hoho       | [1,2,3]       | my only value | None 
+      5 | None      | 2.32      | False     | bang       | None          | None          | aGVsbG8gd29ybGQ=   
+      9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None          | None   
+
+    """
 
 
 if __name__ == "__main__":

@@ -25,7 +25,9 @@ class TestRun(unittest.TestCase):
         self.db.create_condition_type("d", ConditionType.STRING_FIELD, "Test condition 'd'")
         self.db.create_condition_type("e", ConditionType.JSON_FIELD, "Test condition 'e'")
         self.db.create_condition_type("f", ConditionType.STRING_FIELD, "Test condition 'f'")
+        self.db.create_condition_type("g", ConditionType.BLOB_FIELD, "Test condition 'g'")
 
+        # create conditions
         self.db.add_condition(1, "a", 1)
         self.db.add_condition(2, "a", 2)
         self.db.add_condition(3, "a", 3)
@@ -33,7 +35,7 @@ class TestRun(unittest.TestCase):
         self.db.add_condition(9, "a", 9)
 
         self.db.add_condition(1, "b", 1.01)
-        self.db.add_condition(2, "b", 2.54)
+        self.db.add_condition(2, "b", 7.0/3.0)
         self.db.add_condition(3, "b", 2.55)
         self.db.add_condition(4, "b", 1.64)
         self.db.add_condition(5, "b", 2.32)
@@ -57,19 +59,22 @@ class TestRun(unittest.TestCase):
 
         self.db.add_condition(4, "f", "my only value")
 
-        """
-        run |     a     |     b     |     c     |      d     |     e         |     f
-        -------------------------------------------------------------------------------------
-          1 | 1         | 1.01      | False     | haha       | {"a":1}       | None
-          2 | 2         | 2.54      | True      | None       | None          | None
-          3 | 3         | 2.55      | True      | None       | None          | None
-          4 | 4         | 1.64      | True      | hoho       | [1,2,3]       | my only value
-          5 | None      | 2.32      | False     | bang       | None          | None
-          9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None
+        self.db.add_condition(5, "g", "aGVsbG8gd29ybGQ=")
 
         """
-        def tearDown(self):
-            self.db.disconnect()
+        run |     a     |     b     |     c     |      d     |     e         |     f         |     g  
+        -----------------------------------------------------------------------------------------------------   
+          1 | 1         | 1.01      | False     | haha       | {"a":1}       | None          | None   
+          2 | 2         | 2.333...  | True      | None       | None          | None          | None   
+          3 | 3         | 2.55      | True      | None       | None          | None          | None   
+          4 | 4         | 1.64      | True      | hoho       | [1,2,3]       | my only value | None 
+          5 | None      | 2.32      | False     | bang       | None          | None          | aGVsbG8gd29ybGQ=   
+          9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None          | None   
+
+        """
+
+    def tearDown(self):
+        self.db.disconnect()
 
     def test_select_values(self):
         """Test of Run in db function"""
