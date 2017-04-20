@@ -2,10 +2,13 @@
 # Tests SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_static_lib', 'with_mysql')
+Import('default_env', 'rcdb_static_lib', 'with_mysql', 'with_sqlite')
 env = default_env.Clone()
-env.Append(LIBPATH='#lib')
-env.Append(LIBS=[rcdb_static_lib])
+
+if with_sqlite:
+    env.Append(LIBPATH='#lib')
+    env.Append(LIBS=[rcdb_static_lib])
+    env.Append(CPPDEFINES='RCDB_SQLITE')
 
 #Build with mysql or no?
 #Read user flag for using mysql dependencies or not

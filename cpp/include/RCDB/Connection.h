@@ -10,8 +10,14 @@
 #include <mutex>
 
 #include "DataProvider.h"
-#include "SqLiteProvider.h"
-#include "MySqlProvider.h"
+
+#ifdef RCDB_SQLITE
+    #include "SqLiteProvider.h"
+#endif
+
+#ifdef RCDB_MYSQL
+   #include "MySqlProvider.h"
+#endif
 
 namespace rcdb{
 
@@ -31,10 +37,19 @@ namespace rcdb{
             std::lock_guard<std::mutex> guard(_mutex);
 
             if(_connectionString.find("sqlite:///") == 0) {
-                _provider.reset(new SqLiteProvider(_connectionString));
+                #ifdef RCDB_SQLITE
+                    _provider.reset(new SqLiteProvider(_connectionString));
+                #else
+                    throw logic_error("RCDB built without SQLite3 support. Rebuild it using 'with-sqlite=true' flag");
+                #endif
             }
             else {
-                _provider.reset(new MySqlProvider(_connectionString));
+
+                #ifdef RCDB_MYSQL
+                    _provider.reset(new MySqlProvider(_connectionString));
+                #else
+                    throw logic_error("RCDB built without MySQL support. Rebuild it using 'with-mysql=true' flag");
+                #endif
             }
         }
 

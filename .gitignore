@@ -55,3 +55,9 @@ docs/_build/
 target/
 
 cpp/cmake-build-debug/
+
+cpp/tmp/
+
+cpp/\.sconsign\.dblite
+
+cpp/\.idea/workspace\.xml

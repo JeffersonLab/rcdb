@@ -5,6 +5,9 @@ cmake_minimum_required(VERSION 3.4)
 project(rcdb_cpp)
 
 
+add_definitions(-DRCDB_MYSQL)
+add_definitions(-DRCDB_SQLITE)
+
 # Location of additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
@@ -70,6 +73,7 @@ SET(TEST_SOURCE_FILES
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES} )
 add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES} )
+add_executable(examples_mysql_only examples/mysql_add.cpp)
 
 target_link_libraries(test_rcdb_cpp mysqlclient dl pthread)
 target_link_libraries(examples_rcdb_cpp mysqlclient dl pthread)
