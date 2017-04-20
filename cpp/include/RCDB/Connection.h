@@ -5,6 +5,7 @@
 #ifndef RCDB_CPP_CONNECTION_H
 #define RCDB_CPP_CONNECTION_H
 
+#include <stdexcept>
 #include <string>
 #include <memory>
 #include <mutex>
@@ -18,6 +19,7 @@
 #ifdef RCDB_MYSQL
    #include "MySqlProvider.h"
 #endif
+
 
 namespace rcdb{
 
@@ -40,7 +42,7 @@ namespace rcdb{
                 #ifdef RCDB_SQLITE
                     _provider.reset(new SqLiteProvider(_connectionString));
                 #else
-                    throw logic_error("RCDB built without SQLite3 support. Rebuild it using 'with-sqlite=true' flag");
+                    throw std::logic_error("RCDB built without SQLite3 support. Rebuild it using 'with-sqlite=true' flag");
                 #endif
             }
             else {
@@ -48,7 +50,7 @@ namespace rcdb{
                 #ifdef RCDB_MYSQL
                     _provider.reset(new MySqlProvider(_connectionString));
                 #else
-                    throw logic_error("RCDB built without MySQL support. Rebuild it using 'with-mysql=true' flag");
+                    throw std::logic_error("RCDB built without MySQL support. Rebuild it using 'with-mysql=true' flag");
                 #endif
             }
         }
