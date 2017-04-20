@@ -312,6 +312,7 @@ class ConfigurationFile(ModelBase):
     sha256 = Column(String(44), nullable=False)
     content = Column(Text(), nullable=False)
     description = Column(String(255), nullable=True)
+    importance = Column(Integer, nullable=False, default=0, server_default='0')
     runs = relationship("Run", secondary=_files_have_runs_association, back_populates="files")
 
     def __repr__(self):

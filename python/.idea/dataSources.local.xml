@@ -16,7 +16,9 @@
       <introspection-schemas>*:data_monitoring</introspection-schemas>
     </data-source>
     <data-source name="test.sqlite" uuid="acd2589c-a078-4427-8fdc-34f9a4f57003">
-      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
+      <database-info product="SQLite" version="3.16.1" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native" />
+      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
+      <auth-required>false</auth-required>
       <introspection-schemas>*:main</introspection-schemas>
     </data-source>
     <data-source name="rcdb@localhost" uuid="588c80e5-c0b3-4bdb-96f6-bc9c2c63192d">
