@@ -28,6 +28,7 @@ target_metadata = Condition.metadata
 # ... etc.
 
 
+
 def run_migrations_offline():
     """Run migrations in 'offline' mode.
 
@@ -55,7 +56,10 @@ def run_migrations_online():
 
     """
     alembic_config = config.get_section(config.config_ini_section)
-    if "RCDB_CONNECTION" in os.environ:
+    x_args = context.get_x_argument(as_dictionary=True)
+    if "rcdb_connection" in x_args:
+        connection_string = x_args["rcdb_connection"]
+    elif "RCDB_CONNECTION" in os.environ:
         connection_string = os.environ["RCDB_CONNECTION"]
         if connection_string.startswith("mysql://"):
             try:
@@ -65,8 +69,12 @@ def run_migrations_online():
                 # sql alchemy uses MySQLdb by default. But it might be not install in the system
                 # in such case we fallback to mysqlconnector which is embedded in CCDB
                 connection_string = connection_string.replace("mysql://", "mysql+mysqlconnector://")
+    else:
+        raise Exception("Connection string is not found. "
+                        "Set is using '-x rcdb_connection=value' flag "
+                        "or by setting RCDB_CONNECTION environment variable")
 
-        alembic_config["sqlalchemy.url"] = connection_string
+    alembic_config["sqlalchemy.url"] = connection_string
 
     print alembic_config
 

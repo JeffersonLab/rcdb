@@ -11,7 +11,7 @@ from time import mktime
 from collections import MutableSequence
 
 from sqlalchemy import text
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 
 from ply.lex import LexToken
 
@@ -1480,6 +1480,52 @@ class ConfigurationProvider(RCDBProvider):
 
         return conf_file
 
+def alembic_set_stamp_head(connection_string):
+    import os
+    import argparse
+    from alembic.config import Config
+    from alembic import command
+
+    import inspect
+    this_directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
+    root_directory = os.path.join(this_directory, '..', '..')
+    alembic_directory = os.path.join(root_directory, 'alembic')
+
+    ini_path = os.path.join(root_directory, 'alembic.ini')
+
+    config = Config(ini_path)
+    config.set_main_option('script_location', alembic_directory)
+    config.cmd_opts = argparse.Namespace() # other command like options.
+    x_arg = 'rcdb_connection=' + connection_string
+    if not hasattr(config.cmd_opts, 'x'):
+        if x_arg is not None:
+            setattr(config.cmd_opts, 'x', [])
+            if isinstance(x_arg, list) or isinstance(x_arg, tuple):
+                for x in x_arg:
+                    config.cmd_opts.x.append(x)
+            else:
+                config.cmd_opts.x.append(x_arg)
+        else:
+            setattr(config.cmd_opts, 'x', None)
+
+    revision = 'head'
+    sql = False
+    tag = None
+
+    command.upgrade(config, revision, sql=sql, tag=tag)
+
+
+def destroy_schema(db):
+    assert isinstance(db, RCDBProvider)
+    drop_sql = "DROP TABLE alembic_version;"
+    rcdb.model.Base.metadata.drop_all(db.engine)
+    try:
+        db.session.connection().execute(drop_sql)
+    except ProgrammingError:
+        pass   # because it might be such way
+
+
+
 
 def destroy_all_create_schema(db):
     """
@@ -1488,9 +1534,15 @@ def destroy_all_create_schema(db):
     :return:
     """
     assert isinstance(db, RCDBProvider)
-    rcdb.model.Base.metadata.create_all(db.engine)
-    v = SchemaVersion()
-    v.version = rcdb.SQL_SCHEMA_VERSION
-    v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
-    db.session.add(v)
-    db.session.commit()
+    destroy_schema(db)
+
+    #rcdb.model.Base.metadata.create_all(db.engine)
+
+    alembic_set_stamp_head(db.connection_string)
+
+    #v = SchemaVersion()
+    #v.version = rcdb.SQL_SCHEMA_VERSION
+    #v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
+    #db.session.add(v)
+    #db.session.commit()
+
