@@ -35,3 +35,7 @@ env.Install('#bin', 'exmpl_simple')
 # example from  get_trigger_params.cpp
 env.Program('exmpl_get_trigger_params', source = ["get_trigger_params.cpp"])
 env.Install('#bin', 'exmpl_get_trigger_params')
+
+# example from  get_trigger_params.cpp
+env.Program('exmpl_write_conditions', source = ["write_conditions.cpp"])
+env.Install('#bin', 'exmpl_write_conditions')

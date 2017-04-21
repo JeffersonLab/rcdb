@@ -77,7 +77,7 @@ default_env = Environment(
 
 
 #Export 'default' environment for everything that wishes to use it
-Export('default_env', 'with_mysql')
+Export('default_env', 'with_mysql', 'with_sqlite')
 
 #Create 'working' environment
 #default_env.Repository('src')
