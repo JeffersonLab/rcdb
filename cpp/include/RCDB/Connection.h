@@ -67,18 +67,9 @@ namespace rcdb{
             _provider.reset();
         }
 
-        uint64_t GetRun() const {
-            return _run;
-        }
-
-        void SetRun(uint64_t run) {
-            _run = run;
-        }
-
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType& cndType)
         {
-
             return _provider->GetCondition(runNumber, cndType);
         }
 
@@ -94,19 +85,15 @@ namespace rcdb{
             return _provider->GetFile(runNumber, name);
         }
 
-
-    private:
+    protected:
         std::string _connectionString;
         std::unique_ptr<DataProvider> _provider;
         std::mutex _mutex;    /// This class  uses this mutex
 
-
-        uint64_t _run;
+    private:
         Connection(const Connection &) = delete;               // disable Copy constructor
         Connection &operator=(const Connection &) = delete;    // disable Copy assignment
-
     };
-
 }
 
 #endif //RCDB_CPP_CONNECTION_H

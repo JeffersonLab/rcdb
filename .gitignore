@@ -63,3 +63,5 @@ cpp/\.sconsign\.dblite
 cpp/\.idea/workspace\.xml
 
 \.idea/rcdb\.iml
+
+\.sconsign\.dblite

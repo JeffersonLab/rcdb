@@ -9,6 +9,7 @@
 #include <mysql.h>
 #include <exception>
 #include <stdexcept>
+#include <sstream>
 #include "DataProvider.h"
 #include "MySqlConnectionInfo.h"
 #include "Exceptions.h"
@@ -308,7 +309,174 @@ namespace rcdb {
             return connection;
         }
 
+        bool CheckRun(uint64_t runNumber)
+        {
+            using namespace std;
+
+            ostringstream ss;
+            ss << "SELECT number FROM runs WHERE number = " << runNumber;
+            string query = ss.str();
+
+            // Query condition types
+            if (mysql_query(_connection.get(), query.c_str())) {
+
+                throw logic_error(mysql_error(_connection.get()));
+            }
+
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+                    result(mysql_store_result(_connection.get()), &mysql_free_result);
+
+            return static_cast<bool>(result);
+        }
+
+
+        void AddRun(uint64_t runNumber)
+        {
+            using namespace std;
+
+            ostringstream ss;
+            ss << "INSERT IGNORE INTO runs (number, started, finished) VALUES ("<<runNumber<<", NULL, NULL)";
+            string query = ss.str();
+
+            // Query condition types
+            if (mysql_query(_connection.get(), query.c_str())) {
+                throw logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+        void AddRunStartTime(uint64_t runNumber, std::tm time)
+        {
+            std::ostringstream query;
+            ThrowIfRunNotExists(runNumber);
+
+            query<<"UPDATE runs SET started='"<<GetFormattedTime(time)<<"' WHERE runs.number = "<<runNumber;
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+
+            AddCondition(runNumber, "run_start_time", time);
+
+
+        }
+
+        void AddRunEndTime(uint64_t runNumber, std::tm time)
+        {
+            std::ostringstream query;
+            ThrowIfRunNotExists(runNumber);
+
+            query<<"UPDATE runs SET finished='"<<GetFormattedTime(time)<<"' WHERE runs.number = "<<runNumber;
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+
+            AddCondition(runNumber, "run_end_time", time);
+        }
+
+        std::string GetFormattedTime(std::tm time)
+        {
+            char buff[20];
+            strftime(buff, 20, "%Y-%m-%d %H:%M:%S", &time);
+            return std::string(buff);
+        }
+
+        std::string GetFormattedTime(std::time_t time)
+        {
+            return GetFormattedTime(*localtime(&time));
+        }
+
+        void AddCondition(uint64_t runNumber, const std::string& name, long value )
+        {
+            ThrowIfRunNotExists(runNumber);
+
+            auto conditionType = _typesByName[name.c_str()];
+
+            std::ostringstream query;
+            query << "INSERT INTO conditions (int_value, run_number, condition_type_id, created) VALUES "
+                  "("<<value<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+        void AddCondition(uint64_t runNumber, const std::string& name, std::tm value )
+        {
+            ThrowIfRunNotExists(runNumber);
+
+            auto conditionType = _typesByName[name.c_str()];
+
+            std::ostringstream query;
+            query << "INSERT INTO conditions (time_value, run_number, condition_type_id, created) VALUES "
+                    "('"<<GetFormattedTime(value)<<"', "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+        void AddCondition(uint64_t runNumber, const std::string& name, double value )
+        {
+            ThrowIfRunNotExists(runNumber);
+
+            auto conditionType = _typesByName[name.c_str()];
+
+            std::ostringstream query;
+            query << "INSERT INTO conditions (float_value, run_number, condition_type_id, created) VALUES "
+                    "("<<GetFormattedTime(value)<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+        void AddCondition(uint64_t runNumber, const std::string& name, const std::string& value)
+        {
+            ThrowIfRunNotExists(runNumber);
+
+            auto conditionType = _typesByName[name.c_str()];
+
+            std::ostringstream query;
+            query << "INSERT INTO conditions (text_value, run_number, condition_type_id, created) VALUES "
+                    "('"<<value<<", "<<runNumber<<"', "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+        void AddCondition(uint64_t runNumber, const std::string& name, bool value)
+        {
+            ThrowIfRunNotExists(runNumber);
+
+            auto conditionType = _typesByName[name.c_str()];
+
+            std::ostringstream query;
+            query << "INSERT INTO conditions (bool_value, run_number, condition_type_id, created) VALUES "
+                    "("<<value<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+
+            // Run query
+            if (mysql_query(_connection.get(), query.str().c_str())) {
+                throw std::logic_error(mysql_error(_connection.get()));
+            }
+        }
+
+
+
     protected:
+        void ThrowIfRunNotExists(uint64_t runNumber)
+        {
+            if(!CheckRun(runNumber)) {
+                std::ostringstream ss;
+                ss << "Run number "<<runNumber<<" does not exists in database. Add the run prior adding condition values";
+                throw std::logic_error(ss.str());
+            }
+        }
 
 
     private:

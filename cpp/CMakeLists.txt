@@ -62,7 +62,7 @@ set(SOURCE_FILES
 SET(EXAMPLES_SOURCE_FILES
         ${SOURCE_FILES}
         #examples/simple.cpp
-        examples/get_trigger_params.cpp
+        #examples/get_trigger_params.cpp
         )
 
 SET(TEST_SOURCE_FILES
@@ -92,8 +92,9 @@ SET(TEST_SOURCE_FILES
 
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES} )
-add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES} )
-add_executable(examples_mysql_only examples/mysql_add.cpp)
+add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES}  examples/get_trigger_params.cpp)
+add_executable(examples_write_conditions ${SOURCE_FILES} examples/write_conditions.cpp)
 
 target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
