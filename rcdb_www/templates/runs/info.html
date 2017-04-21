@@ -59,9 +59,6 @@
 
     <!-- PAGER -->
 
-
-
-
     <div class="row" id="content">
         <!-- CONTENT BAR -->
         <div class="col-sm-10 blog-main" id="central_bar">
@@ -79,7 +76,20 @@
             <div class="blog-post">
                 <p class="blog-post-meta">All conditions</p>
                 <div class="panel ">
-                    <table class="table my-table">
+
+
+                    <!-- Conditions filter box -->
+                    <form class="form-inline" role="form">
+                        <div class="form-group has-feedback">
+                            <label class="control-label" for="inputSuccess4"></label>
+                            <input type="text" class="form-control" id="cndFilterInput" onkeyup="filterConditions()" placeholder="Filter conditions...">
+                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                        </div>
+                    </form>
+
+
+                    <!-- ALL CONDITIONS -->
+                    <table id="cndTable" class="table my-table">
                         <tr class="text-info">
                             <th >Name</th>
                             <th style="display:block;min-width:70%;clear:both" >Value</th>
@@ -89,16 +99,13 @@
                             <tr>
                                 <td>{{ condition.name }}</td>
                                 <td>
-
                                     {% if condition.value_type == 'json'%}
                                         <button type="button" class="btn btn-info btn-xs next-toggle">show json</button>
                                         <div datatype="json" style="display: none">{{ condition.value }}</div>
                                     {% else %}
                                         {{ condition.value }}
                                     {% endif %}
-
                                 </td>
-
                             </tr>
                         {% endfor %}
                     </table>
@@ -241,5 +248,26 @@
         $(this).preventDefault = true;
         $(this).next().fadeToggle();
     });
+
+    function filterConditions() {
+      // Declare variables
+      var input, filter, table, tr, td, i;
+      input = document.getElementById("cndFilterInput");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("cndTable");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
     </script>
 {% endblock %}
