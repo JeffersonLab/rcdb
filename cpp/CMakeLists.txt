@@ -88,9 +88,6 @@ SET(TEST_SOURCE_FILES
         tests/catch.cpp
         tests/test_ConfigParser.cpp)
 
-
-
-
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES} )
 add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES}  examples/get_trigger_params.cpp)
 add_executable(examples_write_conditions ${SOURCE_FILES} examples/write_conditions.cpp)

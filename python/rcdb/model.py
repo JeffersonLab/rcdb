@@ -306,6 +306,9 @@ class ConfigurationFile(ModelBase):
     """
     Table contains original coda and board configuration files
     """
+
+    IMPORTANCE_HIGH = 0
+    IMPORTANCE_LOW = 1
     __tablename__ = 'files'
     id = Column(Integer, primary_key=True)
     path = Column(Text, nullable=False)

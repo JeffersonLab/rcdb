@@ -12,6 +12,7 @@ from rcdb import coda_parser
 from rcdb.log_format import BraceMessage as F
 
 # setup logger
+from rcdb.model import ConfigurationFile
 from update_coda import update_coda_conditions
 from update_run_config import update_run_config_conditions
 from halld_rcdb.run_config_parser import parse_file as parse_run_config_file
@@ -229,7 +230,7 @@ def parse_files():
 
     # Save coda file to DB
     log.debug(F("Adding coda_xml_log_file to DB", ))
-    db.add_configuration_file(run_number, coda_xml_log_file, overwrite=True)
+    db.add_configuration_file(run_number,coda_xml_log_file, overwrite=True, importance=ConfigurationFile.IMPORTANCE_HIGH)
 
     # Add run configuration file to DB... if it is run-start update
     if args.run_config_file:
@@ -241,7 +242,7 @@ def parse_files():
         if os.path.isfile(run_config_file) and os.access(run_config_file, os.R_OK):
             # mmm just save for now
             log.debug(F("Adding run_config_file to DB", ))
-            db.add_configuration_file(run_number, run_config_file)
+            db.add_configuration_file(run_number, run_config_file, importance=ConfigurationFile.IMPORTANCE_HIGH)
 
             log.debug("Parsing run_config_file")
             run_config_parse_result = parse_run_config_file(run_config_file)
