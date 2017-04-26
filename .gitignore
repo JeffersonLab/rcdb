@@ -53,3 +53,5 @@ docs/_build/
 
 # PyBuilder
 target/
+cpp/.idea/workspace.xml
+cpp/cmake-build-debug/
