@@ -16,19 +16,11 @@
       <introspection-schemas>*:data_monitoring</introspection-schemas>
     </data-source>
     <data-source name="test.sqlite" uuid="acd2589c-a078-4427-8fdc-34f9a4f57003">
-      <database-info product="SQLite" version="3.16.1" jdbc-version="2.1" driver-name="SQLiteJDBC" driver-version="native" />
-      <case-sensitivity plain-identifiers="mixed" quoted-identifiers="mixed" />
-      <auth-required>false</auth-required>
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
       <introspection-schemas>*:main</introspection-schemas>
     </data-source>
     <data-source name="rcdb@localhost" uuid="588c80e5-c0b3-4bdb-96f6-bc9c2c63192d">
-      <database-info product="MySQL" version="5.5.5-10.0.29-MariaDB-0ubuntu0.16.04.1" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.40 ( Revision: 402933ef52cad9aa82624e80acbea46e3a701ce6 )">
-        <extra-name-characters>#@</extra-name-characters>
-        <identifier-quote-string>`</identifier-quote-string>
-      </database-info>
-      <case-sensitivity plain-identifiers="exact" quoted-identifiers="exact" />
-      <secret-storage>master_key</secret-storage>
-      <user-name>rcdb</user-name>
+      <database-info product="" version="" jdbc-version="" driver-name="" driver-version="" />
       <introspection-schemas>*:rcdb</introspection-schemas>
     </data-source>
   </component>
