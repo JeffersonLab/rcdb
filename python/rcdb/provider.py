@@ -626,6 +626,30 @@ class RCDBProvider(object):
 
         return query.first()
 
+    # ------------------------------------------------
+    # Gets file
+    # ------------------------------------------------
+    def get_file(self, run, file_path):
+        """ Returns configuration file by run and file 
+
+        :param file_path: file path as it was before DB
+        
+        :param run: the run number
+        :type run: Run or int      
+
+        :return: Value or None if no such ConditionValue attached to the run
+        :rtype: ConfigurationFile
+        """
+        if not isinstance(run, Run):
+            run = self.get_run(run)
+
+        file_path = str(file_path)
+
+        query = self.session.query(ConfigurationFile).join(ConfigurationFile.runs)\
+            .filter(ConfigurationFile.runs.any(Run.number == run.number), ConfigurationFile.path == file_path)
+
+        return query.first()
+
     def select_runs(self, search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
         """ Searches RCDB for runs with e
 
