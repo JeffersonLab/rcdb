@@ -53,5 +53,15 @@ docs/_build/
 
 # PyBuilder
 target/
-cpp/.idea/workspace.xml
+
 cpp/cmake-build-debug/
+
+cpp/tmp/
+
+cpp/\.sconsign\.dblite
+
+cpp/\.idea/workspace\.xml
+
+\.idea/rcdb\.iml
+
+\.sconsign\.dblite

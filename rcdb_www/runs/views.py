@@ -135,9 +135,11 @@ def info(run_number):
         component_stats = None
         component_sorted_keys = None
 
+    sorted_conditions = sorted(run.conditions, key=lambda x: x.name)
+
     return render_template("runs/info.html",
                            run=run,
-                           conditions=run.conditions,
+                           conditions=sorted_conditions,
                            conditions_by_name=conditions_by_name,
                            board_installs_by_crate=bi_by_crate,
                            component_stats=component_stats,

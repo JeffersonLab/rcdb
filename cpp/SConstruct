@@ -49,14 +49,16 @@ if supports_color():
 with_mysql = ARGUMENTS.get("with-mysql","true")=="true"
 with_tests = ARGUMENTS.get("with-tests","false")=="true"
 with_examples = ARGUMENTS.get("with-examples","false")=="true"
-
+with_sqlite = ARGUMENTS.get("with-sqlite","true")=="true"
 
 
 help = ("""
 {HEADER}{BOLD}RCDB build scripts options:{ENDC}
 
-{BOLD}{OKBLUE}with-tests{ENDC}="""+bool_to_colored_str(with_tests)+""" \tBuild unit tests. Will be as ./bin/test_rcdb_cpp
 {BOLD}{OKBLUE}with-mysql{ENDC}="""+bool_to_colored_str(with_mysql)+""" \tBuild with MySql support
+{BOLD}{OKBLUE}with-sqlite{ENDC}="""+bool_to_colored_str(with_sqlite)+""" \tBuild with SQlite3 support
+
+{BOLD}{OKBLUE}with-tests{ENDC}="""+bool_to_colored_str(with_tests)+""" \tBuild unit tests. Will be as ./bin/test_rcdb_cpp
 {BOLD}{OKBLUE}with-examples{ENDC}="""+bool_to_colored_str(with_examples)+""" \tBuild with examples. Will be in ./bin
 
 """).format(
@@ -75,7 +77,7 @@ default_env = Environment(
 
 
 #Export 'default' environment for everything that wishes to use it
-Export('default_env', 'with_mysql')
+Export('default_env', 'with_mysql', 'with_sqlite')
 
 #Create 'working' environment
 #default_env.Repository('src')

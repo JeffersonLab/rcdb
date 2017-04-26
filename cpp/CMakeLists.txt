@@ -4,6 +4,9 @@
 cmake_minimum_required(VERSION 3.4)
 project(rcdb_cpp)
 
+option(WITH_MYSQL  "Compile with MySQL support" OFF)
+option(WITH_SQLITE "Compile with SQLite support" ON)
+
 
 # Location of additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
@@ -12,8 +15,28 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
 include_directories(include)
-include_directories(include/SQLite)
-include_directories(/usr/include/mysql)
+
+set(DB_REQIRED_LIBRARIES dl pthread)
+
+if(WITH_MYSQL)
+    add_definitions(-DRCDB_MYSQL)
+    include_directories(/usr/include/mysql)
+    set(DB_REQIRED_LIBRARIES mysqlclient ${DB_REQIRED_LIBRARIES})
+
+endif()
+
+
+
+if(WITH_SQLITE)
+    add_definitions(-DRCDB_SQLITE)
+    include_directories(include/SQLite)
+    set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
+
+endif()
+
+MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
+MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
+
 
 set(SOURCE_FILES
         src/SQLite/sqlite3.c
@@ -39,7 +62,7 @@ set(SOURCE_FILES
 SET(EXAMPLES_SOURCE_FILES
         ${SOURCE_FILES}
         #examples/simple.cpp
-        examples/get_trigger_params.cpp
+        #examples/get_trigger_params.cpp
         )
 
 SET(TEST_SOURCE_FILES
@@ -65,11 +88,10 @@ SET(TEST_SOURCE_FILES
         tests/catch.cpp
         tests/test_ConfigParser.cpp)
 
-
-
-
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES} )
-add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES} )
+add_executable(examples_rcdb_cpp ${EXAMPLES_SOURCE_FILES}  examples/get_trigger_params.cpp)
+add_executable(examples_write_conditions ${SOURCE_FILES} examples/write_conditions.cpp)
 
-target_link_libraries(test_rcdb_cpp mysqlclient dl pthread)
-target_link_libraries(examples_rcdb_cpp mysqlclient dl pthread)
+target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(examples_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
