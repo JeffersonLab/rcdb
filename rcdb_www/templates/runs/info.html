@@ -17,12 +17,12 @@
             <h1 class="blog-title col-sm-3">{{ run.number }}</h1>
 
             <h2 class="col-sm-7" style="margin-top:50px">
-                    Events:
-                    {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
-                        {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
-                    {% else %}
-                        0
-                    {% endif %}
+                Events:
+                {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                    {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                {% else %}
+                    0
+                {% endif %}
             </h2>
             <div class="col-sm-2 text-right" style="margin-top:50px">
                 {% if prev_run %}
@@ -42,18 +42,17 @@
             {% else %}
                 No start info
             {% endif %}
-            &nbsp;&nbsp;&nbsp;
+
             {% if run.end_time %}
                 End {{ run.end_time }}
             {% else %}
                 No end info
             {% endif %}
-            &nbsp;&nbsp;&nbsp;
+
             {% if run.end_time and run.start_time %}
                 Length {{ run.end_time - run.start_time }}
             {% endif %}
         </p>
-
     </div>
 
 
@@ -62,16 +61,19 @@
     <div class="row" id="content">
         <!-- CONTENT BAR -->
         <div class="col-sm-10 blog-main" id="central_bar">
+
             <!-- FILES ITERATION -->
             <div class="blog-post" id="files_sec">
                 <h2 class="blog-post-title">Files</h2>
                 <table class="table table-striped">
                     {% for file in run.files %}
                     <tr>
-                        <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }}</a></td>
+                        <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }} = {{ file.importance }}</a></td>
                     </tr>
                     {% endfor %}
                 </table>
+                <button type="button" class="btn btn-info btn-xs next-toggle">More files...</button>
+                <div style="display: none">No more files</div>
             </div>
             <div class="blog-post">
                 <p class="blog-post-meta">All conditions</p>
@@ -135,41 +137,6 @@
                     </table>
                 </div>
             {% endif %} <!--if component_stats-->
-
-            <!-- CRATES ITERATION -->
-            <div class="blog-post" id="crates_sec">
-                {% for crate in board_installs_by_crate.keys() %}
-                <a name="crate_{{ crate.name }}"></a>
-                <div class="panel panel-default">
-                    <div class="panel-heading"><h3>{{ crate.name }}</h3></div>
-                    One two three!
-                    <table class="table table-striped">
-                        <tr class="small">
-                            <th>Slot</th>
-                            <th style="width: 100%">Board</th>
-                            <th>Config</th>
-                        </tr>
-                        {% for board_install in board_installs_by_crate[crate] %}
-                        <tr>
-                            <td>{{ board_install.slot }}</td>
-                            <td>
-                                <a class="btn" href="{{ url_for("boards.info", board_id=board_install.board_id) }}">
-                                    {{ board_install.board.board_type }} {{ board_install.board.serial }}
-                                </a>
-                            </td>
-                            <td>
-                                <a class="btn btn-default btn-xs" href="{{ url_for("boards.board_in_run", board_id=board_install.board_id, run_number=run.number) }}">
-                                    {{ board_install.version }}
-                                    <span class="glyphicon glyphicon-eye-open "></span>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </table>
-                </div>
-                {% endfor %}
-            </div>
-
 
             <ul class="pager" id="pager">
                 {% if prev_run %}
