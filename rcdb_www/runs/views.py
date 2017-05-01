@@ -119,15 +119,6 @@ def info(run_number):
     assert (isinstance(run, Run))
     conditions_by_name = run.get_conditions_by_name()
 
-    # create board by crate list
-    bi_by_crate = defaultdict(list)
-    for bi in run.board_installations:
-        bi_by_crate[bi.crate].append(bi)
-
-    # sort boards by slot
-    for bis in bi_by_crate.values():
-        bis.sort(key=lambda x: x.slot)
-
     if rcdb.DefaultConditions.COMPONENT_STATS in conditions_by_name:
         component_stats = json.loads(conditions_by_name[rcdb.DefaultConditions.COMPONENT_STATS].value)
         component_sorted_keys = natural_sort_key([str(key) for key in component_stats.keys()])
@@ -141,7 +132,6 @@ def info(run_number):
                            run=run,
                            conditions=sorted_conditions,
                            conditions_by_name=conditions_by_name,
-                           board_installs_by_crate=bi_by_crate,
                            component_stats=component_stats,
                            component_sorted_keys=component_sorted_keys,
                            DefaultConditions=rcdb.DefaultConditions,
@@ -153,7 +143,8 @@ def info(run_number):
 @mod.route('/elog/<int:run_number>')
 def elog(run_number):
     try:
-        elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'.format(run_number)).read()
+        elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
+                                    .format(run_number)).read()
     except urllib2.HTTPError as e:
         return jsonify(stat=str(e.code))
 
