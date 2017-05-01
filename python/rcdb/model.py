@@ -1,7 +1,5 @@
 import datetime
-import posixpath
 
-import sqlalchemy
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import Column, ForeignKey, Table

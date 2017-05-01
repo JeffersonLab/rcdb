@@ -19,7 +19,7 @@
             <h2 class="col-sm-7" style="margin-top:50px">
                 Events:
                 {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
-                    {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                    {{ '{:,}'.format(conditions_by_name[DefaultConditions.EVENT_COUNT].value) }}
                 {% else %}
                     0
                 {% endif %}
@@ -66,14 +66,26 @@
             <div class="blog-post" id="files_sec">
                 <h2 class="blog-post-title">Files</h2>
                 <table class="table table-striped">
-                    {% for file in run.files %}
+                    {% for file in important_files %}
                     <tr>
-                        <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }} = {{ file.importance }}</a></td>
+                        <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }}</a></td>
                     </tr>
                     {% endfor %}
                 </table>
+
+                <!-- OTHER FILES -->
+                {% if other_files %}
                 <button type="button" class="btn btn-info btn-xs next-toggle">More files...</button>
-                <div style="display: none">No more files</div>
+                <div style="display: none">
+                    <table class="table table-striped">
+                    {% for file in other_files %}
+                        <tr>
+                            <td><a href="{{ url_for("files.info", file_db_id=file.id) }}">{{ file.path }}</a></td>
+                        </tr>
+                    {% endfor %}
+                    </table>
+                </div>
+                {% endif %}
             </div>
             <div class="blog-post">
                 <p class="blog-post-meta">All conditions</p>

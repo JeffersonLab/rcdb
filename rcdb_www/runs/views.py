@@ -12,7 +12,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 import rcdb
 from collections import defaultdict
 from rcdb import DefaultConditions
-from rcdb.model import Run, BoardInstallation, Condition, ConditionType
+from rcdb.model import Run, BoardInstallation, Condition, ConditionType, ConfigurationFile
 from rcdb.stopwatch import StopWatchTimer
 from rcdb_www.pagination import Pagination
 from sqlalchemy import func
@@ -128,6 +128,14 @@ def info(run_number):
 
     sorted_conditions = sorted(run.conditions, key=lambda x: x.name)
 
+    important_files = []
+    other_files = []
+    for conf_file in run.files:
+        if conf_file.importance == ConfigurationFile.IMPORTANCE_HIGH:
+            important_files.append(conf_file)
+        else:
+            other_files.append(conf_file)
+
     return render_template("runs/info.html",
                            run=run,
                            conditions=sorted_conditions,
@@ -136,7 +144,9 @@ def info(run_number):
                            component_sorted_keys=component_sorted_keys,
                            DefaultConditions=rcdb.DefaultConditions,
                            prev_run=prev_run,
-                           next_run=next_run
+                           next_run=next_run,
+                           important_files=important_files,
+                           other_files=other_files
                            )
 
 
