@@ -46,6 +46,13 @@ class ConfigurationFileInfo(object):
         print("self.com_files  = ", self.com_files)
         print("self.user_files  = ", self.user_files)
 
+    def _map_by_roc(self, file_pathes):
+        result = {}
+        for file_path in file_pathes:
+            os.path.basename(file_path)
+
+
+
 
 def grab_additional_configuration_files(parse_result):
     assert (isinstance(parse_result, HallDMainConfigParseResult))
