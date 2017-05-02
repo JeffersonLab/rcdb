@@ -52,9 +52,3 @@ if __name__ == "__main__":
 
         config_files_grabber.grab_additional_configuration_files(parse_result)
         print ("Done run {}",format(run.number))
-
-
-
-
-
-
