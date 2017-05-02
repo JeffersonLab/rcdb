@@ -3,16 +3,17 @@ Adds run_start_time and run_end_time conditions and fills them with run.start_ti
 
 """
 import argparse
+import os
 import sys
 import json
 
-from rcdb import RCDBProvider
+from rcdb import ConfigurationProvider
 
 import run_config_parser
-from rcdb.model import ConditionType, Run
+from rcdb.model import ConditionType, Run, ConfigurationFile
 from rcdb import DefaultConditions
 
-import config_files_grabber
+import roc_config_finder
 
 if __name__ == "__main__":
     print sys.argv
@@ -21,11 +22,12 @@ if __name__ == "__main__":
     parser.add_argument("connection_string", nargs='?', default="mysql://rcdb@hallddb.jlab.org/rcdb")
     parser.add_argument("--run-start", default=0)
     parser.add_argument("--run-end", default=sys.maxint)
+    parser.add_argument('--save', action='store_true')
 
     args = parser.parse_args()
 
     # Open DB connection
-    db = RCDBProvider(args.connection_string)
+    db = ConfigurationProvider(args.connection_string)
 
     print("Walking from run {}, to run {} ".format(args.run_start, args.run_end))
 
@@ -50,5 +52,15 @@ if __name__ == "__main__":
         if not parse_result:
             continue
 
-        config_files_grabber.grab_additional_configuration_files(parse_result)
+        grab_infos = roc_config_finder.find_roc_configuration_files(parse_result)
+        for info in grab_infos:
+            info.print_self()
+            for file_path in info.final_files:
+                if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
+                    print(file_path)
+                    if args.save:
+                        db.add_configuration_file(run.number,
+                                                  file_path,
+                                                  importance=ConfigurationFile.IMPORTANCE_LOW)
+
         print ("Done run {}",format(run.number))

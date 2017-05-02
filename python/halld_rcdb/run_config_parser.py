@@ -31,30 +31,11 @@ class HallDMainConfigParseResult(object):
         self.cdc_fadc125_mode = -1
         self.cdc_fadc125_params = None      # some FADC125_* parameters from CDC section of run config
 
-        self.fcal_fadc250_com_dir = None
-        self.fcal_fadc250_com_ver = None
-        self.fcal_fadc250_user_dir = None
-        self.fcal_fadc250_user_ver = None
-
-        self.bcal_fadc250_com_dir = None
-        self.bcal_fadc250_com_ver = None
-        self.bcal_fadc250_user_dir = None
-        self.bcal_fadc250_user_ver = None
-
-        self.tof_fadc250_com_dir = None
-        self.tof_fadc250_com_ver = None
-        self.tof_fadc250_user_dir = None
-        self.tof_fadc250_user_ver = None
-
-        self.tagh_fadc250_com_dir = None
-        self.tagh_fadc250_com_ver = None
-        self.tagh_fadc250_user_dir = None
-        self.tagh_fadc250_user_ver = None
-
-        self.st_fadc250_com_dir = None
-        self.st_fadc250_com_ver = None
-        self.st_fadc250_user_dir = None
-        self.st_fadc250_user_ver = None
+        self.fcal_fadc250_files_info = (None, None, None, None)
+        self.bcal_fadc250_files_info = (None, None, None, None)
+        self.tof_fadc250_files_info = (None, None, None, None)
+        self.tagh_fadc250_files_info = (None, None, None, None)
+        self.st_fadc250_files_info = (None, None, None, None)
 
         # --type json --description "some FADC250_* parameters from FCAL section of run config"
 
@@ -100,20 +81,11 @@ def _process_parse_result(parse_result, file_name=""):
         log.warning(F("CDC section is not found in '{}'", file_name))
 
     # setting COM_DIR, COM_VER, USER_DIR, USER_VER parameters for subsystems
-    result.fcal_fadc250_com_dir, result.fcal_fadc250_com_ver, \
-    result.fcal_fadc250_user_dir, result.fcal_fadc250_user_ver = _fill_com_user_dir_ver(parse_result, 'FCAL')
-
-    result.bcal_fadc250_com_dir, result.bcal_fadc250_com_ver, \
-    result.bcal_fadc250_user_dir, result.bcal_fadc250_user_ver = _fill_com_user_dir_ver(parse_result, 'BCAL')
-
-    result.tof_fadc250_com_dir, result.tof_fadc250_com_ver, \
-    result.tof_fadc250_user_dir, result.tof_fadc250_user_ver = _fill_com_user_dir_ver(parse_result, 'TOF')
-
-    result.tagh_fadc250_com_dir, result.tagh_fadc250_com_ver, \
-    result.tagh_fadc250_user_dir, result.tagh_fadc250_user_ver = _fill_com_user_dir_ver(parse_result, 'TAGH')
-
-    result.st_fadc250_com_dir, result.st_fadc250_com_ver, \
-    result.st_fadc250_user_dir, result.st_fadc250_user_ver = _fill_com_user_dir_ver(parse_result, 'ST')
+    result.fcal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'FCAL')
+    result.bcal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'BCAL')
+    result.tof_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TOF')
+    result.tagh_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TAGH')
+    result.st_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'ST')
 
     return result
 

@@ -14,6 +14,7 @@ from rcdb.log_format import BraceMessage as F
 # setup logger
 from rcdb.model import ConfigurationFile
 from update_coda import update_coda_conditions
+from update_roc import add_roc_configuration_files
 from update_run_config import update_run_config_conditions
 from halld_rcdb.run_config_parser import parse_file as parse_run_config_file
 
@@ -32,8 +33,8 @@ SECTION_HEADER="=========================="
 section_names = [SECTION_GLOBAL, SECTION_TRIGGER, ]
 
 # noinspection SqlDialectInspection
-def print_usage():
-    print("""
+def get_usage():
+    return """
     Usage:
         minimal:
             update.py <coda_xml_log_file>
@@ -59,7 +60,7 @@ def print_usage():
 
     <db_connection_string> - is optional. But if it is not set, RCDB_CONNECTION environment variable should be set
 
-    """)
+    """
 
 
 def try_set_interprocess_lock():
@@ -68,6 +69,8 @@ def try_set_interprocess_lock():
 
     :return: True if lock is set. False if other process has locked the file already
     """
+    # windows doesn't have fcntl
+    # noinspection PyUnresolvedReferences
     import fcntl, os, stat, tempfile
 
     app_name = 'rcdb_daq_update'  # <-- Customize this value
@@ -104,13 +107,16 @@ def parse_files():
     script_uid = os.getuid()
     script_start_clock = time.clock()
 
-    # check we have arguments
-    if len(sys.argv) < 2:
-        print("ERROR! Please provide a path to xml data file")
-        print_usage()
-        sys.exit(1)
+    description = "The script updates RCDB gathering different sources given in --update flag:" \
+                  "   coda   - information from coda file (file is required anyway to get run)" \
+                  "   config - run configuration file in HallD format" \
+                  "   roc    - roc configuration files (taken from run configuration file)"\
+                  "            this option is run only if config is given"\
+                  "   epics  - epics variables" \
+                  "So now update of everything looks like: --update=coda,config,roc,epics" \
 
-    parser = argparse.ArgumentParser()
+
+    parser = argparse.ArgumentParser(description=description, usage=get_usage())
     parser.add_argument("coda_xml_log_file", help="Path to CODA run log file")
     parser.add_argument("-v", "--verbose", help="increase output verbosity", action="store_true")
     parser.add_argument("--reason", help="Reason of the update. 'start', 'update', 'end' or ''", default="")
@@ -135,7 +141,7 @@ def parse_files():
         con_string = os.environ["RCDB_CONNECTION"]
     else:
         print ("ERROR! RCDB_CONNECTION is not set and is not given as a script parameter (-c)")
-        print_usage()
+        parser.print_help()
         sys.exit(2)
     log.debug(F("con_string = '{}'", con_string))
 
@@ -199,6 +205,7 @@ def parse_files():
     # Create update context
     update_context = rcdb.UpdateContext(db, update_reason)
 
+    # CODA
     # Parse coda xml and save to DB
     log.debug(F("Parsing coda_xml_log_file='{}'", coda_xml_log_file))
 
@@ -230,8 +237,9 @@ def parse_files():
 
     # Save coda file to DB
     log.debug(F("Adding coda_xml_log_file to DB", ))
-    db.add_configuration_file(run_number,coda_xml_log_file, overwrite=True, importance=ConfigurationFile.IMPORTANCE_HIGH)
+    db.add_configuration_file(run_number, coda_xml_log_file, overwrite=True, importance=ConfigurationFile.IMPORTANCE_HIGH)
 
+    # CONFIGURATION FILES
     # Add run configuration file to DB... if it is run-start update
     if args.run_config_file:
         log.debug(F("Flag --run-config-file is provided. Using this as a path to run_config_file: '{}'",
@@ -249,13 +257,20 @@ def parse_files():
 
             log.debug("Parsed run_config_file. Updating conditions")
             update_run_config_conditions(update_context, run_config_parse_result)
-
             log.debug("Updated run_config_file conditions")
+
+            if "roc" in update_parts:
+                log.debug("Adding ROC config files...")
+                add_roc_configuration_files(update_context, run_config_parse_result)
+                log.debug("Done ROC config files!")
         else:
             log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
+            if "roc" in update_parts:
+                log.warn("Can't parse roc configs because there is no main config")
 
     # Parse run configuration file and save to DB
 
+    # EPICS
     # Get EPICS variables
     epics_start_clock = time.clock()
     if 'epics' in update_parts and run_number:
