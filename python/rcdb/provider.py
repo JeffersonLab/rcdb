@@ -1418,8 +1418,9 @@ class ConfigurationProvider(RCDBProvider):
     # ------------------------------------------------
     #
     # ------------------------------------------------
-    def add_configuration_file(self, run, path, content=None, overwrite=False):
+    def add_configuration_file(self, run, path, content=None, overwrite=False, importance=0):
         """Adds configuration file to run configuration. If such file exists
+        :param importance: 0 - HIGH importance, 1 - LOWER importance. Is used to show in WEB interface
         :param overwrite: If this flag is true, such file for this run exists but checksumm is different,
                           file content will be overwritten
         :param content: Content of a file. If not given, func tryes to open file by path.
@@ -1458,6 +1459,7 @@ class ConfigurationProvider(RCDBProvider):
                 conf_file.sha256 = check_sum
                 conf_file.path = path
                 conf_file.content = get_content()
+                conf_file.importance = importance
                 log.debug(Lf("|- File '{}' is getting overwritten", path))
 
                 self.session.commit()
@@ -1477,6 +1479,7 @@ class ConfigurationProvider(RCDBProvider):
             conf_file.sha256 = check_sum
             conf_file.path = path
             conf_file.content = get_content()
+            conf_file.importance = importance
 
             # put it to DB and associate with run
             self.session.add(conf_file)
