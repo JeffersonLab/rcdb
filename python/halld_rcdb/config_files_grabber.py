@@ -81,12 +81,12 @@ def grab_additional_configuration_files(parse_result):
 
     # create list of file names
     if parse_result.bcal_fadc250_com_dir:
-        bcal_info = HallDFilesGrabInfo('bcal',
+        fcal_info = HallDFilesGrabInfo('fcal',
                                        parse_result.st_fadc250_com_dir,
                                        parse_result.st_fadc250_com_ver,
                                        parse_result.st_fadc250_user_dir,
                                        parse_result.st_fadc250_user_ver)
-        bcal_info.print_self()
+        fcal_info.print_self()
 
 
 
