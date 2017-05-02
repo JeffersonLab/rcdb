@@ -126,19 +126,19 @@ def find_roc_configuration_files(parse_result):
     infos = []
 
     # create list of file names
-    if parse_result.fcal_fadc250_com_dir:
+    if parse_result.fcal_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('fcal', parse_result.fcal_fadc250_files_info))
 
-    if parse_result.bcal_fadc250_com_dir:
+    if parse_result.bcal_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('bcal', parse_result.bcal_fadc250_files_info))
 
-    if parse_result.tof_fadc250_com_dir:
+    if parse_result.tof_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('tof', parse_result.tof_fadc250_files_info))
 
-    if parse_result.tagh_fadc250_com_dir:
+    if parse_result.tagh_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('tagh', parse_result.tagh_fadc250_files_info))
 
-    if parse_result.st_fadc250_com_dir:
+    if parse_result.st_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('st', parse_result.st_fadc250_files_info))
 
     return infos
