@@ -55,12 +55,14 @@ if __name__ == "__main__":
         grab_infos = roc_config_finder.find_roc_configuration_files(parse_result)
         for info in grab_infos:
             info.print_self()
+            print("   {}".format(info.name))
             for file_path in info.final_files:
                 if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
-                    print(file_path)
+                    print("   {}".format(file_path))
                     if args.save:
                         db.add_configuration_file(run.number,
                                                   file_path,
                                                   importance=ConfigurationFile.IMPORTANCE_LOW)
 
-        print ("Done run {}",format(run.number))
+        print("Done run {}".format(run.number))
+        print()
