@@ -27,7 +27,12 @@ namespace rcdb {
                                    "FROM files, files_have_runs AS files_have_runs_1 "
                                    "WHERE files.path = ? AND files.id = files_have_runs_1.files_id "
                                    "      AND ? = files_have_runs_1.run_number "
-                                   "ORDER BY files.id DESC")
+                                   "ORDER BY files.id DESC"),
+                _getFileNamesQuery(_db, "SELECT files.path AS files_path "
+                                    "FROM files, files_have_runs AS files_have_runs_1 "
+                                    "WHERE files.id = files_have_runs_1.files_id "
+                                    "AND ? = files_have_runs_1.run_number "
+                                    "ORDER BY files.id DESC")
         {
 
 
@@ -143,6 +148,22 @@ namespace rcdb {
             return std::unique_ptr<RcdbFile>(); //Empty ptr
         }
 
+
+        /** Gets conditions by name and run (@see GetRun and SetRun) */
+        virtual std::vector<std::string> GetFileNames(uint64_t runNumber)  override
+        {
+            _getFileNamesQuery.reset();
+            _getFileNamesQuery.clearBindings();
+            _getFileNamesQuery.bind(1, (sqlite3_int64)runNumber);
+
+            std::vector<std::string> filePaths;
+            while (_getFileQuery.executeStep()) {
+                filePaths.push_back(_getFileQuery.getColumn(0).getText());
+            }
+
+            return filePaths; //Empty ptr
+        }
+
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         virtual std::unique_ptr<Condition> GetFile(uint64_t runNumber, const ConditionType& cndType)
         {
@@ -248,6 +269,7 @@ namespace rcdb {
         SQLite::Database _db;
         SQLite::Statement _getConditionQuery;
         SQLite::Statement _getFileQuery;
+        SQLite::Statement _getFileNamesQuery;
     };
 }
 

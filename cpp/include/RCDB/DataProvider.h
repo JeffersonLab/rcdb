@@ -24,6 +24,8 @@ namespace rcdb {
         /** Gets file saved to database by run number and file name */
         virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name) = 0;
 
+        virtual std::vector<std::string> GetFileNames(uint64_t runNumber) = 0;
+
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
         {
