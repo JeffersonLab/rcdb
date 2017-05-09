@@ -10,16 +10,20 @@
 #include <exception>
 #include <stdexcept>
 #include <sstream>
+#include <string>
 #include "DataProvider.h"
 #include "MySqlConnectionInfo.h"
 #include "Exceptions.h"
 
 namespace rcdb {
     class MySqlProvider : public DataProvider {
+
     public:
-        MySqlProvider(std::string connectionString) : DataProvider(),
-                          _connection(mysql_init(NULL), &mysql_close)
-        {
+
+
+        MySqlProvider(std::string connectionString) :
+                DataProvider(),
+                _connection(mysql_init(NULL), &mysql_close) {
             using namespace std;
 
             if (_connection.get() == nullptr) {
@@ -36,7 +40,7 @@ namespace rcdb {
                                                      connectionInfo.Database.c_str(),
                                                      connectionInfo.Port, NULL, 0);
 
-            if ( connect_result == nullptr) {
+            if (connect_result == nullptr) {
                 throw logic_error(mysql_error(_connection.get()));
             }
 
@@ -45,7 +49,7 @@ namespace rcdb {
                 throw logic_error(mysql_error(_connection.get()));
             }
 
-            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
                     result(mysql_store_result(_connection.get()), &mysql_free_result);
 
             if (!result) {
@@ -55,26 +59,26 @@ namespace rcdb {
             // Iterate the results and fill ConditionType objects list
             MYSQL_ROW row;
             while ((row = mysql_fetch_row(result.get()))) {
-                    auto id = std::stoul(row[0]);
-                    const string name(row[1]); // = query.getColumn(1).getText();
-                    const string typeStr(row[2]); // .getColumn(1).getBytes();
+                auto id = std::stoul(row[0]);
+                const string name(row[1]); // = query.getColumn(1).getText();
+                const string typeStr(row[2]); // .getColumn(1).getBytes();
 
-                    ConditionType conditionType;
-                    conditionType.SetId(id);
-                    conditionType.SetName(name);
-                    conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
-                    _types.push_back(conditionType);
-                    _typesByName[name]=conditionType;
+                ConditionType conditionType;
+                conditionType.SetId(id);
+                conditionType.SetName(name);
+                conditionType.SetValueType(ConditionType::StringToValueType(typeStr));
+                _types.push_back(conditionType);
+                _typesByName[name] = conditionType;
             }
         }
 
         MySqlProvider(MySqlProvider &&) = default;                    // Move constructor
-        MySqlProvider &operator=(MySqlProvider &&) & = default;       // Move assignment operator
-        virtual ~MySqlProvider() override { }
+        MySqlProvider &operator=(MySqlProvider &&) = default;       // Move assignment operator
+        virtual ~MySqlProvider() override {}
 
-        /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
-        virtual std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType& cndType) override
-        {
+
+        /// Gets conditions by run and ConditionType
+        virtual std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const ConditionType &cndType) override {
             using namespace std;
 
             // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
@@ -86,10 +90,11 @@ namespace rcdb {
             //uint64_t typeId = cndType.GetId();
             //uint64_t run = runNumber;
 
-            string query = string("SELECT id, bool_value, float_value, int_value, text_value, time_value FROM conditions WHERE run_number =") +
-                           to_string(runNumber) +
-                           string(" AND condition_type_id = ") +
-                           to_string(cndType.GetId());
+            string query =
+                    string("SELECT id, bool_value, float_value, int_value, text_value, time_value FROM conditions WHERE run_number =") +
+                    to_string(runNumber) +
+                    string(" AND condition_type_id = ") +
+                    to_string(cndType.GetId());
 
             // Query condition types
             if (mysql_query(_connection.get(), query.c_str())) {
@@ -97,7 +102,7 @@ namespace rcdb {
                 throw logic_error(mysql_error(_connection.get()));
             }
 
-            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
                     result(mysql_store_result(_connection.get()), &mysql_free_result);
 
             if (!result) {
@@ -113,25 +118,25 @@ namespace rcdb {
 
                 switch (cndType.GetValueType()) {
                     case ValueTypes::Bool:
-                        if(row[bool_column] == nullptr) return std::unique_ptr<Condition>();
-                        condition->SetBoolValue((bool)stoi(row[bool_column]));
+                        if (row[bool_column] == nullptr) return std::unique_ptr<Condition>();
+                        condition->SetBoolValue((bool) stoi(row[bool_column]));
                         return condition;
                     case ValueTypes::Json:
                     case ValueTypes::String:
                     case ValueTypes::Blob:
-                        if(row[text_column] == nullptr) return std::unique_ptr<Condition>();
+                        if (row[text_column] == nullptr) return std::unique_ptr<Condition>();
                         condition->SetTextValue(string(row[text_column]));
                         return condition;
                     case ValueTypes::Float:
-                        if(row[float_column] == nullptr) return std::unique_ptr<Condition>();
+                        if (row[float_column] == nullptr) return std::unique_ptr<Condition>();
                         condition->SetFloatValue(stod(row[float_column]));
                         return condition;
                     case ValueTypes::Int:
-                        if(row[int_column] == nullptr) return std::unique_ptr<Condition>();
+                        if (row[int_column] == nullptr) return std::unique_ptr<Condition>();
                         condition->SetIntValue(stoi(row[int_column]));
                         return condition;
                     case ValueTypes::Time:
-                        if(row[time_column] == nullptr) return std::unique_ptr<Condition>();
+                        if (row[time_column] == nullptr) return std::unique_ptr<Condition>();
                         condition->SetTime(
                                 chrono::system_clock::from_time_t(stoul(row[int_column])));
                         return condition;
@@ -143,25 +148,26 @@ namespace rcdb {
             return std::unique_ptr<Condition>(); //Empty ptr
         }
 
+        /// Gets conditions by run and name
+        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string &name) {
+            return GetCondition(runNumber, _typesByName[name]);
+        }
+
+        /// Gets conditions by ConditionType and run (@see GetRun and SetRun)
+        virtual std::vector<std::string> GetFileNames(uint64_t runNumber) override {
 
 
-        /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
-        virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name) override
-        {
             using namespace std;
 
             // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
 
             uint64_t run = runNumber;
 
-            string query = string( "SELECT files.id AS files_id, "
-                                   "       files.path AS files_path, "
-                                   "       files.sha256 AS files_sha256, "
-                                   "       files.content AS files_content "
-                                   "FROM files, files_have_runs AS files_have_runs_1 "
-                                   "WHERE files.path = '" + name + "' AND files.id = files_have_runs_1.files_id "
-                                   "      AND " + to_string(run) + " = files_have_runs_1.run_number "
-                                   "ORDER BY files.id DESC");
+            string query = string("SELECT files.path AS files_path "
+                                          "FROM files, files_have_runs AS files_have_runs_1 "
+                                          "WHERE files.id = files_have_runs_1.files_id "
+                                          "AND " + to_string(run) + " = files_have_runs_1.run_number "
+                                          "ORDER BY files.id DESC");
 
             // Query condition types
             if (mysql_query(_connection.get(), query.c_str())) {
@@ -169,7 +175,49 @@ namespace rcdb {
                 throw logic_error(mysql_error(_connection.get()));
             }
 
-            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
+                    result(mysql_store_result(_connection.get()), &mysql_free_result);
+
+            if (!result) {
+                throw logic_error(mysql_error(_connection.get()));
+            }
+
+            // Iterate the results and fill ConditionType objects list
+            std::vector<std::string> filePaths;
+            MYSQL_ROW row;
+            while ((row = mysql_fetch_row(result.get()))) {
+                filePaths.push_back(string(row[1]));
+            }
+
+            return filePaths; //Empty ptr
+
+        }
+
+
+        /// Gets conditions by ConditionType and run (@see GetRun and SetRun)
+        virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string &name) override {
+            using namespace std;
+
+            // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
+
+            uint64_t run = runNumber;
+
+            string query = string("SELECT files.id AS files_id, "
+                                          "       files.path AS files_path, "
+                                          "       files.sha256 AS files_sha256, "
+                                          "       files.content AS files_content "
+                                          "FROM files, files_have_runs AS files_have_runs_1 "
+                                          "WHERE files.path = '" + name + "' AND files.id = files_have_runs_1.files_id "
+                                          "      AND " + to_string(run) + " = files_have_runs_1.run_number "
+                                          "ORDER BY files.id DESC");
+
+            // Query condition types
+            if (mysql_query(_connection.get(), query.c_str())) {
+
+                throw logic_error(mysql_error(_connection.get()));
+            }
+
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
                     result(mysql_store_result(_connection.get()), &mysql_free_result);
 
             if (!result) {
@@ -192,52 +240,9 @@ namespace rcdb {
             return std::unique_ptr<RcdbFile>(); //Empty ptr
         }
 
-        /** Gets conditions by ConditionType and run (@see GetRun and SetRun) */
-        virtual std::vector<std::string> GetFileNames(uint64_t runNumber) override
-        {
-            using namespace std;
-
-            // id:0, bool_value:1, float_value:2, int_value:3, text_value:4, time_value:5
-
-            uint64_t run = runNumber;
-
-            string query = string( "SELECT files.path AS files_path "
-                                   "FROM files, files_have_runs AS files_have_runs_1 "
-                                   "WHERE files.id = files_have_runs_1.files_id "
-                                   "AND " + to_string(run) + " = files_have_runs_1.run_number "
-                                   "ORDER BY files.id DESC");
-
-            // Query condition types
-            if (mysql_query(_connection.get(), query.c_str())) {
-
-                throw logic_error(mysql_error(_connection.get()));
-            }
-
-            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
-                    result(mysql_store_result(_connection.get()), &mysql_free_result);
-
-            if (!result) {
-                throw logic_error(mysql_error(_connection.get()));
-            }
-
-            // Iterate the results and fill ConditionType objects list
-            std::vector<std::string> filePaths;
-            MYSQL_ROW row;
-            while ((row = mysql_fetch_row(result.get())))
-                filePaths.push_back(string(row[1]));
-            }
-
-            return filePaths; //Empty ptr
-        }
-
-        /** Gets conditions by name and run (@see GetRun and SetRun) */
-        std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string& name)
-        {
-            return GetCondition(runNumber, _typesByName[name]);
-        }
 
         void Test() {
-            std::unique_ptr<MYSQL, void (*)(MYSQL*)> con(mysql_init(NULL), &mysql_close);
+            std::unique_ptr<MYSQL, void (*)(MYSQL *)> con(mysql_init(NULL), &mysql_close);
 
             if (con == NULL) {
                 throw std::logic_error(std::string(""));
@@ -251,7 +256,7 @@ namespace rcdb {
                 throw std::logic_error(mysql_error(con.get()));
             }
 
-            std::unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+            std::unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
                     result(mysql_store_result(con.get()), &mysql_free_result);
 
 
@@ -274,51 +279,48 @@ namespace rcdb {
             //(con);
         }
 
-        static MySQLConnectionInfo ParseConnectionString(std::string conStr)
-        {
+
+        static MySQLConnectionInfo ParseConnectionString(std::string conStr) {
             using namespace std;
 
             MySQLConnectionInfo connection;
 
             //first check for uri type
             auto typePos = conStr.find("mysql://");
-            if(typePos==string::npos) {
+            if (typePos == string::npos) {
                 throw ConnectionStringError("ERROR. MySql connection string must begin with 'mysql://'");
             }
 
             //ok we don't need mysql:// in the future. Moreover it will mess our separation logic
-            conStr.erase(0,8);
+            conStr.erase(0, 8);
 
             //then if there is '@' that separates login/password part of uri
             auto atPos = conStr.find('@');
-            if(atPos!=string::npos) {
+            if (atPos != string::npos) {
                 string logPassStr;
 
                 //ok! we have it!
                 //take it... but with caution
-                if(atPos == conStr.length()-1) {
+                if (atPos == conStr.length() - 1) {
                     //it is like 'login:pwd@' string
                     logPassStr = conStr.substr(0, atPos);
-                    conStr=string("");
-                }
-                else if(atPos==0) {
+                    conStr = string("");
+                } else if (atPos == 0) {
                     //it is like '@localhost' string
-                    conStr=conStr.substr(1);
+                    conStr = conStr.substr(1);
                     logPassStr = string("");
-                }
-                else {
+                } else {
                     //a regular case
-                    logPassStr = conStr.substr(0,atPos);
-                    conStr=conStr.substr(atPos+1);
+                    logPassStr = conStr.substr(0, atPos);
+                    conStr = conStr.substr(atPos + 1);
                 }
 
                 //is it only login or login&&password?
                 auto colonPos = logPassStr.find(':');
-                if(colonPos!=string::npos) {
-                    connection.UserName = logPassStr.substr(0,colonPos);
-                    connection.Password = logPassStr.substr(colonPos+1);
-                }
-                else {
+                if (colonPos != string::npos) {
+                    connection.UserName = logPassStr.substr(0, colonPos);
+                    connection.Password = logPassStr.substr(colonPos + 1);
+                } else {
                     connection.UserName = logPassStr;
                 }
             }
@@ -326,16 +328,16 @@ namespace rcdb {
             //ok, now we have only "address:port database" part of the string
 
             //1) deal with database;
-            auto whitePos=conStr.find('/');
-            if(whitePos!=string::npos) {
-                connection.Database = conStr.substr(whitePos+1);
+            auto whitePos = conStr.find('/');
+            if (whitePos != string::npos) {
+                connection.Database = conStr.substr(whitePos + 1);
                 conStr.erase(whitePos);
             }
 
             //2) deal with port
             auto colonPos = conStr.find(':');
-            if(colonPos!=string::npos) {
-                string portStr=conStr.substr(colonPos+1);
+            if (colonPos != string::npos) {
+                string portStr = conStr.substr(colonPos + 1);
                 conStr.erase(colonPos);
 
                 connection.Port = (unsigned int) stol(portStr.c_str());
@@ -347,8 +349,7 @@ namespace rcdb {
             return connection;
         }
 
-        bool CheckRun(uint64_t runNumber)
-        {
+        bool CheckRun(uint64_t runNumber) {
             using namespace std;
 
             ostringstream ss;
@@ -361,19 +362,18 @@ namespace rcdb {
                 throw logic_error(mysql_error(_connection.get()));
             }
 
-            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES*)>
+            unique_ptr<MYSQL_RES, void (*)(MYSQL_RES *)>
                     result(mysql_store_result(_connection.get()), &mysql_free_result);
 
             return static_cast<bool>(result);
         }
 
 
-        void AddRun(uint64_t runNumber)
-        {
+        void AddRun(uint64_t runNumber) {
             using namespace std;
 
             ostringstream ss;
-            ss << "INSERT IGNORE INTO runs (number, started, finished) VALUES ("<<runNumber<<", NULL, NULL)";
+            ss << "INSERT IGNORE INTO runs (number, started, finished) VALUES (" << runNumber << ", NULL, NULL)";
             string query = ss.str();
 
             // Query condition types
@@ -382,12 +382,11 @@ namespace rcdb {
             }
         }
 
-        void AddRunStartTime(uint64_t runNumber, std::tm time)
-        {
+        void AddRunStartTime(uint64_t runNumber, std::tm time) {
             std::ostringstream query;
             ThrowIfRunNotExists(runNumber);
 
-            query<<"UPDATE runs SET started='"<<GetFormattedTime(time)<<"' WHERE runs.number = "<<runNumber;
+            query << "UPDATE runs SET started='" << GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
                 throw std::logic_error(mysql_error(_connection.get()));
@@ -398,12 +397,11 @@ namespace rcdb {
 
         }
 
-        void AddRunEndTime(uint64_t runNumber, std::tm time)
-        {
+        void AddRunEndTime(uint64_t runNumber, std::tm time) {
             std::ostringstream query;
             ThrowIfRunNotExists(runNumber);
 
-            query<<"UPDATE runs SET finished='"<<GetFormattedTime(time)<<"' WHERE runs.number = "<<runNumber;
+            query << "UPDATE runs SET finished='" << GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
                 throw std::logic_error(mysql_error(_connection.get()));
@@ -412,27 +410,25 @@ namespace rcdb {
             AddCondition(runNumber, "run_end_time", time);
         }
 
-        std::string GetFormattedTime(std::tm time)
-        {
+        std::string GetFormattedTime(std::tm time) {
             char buff[20];
             strftime(buff, 20, "%Y-%m-%d %H:%M:%S", &time);
             return std::string(buff);
         }
 
-        std::string GetFormattedTime(std::time_t time)
-        {
+        std::string GetFormattedTime(std::time_t time) {
             return GetFormattedTime(*localtime(&time));
         }
 
-        void AddCondition(uint64_t runNumber, const std::string& name, long value )
-        {
+        void AddCondition(uint64_t runNumber, const std::string &name, long value) {
             ThrowIfRunNotExists(runNumber);
 
             auto conditionType = _typesByName[name.c_str()];
 
             std::ostringstream query;
             query << "INSERT INTO conditions (int_value, run_number, condition_type_id, created) VALUES "
-                  "("<<value<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+                    "(" << value << ", " << runNumber << ", " << conditionType.GetId() << ", '"
+                  << GetFormattedTime(time(NULL)) << "')";
 
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
@@ -440,15 +436,15 @@ namespace rcdb {
             }
         }
 
-        void AddCondition(uint64_t runNumber, const std::string& name, std::tm value )
-        {
+        void AddCondition(uint64_t runNumber, const std::string &name, std::tm value) {
             ThrowIfRunNotExists(runNumber);
 
             auto conditionType = _typesByName[name.c_str()];
 
             std::ostringstream query;
             query << "INSERT INTO conditions (time_value, run_number, condition_type_id, created) VALUES "
-                    "('"<<GetFormattedTime(value)<<"', "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+                    "('" << GetFormattedTime(value) << "', " << runNumber << ", " << conditionType.GetId() << ", '"
+                  << GetFormattedTime(time(NULL)) << "')";
 
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
@@ -456,15 +452,15 @@ namespace rcdb {
             }
         }
 
-        void AddCondition(uint64_t runNumber, const std::string& name, double value )
-        {
+        void AddCondition(uint64_t runNumber, const std::string &name, double value) {
             ThrowIfRunNotExists(runNumber);
 
             auto conditionType = _typesByName[name.c_str()];
 
             std::ostringstream query;
             query << "INSERT INTO conditions (float_value, run_number, condition_type_id, created) VALUES "
-                    "("<<GetFormattedTime(value)<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+                    "(" << GetFormattedTime(value) << ", " << runNumber << ", " << conditionType.GetId() << ", '"
+                  << GetFormattedTime(time(NULL)) << "')";
 
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
@@ -472,15 +468,15 @@ namespace rcdb {
             }
         }
 
-        void AddCondition(uint64_t runNumber, const std::string& name, const std::string& value)
-        {
+        void AddCondition(uint64_t runNumber, const std::string &name, const std::string &value) {
             ThrowIfRunNotExists(runNumber);
 
             auto conditionType = _typesByName[name.c_str()];
 
             std::ostringstream query;
             query << "INSERT INTO conditions (text_value, run_number, condition_type_id, created) VALUES "
-                    "('"<<value<<", "<<runNumber<<"', "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+                    "('" << value << ", " << runNumber << "', " << conditionType.GetId() << ", '"
+                  << GetFormattedTime(time(NULL)) << "')";
 
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
@@ -488,15 +484,15 @@ namespace rcdb {
             }
         }
 
-        void AddCondition(uint64_t runNumber, const std::string& name, bool value)
-        {
+        void AddCondition(uint64_t runNumber, const std::string &name, bool value) {
             ThrowIfRunNotExists(runNumber);
 
             auto conditionType = _typesByName[name.c_str()];
 
             std::ostringstream query;
             query << "INSERT INTO conditions (bool_value, run_number, condition_type_id, created) VALUES "
-                    "("<<value<<", "<<runNumber<<", "<<conditionType.GetId()<<", '"<<GetFormattedTime(time(NULL))<<"')";
+                    "(" << value << ", " << runNumber << ", " << conditionType.GetId() << ", '"
+                  << GetFormattedTime(time(NULL)) << "')";
 
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
@@ -505,20 +501,19 @@ namespace rcdb {
         }
 
 
-
     protected:
-        void ThrowIfRunNotExists(uint64_t runNumber)
-        {
-            if(!CheckRun(runNumber)) {
+        void ThrowIfRunNotExists(uint64_t runNumber) {
+            if (!CheckRun(runNumber)) {
                 std::ostringstream ss;
-                ss << "Run number "<<runNumber<<" does not exists in database. Add the run prior adding condition values";
+                ss << "Run number " << runNumber
+                   << " does not exists in database. Add the run prior adding condition values";
                 throw std::logic_error(ss.str());
             }
         }
 
 
     private:
-        std::unique_ptr<MYSQL, void (*)(MYSQL*)> _connection;
+        std::unique_ptr<MYSQL, void (*)(MYSQL *)> _connection;
 
         MySqlProvider(const MySqlProvider &) = delete;               // disable Copy constructor
         MySqlProvider &operator=(const MySqlProvider &) = delete;    // disable Copy assignment
