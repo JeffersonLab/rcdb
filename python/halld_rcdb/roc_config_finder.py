@@ -25,9 +25,14 @@ class HallDFilesGrabInfo(object):
         FADC250_USER_VER     ring2_hot_v2
 
     by default ROC configurations taken from COM_DIR using COM_VER to form name like rocbcal11_<COM_VER>.cnf
-    but if USER_DIR and USER_VER is given, then the given files from USER_DIR are used instead of COM_DIR files
+    but if USER_DIR and USER_VER is given, then data from USER_DIR files is used over of COM_DIR files
     
-    This objects implements its logic and provides excessive information about ROC files
+    The major remark is that user file may contain only a part of data. For example:
+    
+     COM_DIR/rocfcal11_default.cnf      - contains all masks for all boards in crate
+    USER_DIR/rocfcal11_ring2_hot_v2.cnf - contain masks for board 2 ONLY
+    
+    This class implements its logic and provides excessive information about ROC files
     """
 
     MASK_FORMAT = "roc{}*_{}.cnf"
@@ -70,8 +75,9 @@ class HallDFilesGrabInfo(object):
             for roc_name in self.com_files_by_roc.keys():
                 if roc_name in self.user_files_by_roc:
                     self.final_files.append(self.user_files_by_roc[roc_name])
-                else:
-                    self.final_files.append(self.com_files_by_roc[roc_name])
+
+                # we always add com_file because user file may overwrite only a part of com file
+                self.final_files.append(self.com_files_by_roc[roc_name])
 
     def print_self(self):
         log.debug("self.name = ", self.name)
