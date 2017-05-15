@@ -1,5 +1,5 @@
 # ext/declarative/api.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -42,6 +42,15 @@ def instrument_declarative(cls, registry, metadata):
 def has_inherited_table(cls):
     """Given a class, return True if any of the classes it inherits from has a
     mapped table, otherwise return False.
+
+    This is used in declarative mixins to build attributes that behave
+    differently for the base class vs. a subclass in an inheritance
+    hierarchy.
+
+    .. seealso::
+
+        :ref:`decl_mixin_inheritance`
+
     """
     for class_ in cls.__mro__[1:]:
         if getattr(class_, '__table__', None) is not None:
@@ -172,9 +181,6 @@ class declared_attr(interfaces._MappedAttribute, property):
                     "non-mapped class %s" %
                     (desc.fget.__name__, cls.__name__))
             return desc.fget(cls)
-
-        if reg is None:
-            return desc.fget(cls)
         elif desc in reg:
             return reg[desc]
         else:
@@ -196,19 +202,16 @@ class declared_attr(interfaces._MappedAttribute, property):
         Below, both MyClass as well as MySubClass will have a distinct
         ``id`` Column object established::
 
-            class HasSomeAttribute(object):
+            class HasIdMixin(object):
                 @declared_attr.cascading
-                def some_id(cls):
+                def id(cls):
                     if has_inherited_table(cls):
-                        return Column(
-                            ForeignKey('myclass.id'), primary_key=True)
+                        return Column(ForeignKey('myclass.id'), primary_key=True)
                     else:
                         return Column(Integer, primary_key=True)
 
-                    return Column('id', Integer, primary_key=True)
-
-            class MyClass(HasSomeAttribute, Base):
-                ""
+            class MyClass(HasIdMixin, Base):
+                __tablename__ = 'myclass'
                 # ...
 
             class MySubClass(MyClass):
@@ -247,7 +250,7 @@ def declarative_base(bind=None, metadata=None, mapper=None, cls=object,
                      name='Base', constructor=_declarative_constructor,
                      class_registry=None,
                      metaclass=DeclarativeMeta):
-    """Construct a base class for declarative class definitions.
+    r"""Construct a base class for declarative class definitions.
 
     The new base class will be given a metaclass that produces
     appropriate :class:`~sqlalchemy.schema.Table` objects and makes
@@ -283,7 +286,7 @@ def declarative_base(bind=None, metadata=None, mapper=None, cls=object,
 
     :param constructor:
       Defaults to
-      :func:`~sqlalchemy.ext.declarative._declarative_constructor`, an
+      :func:`~sqlalchemy.ext.declarative.base._declarative_constructor`, an
       __init__ implementation that assigns \**kwargs for declared
       fields and relationships to an instance.  If ``None`` is supplied,
       no __init__ will be provided and construction will fall back to
@@ -301,6 +304,9 @@ def declarative_base(bind=None, metadata=None, mapper=None, cls=object,
       compatible callable to use as the meta type of the generated
       declarative base class.
 
+    .. versionchanged:: 1.1 if :paramref:`.declarative_base.cls` is a single class (rather
+         than a tuple), the constructed base class will inherit its docstring.
+
     .. seealso::
 
         :func:`.as_declarative`
@@ -316,6 +322,9 @@ def declarative_base(bind=None, metadata=None, mapper=None, cls=object,
     bases = not isinstance(cls, tuple) and (cls,) or cls
     class_dict = dict(_decl_class_registry=class_registry,
                       metadata=lcl_metadata)
+
+    if isinstance(cls, type):
+        class_dict['__doc__'] = cls.__doc__
 
     if constructor:
         class_dict['__init__'] = constructor
@@ -396,6 +405,15 @@ class ConcreteBase(object):
             __mapper_args__ = {
                             'polymorphic_identity':'manager',
                             'concrete':True}
+
+    .. seealso::
+
+        :class:`.AbstractConcreteBase`
+
+        :ref:`concrete_inheritance`
+
+        :ref:`inheritance_concrete_helpers`
+
 
     """
 
@@ -495,6 +513,13 @@ class AbstractConcreteBase(ConcreteBase):
        have been reworked to support relationships established directly
        on the abstract base, without any special configurational steps.
 
+    .. seealso::
+
+        :class:`.ConcreteBase`
+
+        :ref:`concrete_inheritance`
+
+        :ref:`inheritance_concrete_helpers`
 
     """
 

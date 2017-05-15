@@ -1,5 +1,5 @@
 # mysql/mysqlconnector.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -112,8 +112,22 @@ class MySQLDialect_mysqlconnector(MySQLDialect):
 
         opts.update(url.query)
 
+        util.coerce_kw_type(opts, 'allow_local_infile', bool)
+        util.coerce_kw_type(opts, 'autocommit', bool)
         util.coerce_kw_type(opts, 'buffered', bool)
+        util.coerce_kw_type(opts, 'compress', bool)
+        util.coerce_kw_type(opts, 'connection_timeout', int)
+        util.coerce_kw_type(opts, 'connect_timeout', int)
+        util.coerce_kw_type(opts, 'consume_results', bool)
+        util.coerce_kw_type(opts, 'force_ipv6', bool)
+        util.coerce_kw_type(opts, 'get_warnings', bool)
+        util.coerce_kw_type(opts, 'pool_reset_session', bool)
+        util.coerce_kw_type(opts, 'pool_size', int)
         util.coerce_kw_type(opts, 'raise_on_warnings', bool)
+        util.coerce_kw_type(opts, 'raw', bool)
+        util.coerce_kw_type(opts, 'ssl_verify_cert', bool)
+        util.coerce_kw_type(opts, 'use_pure', bool)
+        util.coerce_kw_type(opts, 'use_unicode', bool)
 
         # unfortunately, MySQL/connector python refuses to release a
         # cursor without reading fully, so non-buffered isn't an option
@@ -172,5 +186,18 @@ class MySQLDialect_mysqlconnector(MySQLDialect):
 
     def _compat_fetchone(self, rp, charset=None):
         return rp.fetchone()
+
+    _isolation_lookup = set(['SERIALIZABLE', 'READ UNCOMMITTED',
+                             'READ COMMITTED', 'REPEATABLE READ',
+                             'AUTOCOMMIT'])
+
+    def _set_isolation_level(self, connection, level):
+        if level == 'AUTOCOMMIT':
+            connection.autocommit = True
+        else:
+            connection.autocommit = False
+            super(MySQLDialect_mysqlconnector, self)._set_isolation_level(
+                connection, level)
+
 
 dialect = MySQLDialect_mysqlconnector

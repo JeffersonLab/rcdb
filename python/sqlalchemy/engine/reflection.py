@@ -1,5 +1,5 @@
 # engine/reflection.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -143,7 +143,7 @@ class Inspector(object):
         """Return the default schema name presented by the dialect
         for the current engine's database user.
 
-        E.g. this is typically ``public`` for Postgresql and ``dbo``
+        E.g. this is typically ``public`` for PostgreSQL and ``dbo``
         for SQL Server.
 
         """
@@ -340,20 +340,17 @@ class Inspector(object):
         Given a string `table_name` and an optional string `schema`, return
         column information as a list of dicts with these keys:
 
-        name
-          the column's name
+        * ``name`` - the column's name
 
-        type
+        * ``type`` - the type of this column; an instance of
           :class:`~sqlalchemy.types.TypeEngine`
 
-        nullable
-          boolean
+        * ``nullable`` - boolean flag if the column is NULL or NOT NULL
 
-        default
-          the column's default value
+        * ``default`` - the column's server default value - this is returned
+          as a string SQL expression.
 
-        attrs
-          dict containing optional column attributes
+        * ``attrs``  - dict containing optional column attributes
 
         :param table_name: string name of the table.  For special quoting,
          use :class:`.quoted_name`.
@@ -361,6 +358,9 @@ class Inspector(object):
         :param schema: string schema name; if omitted, uses the default schema
          of the database connection.  For special quoting,
          use :class:`.quoted_name`.
+
+        :return: list of dictionaries, each representing the definition of
+         a database column.
 
         """
 
@@ -506,7 +506,34 @@ class Inspector(object):
         return self.dialect.get_unique_constraints(
             self.bind, table_name, schema, info_cache=self.info_cache, **kw)
 
-    def reflecttable(self, table, include_columns, exclude_columns=()):
+    def get_check_constraints(self, table_name, schema=None, **kw):
+        """Return information about check constraints in `table_name`.
+
+        Given a string `table_name` and an optional string `schema`, return
+        check constraint information as a list of dicts with these keys:
+
+        name
+          the check constraint's name
+
+        sqltext
+          the check constraint's SQL expression
+
+        :param table_name: string name of the table.  For special quoting,
+         use :class:`.quoted_name`.
+
+        :param schema: string schema name; if omitted, uses the default schema
+         of the database connection.  For special quoting,
+         use :class:`.quoted_name`.
+
+        .. versionadded:: 1.1.0
+
+        """
+
+        return self.dialect.get_check_constraints(
+            self.bind, table_name, schema, info_cache=self.info_cache, **kw)
+
+    def reflecttable(self, table, include_columns, exclude_columns=(),
+                     _extend_on=None):
         """Given a Table object, load its internal constructs based on
         introspection.
 
@@ -527,9 +554,17 @@ class Inspector(object):
           in the reflection process.  If ``None``, all columns are reflected.
 
         """
+
+        if _extend_on is not None:
+            if table in _extend_on:
+                return
+            else:
+                _extend_on.add(table)
+
         dialect = self.bind.dialect
 
-        schema = table.schema
+        schema = self.bind.schema_for_object(table)
+
         table_name = table.name
 
         # get table-level arguments that are specifically
@@ -575,13 +610,17 @@ class Inspector(object):
 
         self._reflect_fk(
             table_name, schema, table, cols_by_orig_name,
-            exclude_columns, reflection_options)
+            exclude_columns, _extend_on, reflection_options)
 
         self._reflect_indexes(
             table_name, schema, table, cols_by_orig_name,
             include_columns, exclude_columns, reflection_options)
 
         self._reflect_unique_constraints(
+            table_name, schema, table, cols_by_orig_name,
+            include_columns, exclude_columns, reflection_options)
+
+        self._reflect_check_constraints(
             table_name, schema, table, cols_by_orig_name,
             include_columns, exclude_columns, reflection_options)
 
@@ -610,14 +649,14 @@ class Inspector(object):
 
         colargs = []
         if col_d.get('default') is not None:
-            # the "default" value is assumed to be a literal SQL
-            # expression, so is wrapped in text() so that no quoting
-            # occurs on re-issuance.
-            colargs.append(
-                sa_schema.DefaultClause(
-                    sql.text(col_d['default']), _reflected=True
-                )
-            )
+            default = col_d['default']
+            if isinstance(default, sql.elements.TextClause):
+                default = sa_schema.DefaultClause(default, _reflected=True)
+            elif not isinstance(default, sa_schema.FetchedValue):
+                default = sa_schema.DefaultClause(
+                    sql.text(col_d['default']), _reflected=True)
+
+            colargs.append(default)
 
         if 'sequence' in col_d:
             self._reflect_col_sequence(col_d, colargs)
@@ -661,7 +700,7 @@ class Inspector(object):
 
     def _reflect_fk(
             self, table_name, schema, table, cols_by_orig_name,
-            exclude_columns, reflection_options):
+            exclude_columns, _extend_on, reflection_options):
         fkeys = self.get_foreign_keys(
             table_name, schema, **table.dialect_kwargs)
         for fkey_d in fkeys:
@@ -684,6 +723,7 @@ class Inspector(object):
                 sa_schema.Table(referred_table, table.metadata,
                                 autoload=True, schema=referred_schema,
                                 autoload_with=self.bind,
+                                _extend_on=_extend_on,
                                 **reflection_options
                                 )
                 for column in referred_columns:
@@ -692,6 +732,8 @@ class Inspector(object):
             else:
                 sa_schema.Table(referred_table, table.metadata, autoload=True,
                                 autoload_with=self.bind,
+                                schema=sa_schema.BLANK_SCHEMA,
+                                _extend_on=_extend_on,
                                 **reflection_options
                                 )
                 for column in referred_columns:
@@ -786,3 +828,16 @@ class Inspector(object):
                     constrained_cols.append(constrained_col)
             table.append_constraint(
                 sa_schema.UniqueConstraint(*constrained_cols, name=conname))
+
+    def _reflect_check_constraints(
+            self, table_name, schema, table, cols_by_orig_name,
+            include_columns, exclude_columns, reflection_options):
+        try:
+            constraints = self.get_check_constraints(table_name, schema)
+        except NotImplementedError:
+            # optional dialect feature
+            return
+
+        for const_d in constraints:
+            table.append_constraint(
+                sa_schema.CheckConstraint(**const_d))

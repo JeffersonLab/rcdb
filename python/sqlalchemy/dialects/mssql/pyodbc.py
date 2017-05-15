@@ -1,11 +1,11 @@
 # mssql/pyodbc.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""
+r"""
 .. dialect:: mssql+pyodbc
     :name: PyODBC
     :dbapi: pyodbc
@@ -93,12 +93,20 @@ for unix + PyODBC.
 .. versionadded:: 0.7.7
     ``supports_unicode_binds`` parameter to ``create_engine()``\ .
 
+Rowcount Support
+----------------
+
+Pyodbc only has partial support for rowcount.  See the notes at
+:ref:`mssql_rowcount_versioning` for important notes when using ORM
+versioning.
+
 """
 
 from .base import MSExecutionContext, MSDialect, VARBINARY
 from ...connectors.pyodbc import PyODBCConnector
-from ... import types as sqltypes, util
+from ... import types as sqltypes, util, exc
 import decimal
+import re
 
 
 class _ms_numeric_pyodbc(object):
@@ -261,5 +269,24 @@ class MSDialect_pyodbc(PyODBCConnector, MSDialect):
             hasattr(self.dbapi.Cursor, 'nextset')
         self._need_decimal_fix = self.dbapi and \
             self._dbapi_version() < (2, 1, 8)
+
+    def _get_server_version_info(self, connection):
+        try:
+            raw = connection.scalar("SELECT  SERVERPROPERTY('ProductVersion')")
+        except exc.DBAPIError:
+            # SQL Server docs indicate this function isn't present prior to
+            # 2008; additionally, unknown combinations of pyodbc aren't
+            # able to run this query.
+            return super(MSDialect_pyodbc, self).\
+                _get_server_version_info(connection)
+        else:
+            version = []
+            r = re.compile(r'[.\-]')
+            for n in r.split(raw):
+                try:
+                    version.append(int(n))
+                except ValueError:
+                    version.append(n)
+            return tuple(version)
 
 dialect = MSDialect_pyodbc

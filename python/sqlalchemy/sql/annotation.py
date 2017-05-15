@@ -1,5 +1,5 @@
 # sql/annotation.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -25,6 +25,13 @@ class Annotated(object):
     A reference to the original element is maintained, for the important
     reason of keeping its hash value current.  When GC'ed, the
     hash value may be reused, causing conflicts.
+
+    .. note::  The rationale for Annotated producing a brand new class,
+       rather than placing the functionality directly within ClauseElement,
+       is **performance**.  The __hash__() method is absent on plain
+       ClauseElement which leads to significantly reduced function call
+       overhead, as the use of sets and dictionaries against ClauseElement
+       objects is prevalent, but most are not "annotated".
 
     """
 

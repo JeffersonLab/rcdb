@@ -1,5 +1,5 @@
 # engine/__init__.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -53,6 +53,7 @@ url.py
 
 from .interfaces import (
     Connectable,
+    CreateEnginePlugin,
     Dialect,
     ExecutionContext,
     ExceptionContext,
@@ -245,7 +246,7 @@ def create_engine(*args, **kwargs):
         fetch newly generated primary key values when a single row
         INSERT statement is emitted with no existing returning()
         clause.  This applies to those backends which support RETURNING
-        or a compatible construct, including Postgresql, Firebird, Oracle,
+        or a compatible construct, including PostgreSQL, Firebird, Oracle,
         Microsoft SQL Server.   Set this to ``False`` to disable
         the automatic usage of RETURNING.
 
@@ -271,7 +272,7 @@ def create_engine(*args, **kwargs):
 
             :ref:`SQLite Transaction Isolation <sqlite_isolation_level>`
 
-            :ref:`Postgresql Transaction Isolation <postgresql_isolation_level>`
+            :ref:`PostgreSQL Transaction Isolation <postgresql_isolation_level>`
 
             :ref:`MySQL Transaction Isolation <mysql_isolation_level>`
 
@@ -373,7 +374,7 @@ def create_engine(*args, **kwargs):
         * the ``mock`` strategy, which dispatches all statement
           execution to a function passed as the argument ``executor``.
           See `example in the FAQ
-          <http://www.sqlalchemy.org/trac/wiki/FAQ#HowcanIgettheCREATETABLEDROPTABLEoutputasastring>`_.
+          <http://docs.sqlalchemy.org/en/latest/faq/metadata_schema.html#how-can-i-get-the-create-table-drop-table-output-as-a-string>`_.
 
     :param executor=None: a function taking arguments
         ``(sql, *multiparams, **params)``, to which the ``mock`` strategy will
@@ -390,7 +391,7 @@ def engine_from_config(configuration, prefix='sqlalchemy.', **kwargs):
     """Create a new Engine instance using a configuration dictionary.
 
     The dictionary is typically produced from a config file.
-    
+
     The keys of interest to ``engine_from_config()`` should be prefixed, e.g.
     ``sqlalchemy.url``, ``sqlalchemy.echo``, etc.  The 'prefix' argument
     indicates the prefix to be searched for.  Each matching key (after the

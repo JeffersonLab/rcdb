@@ -1,5 +1,5 @@
 # testing/warnings.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -19,6 +19,13 @@ def setup_filters():
                             category=sa_exc.SAPendingDeprecationWarning)
     warnings.filterwarnings('error', category=sa_exc.SADeprecationWarning)
     warnings.filterwarnings('error', category=sa_exc.SAWarning)
+
+    # some selected deprecations...
+    warnings.filterwarnings('error', category=DeprecationWarning)
+    warnings.filterwarnings(
+        "ignore", category=DeprecationWarning, message=".*StopIteration")
+    warnings.filterwarnings(
+        "ignore", category=DeprecationWarning, message=".*inspect.getargspec")
 
 
 def assert_warnings(fn, warning_msgs, regex=False):

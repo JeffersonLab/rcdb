@@ -1,5 +1,5 @@
 # ext/associationproxy.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -22,7 +22,7 @@ from ..sql import not_, or_
 
 
 def association_proxy(target_collection, attr, **kw):
-    """Return a Python property implementing a view of a target
+    r"""Return a Python property implementing a view of a target
     attribute which references an attribute on members of the
     target.
 

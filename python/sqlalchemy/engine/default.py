@@ -1,5 +1,5 @@
 # engine/default.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -16,7 +16,7 @@ as the base class for their own corresponding classes.
 import re
 import random
 from . import reflection, interfaces, result
-from ..sql import compiler, expression
+from ..sql import compiler, expression, schema
 from .. import types as sqltypes
 from .. import exc, util, pool, processors
 import codecs
@@ -25,6 +25,11 @@ from .. import event
 
 AUTOCOMMIT_REGEXP = re.compile(
     r'\s*(?:UPDATE|INSERT|CREATE|DELETE|DROP|ALTER)',
+    re.I | re.UNICODE)
+
+# When we're handed literal SQL, ensure it's a SELECT query
+SERVER_SIDE_CURSOR_RE = re.compile(
+    r'\s*SELECT',
     re.I | re.UNICODE)
 
 
@@ -108,6 +113,8 @@ class DefaultDialect(interfaces.Dialect):
     supports_empty_insert = True
     supports_multivalues_insert = False
 
+    supports_server_side_cursors = False
+
     server_version_info = None
 
     construct_arguments = None
@@ -124,7 +131,7 @@ class DefaultDialect(interfaces.Dialect):
             })
         ]
 
-    If the above construct is established on the Postgresql dialect,
+    If the above construct is established on the PostgreSQL dialect,
     the :class:`.Index` construct will now accept the keyword arguments
     ``postgresql_using``, ``postgresql_where``, nad ``postgresql_ops``.
     Any other argument specified to the constructor of :class:`.Index`
@@ -359,9 +366,10 @@ class DefaultDialect(interfaces.Dialect):
         return sqltypes.adapt_type(typeobj, self.colspecs)
 
     def reflecttable(
-            self, connection, table, include_columns, exclude_columns):
+            self, connection, table, include_columns, exclude_columns, **opts):
         insp = reflection.Inspector.from_engine(connection)
-        return insp.reflecttable(table, include_columns, exclude_columns)
+        return insp.reflecttable(
+            table, include_columns, exclude_columns, **opts)
 
     def get_pk_constraint(self, conn, table_name, schema=None, **kw):
         """Compatibility method, adapts the result of get_primary_keys()
@@ -398,9 +406,21 @@ class DefaultDialect(interfaces.Dialect):
                 if not branch:
                     self._set_connection_isolation(connection, isolation_level)
 
+        if 'schema_translate_map' in opts:
+            getter = schema._schema_getter(opts['schema_translate_map'])
+            engine.schema_for_object = getter
+
+            @event.listens_for(engine, "engine_connect")
+            def set_schema_translate_map(connection, branch):
+                connection.schema_for_object = getter
+
     def set_connection_execution_options(self, connection, opts):
         if 'isolation_level' in opts:
             self._set_connection_isolation(connection, opts['isolation_level'])
+
+        if 'schema_translate_map' in opts:
+            getter = schema._schema_getter(opts['schema_translate_map'])
+            connection.schema_for_object = getter
 
     def _set_connection_isolation(self, connection, level):
         if connection.in_transaction():
@@ -462,16 +482,35 @@ class DefaultDialect(interfaces.Dialect):
         self.set_isolation_level(dbapi_conn, self.default_isolation_level)
 
 
+class StrCompileDialect(DefaultDialect):
+
+    statement_compiler = compiler.StrSQLCompiler
+    ddl_compiler = compiler.DDLCompiler
+    type_compiler = compiler.StrSQLTypeCompiler
+    preparer = compiler.IdentifierPreparer
+
+    supports_sequences = True
+    sequences_optional = True
+    preexecute_autoincrement_sequences = False
+    implicit_returning = False
+
+    supports_native_boolean = True
+
+    supports_simple_order_by_label = True
+
+
 class DefaultExecutionContext(interfaces.ExecutionContext):
     isinsert = False
     isupdate = False
     isdelete = False
     is_crud = False
+    is_text = False
     isddl = False
     executemany = False
     compiled = None
     statement = None
     result_column_struct = None
+    returned_defaults = None
     _is_implicit_returning = False
     _is_explicit_returning = False
 
@@ -491,7 +530,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         self.compiled = compiled = compiled_ddl
         self.isddl = True
 
-        self.execution_options = compiled.statement._execution_options
+        self.execution_options = compiled.execution_options
         if connection._execution_options:
             self.execution_options = dict(self.execution_options)
             self.execution_options.update(connection._execution_options)
@@ -524,14 +563,16 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
 
         self.compiled = compiled
 
-        if not compiled.can_execute:
-            raise exc.ArgumentError("Not an executable clause")
+        # this should be caught in the engine before
+        # we get here
+        assert compiled.can_execute
 
-        self.execution_options = compiled.statement._execution_options.union(
+        self.execution_options = compiled.execution_options.union(
             connection._execution_options)
 
         self.result_column_struct = (
-            compiled._result_columns, compiled._ordered_columns)
+            compiled._result_columns, compiled._ordered_columns,
+            compiled._textual_ordered_columns)
 
         self.unicode_statement = util.text_type(compiled)
         if not dialect.supports_unicode_statements:
@@ -543,6 +584,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         self.isinsert = compiled.isinsert
         self.isupdate = compiled.isupdate
         self.isdelete = compiled.isdelete
+        self.is_text = compiled.isplaintext
 
         if not parameters:
             self.compiled_parameters = [compiled.construct_params()]
@@ -561,12 +603,11 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
             self._is_implicit_returning = bool(
                 compiled.returning and not compiled.statement._returning)
 
-            if not self.isdelete:
-                if self.compiled.prefetch:
-                    if self.executemany:
-                        self._process_executemany_defaults()
-                    else:
-                        self._process_executesingle_defaults()
+        if self.compiled.insert_prefetch or self.compiled.update_prefetch:
+            if self.executemany:
+                self._process_executemany_defaults()
+            else:
+                self._process_executesingle_defaults()
 
         processors = compiled._bind_processors
 
@@ -622,6 +663,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         self.root_connection = connection
         self._dbapi_connection = dbapi_connection
         self.dialect = connection.dialect
+        self.is_text = True
 
         # plain text statement
         self.execution_options = connection._execution_options
@@ -679,7 +721,12 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
 
     @util.memoized_property
     def prefetch_cols(self):
-        return self.compiled.prefetch
+        if self.isinsert:
+            return self.compiled.insert_prefetch
+        elif self.isupdate:
+            return self.compiled.update_prefetch
+        else:
+            return ()
 
     @util.memoized_property
     def returning_cols(self):
@@ -741,8 +788,40 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
     def should_autocommit_text(self, statement):
         return AUTOCOMMIT_REGEXP.match(statement)
 
+    def _use_server_side_cursor(self):
+        if not self.dialect.supports_server_side_cursors:
+            return False
+
+        if self.dialect.server_side_cursors:
+            use_server_side = \
+                self.execution_options.get('stream_results', True) and (
+                    (self.compiled and isinstance(self.compiled.statement,
+                                                  expression.Selectable)
+                     or
+                     (
+                        (not self.compiled or
+                         isinstance(self.compiled.statement,
+                                    expression.TextClause))
+                        and self.statement and SERVER_SIDE_CURSOR_RE.match(
+                            self.statement))
+                     )
+                )
+        else:
+            use_server_side = \
+                self.execution_options.get('stream_results', False)
+
+        return use_server_side
+
     def create_cursor(self):
-        return self._dbapi_connection.cursor()
+        if self._use_server_side_cursor():
+            self._is_server_side = True
+            return self.create_server_side_cursor()
+        else:
+            self._is_server_side = False
+            return self._dbapi_connection.cursor()
+
+    def create_server_side_cursor(self):
+        raise NotImplementedError()
 
     def pre_exec(self):
         pass
@@ -792,7 +871,10 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         pass
 
     def get_result_proxy(self):
-        return result.ResultProxy(self)
+        if self._is_server_side:
+            return result.BufferedRowResultProxy(self)
+        else:
+            return result.ResultProxy(self)
 
     @property
     def rowcount(self):
@@ -823,15 +905,15 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
                 row = result.fetchone()
                 self.returned_defaults = row
                 self._setup_ins_pk_from_implicit_returning(row)
-                result._soft_close(_autoclose_connection=False)
+                result._soft_close()
                 result._metadata = None
             elif not self._is_explicit_returning:
-                result._soft_close(_autoclose_connection=False)
+                result._soft_close()
                 result._metadata = None
         elif self.isupdate and self._is_implicit_returning:
             row = result.fetchone()
             self.returned_defaults = row
-            result._soft_close(_autoclose_connection=False)
+            result._soft_close()
             result._metadata = None
 
         elif result._metadata is None:
@@ -839,7 +921,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
             # (which requires open cursor on some drivers
             # such as kintersbasdb, mxodbc)
             result.rowcount
-            result._soft_close(_autoclose_connection=False)
+            result._soft_close()
         return result
 
     def _setup_ins_pk_from_lastrowid(self):
@@ -879,10 +961,13 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
         ]
 
     def _setup_ins_pk_from_implicit_returning(self, row):
+        if row is None:
+            self.inserted_primary_key = None
+            return
+
         key_getter = self.compiled._key_getters_for_crud_column[2]
         table = self.compiled.statement.table
         compiled_params = self.compiled_parameters[0]
-
         self.inserted_primary_key = [
             row[col] if value is None else value
             for col, value in [
@@ -923,7 +1008,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
                     inputsizes.append(dbtype)
             try:
                 self.cursor.setinputsizes(*inputsizes)
-            except Exception as e:
+            except BaseException as e:
                 self.root_connection._handle_dbapi_exception(
                     e, None, None, None, self)
         else:
@@ -941,7 +1026,7 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
                     inputsizes[key] = dbtype
             try:
                 self.cursor.setinputsizes(**inputsizes)
-            except Exception as e:
+            except BaseException as e:
                 self.root_connection._handle_dbapi_exception(
                     e, None, None, None, self)
 
@@ -974,46 +1059,57 @@ class DefaultExecutionContext(interfaces.ExecutionContext):
     def _process_executemany_defaults(self):
         key_getter = self.compiled._key_getters_for_crud_column[2]
 
-        prefetch = self.compiled.prefetch
         scalar_defaults = {}
+
+        insert_prefetch = self.compiled.insert_prefetch
+        update_prefetch = self.compiled.update_prefetch
 
         # pre-determine scalar Python-side defaults
         # to avoid many calls of get_insert_default()/
         # get_update_default()
-        for c in prefetch:
-            if self.isinsert and c.default and c.default.is_scalar:
+        for c in insert_prefetch:
+            if c.default and c.default.is_scalar:
                 scalar_defaults[c] = c.default.arg
-            elif self.isupdate and c.onupdate and c.onupdate.is_scalar:
+        for c in update_prefetch:
+            if c.onupdate and c.onupdate.is_scalar:
                 scalar_defaults[c] = c.onupdate.arg
 
         for param in self.compiled_parameters:
             self.current_parameters = param
-            for c in prefetch:
+            for c in insert_prefetch:
                 if c in scalar_defaults:
                     val = scalar_defaults[c]
-                elif self.isinsert:
+                else:
                     val = self.get_insert_default(c)
+                if val is not None:
+                    param[key_getter(c)] = val
+            for c in update_prefetch:
+                if c in scalar_defaults:
+                    val = scalar_defaults[c]
                 else:
                     val = self.get_update_default(c)
                 if val is not None:
                     param[key_getter(c)] = val
+
         del self.current_parameters
 
     def _process_executesingle_defaults(self):
         key_getter = self.compiled._key_getters_for_crud_column[2]
-        prefetch = self.compiled.prefetch
         self.current_parameters = compiled_parameters = \
             self.compiled_parameters[0]
 
-        for c in prefetch:
-            if self.isinsert:
-                if c.default and \
-                        not c.default.is_sequence and c.default.is_scalar:
-                    val = c.default.arg
-                else:
-                    val = self.get_insert_default(c)
+        for c in self.compiled.insert_prefetch:
+            if c.default and \
+                    not c.default.is_sequence and c.default.is_scalar:
+                val = c.default.arg
             else:
-                val = self.get_update_default(c)
+                val = self.get_insert_default(c)
+
+            if val is not None:
+                compiled_parameters[key_getter(c)] = val
+
+        for c in self.compiled.update_prefetch:
+            val = self.get_update_default(c)
 
             if val is not None:
                 compiled_parameters[key_getter(c)] = val

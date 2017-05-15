@@ -1,5 +1,5 @@
 # sql/expression.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -15,28 +15,31 @@ class.
 """
 
 __all__ = [
-    'Alias', 'ClauseElement', 'ColumnCollection', 'ColumnElement',
-    'CompoundSelect', 'Delete', 'FromClause', 'Insert', 'Join', 'Select',
+    'Alias', 'any_', 'all_', 'ClauseElement', 'ColumnCollection', 'ColumnElement',
+    'CompoundSelect', 'Delete', 'FromClause', 'Insert', 'Join', 'Lateral',
+    'Select',
     'Selectable', 'TableClause', 'Update', 'alias', 'and_', 'asc', 'between',
     'bindparam', 'case', 'cast', 'column', 'delete', 'desc', 'distinct',
     'except_', 'except_all', 'exists', 'extract', 'func', 'modifier',
     'collate', 'insert', 'intersect', 'intersect_all', 'join', 'label',
-    'literal', 'literal_column', 'not_', 'null', 'nullsfirst', 'nullslast',
+    'lateral', 'literal', 'literal_column', 'not_', 'null', 'nullsfirst',
+    'nullslast',
     'or_', 'outparam', 'outerjoin', 'over', 'select', 'subquery',
     'table', 'text',
-    'tuple_', 'type_coerce', 'union', 'union_all', 'update']
+    'tuple_', 'type_coerce', 'union', 'union_all', 'update', 'within_group',
+    'TableSample', 'tablesample']
 
 
 from .visitors import Visitable
 from .functions import func, modifier, FunctionElement, Function
 from ..util.langhelpers import public_factory
 from .elements import ClauseElement, ColumnElement,\
-    BindParameter, UnaryExpression, BooleanClauseList, \
+    BindParameter, CollectionAggregate, UnaryExpression, BooleanClauseList, \
     Label, Cast, Case, ColumnClause, TextClause, Over, Null, \
     True_, False_, BinaryExpression, Tuple, TypeClause, Extract, \
-    Grouping, not_, \
+    Grouping, WithinGroup, not_, \
     collate, literal_column, between,\
-    literal, outparam, type_coerce, ClauseList, FunctionFilter
+    literal, outparam, TypeCoerce, ClauseList, FunctionFilter
 
 from .elements import SavepointClause, RollbackToSavepointClause, \
     ReleaseSavepointClause
@@ -45,9 +48,9 @@ from .base import ColumnCollection, Generative, Executable, \
     PARSE_AUTOCOMMIT
 
 from .selectable import Alias, Join, Select, Selectable, TableClause, \
-    CompoundSelect, CTE, FromClause, FromGrouping, SelectBase, \
-    alias, GenerativeSelect, \
-    subquery, HasPrefixes, HasSuffixes, Exists, ScalarSelect, TextAsFrom
+    CompoundSelect, CTE, FromClause, FromGrouping, Lateral, SelectBase, \
+    alias, GenerativeSelect, subquery, HasCTE, HasPrefixes, HasSuffixes, \
+    lateral, Exists, ScalarSelect, TextAsFrom, TableSample, tablesample
 
 
 from .dml import Insert, Update, Delete, UpdateBase, ValuesBase
@@ -57,6 +60,8 @@ from .dml import Insert, Update, Delete, UpdateBase, ValuesBase
 # the functions to be available in the sqlalchemy.sql.* namespace and
 # to be auto-cross-documenting from the function to the class itself.
 
+all_ = public_factory(CollectionAggregate._create_all, ".expression.all_")
+any_ = public_factory(CollectionAggregate._create_any, ".expression.any_")
 and_ = public_factory(BooleanClauseList.and_, ".expression.and_")
 or_ = public_factory(BooleanClauseList.or_, ".expression.or_")
 bindparam = public_factory(BindParameter, ".expression.bindparam")
@@ -65,6 +70,7 @@ text = public_factory(TextClause._create_text, ".expression.text")
 table = public_factory(TableClause, ".expression.table")
 column = public_factory(ColumnClause, ".expression.column")
 over = public_factory(Over, ".expression.over")
+within_group = public_factory(WithinGroup, ".expression.within_group")
 label = public_factory(Label, ".expression.label")
 case = public_factory(Case, ".expression.case")
 cast = public_factory(Cast, ".expression.cast")
@@ -89,6 +95,7 @@ asc = public_factory(UnaryExpression._create_asc, ".expression.asc")
 desc = public_factory(UnaryExpression._create_desc, ".expression.desc")
 distinct = public_factory(
     UnaryExpression._create_distinct, ".expression.distinct")
+type_coerce = public_factory(TypeCoerce, ".expression.type_coerce")
 true = public_factory(True_._instance, ".expression.true")
 false = public_factory(False_._instance, ".expression.false")
 null = public_factory(Null._instance, ".expression.null")

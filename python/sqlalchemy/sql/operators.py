@@ -1,5 +1,5 @@
 # sql/operators.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -12,10 +12,9 @@
 
 from .. import util
 
-
 from operator import (
     and_, or_, inv, add, mul, sub, mod, truediv, lt, le, ne, gt, ge, eq, neg,
-    getitem, lshift, rshift
+    getitem, lshift, rshift, contains
 )
 
 if util.py2k:
@@ -160,7 +159,7 @@ class Operators(object):
         return against
 
     def operate(self, op, *other, **kwargs):
-        """Operate on an argument.
+        r"""Operate on an argument.
 
         This is the lowest level of operation, raises
         :class:`NotImplementedError` by default.
@@ -214,10 +213,14 @@ class custom_op(object):
     """
     __name__ = 'custom_op'
 
-    def __init__(self, opstring, precedence=0, is_comparison=False):
+    def __init__(
+            self, opstring, precedence=0, is_comparison=False,
+            natural_self_precedent=False, eager_grouping=False):
         self.opstring = opstring
         self.precedence = precedence
         self.is_comparison = is_comparison
+        self.natural_self_precedent = natural_self_precedent
+        self.eager_grouping = eager_grouping
 
     def __eq__(self, other):
         return isinstance(other, custom_op) and \
@@ -309,6 +312,28 @@ class ColumnOperators(Operators):
         """
         return self.operate(ne, other)
 
+    def is_distinct_from(self, other):
+        """Implement the ``IS DISTINCT FROM`` operator.
+
+        Renders "a IS DISTINCT FROM b" on most platforms;
+        on some such as SQLite may render "a IS NOT b".
+
+        .. versionadded:: 1.1
+
+        """
+        return self.operate(is_distinct_from, other)
+
+    def isnot_distinct_from(self, other):
+        """Implement the ``IS NOT DISTINCT FROM`` operator.
+
+        Renders "a IS NOT DISTINCT FROM b" on most platforms;
+        on some such as SQLite may render "a IS b".
+
+        .. versionadded:: 1.1
+
+        """
+        return self.operate(isnot_distinct_from, other)
+
     def __gt__(self, other):
         """Implement the ``>`` operator.
 
@@ -333,11 +358,14 @@ class ColumnOperators(Operators):
         """
         return self.operate(neg)
 
+    def __contains__(self, other):
+        return self.operate(contains, other)
+
     def __getitem__(self, index):
         """Implement the [] operator.
 
         This can be used by some database-specific types
-        such as Postgresql ARRAY and HSTORE.
+        such as PostgreSQL ARRAY and HSTORE.
 
         """
         return self.operate(getitem, index)
@@ -370,13 +398,16 @@ class ColumnOperators(Operators):
         return self.operate(concat_op, other)
 
     def like(self, other, escape=None):
-        """Implement the ``like`` operator.
+        r"""Implement the ``like`` operator.
 
-        In a column context, produces the clause ``a LIKE other``.
+        In a column context, produces the expression::
+
+            a LIKE other
 
         E.g.::
 
-            select([sometable]).where(sometable.c.column.like("%foobar%"))
+            stmt = select([sometable]).\
+                where(sometable.c.column.like("%foobar%"))
 
         :param other: expression to be compared
         :param escape: optional escape character, renders the ``ESCAPE``
@@ -392,13 +423,20 @@ class ColumnOperators(Operators):
         return self.operate(like_op, other, escape=escape)
 
     def ilike(self, other, escape=None):
-        """Implement the ``ilike`` operator.
+        r"""Implement the ``ilike`` operator, e.g. case insensitive LIKE.
 
-        In a column context, produces the clause ``a ILIKE other``.
+        In a column context, produces an expression either of the form::
+
+            lower(a) LIKE lower(other)
+
+        Or on backends that support the ILIKE operator::
+
+            a ILIKE other
 
         E.g.::
 
-            select([sometable]).where(sometable.c.column.ilike("%foobar%"))
+            stmt = select([sometable]).\
+                where(sometable.c.column.ilike("%foobar%"))
 
         :param other: expression to be compared
         :param escape: optional escape character, renders the ``ESCAPE``
@@ -529,7 +567,7 @@ class ColumnOperators(Operators):
         a MATCH-like function or operator provided by the backend.
         Examples include:
 
-        * Postgresql - renders ``x @@ to_tsquery(y)``
+        * PostgreSQL - renders ``x @@ to_tsquery(y)``
         * MySQL - renders ``MATCH (x) AGAINST (y IN BOOLEAN MODE)``
         * Oracle - renders ``CONTAINS(x, y)``
         * other backends may provide special implementations.
@@ -619,6 +657,24 @@ class ColumnOperators(Operators):
         """
         return self.operate(distinct_op)
 
+    def any_(self):
+        """Produce a :func:`~.expression.any_` clause against the
+        parent object.
+
+        .. versionadded:: 1.1
+
+        """
+        return self.operate(any_op)
+
+    def all_(self):
+        """Produce a :func:`~.expression.all_` clause against the
+        parent object.
+
+        .. versionadded:: 1.1
+
+        """
+        return self.operate(all_op)
+
     def __add__(self, other):
         """Implement the ``+`` operator.
 
@@ -700,6 +756,14 @@ def isfalse(a):
     raise NotImplementedError()
 
 
+def is_distinct_from(a, b):
+    return a.is_distinct_from(b)
+
+
+def isnot_distinct_from(a, b):
+    return a.isnot_distinct_from(b)
+
+
 def is_(a, b):
     return a.is_(b)
 
@@ -750,6 +814,14 @@ def notin_op(a, b):
 
 def distinct_op(a):
     return a.distinct()
+
+
+def any_op(a):
+    return a.any_()
+
+
+def all_op(a):
+    return a.all_()
 
 
 def startswith_op(a, b, escape=None):
@@ -808,6 +880,14 @@ def nullslast_op(a):
     return a.nullslast()
 
 
+def json_getitem_op(a, b):
+    raise NotImplementedError()
+
+
+def json_path_getitem_op(a, b):
+    raise NotImplementedError()
+
+
 _commutative = set([eq, ne, add, mul])
 
 _comparison = set([eq, ne, lt, gt, ge, le, between_op, like_op])
@@ -826,13 +906,37 @@ def is_ordering_modifier(op):
     return op in (asc_op, desc_op,
                   nullsfirst_op, nullslast_op)
 
-_associative = _commutative.union([concat_op, and_, or_])
 
-_natural_self_precedent = _associative.union([getitem])
+def is_natural_self_precedent(op):
+    return op in _natural_self_precedent or \
+        isinstance(op, custom_op) and op.natural_self_precedent
+
+_mirror = {
+    gt: lt,
+    ge: le,
+    lt: gt,
+    le: ge
+}
+
+
+def mirror(op):
+    """rotate a comparison operator 180 degrees.
+
+    Note this is not the same as negation.
+
+    """
+    return _mirror.get(op, op)
+
+
+_associative = _commutative.union([concat_op, and_, or_]).difference([eq, ne])
+
+_natural_self_precedent = _associative.union([
+    getitem, json_getitem_op, json_path_getitem_op])
 """Operators where if we have (a op b) op c, we don't want to
 parenthesize (a op b).
 
 """
+
 
 _asbool = util.symbol('_asbool', canonical=-10)
 _smallest = util.symbol('_smallest', canonical=-100)
@@ -840,7 +944,12 @@ _largest = util.symbol('_largest', canonical=100)
 
 _PRECEDENCE = {
     from_: 15,
+    any_op: 15,
+    all_op: 15,
     getitem: 15,
+    json_getitem_op: 15,
+    json_path_getitem_op: 15,
+
     mul: 8,
     truediv: 8,
     div: 8,
@@ -865,6 +974,8 @@ _PRECEDENCE = {
 
     eq: 5,
     ne: 5,
+    is_distinct_from: 5,
+    isnot_distinct_from: 5,
     gt: 5,
     lt: 5,
     ge: 5,
@@ -886,6 +997,7 @@ _PRECEDENCE = {
 
     as_: -1,
     exists: 0,
+
     _asbool: -10,
     _smallest: _smallest,
     _largest: _largest
@@ -893,7 +1005,7 @@ _PRECEDENCE = {
 
 
 def is_precedent(operator, against):
-    if operator is against and operator in _natural_self_precedent:
+    if operator is against and is_natural_self_precedent(operator):
         return False
     else:
         return (_PRECEDENCE.get(operator,

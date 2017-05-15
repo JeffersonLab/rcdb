@@ -1,5 +1,5 @@
 # engine/interfaces.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -7,7 +7,7 @@
 
 """Define core interfaces used by the engine system."""
 
-from .. import util, event
+from .. import util
 
 # backwards compat
 from ..sql.compiler import Compiled, TypeCompiler
@@ -100,7 +100,7 @@ class Dialect(object):
     preexecute_autoincrement_sequences
       True if 'implicit' primary key functions must be executed separately
       in order to get their value.   This is currently oriented towards
-      Postgresql.
+      PostgreSQL.
 
     implicit_returning
       use RETURNING or equivalent during INSERT execution in order to load
@@ -136,7 +136,7 @@ class Dialect(object):
     sequences_optional
       If True, indicates if the "optional" flag on the Sequence() construct
       should signal to not generate a CREATE SEQUENCE. Applies only to
-      dialects that support sequences. Currently used only to allow Postgresql
+      dialects that support sequences. Currently used only to allow PostgreSQL
       SERIAL to be used on a column that specifies Sequence() for usage on
       other backends.
 
@@ -378,7 +378,7 @@ class Dialect(object):
 
     def get_unique_constraints(
             self, connection, table_name, schema=None, **kw):
-        """Return information about unique constraints in `table_name`.
+        r"""Return information about unique constraints in `table_name`.
 
         Given a string `table_name` and an optional string `schema`, return
         unique constraint information as a list of dicts with these keys:
@@ -394,6 +394,29 @@ class Dialect(object):
           method.
 
         .. versionadded:: 0.9.0
+
+        """
+
+        raise NotImplementedError()
+
+    def get_check_constraints(
+            self, connection, table_name, schema=None, **kw):
+        r"""Return information about check constraints in `table_name`.
+
+        Given a string `table_name` and an optional string `schema`, return
+        check constraint information as a list of dicts with these keys:
+
+        name
+          the check constraint's name
+
+        sqltext
+          the check constraint's SQL expression
+
+        \**kw
+          other options passed to the dialect's get_check_constraints()
+          method.
+
+        .. versionadded:: 1.1.0
 
         """
 
@@ -611,7 +634,7 @@ class Dialect(object):
         raise NotImplementedError()
 
     def do_recover_twophase(self, connection):
-        """Recover list of uncommited prepared two phase transaction
+        """Recover list of uncommitted prepared two phase transaction
         identifiers on the given connection.
 
         :param connection: a :class:`.Connection`.
@@ -779,6 +802,117 @@ class Dialect(object):
 
         """
         pass
+
+
+class CreateEnginePlugin(object):
+    """A set of hooks intended to augment the construction of an
+    :class:`.Engine` object based on entrypoint names in a URL.
+
+    The purpose of :class:`.CreateEnginePlugin` is to allow third-party
+    systems to apply engine, pool and dialect level event listeners without
+    the need for the target application to be modified; instead, the plugin
+    names can be added to the database URL.  Target applications for
+    :class:`.CreateEnginePlugin` include:
+
+    * connection and SQL performance tools, e.g. which use events to track
+      number of checkouts and/or time spent with statements
+
+    * connectivity plugins such as proxies
+
+    Plugins are registered using entry points in a similar way as that
+    of dialects::
+
+        entry_points={
+            'sqlalchemy.plugins': [
+                'myplugin = myapp.plugins:MyPlugin'
+            ]
+
+    A plugin that uses the above names would be invoked from a database
+    URL as in::
+
+        from sqlalchemy import create_engine
+
+        engine = create_engine(
+          "mysql+pymysql://scott:tiger@localhost/test?plugin=myplugin")
+
+    The ``plugin`` argument supports multiple instances, so that a URL
+    may specify multiple plugins; they are loaded in the order stated
+    in the URL::
+
+        engine = create_engine(
+          "mysql+pymysql://scott:tiger@localhost/"
+          "test?plugin=plugin_one&plugin=plugin_twp&plugin=plugin_three")
+
+    A plugin can receive additional arguments from the URL string as
+    well as from the keyword arguments passed to :func:`.create_engine`.
+    The :class:`.URL` object and the keyword dictionary are passed to the
+    constructor so that these arguments can be extracted from the url's
+    :attr:`.URL.query` collection as well as from the dictionary::
+
+        class MyPlugin(CreateEnginePlugin):
+            def __init__(self, url, kwargs):
+                self.my_argument_one = url.query.pop('my_argument_one')
+                self.my_argument_two = url.query.pop('my_argument_two')
+                self.my_argument_three = kwargs.pop('my_argument_three', None)
+
+    Arguments like those illustrated above would be consumed from the
+    following::
+
+        from sqlalchemy import create_engine
+
+        engine = create_engine(
+          "mysql+pymysql://scott:tiger@localhost/"
+          "test?plugin=myplugin&my_argument_one=foo&my_argument_two=bar",
+          my_argument_three='bat')
+
+    The URL and dictionary are used for subsequent setup of the engine
+    as they are, so the plugin can modify their arguments in-place.
+    Arguments that are only understood by the plugin should be popped
+    or otherwise removed so that they aren't interpreted as erroneous
+    arguments afterwards.
+
+    When the engine creation process completes and produces the
+    :class:`.Engine` object, it is again passed to the plugin via the
+    :meth:`.CreateEnginePlugin.engine_created` hook.  In this hook, additional
+    changes can be made to the engine, most typically involving setup of
+    events (e.g. those defined in :ref:`core_event_toplevel`).
+
+    .. versionadded:: 1.1
+
+    """
+    def __init__(self, url, kwargs):
+        """Contruct a new :class:`.CreateEnginePlugin`.
+
+        The plugin object is instantiated individually for each call
+        to :func:`.create_engine`.  A single :class:`.Engine` will be
+        passed to the :meth:`.CreateEnginePlugin.engine_created` method
+        corresponding to this URL.
+
+        :param url: the :class:`.URL` object.  The plugin should inspect
+         what it needs here as well as remove its custom arguments from the
+         :attr:`.URL.query` collection.  The URL can be modified in-place
+         in any other way as well.
+        :param kwargs: The keyword arguments passed to :func`.create_engine`.
+         The plugin can read and modify this dictionary in-place, to affect
+         the ultimate arguments used to create the engine.  It should
+         remove its custom arguments from the dictionary as well.
+
+        """
+        self.url = url
+
+    def handle_dialect_kwargs(self, dialect_cls, dialect_args):
+        """parse and modify dialect kwargs"""
+
+    def handle_pool_kwargs(self, pool_cls, pool_args):
+        """parse and modify pool kwargs"""
+
+    def engine_created(self, engine):
+        """Receive the :class:`.Engine` object when it is fully constructed.
+
+        The plugin may make additional changes to the engine, such as
+        registering engine or connection pool events.
+
+        """
 
 
 class ExecutionContext(object):

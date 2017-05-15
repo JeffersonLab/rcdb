@@ -1,5 +1,5 @@
 # orm/util.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -72,7 +72,7 @@ class CascadeOptions(frozenset):
     def from_string(cls, arg):
         values = [
             c for c
-            in re.split('\s*,\s*', arg or "")
+            in re.split(r'\s*,\s*', arg or "")
             if c
         ]
         return cls(values)
@@ -309,7 +309,7 @@ class ORMAdapter(sql_util.ColumnAdapter):
 
 
 class AliasedClass(object):
-    """Represents an "aliased" form of a mapped class for usage with Query.
+    r"""Represents an "aliased" form of a mapped class for usage with Query.
 
     The ORM equivalent of a :func:`sqlalchemy.sql.expression.alias`
     construct, this object mimics the mapped class using a
@@ -323,8 +323,8 @@ class AliasedClass(object):
 
         # find all pairs of users with the same name
         user_alias = aliased(User)
-        session.query(User, user_alias).\\
-                        join((user_alias, User.id > user_alias.id)).\\
+        session.query(User, user_alias).\
+                        join((user_alias, User.id > user_alias.id)).\
                         filter(User.name==user_alias.name)
 
     The resulting object is an instance of :class:`.AliasedClass`.
@@ -548,6 +548,17 @@ class AliasedInsp(InspectionAttr):
             assert False, "mapper %s doesn't correspond to %s" % (
                 mapper, self)
 
+    @util.memoized_property
+    def _memoized_values(self):
+        return {}
+
+    def _memo(self, key, callable_, *args, **kw):
+        if key in self._memoized_values:
+            return self._memoized_values[key]
+        else:
+            self._memoized_values[key] = value = callable_(*args, **kw)
+            return value
+
     def __repr__(self):
         if self.with_polymorphic_mappers:
             with_poly = "(%s)" % ", ".join(
@@ -636,7 +647,7 @@ def aliased(element, alias=None, name=None, flat=False, adapt_on_names=False):
 
      Above, functions on ``aggregated_unit_price`` which refer to
      ``.price`` will return the
-     ``fund.sum(UnitPrice.price).label('price')`` column, as it is
+     ``func.sum(UnitPrice.price).label('price')`` column, as it is
      matched on the name "price".  Ordinarily, the "price" function
      wouldn't have any "column correspondence" to the actual
      ``UnitPrice.price`` column as it is not a proxy of the original.
@@ -692,11 +703,11 @@ def with_polymorphic(base, classes, selectable=False,
         versions of MySQL.
 
     :param flat: Boolean, will be passed through to the
-        :meth:`.FromClause.alias` call so that aliases of :class:`.Join`
-        objects don't include an enclosing SELECT.  This can lead to more
-        efficient queries in many circumstances.  A JOIN against a nested JOIN
-        will be rewritten as a JOIN against an aliased SELECT subquery on
-        backends that don't support this syntax.
+     :meth:`.FromClause.alias` call so that aliases of :class:`.Join`
+     objects don't include an enclosing SELECT.  This can lead to more
+     efficient queries in many circumstances.  A JOIN against a nested JOIN
+     will be rewritten as a JOIN against an aliased SELECT subquery on
+     backends that don't support this syntax.
 
      Setting ``flat`` to ``True`` implies the ``aliased`` flag is
      also ``True``.
@@ -783,7 +794,7 @@ class _ORMJoin(expression.Join):
     def __init__(
             self,
             left, right, onclause=None, isouter=False,
-            _left_memo=None, _right_memo=None):
+            full=False, _left_memo=None, _right_memo=None):
 
         left_info = inspection.inspect(left)
         left_orm_info = getattr(left, '_joined_from_info', left_info)
@@ -835,7 +846,7 @@ class _ORMJoin(expression.Join):
                 onclause = pj
             self._target_adapter = target_adapter
 
-        expression.Join.__init__(self, left, right, onclause, isouter)
+        expression.Join.__init__(self, left, right, onclause, isouter, full)
 
         if not prop and getattr(right_info, 'mapper', None) \
                 and right_info.mapper.single:
@@ -874,15 +885,21 @@ class _ORMJoin(expression.Join):
             _right_memo=other._right_memo
         )
 
-    def join(self, right, onclause=None, isouter=False, join_to_left=None):
-        return _ORMJoin(self, right, onclause, isouter)
+    def join(
+            self, right, onclause=None,
+            isouter=False, full=False, join_to_left=None):
+        return _ORMJoin(self, right, onclause, full, isouter)
 
-    def outerjoin(self, right, onclause=None, join_to_left=None):
-        return _ORMJoin(self, right, onclause, True)
+    def outerjoin(
+            self, right, onclause=None,
+            full=False, join_to_left=None):
+        return _ORMJoin(self, right, onclause, True, full=full)
 
 
-def join(left, right, onclause=None, isouter=False, join_to_left=None):
-    """Produce an inner join between left and right clauses.
+def join(
+        left, right, onclause=None, isouter=False,
+        full=False, join_to_left=None):
+    r"""Produce an inner join between left and right clauses.
 
     :func:`.orm.join` is an extension to the core join interface
     provided by :func:`.sql.expression.join()`, where the
@@ -901,15 +918,15 @@ def join(left, right, onclause=None, isouter=False, join_to_left=None):
     :meth:`.Query.select_from` method, as in::
 
         from sqlalchemy.orm import join
-        session.query(User).\\
-            select_from(join(User, Address, User.addresses)).\\
+        session.query(User).\
+            select_from(join(User, Address, User.addresses)).\
             filter(Address.email_address=='foo@bar.com')
 
     In modern SQLAlchemy the above join can be written more
     succinctly as::
 
-        session.query(User).\\
-                join(User.addresses).\\
+        session.query(User).\
+                join(User.addresses).\
                 filter(Address.email_address=='foo@bar.com')
 
     See :meth:`.Query.join` for information on modern usage
@@ -919,10 +936,10 @@ def join(left, right, onclause=None, isouter=False, join_to_left=None):
        is no longer used, and is deprecated.
 
     """
-    return _ORMJoin(left, right, onclause, isouter)
+    return _ORMJoin(left, right, onclause, isouter, full)
 
 
-def outerjoin(left, right, onclause=None, join_to_left=None):
+def outerjoin(left, right, onclause=None, full=False, join_to_left=None):
     """Produce a left outer join between left and right clauses.
 
     This is the "outer join" version of the :func:`.orm.join` function,
@@ -930,7 +947,7 @@ def outerjoin(left, right, onclause=None, join_to_left=None):
     See that function's documentation for other usage details.
 
     """
-    return _ORMJoin(left, right, onclause, True)
+    return _ORMJoin(left, right, onclause, True, full)
 
 
 def with_parent(instance, prop):
@@ -989,12 +1006,19 @@ def was_deleted(object):
     """Return True if the given object was deleted
     within a session flush.
 
+    This is regardless of whether or not the object is
+    persistent or detached.
+
     .. versionadded:: 0.8.0
+
+    .. seealso::
+
+        :attr:`.InstanceState.was_deleted`
 
     """
 
     state = attributes.instance_state(object)
-    return state.deleted
+    return state.was_deleted
 
 
 def randomize_unitofwork():

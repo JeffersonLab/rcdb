@@ -1,5 +1,5 @@
 # orm/dynamic.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -32,15 +32,13 @@ class DynaLoader(strategies.AbstractRelationshipLoader):
                 "many-to-one/one-to-one relationships and/or "
                 "uselist=False." % self.parent_property)
         strategies._register_attribute(
-            self,
+            self.parent_property,
             mapper,
             useobject=True,
-            uselist=True,
             impl_class=DynamicAttributeImpl,
             target_mapper=self.parent_property.mapper,
             order_by=self.parent_property.order_by,
             query_class=self.parent_property.query_class,
-            backref=self.parent_property.back_populates,
         )
 
 
@@ -128,17 +126,16 @@ class DynamicAttributeImpl(attributes.AttributeImpl):
         dict_[self.key] = True
         return state.committed_state[self.key]
 
-    def set(self, state, dict_, value, initiator,
+    def set(self, state, dict_, value, initiator=None,
             passive=attributes.PASSIVE_OFF,
-            check_old=None, pop=False):
+            check_old=None, pop=False, _adapt=True):
         if initiator and initiator.parent_token is self.parent_token:
             return
 
         if pop and value is None:
             return
-        self._set_iterable(state, dict_, value)
 
-    def _set_iterable(self, state, dict_, iterable, adapter=None):
+        iterable = value
         new_values = list(iterable)
         if state.has_identity:
             old_collection = util.IdentitySet(self.get(state, dict_))

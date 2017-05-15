@@ -1,5 +1,5 @@
 # testing/engines.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -226,6 +226,9 @@ def testing_engine(url=None, options=None):
             options = config.db_opts
         else:
             options = {}
+    elif config.db is not None and url.drivername == config.db.url.drivername:
+        default_opt = config.db_opts.copy()
+        default_opt.update(options)
 
     engine = create_engine(url, **options)
     engine._has_events = True   # enable event blocks, helps with profiling

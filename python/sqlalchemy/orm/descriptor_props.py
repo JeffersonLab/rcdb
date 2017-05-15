@@ -1,5 +1,5 @@
 # orm/descriptor_props.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -91,7 +91,7 @@ class CompositeProperty(DescriptorProperty):
     """
 
     def __init__(self, class_, *attrs, **kwargs):
-        """Return a composite column-based property for use with a Mapper.
+        r"""Return a composite column-based property for use with a Mapper.
 
         See the mapping documentation section :ref:`mapper_composite` for a
         full usage example.
@@ -269,7 +269,7 @@ class CompositeProperty(DescriptorProperty):
             prop.active_history = self.active_history
             if self.deferred:
                 prop.deferred = self.deferred
-                prop.strategy_class = prop._strategy_lookup(
+                prop.strategy_key = (
                     ("deferred", True),
                     ("instrument", True))
             prop.group = self.group

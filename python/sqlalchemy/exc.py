@@ -1,5 +1,5 @@
 # sqlalchemy/exc.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -24,6 +24,20 @@ class ArgumentError(SQLAlchemyError):
     This error generally corresponds to construction time state errors.
 
     """
+
+
+class ObjectNotExecutableError(ArgumentError):
+    """Raised when an object is passed to .execute() that can't be
+    executed as SQL.
+
+    .. versionadded:: 1.1
+
+    """
+
+    def __init__(self, target):
+        super(ObjectNotExecutableError, self).__init__(
+            "Not an executable object: %r" % target
+        )
 
 
 class NoSuchModuleError(ArgumentError):

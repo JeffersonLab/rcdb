@@ -1,5 +1,5 @@
 # engine/strategies.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -18,8 +18,9 @@ New strategies can be added via new ``EngineStrategy`` classes.
 from operator import attrgetter
 
 from sqlalchemy.engine import base, threadlocal, url
-from sqlalchemy import util, exc, event
+from sqlalchemy import util, event
 from sqlalchemy import pool as poollib
+from sqlalchemy.sql import schema
 
 strategies = {}
 
@@ -47,6 +48,10 @@ class DefaultEngineStrategy(EngineStrategy):
     def create(self, name_or_url, **kwargs):
         # create url.URL object
         u = url.make_url(name_or_url)
+
+        plugins = u._instantiate_plugins(kwargs)
+
+        u.query.pop('plugin', None)
 
         entrypoint = u._get_entrypoint()
         dialect_cls = entrypoint.get_dialect_cls(u)
@@ -76,6 +81,9 @@ class DefaultEngineStrategy(EngineStrategy):
 
         dialect_args['dbapi'] = dbapi
 
+        for plugin in plugins:
+            plugin.handle_dialect_kwargs(dialect_cls, dialect_args)
+
         # create dialect
         dialect = dialect_cls(**dialect_args)
 
@@ -101,7 +109,9 @@ class DefaultEngineStrategy(EngineStrategy):
             poolclass = pop_kwarg('poolclass', None)
             if poolclass is None:
                 poolclass = dialect_cls.get_pool_class(u)
-            pool_args = {}
+            pool_args = {
+                'dialect': dialect
+            }
 
             # consume pool arguments from kwargs, translating a few of
             # the arguments
@@ -116,12 +126,18 @@ class DefaultEngineStrategy(EngineStrategy):
                 tk = translate.get(k, k)
                 if tk in kwargs:
                     pool_args[k] = pop_kwarg(tk)
+
+            for plugin in plugins:
+                plugin.handle_pool_kwargs(poolclass, pool_args)
+
             pool = poolclass(creator, **pool_args)
         else:
             if isinstance(pool, poollib._DBProxy):
                 pool = pool.get_pool(*cargs, **cparams)
             else:
                 pool = pool
+
+            pool._dialect = dialect
 
         # create engine.
         engineclass = self.engine_cls
@@ -168,6 +184,9 @@ class DefaultEngineStrategy(EngineStrategy):
         dialect_cls.engine_created(engine)
         if entrypoint is not dialect_cls:
             entrypoint.engine_created(engine)
+
+        for plugin in plugins:
+            plugin.engine_created(engine)
 
         return engine
 
@@ -225,6 +244,8 @@ class MockEngineStrategy(EngineStrategy):
         engine = property(lambda s: s)
         dialect = property(attrgetter('_dialect'))
         name = property(lambda s: s._dialect.name)
+
+        schema_for_object = schema._schema_getter(None)
 
         def contextual_connect(self, **kwargs):
             return self

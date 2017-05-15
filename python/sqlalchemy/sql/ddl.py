@@ -1,5 +1,5 @@
 # sql/ddl.py
-# Copyright (C) 2009-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2009-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -143,7 +143,7 @@ class DDLElement(Executable, _DDLCompiles):
 
     @_generative
     def execute_if(self, dialect=None, callable_=None, state=None):
-        """Return a callable that will execute this
+        r"""Return a callable that will execute this
         DDLElement conditionally.
 
         Used to provide a wrapper for event listening::
@@ -570,10 +570,10 @@ class CreateColumn(_DDLCompiles):
     as an implicitly-present "system" column.
 
     For example, suppose we wish to produce a :class:`.Table` which skips
-    rendering of the Postgresql ``xmin`` column against the Postgresql
+    rendering of the PostgreSQL ``xmin`` column against the PostgreSQL
     backend, but on other backends does render it, in anticipation of a
     triggered rule.  A conditional compilation rule could skip this name only
-    on Postgresql::
+    on PostgreSQL::
 
         from sqlalchemy.schema import CreateColumn
 
@@ -592,7 +592,7 @@ class CreateColumn(_DDLCompiles):
 
     Above, a :class:`.CreateTable` construct will generate a ``CREATE TABLE``
     which only includes the ``id`` column in the string; the ``xmin`` column
-    will be omitted, but only against the Postgresql backend.
+    will be omitted, but only against the PostgreSQL backend.
 
     .. versionadded:: 0.8.3 The :class:`.CreateColumn` construct supports
        skipping of columns by returning ``None`` from a custom compilation
@@ -679,13 +679,16 @@ class SchemaGenerator(DDLBase):
 
     def _can_create_table(self, table):
         self.dialect.validate_identifier(table.name)
-        if table.schema:
-            self.dialect.validate_identifier(table.schema)
+        effective_schema = self.connection.schema_for_object(table)
+        if effective_schema:
+            self.dialect.validate_identifier(effective_schema)
         return not self.checkfirst or \
             not self.dialect.has_table(self.connection,
-                                       table.name, schema=table.schema)
+                                       table.name, schema=effective_schema)
 
     def _can_create_sequence(self, sequence):
+        effective_schema = self.connection.schema_for_object(sequence)
+
         return self.dialect.supports_sequences and \
             (
                 (not self.dialect.sequences_optional or
@@ -695,7 +698,7 @@ class SchemaGenerator(DDLBase):
                     not self.dialect.has_sequence(
                         self.connection,
                         sequence.name,
-                        schema=sequence.schema)
+                        schema=effective_schema)
                 )
             )
 
@@ -882,12 +885,14 @@ class SchemaDropper(DDLBase):
 
     def _can_drop_table(self, table):
         self.dialect.validate_identifier(table.name)
-        if table.schema:
-            self.dialect.validate_identifier(table.schema)
+        effective_schema = self.connection.schema_for_object(table)
+        if effective_schema:
+            self.dialect.validate_identifier(effective_schema)
         return not self.checkfirst or self.dialect.has_table(
-            self.connection, table.name, schema=table.schema)
+            self.connection, table.name, schema=effective_schema)
 
     def _can_drop_sequence(self, sequence):
+        effective_schema = self.connection.schema_for_object(sequence)
         return self.dialect.supports_sequences and \
             ((not self.dialect.sequences_optional or
               not sequence.optional) and
@@ -895,7 +900,7 @@ class SchemaDropper(DDLBase):
                  self.dialect.has_sequence(
                      self.connection,
                      sequence.name,
-                     schema=sequence.schema))
+                     schema=effective_schema))
              )
 
     def visit_index(self, index):
@@ -1002,7 +1007,7 @@ def sort_tables_and_constraints(
     ``(Table, [ForeignKeyConstraint, ...])`` such that each
     :class:`.Table` follows its dependent :class:`.Table` objects.
     Remaining :class:`.ForeignKeyConstraint` objects that are separate due to
-    dependency rules not satisifed by the sort are emitted afterwards
+    dependency rules not satisfied by the sort are emitted afterwards
     as ``(None, [ForeignKeyConstraint ...])``.
 
     Tables are dependent on another based on the presence of

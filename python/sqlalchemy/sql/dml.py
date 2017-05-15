@@ -1,5 +1,5 @@
 # sql/dml.py
-# Copyright (C) 2009-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2009-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -9,15 +9,18 @@ Provide :class:`.Insert`, :class:`.Update` and :class:`.Delete`.
 
 """
 
-from .base import Executable, _generative, _from_objects, DialectKWArgs
+from .base import Executable, _generative, _from_objects, DialectKWArgs, \
+    ColumnCollection
 from .elements import ClauseElement, _literal_as_text, Null, and_, _clone, \
     _column_as_key
-from .selectable import _interpret_as_from, _interpret_as_select, HasPrefixes
+from .selectable import _interpret_as_from, _interpret_as_select, \
+    HasPrefixes, HasCTE
 from .. import util
 from .. import exc
 
 
-class UpdateBase(DialectKWArgs, HasPrefixes, Executable, ClauseElement):
+class UpdateBase(
+        HasCTE, DialectKWArgs, HasPrefixes, Executable, ClauseElement):
     """Form the base for ``INSERT``, ``UPDATE``, and ``DELETE`` statements.
 
     """
@@ -29,6 +32,7 @@ class UpdateBase(DialectKWArgs, HasPrefixes, Executable, ClauseElement):
     _hints = util.immutabledict()
     _parameter_ordering = None
     _prefixes = ()
+    named_with_column = False
 
     def _process_colparams(self, parameters):
         def process_single(p):
@@ -88,13 +92,13 @@ class UpdateBase(DialectKWArgs, HasPrefixes, Executable, ClauseElement):
 
     @_generative
     def returning(self, *cols):
-        """Add a :term:`RETURNING` or equivalent clause to this statement.
+        r"""Add a :term:`RETURNING` or equivalent clause to this statement.
 
         e.g.::
 
-            stmt = table.update().\\
-                      where(table.c.data == 'value').\\
-                      values(status='X').\\
+            stmt = table.update().\
+                      where(table.c.data == 'value').\
+                      values(status='X').\
                       returning(table.c.server_flag,
                                 table.c.updated_timestamp)
 
@@ -191,6 +195,7 @@ class ValuesBase(UpdateBase):
     _has_multi_parameters = False
     _preserve_parameter_order = False
     select = None
+    _post_values_clause = None
 
     def __init__(self, table, values, prefixes):
         self.table = _interpret_as_from(table)
@@ -201,7 +206,7 @@ class ValuesBase(UpdateBase):
 
     @_generative
     def values(self, *args, **kwargs):
-        """specify a fixed VALUES clause for an INSERT statement, or the SET
+        r"""specify a fixed VALUES clause for an INSERT statement, or the SET
         clause for an UPDATE.
 
         Note that the :class:`.Insert` and :class:`.Update` constructs support
@@ -250,7 +255,7 @@ class ValuesBase(UpdateBase):
          The :class:`.Insert` construct also supports being passed a list
          of dictionaries or full-table-tuples, which on the server will
          render the less common SQL syntax of "multiple values" - this
-         syntax is supported on backends such as SQLite, Postgresql, MySQL,
+         syntax is supported on backends such as SQLite, PostgreSQL, MySQL,
          but not necessarily others::
 
             users.insert().values([
@@ -367,7 +372,7 @@ class ValuesBase(UpdateBase):
             if self._has_multi_parameters:
                 raise exc.ArgumentError(
                     "Can't pass kwargs and multiple parameter sets "
-                    "simultaenously")
+                    "simultaneously")
             else:
                 self.parameters.update(kwargs)
 
@@ -611,21 +616,21 @@ class Update(ValuesBase):
                  return_defaults=False,
                  preserve_parameter_order=False,
                  **dialect_kw):
-        """Construct an :class:`.Update` object.
+        r"""Construct an :class:`.Update` object.
 
         E.g.::
 
             from sqlalchemy import update
 
-            stmt = update(users).where(users.c.id==5).\\
+            stmt = update(users).where(users.c.id==5).\
                     values(name='user #5')
 
         Similar functionality is available via the
         :meth:`~.TableClause.update` method on
         :class:`.Table`::
 
-            stmt = users.update().\\
-                        where(users.c.id==5).\\
+            stmt = users.update().\
+                        where(users.c.id==5).\
                         values(name='user #5')
 
         :param table: A :class:`.Table` object representing the database
@@ -645,8 +650,8 @@ class Update(ValuesBase):
          subquery::
 
             users.update().values(name='ed').where(
-                    users.c.name==select([addresses.c.email_address]).\\
-                                where(addresses.c.user_id==users.c.id).\\
+                    users.c.name==select([addresses.c.email_address]).\
+                                where(addresses.c.user_id==users.c.id).\
                                 as_scalar()
                     )
 
@@ -714,8 +719,8 @@ class Update(ValuesBase):
         being updated::
 
             users.update().values(
-                    name=select([addresses.c.email_address]).\\
-                            where(addresses.c.user_id==users.c.id).\\
+                    name=select([addresses.c.email_address]).\
+                            where(addresses.c.user_id==users.c.id).\
                             as_scalar()
                 )
 

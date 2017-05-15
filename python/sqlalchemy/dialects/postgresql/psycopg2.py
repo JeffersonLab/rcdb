@@ -1,5 +1,5 @@
 # postgresql/psycopg2.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -28,7 +28,8 @@ psycopg2-specific keyword arguments which are accepted by
   :class:`~sqlalchemy.engine.ResultProxy` uses special row-buffering
   behavior when this feature is enabled, such that groups of 100 rows at a
   time are fetched over the wire to reduce conversational overhead.
-  Note that the ``stream_results=True`` execution option is a more targeted
+  Note that the :paramref:`.Connection.execution_options.stream_results`
+  execution option is a more targeted
   way of enabling this mode on a per-execution basis.
 * ``use_native_unicode``: Enable the usage of Psycopg2 "native unicode" mode
   per connection.  True by default.
@@ -126,14 +127,14 @@ on all new connections based on the value passed to
 :func:`.create_engine` using the ``client_encoding`` parameter::
 
     # set_client_encoding() setting;
-    # works for *all* Postgresql versions
+    # works for *all* PostgreSQL versions
     engine = create_engine("postgresql://user:pass@host/dbname",
                            client_encoding='utf8')
 
-This overrides the encoding specified in the Postgresql client configuration.
+This overrides the encoding specified in the PostgreSQL client configuration.
 When using the parameter in this way, the psycopg2 driver emits
 ``SET client_encoding TO 'utf8'`` on the connection explicitly, and works
-in all Postgresql versions.
+in all PostgreSQL versions.
 
 Note that the ``client_encoding`` setting as passed to :func:`.create_engine`
 is **not the same** as the more recently added ``client_encoding`` parameter
@@ -142,14 +143,14 @@ is passed directly to ``psycopg2.connect()``, and from SQLAlchemy is passed
 using the :paramref:`.create_engine.connect_args` parameter::
 
     # libpq direct parameter setting;
-    # only works for Postgresql **9.1 and above**
+    # only works for PostgreSQL **9.1 and above**
     engine = create_engine("postgresql://user:pass@host/dbname",
                            connect_args={'client_encoding': 'utf8'})
 
     # using the query string is equivalent
     engine = create_engine("postgresql://user:pass@host/dbname?client_encoding=utf8")
 
-The above parameter was only added to libpq as of version 9.1 of Postgresql,
+The above parameter was only added to libpq as of version 9.1 of PostgreSQL,
 so using the previous method is better for cross-version support.
 
 .. _psycopg2_disable_native_unicode:
@@ -229,12 +230,12 @@ Psycopg2 Transaction Isolation Level
 -------------------------------------
 
 As discussed in :ref:`postgresql_isolation_level`,
-all Postgresql dialects support setting of transaction isolation level
+all PostgreSQL dialects support setting of transaction isolation level
 both via the ``isolation_level`` parameter passed to :func:`.create_engine`,
 as well as the ``isolation_level`` argument used by
 :meth:`.Connection.execution_options`.  When using the psycopg2 dialect, these
 options make use of psycopg2's ``set_isolation_level()`` connection method,
-rather than emitting a Postgresql directive; this is because psycopg2's
+rather than emitting a PostgreSQL directive; this is because psycopg2's
 API-level setting is always emitted at the start of each transaction in any
 case.
 
@@ -259,7 +260,7 @@ The psycopg2 dialect supports these constants for isolation level:
 NOTICE logging
 ---------------
 
-The psycopg2 dialect will log Postgresql NOTICE messages via the
+The psycopg2 dialect will log PostgreSQL NOTICE messages via the
 ``sqlalchemy.dialects.postgresql`` logger::
 
     import logging
@@ -320,7 +321,7 @@ from ...sql import expression
 from ... import types as sqltypes
 from .base import PGDialect, PGCompiler, \
     PGIdentifierPreparer, PGExecutionContext, \
-    ENUM, ARRAY, _DECIMAL_TYPES, _FLOAT_TYPES,\
+    ENUM, _DECIMAL_TYPES, _FLOAT_TYPES,\
     _INT_TYPES, UUID
 from .hstore import HSTORE
 from .json import JSON, JSONB
@@ -422,53 +423,24 @@ class _PGUUID(UUID):
                 return value
             return process
 
-# When we're handed literal SQL, ensure it's a SELECT query. Since
-# 8.3, combining cursors and "FOR UPDATE" has been fine.
-SERVER_SIDE_CURSOR_RE = re.compile(
-    r'\s*SELECT',
-    re.I | re.UNICODE)
 
 _server_side_id = util.counter()
 
 
 class PGExecutionContext_psycopg2(PGExecutionContext):
-    def create_cursor(self):
-        # TODO: coverage for server side cursors + select.for_update()
-
-        if self.dialect.server_side_cursors:
-            is_server_side = \
-                self.execution_options.get('stream_results', True) and (
-                    (self.compiled and isinstance(self.compiled.statement,
-                                                  expression.Selectable)
-                     or
-                     (
-                        (not self.compiled or
-                         isinstance(self.compiled.statement,
-                                    expression.TextClause))
-                        and self.statement and SERVER_SIDE_CURSOR_RE.match(
-                            self.statement))
-                     )
-                )
-        else:
-            is_server_side = \
-                self.execution_options.get('stream_results', False)
-
-        self.__is_server_side = is_server_side
-        if is_server_side:
-            # use server-side cursors:
-            # http://lists.initd.org/pipermail/psycopg/2007-January/005251.html
-            ident = "c_%s_%s" % (hex(id(self))[2:],
-                                 hex(_server_side_id())[2:])
-            return self._dbapi_connection.cursor(ident)
-        else:
-            return self._dbapi_connection.cursor()
+    def create_server_side_cursor(self):
+        # use server-side cursors:
+        # http://lists.initd.org/pipermail/psycopg/2007-January/005251.html
+        ident = "c_%s_%s" % (hex(id(self))[2:],
+                             hex(_server_side_id())[2:])
+        return self._dbapi_connection.cursor(ident)
 
     def get_result_proxy(self):
         # TODO: ouch
         if logger.isEnabledFor(logging.INFO):
             self._log_notices(self.cursor)
 
-        if self.__is_server_side:
+        if self._is_server_side:
             return _result.BufferedRowResultProxy(self)
         else:
             return _result.ResultProxy(self)
@@ -502,6 +474,8 @@ class PGDialect_psycopg2(PGDialect):
     if util.py2k:
         supports_unicode_statements = False
 
+    supports_server_side_cursors = True
+
     default_paramstyle = 'pyformat'
     # set to true based on psycopg2 version
     supports_sane_multi_rowcount = False
@@ -534,6 +508,7 @@ class PGDialect_psycopg2(PGDialect):
             sqltypes.Enum: _PGEnum,  # needs force_unicode
             HSTORE: _PGHStore,
             JSON: _PGJSON,
+            sqltypes.JSON: _PGJSON,
             JSONB: _PGJSONB,
             UUID: _PGUUID
         }
@@ -717,6 +692,7 @@ class PGDialect_psycopg2(PGDialect):
                 'connection has been closed unexpectedly',
                 'SSL SYSCALL error: Bad file descriptor',
                 'SSL SYSCALL error: EOF detected',
+                'SSL error: decryption failed or bad record mac',
             ]:
                 idx = str_e.find(msg)
                 if idx >= 0 and '"' not in str_e[:idx]:

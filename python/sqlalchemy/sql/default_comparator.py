@@ -1,5 +1,5 @@
 # sql/default_comparator.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -14,7 +14,8 @@ from . import operators
 from .elements import BindParameter, True_, False_, BinaryExpression, \
     Null, _const_expr, _clause_element_as_expr, \
     ClauseList, ColumnElement, TextClause, UnaryExpression, \
-    collate, _is_literal, _literal_as_text, ClauseElement, and_, or_
+    collate, _is_literal, _literal_as_text, ClauseElement, and_, or_, \
+    Slice, Visitable, _literal_as_binds
 from .selectable import SelectBase, Alias, Selectable, ScalarSelect
 
 
@@ -38,6 +39,12 @@ def _boolean_compare(expr, op, obj, negate=None, reverse=False,
                                     op,
                                     type_=result_type,
                                     negate=negate, modifiers=kwargs)
+        elif op in (operators.is_distinct_from, operators.isnot_distinct_from):
+            return BinaryExpression(expr,
+                                    _literal_as_text(obj),
+                                    op,
+                                    type_=result_type,
+                                    negate=negate, modifiers=kwargs)
         else:
             # all other None/True/False uses IS, IS NOT
             if op in (operators.eq, operators.is_):
@@ -50,8 +57,9 @@ def _boolean_compare(expr, op, obj, negate=None, reverse=False,
                                         negate=operators.is_)
             else:
                 raise exc.ArgumentError(
-                    "Only '=', '!=', 'is_()', 'isnot()' operators can "
-                    "be used with None/True/False")
+                    "Only '=', '!=', 'is_()', 'isnot()', "
+                    "'is_distinct_from()', 'isnot_distinct_from()' "
+                    "operators can be used with None/True/False")
     else:
         obj = _check_literal(expr, op, obj)
 
@@ -161,6 +169,14 @@ def _in_impl(expr, op, seq_or_selectable, negate_op, **kw):
                             negate=negate_op)
 
 
+def _getitem_impl(expr, op, other, **kw):
+    if isinstance(expr.type, type_api.INDEXABLE):
+        other = _check_literal(expr, op, other)
+        return _binary_operate(expr, op, other, **kw)
+    else:
+        _unsupported_impl(expr, op, other, **kw)
+
+
 def _unsupported_impl(expr, op, *arg, **kw):
     raise NotImplementedError("Operator '%s' is not supported on "
                               "this expression" % op.__name__)
@@ -176,7 +192,7 @@ def _inv_impl(expr, op, **kw):
 
 def _neg_impl(expr, op, **kw):
     """See :meth:`.ColumnOperators.__neg__`."""
-    return UnaryExpression(expr, operator=operators.neg)
+    return UnaryExpression(expr, operator=operators.neg, type_=expr.type)
 
 
 def _match_impl(expr, op, other, **kw):
@@ -231,6 +247,8 @@ operator_lookup = {
     "mod": (_binary_operate,),
     "truediv": (_binary_operate,),
     "custom_op": (_binary_operate,),
+    "json_path_getitem_op": (_binary_operate, ),
+    "json_getitem_op": (_binary_operate, ),
     "concat_op": (_binary_operate,),
     "lt": (_boolean_compare, operators.ge),
     "le": (_boolean_compare, operators.gt),
@@ -238,6 +256,8 @@ operator_lookup = {
     "gt": (_boolean_compare, operators.le),
     "ge": (_boolean_compare, operators.lt),
     "eq": (_boolean_compare, operators.ne),
+    "is_distinct_from": (_boolean_compare, operators.isnot_distinct_from),
+    "isnot_distinct_from": (_boolean_compare, operators.is_distinct_from),
     "like_op": (_boolean_compare, operators.notlike_op),
     "ilike_op": (_boolean_compare, operators.notilike_op),
     "notlike_op": (_boolean_compare, operators.like_op),
@@ -260,13 +280,14 @@ operator_lookup = {
     "between_op": (_between_impl, ),
     "notbetween_op": (_between_impl, ),
     "neg": (_neg_impl,),
-    "getitem": (_unsupported_impl,),
+    "getitem": (_getitem_impl,),
     "lshift": (_unsupported_impl,),
     "rshift": (_unsupported_impl,),
+    "contains": (_unsupported_impl,),
 }
 
 
-def _check_literal(expr, operator, other):
+def _check_literal(expr, operator, other, bindparam_type=None):
     if isinstance(other, (ColumnElement, TextClause)):
         if isinstance(other, BindParameter) and \
                 other.type._isnull:
@@ -280,8 +301,8 @@ def _check_literal(expr, operator, other):
 
     if isinstance(other, (SelectBase, Alias)):
         return other.as_scalar()
-    elif not isinstance(other, (ColumnElement, TextClause)):
-        return expr._bind_param(operator, other)
+    elif not isinstance(other, Visitable):
+        return expr._bind_param(operator, other, type_=bindparam_type)
     else:
         return other
 

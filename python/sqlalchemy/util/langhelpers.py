@@ -1,5 +1,5 @@
 # util/langhelpers.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -49,6 +49,11 @@ class safe_reraise(object):
 
     """
 
+    __slots__ = ('warn_only', '_exc_info')
+
+    def __init__(self, warn_only=False):
+        self.warn_only = warn_only
+
     def __enter__(self):
         self._exc_info = sys.exc_info()
 
@@ -57,8 +62,16 @@ class safe_reraise(object):
         if type_ is None:
             exc_type, exc_value, exc_tb = self._exc_info
             self._exc_info = None   # remove potential circular references
-            compat.reraise(exc_type, exc_value, exc_tb)
+            if not self.warn_only:
+                compat.reraise(exc_type, exc_value, exc_tb)
         else:
+            if not compat.py3k and self._exc_info and self._exc_info[1]:
+                # emulate Py3K's behavior of telling us when an exception
+                # occurs in an exception handler.
+                warn(
+                    "An exception has occurred during handling of a "
+                    "previous exception.  The previous exception "
+                    "is:\n %s %s\n" % (self._exc_info[0], self._exc_info[1]))
             self._exc_info = None   # remove potential circular references
             compat.reraise(type_, value, traceback)
 
@@ -214,7 +227,7 @@ class PluginLoader(object):
 
 
 def get_cls_kwargs(cls, _set=None):
-    """Return the full set of inherited kwargs for the given `cls`.
+    r"""Return the full set of inherited kwargs for the given `cls`.
 
     Probes a class's __init__ method, collecting all named arguments.  If the
     __init__ defines a \**kwargs catch-all, then the constructor is presumed
@@ -522,20 +535,24 @@ class portable_instancemethod(object):
 
     """
 
-    __slots__ = 'target', 'name', '__weakref__'
+    __slots__ = 'target', 'name', 'kwargs', '__weakref__'
 
     def __getstate__(self):
-        return {'target': self.target, 'name': self.name}
+        return {'target': self.target, 'name': self.name,
+                'kwargs': self.kwargs}
 
     def __setstate__(self, state):
         self.target = state['target']
         self.name = state['name']
+        self.kwargs = state.get('kwargs', ())
 
-    def __init__(self, meth):
+    def __init__(self, meth, kwargs=()):
         self.target = meth.__self__
         self.name = meth.__name__
+        self.kwargs = kwargs
 
     def __call__(self, *arg, **kw):
+        kw.update(self.kwargs)
         return getattr(self.target, self.name)(*arg, **kw)
 
 
@@ -999,7 +1016,7 @@ def asint(value):
 
 
 def coerce_kw_type(kw, key, type_, flexi_bool=True):
-    """If 'key' is present in dict 'kw', coerce its value to type 'type\_' if
+    r"""If 'key' is present in dict 'kw', coerce its value to type 'type\_' if
     necessary.  If 'flexi_bool' is True, the string '0' is considered false
     when coercing to boolean.
     """
@@ -1019,7 +1036,9 @@ def constructor_copy(obj, cls, *args, **kw):
     """
 
     names = get_cls_kwargs(cls)
-    kw.update((k, obj.__dict__[k]) for k in names if k in obj.__dict__)
+    kw.update(
+        (k, obj.__dict__[k]) for k in names.difference(kw)
+        if k in obj.__dict__)
     return cls(*args, **kw)
 
 
@@ -1375,3 +1394,26 @@ class EnsureKWArgType(type):
             return fn(*arg)
         return update_wrapper(wrap, fn)
 
+
+def wrap_callable(wrapper, fn):
+    """Augment functools.update_wrapper() to work with objects with
+    a ``__call__()`` method.
+
+    :param fn:
+      object with __call__ method
+
+    """
+    if hasattr(fn, '__name__'):
+        return update_wrapper(wrapper, fn)
+    else:
+        _f = wrapper
+        _f.__name__ = fn.__class__.__name__
+        if hasattr(fn, '__module__'):
+            _f.__module__ = fn.__module__
+
+        if hasattr(fn.__call__, '__doc__') and fn.__call__.__doc__:
+            _f.__doc__ = fn.__call__.__doc__
+        elif fn.__doc__:
+            _f.__doc__ = fn.__doc__
+
+        return _f

@@ -1,11 +1,11 @@
 # ext/automap.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""Define an extension to the :mod:`sqlalchemy.ext.declarative` system
+r"""Define an extension to the :mod:`sqlalchemy.ext.declarative` system
 which automatically generates mapped classes and relationships from a database
 schema, typically though not necessarily one which is reflected.
 
@@ -13,7 +13,7 @@ schema, typically though not necessarily one which is reflected.
 
 It is hoped that the :class:`.AutomapBase` system provides a quick
 and modernized solution to the problem that the very famous
-`SQLSoup <https://sqlsoup.readthedocs.org/en/latest/>`_
+`SQLSoup <https://sqlsoup.readthedocs.io/en/latest/>`_
 also tries to solve, that of generating a quick and rudimentary object
 model from an existing database on the fly.  By addressing the issue strictly
 at the mapper configuration level, and integrating fully with existing
@@ -112,7 +112,7 @@ explicit table declaration::
         Base.classes.user_order
 
 Specifying Classes Explicitly
-============================
+=============================
 
 The :mod:`.sqlalchemy.ext.automap` extension allows classes to be defined
 explicitly, in a way similar to that of the :class:`.DeferredReflection` class.
@@ -187,7 +187,7 @@ scheme for class names and a "pluralizer" for collection names using the
         "Produce a 'camelized' class name, e.g. "
         "'words_and_underscores' -> 'WordsAndUnderscores'"
 
-        return str(tablename[0].upper() + \\
+        return str(tablename[0].upper() + \
                 re.sub(r'_([a-z])', lambda m: m.group(1).upper(), tablename[1:]))
 
     _pluralizer = inflect.engine()
@@ -606,7 +606,7 @@ def name_for_collection_relationship(
 
 def generate_relationship(
         base, direction, return_fn, attrname, local_cls, referred_cls, **kw):
-    """Generate a :func:`.relationship` or :func:`.backref` on behalf of two
+    r"""Generate a :func:`.relationship` or :func:`.backref` on behalf of two
     mapped classes.
 
     An alternate implementation of this function can be specified using the
@@ -633,9 +633,9 @@ def generate_relationship(
      that user-defined implementations correctly differentiate between the two
      functions, if a custom relationship function is being used.
 
-    :attrname: the attribute name to which this relationship is being assigned.
-     If the value of :paramref:`.generate_relationship.return_fn` is the
-     :func:`.backref` function, then this name is the name that is being
+    :param attrname: the attribute name to which this relationship is being
+     assigned. If the value of :paramref:`.generate_relationship.return_fn` is
+     the :func:`.backref` function, then this name is the name that is being
      assigned to the backref.
 
     :param local_cls: the "local" class to which this relationship or backref
@@ -695,6 +695,7 @@ class AutomapBase(object):
             cls,
             engine=None,
             reflect=False,
+            schema=None,
             classname_for_table=classname_for_table,
             collection_class=list,
             name_for_scalar_relationship=name_for_scalar_relationship,
@@ -735,10 +736,19 @@ class AutomapBase(object):
          when a new :func:`.relationship` object is created that represents a
          collection.  Defaults to ``list``.
 
+        :param schema: When present in conjunction with the
+         :paramref:`.AutomapBase.prepare.reflect` flag, is passed to
+         :meth:`.MetaData.reflect` to indicate the primary schema where tables
+         should be reflected from.  When omitted, the default schema in use
+         by the database connection is used.
+
+         .. versionadded:: 1.1
+
         """
         if reflect:
             cls.metadata.reflect(
                 engine,
+                schema=schema,
                 extend_existing=True,
                 autoload_replace=False
             )
@@ -810,7 +820,7 @@ class AutomapBase(object):
 
 
 def automap_base(declarative_base=None, **kw):
-    """Produce a declarative automap base.
+    r"""Produce a declarative automap base.
 
     This function produces a new base class that is a product of the
     :class:`.AutomapBase` class as well a declarative base produced by

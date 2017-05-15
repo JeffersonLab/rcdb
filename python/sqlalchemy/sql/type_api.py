@@ -1,5 +1,5 @@
 # sql/types_api.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -13,6 +13,7 @@
 from .. import exc, util
 from . import operators
 from .visitors import Visitable, VisitableType
+from .base import SchemaEventTarget
 
 # these are back-assigned by sqltypes.
 BOOLEANTYPE = None
@@ -20,6 +21,8 @@ INTEGERTYPE = None
 NULLTYPE = None
 STRINGTYPE = None
 MATCHTYPE = None
+INDEXABLE = None
+_resolve_value_to_type = None
 
 
 class TypeEngine(Visitable):
@@ -77,7 +80,7 @@ class TypeEngine(Visitable):
             However, using the addition operator with an :class:`.Integer`
             and a :class:`.Date` object will produce a :class:`.Date`, assuming
             "days delta" behavior by the database (in reality, most databases
-            other than Postgresql don't accept this particular operation).
+            other than PostgreSQL don't accept this particular operation).
 
             The method returns a tuple of the form <operator>, <type>.
             The resulting operator and type will be those applied to the
@@ -90,7 +93,7 @@ class TypeEngine(Visitable):
             boolean comparison or special SQL keywords like MATCH or BETWEEN.
 
             """
-            return op, other_comparator.type
+            return op, self.type
 
         def __reduce__(self):
             return _reconstitute_comparator, (self.expr, )
@@ -127,6 +130,83 @@ class TypeEngine(Visitable):
       customization of operators on a per-type level.
 
     """
+
+    should_evaluate_none = False
+    """If True, the Python constant ``None`` is considered to be handled
+    explicitly by this type.
+
+    The ORM uses this flag to indicate that a positive value of ``None``
+    is passed to the column in an INSERT statement, rather than omitting
+    the column from the INSERT statement which has the effect of firing
+    off column-level defaults.   It also allows types which have special
+    behavior for Python None, such as a JSON type, to indicate that
+    they'd like to handle the None value explicitly.
+
+    To set this flag on an existing type, use the
+    :meth:`.TypeEngine.evaluates_none` method.
+
+    .. seealso::
+
+        :meth:`.TypeEngine.evaluates_none`
+
+    .. versionadded:: 1.1
+
+
+    """
+
+    def evaluates_none(self):
+        """Return a copy of this type which has the :attr:`.should_evaluate_none`
+        flag set to True.
+
+        E.g.::
+
+                Table(
+                    'some_table', metadata,
+                    Column(
+                        String(50).evaluates_none(),
+                        nullable=True,
+                        server_default='no value')
+                )
+
+        The ORM uses this flag to indicate that a positive value of ``None``
+        is passed to the column in an INSERT statement, rather than omitting
+        the column from the INSERT statement which has the effect of firing
+        off column-level defaults.   It also allows for types which have
+        special behavior associated with the Python None value to indicate
+        that the value doesn't necessarily translate into SQL NULL; a
+        prime example of this is a JSON type which may wish to persist the
+        JSON value ``'null'``.
+
+        In all cases, the actual NULL SQL value can be always be
+        persisted in any column by using
+        the :obj:`~.expression.null` SQL construct in an INSERT statement
+        or associated with an ORM-mapped attribute.
+
+        .. note::
+
+            The "evaulates none" flag does **not** apply to a value
+            of ``None`` passed to :paramref:`.Column.default` or
+            :paramref:`.Column.server_default`; in these cases, ``None``
+            still means "no default".
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_forcing_null` - in the ORM documentation
+
+            :paramref:`.postgresql.JSON.none_as_null` - PostgreSQL JSON
+            interaction with this flag.
+
+            :attr:`.TypeEngine.should_evaluate_none` - class-level flag
+
+        """
+        typ = self.copy()
+        typ.should_evaluate_none = True
+        return typ
+
+    def copy(self, **kw):
+        return self.adapt(self.__class__)
 
     def compare_against_backend(self, dialect, conn_type):
         """Compare this type against the given backend type.
@@ -440,7 +520,7 @@ class TypeEngine(Visitable):
         end-user customization of this behavior.
 
         """
-        _coerced_type = _type_map.get(type(value), NULLTYPE)
+        _coerced_type = _resolve_value_to_type(value)
         if _coerced_type is NULLTYPE or _coerced_type._type_affinity \
                 is self._type_affinity:
             return self
@@ -577,7 +657,7 @@ class UserDefinedType(util.with_metaclass(VisitableCheckKWArg, TypeEngine)):
         return self
 
 
-class TypeDecorator(TypeEngine):
+class TypeDecorator(SchemaEventTarget, TypeEngine):
     """Allows the creation of types which add additional functionality
     to an existing type.
 
@@ -602,7 +682,7 @@ class TypeDecorator(TypeEngine):
           def process_result_value(self, value, dialect):
               return value[7:]
 
-          def copy(self):
+          def copy(self, **kw):
               return MyType(self.impl.length)
 
     The class-level "impl" attribute is required, and can reference any
@@ -720,7 +800,7 @@ class TypeDecorator(TypeEngine):
     return an empty tuple, in which case no values will be coerced to
     constants.
 
-    ..versionadded:: 0.8.2
+    .. versionadded:: 0.8.2
         Added :attr:`.TypeDecorator.coerce_to_is_types` to allow for easier
         control of ``__eq__()`` ``__ne__()`` operations.
 
@@ -776,6 +856,22 @@ class TypeDecorator(TypeEngine):
         #todo
         """
         return self.impl._type_affinity
+
+    def _set_parent(self, column):
+        """Support SchemaEventTarget"""
+
+        super(TypeDecorator, self)._set_parent(column)
+
+        if isinstance(self.impl, SchemaEventTarget):
+            self.impl._set_parent(column)
+
+    def _set_parent_with_dispatch(self, parent):
+        """Support SchemaEventTarget"""
+
+        super(TypeDecorator, self)._set_parent_with_dispatch(parent)
+
+        if isinstance(self.impl, SchemaEventTarget):
+            self.impl._set_parent_with_dispatch(parent)
 
     def type_engine(self, dialect):
         """Return a dialect-specific :class:`.TypeEngine` instance
@@ -1011,7 +1107,7 @@ class TypeDecorator(TypeEngine):
         the processing provided by ``self.impl`` is maintained.
 
         :param dialect: Dialect instance in use.
-        :param coltype: An SQLAlchemy data type
+        :param coltype: A SQLAlchemy data type
 
         This method is the reverse counterpart to the
         :meth:`bind_processor` method of this class.
@@ -1051,7 +1147,7 @@ class TypeDecorator(TypeEngine):
         """
         return self
 
-    def copy(self):
+    def copy(self, **kw):
         """Produce a copy of this :class:`.TypeDecorator` instance.
 
         This is a shallow copy and is provided to fulfill part of
@@ -1117,11 +1213,36 @@ class Variant(TypeDecorator):
         self.impl = base
         self.mapping = mapping
 
+    def coerce_compared_value(self, operator, value):
+        result = self.impl.coerce_compared_value(operator, value)
+        if result is self.impl:
+            return self
+        else:
+            return result
+
     def load_dialect_impl(self, dialect):
         if dialect.name in self.mapping:
             return self.mapping[dialect.name]
         else:
             return self.impl
+
+    def _set_parent(self, column):
+        """Support SchemaEventTarget"""
+
+        if isinstance(self.impl, SchemaEventTarget):
+            self.impl._set_parent(column)
+        for impl in self.mapping.values():
+            if isinstance(impl, SchemaEventTarget):
+                impl._set_parent(column)
+
+    def _set_parent_with_dispatch(self, parent):
+        """Support SchemaEventTarget"""
+
+        if isinstance(self.impl, SchemaEventTarget):
+            self.impl._set_parent_with_dispatch(parent)
+        for impl in self.mapping.values():
+            if isinstance(impl, SchemaEventTarget):
+                impl._set_parent_with_dispatch(parent)
 
     def with_variant(self, type_, dialect_name):
         """Return a new :class:`.Variant` which adds the given

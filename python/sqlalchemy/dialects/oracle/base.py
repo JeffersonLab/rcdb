@@ -1,5 +1,5 @@
 # oracle/base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -74,7 +74,7 @@ LIMIT/OFFSET Support
 Oracle has no support for the LIMIT or OFFSET keywords.  SQLAlchemy uses
 a wrapped subquery approach in conjunction with ROWNUM.  The exact methodology
 is taken from
-http://www.oracle.com/technology/oramag/oracle/06-sep/o56asktom.html .
+http://www.oracle.com/technetwork/issue-archive/2006/06-sep/o56asktom-086197.html .
 
 There are two options which affect its behavior:
 
@@ -195,6 +195,25 @@ accepted, including methods such as :meth:`.MetaData.reflect` and
 
 If synonyms are not in use, this flag should be left disabled.
 
+Table names with SYSTEM/SYSAUX tablespaces
+-------------------------------------------
+
+The :meth:`.Inspector.get_table_names` and
+:meth:`.Inspector.get_temp_table_names`
+methods each return a list of table names for the current engine. These methods
+are also part of the reflection which occurs within an operation such as
+:meth:`.MetaData.reflect`.  By default, these operations exclude the ``SYSTEM``
+and ``SYSAUX`` tablespaces from the operation.   In order to change this, the
+default list of tablespaces excluded can be changed at the engine level using
+the ``exclude_tablespaces`` parameter::
+
+    # exclude SYSAUX and SOME_TABLESPACE, but not SYSTEM
+    e = create_engine(
+      "oracle://scott:tiger@xe",
+      exclude_tablespaces=["SYSAUX", "SOME_TABLESPACE"])
+
+.. versionadded:: 1.1
+
 DateTime Compatibility
 ----------------------
 
@@ -285,7 +304,7 @@ import re
 
 from sqlalchemy import util, sql
 from sqlalchemy.engine import default, reflection
-from sqlalchemy.sql import compiler, visitors, expression
+from sqlalchemy.sql import compiler, visitors, expression, util as sql_util
 from sqlalchemy.sql import operators as sql_operators
 from sqlalchemy.sql.elements import quoted_name
 from sqlalchemy import types as sqltypes, schema as sa_schema
@@ -754,6 +773,20 @@ class OracleCompiler(compiler.SQLCompiler):
                 limitselect._oracle_visit = True
                 limitselect._is_wrapper = True
 
+                # add expressions to accommodate FOR UPDATE OF
+                for_update = select._for_update_arg
+                if for_update is not None and for_update.of:
+                    for_update = for_update._clone()
+                    for_update._copy_internals()
+
+                    for elem in for_update.of:
+                        select.append_column(elem)
+
+                    adapter = sql_util.ClauseAdapter(select)
+                    for_update.of = [
+                        adapter.traverse(elem)
+                        for elem in for_update.of]
+
                 # If needed, add the limiting clause
                 if limit_clause is not None:
                     if not self.dialect.use_binds_for_limits:
@@ -773,7 +806,7 @@ class OracleCompiler(compiler.SQLCompiler):
 
                 # If needed, add the ora_rn, and wrap again with offset.
                 if offset_clause is None:
-                    limitselect._for_update_arg = select._for_update_arg
+                    limitselect._for_update_arg = for_update
                     select = limitselect
                 else:
                     limitselect = limitselect.column(
@@ -786,13 +819,18 @@ class OracleCompiler(compiler.SQLCompiler):
                     offsetselect._oracle_visit = True
                     offsetselect._is_wrapper = True
 
+                    if for_update is not None and for_update.of:
+                        for elem in for_update.of:
+                            if limitselect.corresponding_column(elem) is None:
+                                limitselect.append_column(elem)
+
                     if not self.dialect.use_binds_for_limits:
                         offset_clause = sql.literal_column(
                             "%d" % select._offset)
                     offsetselect.append_whereclause(
                         sql.literal_column("ora_rn") > offset_clause)
 
-                    offsetselect._for_update_arg = select._for_update_arg
+                    offsetselect._for_update_arg = for_update
                     select = offsetselect
 
         return compiler.SQLCompiler.visit_select(self, select, **kwargs)
@@ -814,6 +852,8 @@ class OracleCompiler(compiler.SQLCompiler):
 
         if select._for_update_arg.nowait:
             tmp += " NOWAIT"
+        if select._for_update_arg.skip_locked:
+            tmp += " SKIP LOCKED"
 
         return tmp
 
@@ -898,7 +938,7 @@ class OracleIdentifierPreparer(compiler.IdentifierPreparer):
                 )
 
     def format_savepoint(self, savepoint):
-        name = re.sub(r'^_+', '', savepoint.ident)
+        name = savepoint.ident.lstrip('_')
         return super(
             OracleIdentifierPreparer, self).format_savepoint(savepoint, name)
 
@@ -958,11 +998,13 @@ class OracleDialect(default.DefaultDialect):
                  use_ansi=True,
                  optimize_limits=False,
                  use_binds_for_limits=True,
+                 exclude_tablespaces=('SYSTEM', 'SYSAUX', ),
                  **kwargs):
         default.DefaultDialect.__init__(self, **kwargs)
         self.use_ansi = use_ansi
         self.optimize_limits = optimize_limits
         self.use_binds_for_limits = use_binds_for_limits
+        self.exclude_tablespaces = exclude_tablespaces
 
     def initialize(self, connection):
         super(OracleDialect, self).initialize(connection)
@@ -984,7 +1026,7 @@ class OracleDialect(default.DefaultDialect):
     @property
     def _supports_table_compression(self):
         return self.server_version_info and \
-            self.server_version_info >= (9, 2, )
+            self.server_version_info >= (10, 1, )
 
     @property
     def _supports_table_compress_for(self):
@@ -1145,27 +1187,41 @@ class OracleDialect(default.DefaultDialect):
         # note that table_names() isn't loading DBLINKed or synonym'ed tables
         if schema is None:
             schema = self.default_schema_name
-        s = sql.text(
-            "SELECT table_name FROM all_tables "
-            "WHERE nvl(tablespace_name, 'no tablespace') NOT IN "
-            "('SYSTEM', 'SYSAUX') "
-            "AND OWNER = :owner "
+
+        sql_str = "SELECT table_name FROM all_tables WHERE "
+        if self.exclude_tablespaces:
+            sql_str += (
+                "nvl(tablespace_name, 'no tablespace') "
+                "NOT IN (%s) AND " % (
+                    ', '.join(["'%s'" % ts for ts in self.exclude_tablespaces])
+                )
+            )
+        sql_str += (
+            "OWNER = :owner "
             "AND IOT_NAME IS NULL "
             "AND DURATION IS NULL")
-        cursor = connection.execute(s, owner=schema)
+
+        cursor = connection.execute(sql.text(sql_str), owner=schema)
         return [self.normalize_name(row[0]) for row in cursor]
 
     @reflection.cache
     def get_temp_table_names(self, connection, **kw):
         schema = self.denormalize_name(self.default_schema_name)
-        s = sql.text(
-            "SELECT table_name FROM all_tables "
-            "WHERE nvl(tablespace_name, 'no tablespace') NOT IN "
-            "('SYSTEM', 'SYSAUX') "
-            "AND OWNER = :owner "
+
+        sql_str = "SELECT table_name FROM all_tables WHERE "
+        if self.exclude_tablespaces:
+            sql_str += (
+                "nvl(tablespace_name, 'no tablespace') "
+                "NOT IN (%s) AND " % (
+                    ', '.join(["'%s'" % ts for ts in self.exclude_tablespaces])
+                )
+            )
+        sql_str += (
+            "OWNER = :owner "
             "AND IOT_NAME IS NULL "
             "AND DURATION IS NOT NULL")
-        cursor = connection.execute(s, owner=schema)
+
+        cursor = connection.execute(sql.text(sql_str), owner=schema)
         return [self.normalize_name(row[0]) for row in cursor]
 
     @reflection.cache
@@ -1283,7 +1339,7 @@ class OracleDialect(default.DefaultDialect):
                 'type': coltype,
                 'nullable': nullable,
                 'default': default,
-                'autoincrement': default is None
+                'autoincrement': 'auto',
             }
             if orig_colname.lower() == orig_colname:
                 cdict['quote'] = True

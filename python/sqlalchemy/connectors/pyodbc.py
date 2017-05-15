@@ -1,5 +1,5 @@
 # connectors/pyodbc.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -55,6 +55,7 @@ class PyODBCConnector(Connector):
         opts.update(url.query)
 
         keys = opts
+
         query = url.query
 
         connect_args = {}
@@ -65,6 +66,15 @@ class PyODBCConnector(Connector):
         if 'odbc_connect' in keys:
             connectors = [util.unquote_plus(keys.pop('odbc_connect'))]
         else:
+            def check_quote(token):
+                if ";" in str(token):
+                    token = "'%s'" % token
+                return token
+
+            keys = dict(
+                (k, check_quote(v)) for k, v in keys.items()
+            )
+
             dsn_connection = 'dsn' in keys or \
                 ('host' in keys and 'database' not in keys)
             if dsn_connection:
@@ -107,6 +117,7 @@ class PyODBCConnector(Connector):
                                   keys.pop("odbc_autotranslate"))
 
             connectors.extend(['%s=%s' % (k, v) for k, v in keys.items()])
+
         return [[";".join(connectors)], connect_args]
 
     def is_disconnect(self, e, connection, cursor):
@@ -153,7 +164,6 @@ class PyODBCConnector(Connector):
         # run other initialization which asks for user name, etc.
         super(PyODBCConnector, self).initialize(connection)
 
-
     def _dbapi_version(self):
         if not self.dbapi:
             return ()
@@ -172,9 +182,12 @@ class PyODBCConnector(Connector):
         return vers
 
     def _get_server_version_info(self, connection):
+        # NOTE: this function is not reliable, particularly when
+        # freetds is in use.   Implement database-specific server version
+        # queries.
         dbapi_con = connection.connection
         version = []
-        r = re.compile('[.\-]')
+        r = re.compile(r'[.\-]')
         for n in r.split(dbapi_con.getinfo(self.dbapi.SQL_DBMS_VER)):
             try:
                 version.append(int(n))

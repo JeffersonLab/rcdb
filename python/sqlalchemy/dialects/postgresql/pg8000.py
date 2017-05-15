@@ -1,5 +1,5 @@
 # postgresql/pg8000.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors <see AUTHORS
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors <see AUTHORS
 # file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -28,7 +28,7 @@ Typically, this can be changed to ``utf-8``, as a more useful default::
                                  # encoding
     client_encoding = utf8
 
-The ``client_encoding`` can be overriden for a session by executing the SQL:
+The ``client_encoding`` can be overridden for a session by executing the SQL:
 
 SET CLIENT_ENCODING TO 'utf8';
 
@@ -155,6 +155,7 @@ class PGDialect_pg8000(PGDialect):
             sqltypes.Numeric: _PGNumericNoBind,
             sqltypes.Float: _PGNumeric,
             JSON: _PGJSON,
+            sqltypes.JSON: _PGJSON
         }
     )
 

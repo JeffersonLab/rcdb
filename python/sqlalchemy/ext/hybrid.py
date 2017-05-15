@@ -1,11 +1,11 @@
 # ext/hybrid.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""Define attributes on ORM-mapped classes that have "hybrid" behavior.
+r"""Define attributes on ORM-mapped classes that have "hybrid" behavior.
 
 "hybrid" means the attribute has distinct behaviors defined at the
 class level and at the instance level.
@@ -188,7 +188,7 @@ Working with Relationships
 
 There's no essential difference when creating hybrids that work with
 related objects as opposed to column-based data. The need for distinct
-expressions tends to be greater.  Two variants of we'll illustrate
+expressions tends to be greater.  The two variants we'll illustrate
 are the "join-dependent" hybrid, and the "correlated subquery" hybrid.
 
 Join-Dependent Relationship Hybrid
@@ -245,7 +245,7 @@ However, at the expression level, it's expected that the ``User`` class will
 be used in an appropriate context such that an appropriate join to
 ``SavingsAccount`` will be present::
 
-    >>> print Session().query(User, User.balance).\\
+    >>> print Session().query(User, User.balance).\
     ...     join(User.accounts).filter(User.balance > 5000)
     SELECT "user".id AS user_id, "user".name AS user_name,
     account.balance AS account_balance
@@ -303,8 +303,8 @@ we can adjust our ``SavingsAccount`` example to aggregate the balances for
 
         @balance.expression
         def balance(cls):
-            return select([func.sum(SavingsAccount.balance)]).\\
-                    where(SavingsAccount.user_id==cls.id).\\
+            return select([func.sum(SavingsAccount.balance)]).\
+                    where(SavingsAccount.user_id==cls.id).\
                     label('total_balance')
 
 The above recipe will give us the ``balance`` column which renders
@@ -448,7 +448,7 @@ SQL expression versus SQL expression::
     >>> sw2 = aliased(SearchWord)
     >>> print Session().query(
     ...                    sw1.word_insensitive,
-    ...                    sw2.word_insensitive).\\
+    ...                    sw2.word_insensitive).\
     ...                        filter(
     ...                            sw1.word_insensitive > sw2.word_insensitive
     ...                        )
@@ -505,7 +505,7 @@ into a hierarchical tree pattern::
 
     class Node(Base):
         __tablename__ = 'node'
-        id =Column(Integer, primary_key=True)
+        id = Column(Integer, primary_key=True)
         parent_id = Column(Integer, ForeignKey('node.id'))
         parent = relationship("Node", remote_side=id)
 
@@ -537,7 +537,7 @@ filtered based on the given criterion::
             def transform(q):
                 cls = self.__clause_element__()
                 parent_alias = aliased(cls)
-                return q.join(parent_alias, cls.parent).\\
+                return q.join(parent_alias, cls.parent).\
                             filter(op(parent_alias.parent, other))
             return transform
 
@@ -573,8 +573,8 @@ into :class:`.Query.filter`:
 
     >>> from sqlalchemy.orm import Session
     >>> session = Session()
-    {sql}>>> session.query(Node).\\
-    ...        with_transformation(Node.grandparent==Node(id=5)).\\
+    {sql}>>> session.query(Node).\
+    ...        with_transformation(Node.grandparent==Node(id=5)).\
     ...        all()
     SELECT node.id AS node_id, node.parent_id AS node_parent_id
     FROM node JOIN node AS node_1 ON node_1.id = node.parent_id
@@ -616,8 +616,8 @@ with each class::
 
 .. sourcecode:: pycon+sql
 
-    {sql}>>> session.query(Node).\\
-    ...            with_transformation(Node.grandparent.join).\\
+    {sql}>>> session.query(Node).\
+    ...            with_transformation(Node.grandparent.join).\
     ...            filter(Node.grandparent==Node(id=5))
     SELECT node.id AS node_id, node.parent_id AS node_parent_id
     FROM node JOIN node AS node_1 ON node_1.id = node.parent_id
@@ -687,7 +687,7 @@ class hybrid_method(interfaces.InspectionAttrInfo):
 
         """
         self.func = func
-        self.expr = expr or func
+        self.expression(expr or func)
 
     def __get__(self, instance, owner):
         if instance is None:
@@ -700,6 +700,8 @@ class hybrid_method(interfaces.InspectionAttrInfo):
         SQL-expression producing method."""
 
         self.expr = expr
+        if not self.expr.__doc__:
+            self.expr.__doc__ = self.func.__doc__
         return self
 
 
@@ -732,7 +734,7 @@ class hybrid_property(interfaces.InspectionAttrInfo):
         self.fget = fget
         self.fset = fset
         self.fdel = fdel
-        self.expr = expr or fget
+        self.expression(expr or fget)
         util.update_wrapper(self, fget)
 
     def __get__(self, instance, owner):
@@ -768,8 +770,12 @@ class hybrid_property(interfaces.InspectionAttrInfo):
         """Provide a modifying decorator that defines a SQL-expression
         producing method."""
 
-        self.expr = expr
-        return self
+        def _expr(cls):
+            return ExprComparator(expr(cls), self)
+        util.update_wrapper(_expr, expr)
+
+        self.expr = _expr
+        return self.comparator(_expr)
 
     def comparator(self, comparator):
         """Provide a modifying decorator that defines a custom
@@ -784,7 +790,9 @@ class hybrid_property(interfaces.InspectionAttrInfo):
             create_proxied_attribute(self)
 
         def expr(owner):
-            return proxy_attr(owner, self.__name__, self, comparator(owner))
+            return proxy_attr(
+                owner, self.__name__, self, comparator(owner),
+                doc=comparator.__doc__ or self.__doc__)
         self.expr = expr
         return self
 
@@ -801,10 +809,33 @@ class Comparator(interfaces.PropComparator):
 
     def __clause_element__(self):
         expr = self.expression
-        while hasattr(expr, '__clause_element__'):
+        if hasattr(expr, '__clause_element__'):
             expr = expr.__clause_element__()
         return expr
 
     def adapt_to_entity(self, adapt_to_entity):
         # interesting....
         return self
+
+
+class ExprComparator(Comparator):
+    def __init__(self, expression, hybrid):
+        self.expression = expression
+        self.hybrid = hybrid
+
+    def __getattr__(self, key):
+        return getattr(self.expression, key)
+
+    @property
+    def info(self):
+        return self.hybrid.info
+
+    @property
+    def property(self):
+        return self.expression.property
+
+    def operate(self, op, *other, **kwargs):
+        return op(self.expression, *other, **kwargs)
+
+    def reverse_operate(self, op, other, **kwargs):
+        return op(other, self.expression, **kwargs)

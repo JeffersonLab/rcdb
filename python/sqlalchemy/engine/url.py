@@ -1,5 +1,5 @@
 # engine/url.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -17,7 +17,7 @@ be used directly and is also accepted directly by ``create_engine()``.
 import re
 from .. import exc, util
 from . import Dialect
-from ..dialects import registry
+from ..dialects import registry, plugins
 
 
 class URL(object):
@@ -117,6 +117,14 @@ class URL(object):
         else:
             return self.drivername.split('+')[1]
 
+    def _instantiate_plugins(self, kwargs):
+        plugin_names = util.to_list(self.query.get('plugin', ()))
+
+        return [
+            plugins.load(plugin_name)(self, kwargs)
+            for plugin_name in plugin_names
+        ]
+
     def _get_entrypoint(self):
         """Return the "entry point" dialect class.
 
@@ -148,7 +156,7 @@ class URL(object):
         return dialect_cls
 
     def translate_connect_args(self, names=[], **kw):
-        """Translate url attributes into a dictionary of connection arguments.
+        r"""Translate url attributes into a dictionary of connection arguments.
 
         Returns attributes of this url (`host`, `database`, `username`,
         `password`, `port`) as a plain dictionary.  The attribute names are

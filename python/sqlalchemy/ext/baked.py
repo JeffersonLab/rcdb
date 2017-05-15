@@ -1,5 +1,5 @@
 # sqlalchemy/ext/baked.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -17,7 +17,7 @@ from ..orm.query import Query
 from ..orm import strategies, attributes, properties, \
     strategy_options, util as orm_util, interfaces
 from .. import log as sqla_log
-from ..sql import util as sql_util
+from ..sql import util as sql_util, func, literal_column
 from ..orm import exc as orm_exc
 from .. import exc as sa_exc
 from .. import util
@@ -194,7 +194,8 @@ class BakedQuery(object):
 
         """
         for k, cache_key, query in context.attributes["baked_queries"]:
-            bk = BakedQuery(self._bakery, lambda sess: query.with_session(sess))
+            bk = BakedQuery(self._bakery,
+                            lambda sess, q=query: q.with_session(sess))
             bk._cache_key = cache_key
             context.attributes[k] = bk.for_session(session).params(**params)
 
@@ -253,6 +254,40 @@ class Result(object):
         return context.query.params(self._params).\
             with_session(self.session)._execute_and_instances(context)
 
+    def count(self):
+        """return the 'count'.
+
+        Equivalent to :meth:`.Query.count`.
+
+        Note this uses a subquery to ensure an accurate count regardless
+        of the structure of the original statement.
+
+        .. versionadded:: 1.1.6
+
+        """
+
+        col = func.count(literal_column('*'))
+        bq = self.bq.with_criteria(lambda q: q.from_self(col))
+        return bq.for_session(self.session).params(self._params).scalar()
+
+    def scalar(self):
+        """Return the first element of the first result or None
+        if no rows present.  If multiple rows are returned,
+        raises MultipleResultsFound.
+
+        Equivalent to :meth:`.Query.scalar`.
+
+        .. versionadded:: 1.1.6
+
+        """
+        try:
+            ret = self.one()
+            if not isinstance(ret, tuple):
+                return ret
+            return ret[0]
+        except orm_exc.NoResultFound:
+            return None
+
     def first(self):
         """Return the first row.
 
@@ -272,16 +307,15 @@ class Result(object):
         Equivalent to :meth:`.Query.one`.
 
         """
-        ret = list(self)
-
-        l = len(ret)
-        if l == 1:
-            return ret[0]
-        elif l == 0:
-            raise orm_exc.NoResultFound("No row was found for one()")
-        else:
+        try:
+            ret = self.one_or_none()
+        except orm_exc.MultipleResultsFound:
             raise orm_exc.MultipleResultsFound(
                 "Multiple rows were found for one()")
+        else:
+            if ret is None:
+                raise orm_exc.NoResultFound("No row was found for one()")
+            return ret
 
     def one_or_none(self):
         """Return one or zero results, or raise an exception for multiple
@@ -441,14 +475,12 @@ class BakedLazyLoader(strategies.LazyLoader):
         if pending or passive & attributes.NO_AUTOFLUSH:
             q.add_criteria(lambda q: q.autoflush(False))
 
-        if state.load_path:
-            q.spoil()
-            q.add_criteria(
-                lambda q:
-                q._with_current_path(state.load_path[self.parent_property]))
-
         if state.load_options:
             q.spoil()
+            args = state.load_path[self.parent_property]
+            q.add_criteria(
+                lambda q:
+                q._with_current_path(args), args)
             q.add_criteria(
                 lambda q: q._conditional_options(*state.load_options))
 
@@ -467,11 +499,15 @@ class BakedLazyLoader(strategies.LazyLoader):
             if rev.direction is interfaces.MANYTOONE and \
                 rev._use_get and \
                     not isinstance(rev.strategy, strategies.LazyLoader):
+
                 q.add_criteria(
                     lambda q:
                     q.options(
-                        strategy_options.Load(
-                            rev.parent).baked_lazyload(rev.key)))
+                        strategy_options.Load.for_existing_path(
+                            q._current_path[rev.parent]
+                        ).baked_lazyload(rev.key)
+                    )
+                )
 
         lazy_clause, params = self._generate_lazy_clause(state, passive)
 

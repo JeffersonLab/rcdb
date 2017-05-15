@@ -1,11 +1,11 @@
 # firebird/base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""
+r"""
 
 .. dialect:: firebird
     :name: Firebird
@@ -55,13 +55,13 @@ extends that to deletes and updates. This is generically exposed by
 the SQLAlchemy ``returning()`` method, such as::
 
     # INSERT..RETURNING
-    result = table.insert().returning(table.c.col1, table.c.col2).\\
+    result = table.insert().returning(table.c.col1, table.c.col2).\
                    values(name='foo')
     print result.fetchall()
 
     # UPDATE..RETURNING
-    raises = empl.update().returning(empl.c.id, empl.c.salary).\\
-                  where(empl.c.sales>100).\\
+    raises = empl.update().returning(empl.c.id, empl.c.salary).\
+                  where(empl.c.sales>100).\
                   values(dict(salary=empl.c.salary * 1.1))
     print raises.fetchall()
 
@@ -77,6 +77,7 @@ from sqlalchemy import exc, types as sqltypes, sql, util
 from sqlalchemy.sql import expression
 from sqlalchemy.engine import base, default, reflection
 from sqlalchemy.sql import compiler
+from sqlalchemy.sql.elements import quoted_name
 
 from sqlalchemy.types import (BIGINT, BLOB, DATE, FLOAT, INTEGER, NUMERIC,
                               SMALLINT, TEXT, TIME, TIMESTAMP, Integer)
@@ -439,6 +440,8 @@ class FBDialect(default.DefaultDialect):
         elif name.upper() == name and \
                 not self.identifier_preparer._requires_quotes(name.lower()):
             return name.lower()
+        elif name.lower() == name:
+            return quoted_name(name, quote=True)
         else:
             return name
 
@@ -648,7 +651,7 @@ class FBDialect(default.DefaultDialect):
                 'type': coltype,
                 'nullable': not bool(row['null_flag']),
                 'default': defvalue,
-                'autoincrement': defvalue is None
+                'autoincrement': 'auto',
             }
 
             if orig_colname.lower() == orig_colname:

@@ -1,5 +1,5 @@
 # orm/properties.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -38,11 +38,11 @@ class ColumnProperty(StrategizedProperty):
         '_orig_columns', 'columns', 'group', 'deferred',
         'instrument', 'comparator_factory', 'descriptor', 'extension',
         'active_history', 'expire_on_flush', 'info', 'doc',
-        'strategy_class', '_creation_order', '_is_polymorphic_discriminator',
+        'strategy_key', '_creation_order', '_is_polymorphic_discriminator',
         '_mapped_by_synonym', '_deferred_column_loader')
 
     def __init__(self, *columns, **kwargs):
-        """Provide a column-level property for use with a Mapper.
+        r"""Provide a column-level property for use with a Mapper.
 
         Column-based properties can normally be applied to the mapper's
         ``properties`` dictionary using the :class:`.Column` element directly.
@@ -152,7 +152,7 @@ class ColumnProperty(StrategizedProperty):
 
         util.set_creation_order(self)
 
-        self.strategy_class = self._strategy_lookup(
+        self.strategy_key = (
             ("deferred", self.deferred),
             ("instrument", self.instrument)
         )
@@ -206,7 +206,7 @@ class ColumnProperty(StrategizedProperty):
             get_committed_value(state, dict_, passive=passive)
 
     def merge(self, session, source_state, source_dict, dest_state,
-              dest_dict, load, _recursive):
+              dest_dict, load, _recursive, _resolve_conflict_map):
         if not self.instrument:
             return
         elif self.key in source_dict:
@@ -218,7 +218,8 @@ class ColumnProperty(StrategizedProperty):
                 impl = dest_state.get_impl(self.key)
                 impl.set(dest_state, dest_dict, value, None)
         elif dest_state.has_identity and self.key not in dest_dict:
-            dest_state._expire_attributes(dest_dict, [self.key])
+            dest_state._expire_attributes(
+                dest_dict, [self.key], no_loader=True)
 
     class Comparator(util.MemoizedSlots, PropComparator):
         """Produce boolean, comparison, and other operators for

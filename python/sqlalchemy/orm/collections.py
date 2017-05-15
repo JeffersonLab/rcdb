@@ -1,5 +1,5 @@
 # orm/collections.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -574,13 +574,18 @@ class CollectionAdapter(object):
 
 
     """
-    invalidated = False
+
+    __slots__ = (
+        'attr', '_key', '_data', 'owner_state', '_converter', 'invalidated')
 
     def __init__(self, attr, owner_state, data):
+        self.attr = attr
         self._key = attr.key
         self._data = weakref.ref(data)
         self.owner_state = owner_state
         data._sa_adapter = self
+        self._converter = data._sa_converter
+        self.invalidated = False
 
     def _warn_invalidated(self):
         util.warn("This collection has been invalidated.")
@@ -600,53 +605,8 @@ class CollectionAdapter(object):
         """
         return self.owner_state.dict[self._key] is self._data()
 
-    @util.memoized_property
-    def attr(self):
-        return self.owner_state.manager[self._key].impl
-
-    def adapt_like_to_iterable(self, obj):
-        """Converts collection-compatible objects to an iterable of values.
-
-        Can be passed any type of object, and if the underlying collection
-        determines that it can be adapted into a stream of values it can
-        use, returns an iterable of values suitable for append()ing.
-
-        This method may raise TypeError or any other suitable exception
-        if adaptation fails.
-
-        If a converter implementation is not supplied on the collection,
-        a default duck-typing-based implementation is used.
-
-        """
-        converter = self._data()._sa_converter
-        if converter is not None:
-            return converter(obj)
-
-        setting_type = util.duck_type_collection(obj)
-        receiving_type = util.duck_type_collection(self._data())
-
-        if obj is None or setting_type != receiving_type:
-            given = obj is None and 'None' or obj.__class__.__name__
-            if receiving_type is None:
-                wanted = self._data().__class__.__name__
-            else:
-                wanted = receiving_type.__name__
-
-            raise TypeError(
-                "Incompatible collection type: %s is not %s-like" % (
-                    given, wanted))
-
-        # If the object is an adapted collection, return the (iterable)
-        # adapter.
-        if getattr(obj, '_sa_adapter', None) is not None:
-            return obj._sa_adapter
-        elif setting_type == dict:
-            if util.py3k:
-                return obj.values()
-            else:
-                return getattr(obj, 'itervalues', obj.values)()
-        else:
-            return iter(obj)
+    def bulk_appender(self):
+        return self._data()._sa_appender
 
     def append_with_event(self, item, initiator=None):
         """Add an entity to the collection, firing mutation events."""
@@ -662,6 +622,9 @@ class CollectionAdapter(object):
         appender = self._data()._sa_appender
         for item in items:
             appender(item, _sa_initiator=False)
+
+    def bulk_remover(self):
+        return self._data()._sa_remover
 
     def remove_with_event(self, item, initiator=None):
         """Remove an entity from the collection, firing mutation events."""
@@ -751,12 +714,18 @@ class CollectionAdapter(object):
     def __getstate__(self):
         return {'key': self._key,
                 'owner_state': self.owner_state,
-                'data': self.data}
+                'owner_cls': self.owner_state.class_,
+                'data': self.data,
+                'invalidated': self.invalidated}
 
     def __setstate__(self, d):
         self._key = d['key']
         self.owner_state = d['owner_state']
         self._data = weakref.ref(d['data'])
+        self._converter = d['data']._sa_converter
+        d['data']._sa_adapter = self
+        self.invalidated = d['invalidated']
+        self.attr = getattr(d['owner_cls'], self._key).impl
 
 
 def bulk_replace(values, existing_adapter, new_adapter):
@@ -777,8 +746,8 @@ def bulk_replace(values, existing_adapter, new_adapter):
 
 
     """
-    if not isinstance(values, list):
-        values = list(values)
+
+    assert isinstance(values, list)
 
     idset = util.IdentitySet
     existing_idset = idset(existing_adapter or ())
@@ -786,15 +755,18 @@ def bulk_replace(values, existing_adapter, new_adapter):
     additions = idset(values or ()).difference(constants)
     removals = existing_idset.difference(constants)
 
+    appender = new_adapter.bulk_appender()
+
     for member in values or ():
         if member in additions:
-            new_adapter.append_with_event(member)
+            appender(member)
         elif member in constants:
-            new_adapter.append_without_event(member)
+            appender(member, _sa_initiator=False)
 
     if existing_adapter:
+        remover = existing_adapter.bulk_remover()
         for member in removals:
-            existing_adapter.remove_with_event(member)
+            remover(member)
 
 
 def prepare_instrumentation(factory):

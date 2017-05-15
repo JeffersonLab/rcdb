@@ -1,5 +1,5 @@
 # sql/schema.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -30,22 +30,32 @@ as components in SQL expressions.
 """
 from __future__ import absolute_import
 
-import inspect
 from .. import exc, util, event, inspection
 from .base import SchemaEventTarget, DialectKWArgs
+import operator
 from . import visitors
 from . import type_api
 from .base import _bind_or_error, ColumnCollection
-from .elements import ClauseElement, ColumnClause, _truncated_label, \
+from .elements import ClauseElement, ColumnClause, \
     _as_truncated, TextClause, _literal_as_text,\
-    ColumnElement, _find_columns, quoted_name
+    ColumnElement, quoted_name
 from .selectable import TableClause
 import collections
 import sqlalchemy
 from . import ddl
-import types
 
 RETAIN_SCHEMA = util.symbol('retain_schema')
+
+BLANK_SCHEMA = util.symbol(
+    'blank_schema',
+    """Symbol indicating that a :class:`.Table` or :class:`.Sequence`
+    should have 'None' for its schema, even if the parent
+    :class:`.MetaData` has specified a schema.
+
+    .. versionadded:: 1.0.14
+
+    """
+)
 
 
 def _get_table_key(name, schema):
@@ -60,9 +70,6 @@ class SchemaItem(SchemaEventTarget, visitors.Visitable):
     """Base class for items that define a database schema."""
 
     __visit_name__ = 'schema_item'
-
-    def _execute_on_connection(self, connection, multiparams, params):
-        return connection._execute_default(self, multiparams, params)
 
     def _init_items(self, *args):
         """Initialize the list of child items for this SchemaItem."""
@@ -107,9 +114,12 @@ class SchemaItem(SchemaEventTarget, visitors.Visitable):
         schema_item.dispatch._update(self.dispatch)
         return schema_item
 
+    def _translate_schema(self, effective_schema, map_):
+        return map_.get(effective_schema, effective_schema)
+
 
 class Table(DialectKWArgs, SchemaItem, TableClause):
-    """Represent a table in a database.
+    r"""Represent a table in a database.
 
     e.g.::
 
@@ -165,7 +175,7 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         is set in which case it defaults to True; :class:`.Column` objects
         for this table should be reflected from the database, possibly
         augmenting or replacing existing :class:`.Column` objects that were
-        expicitly specified.
+        explicitly specified.
 
         .. versionchanged:: 1.0.0 setting the :paramref:`.Table.autoload_with`
            parameter implies that :paramref:`.Table.autoload` will default
@@ -341,6 +351,17 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         the table resides in a schema other than the default selected schema
         for the engine's database connection.  Defaults to ``None``.
 
+        If the owning :class:`.MetaData` of this :class:`.Table` specifies
+        its own :paramref:`.MetaData.schema` parameter, then that schema
+        name will be applied to this :class:`.Table` if the schema parameter
+        here is set to ``None``.  To set a blank schema name on a :class:`.Table`
+        that would otherwise use the schema set on the owning :class:`.MetaData`,
+        specify the special symbol :attr:`.BLANK_SCHEMA`.
+
+        .. versionadded:: 1.0.14  Added the :attr:`.BLANK_SCHEMA` symbol to
+           allow a :class:`.Table` to have a blank schema name even when the
+           parent :class:`.MetaData` specifies :paramref:`.MetaData.schema`.
+
         The quoting rules for the schema name are the same as those for the
         ``name`` parameter, in that quoting is applied for reserved words or
         case-sensitive names; to enable unconditional quoting for the
@@ -372,6 +393,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         schema = kw.get('schema', None)
         if schema is None:
             schema = metadata.schema
+        elif schema is BLANK_SCHEMA:
+            schema = None
         keep_existing = kw.pop('keep_existing', False)
         extend_existing = kw.pop('extend_existing', False)
         if 'useexisting' in kw:
@@ -443,6 +466,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         self.schema = kwargs.pop('schema', None)
         if self.schema is None:
             self.schema = metadata.schema
+        elif self.schema is BLANK_SCHEMA:
+            self.schema = None
         else:
             quote_schema = kwargs.pop('quote_schema', None)
             self.schema = quoted_name(self.schema, quote_schema)
@@ -450,7 +475,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         self.indexes = set()
         self.constraints = set()
         self._columns = ColumnCollection()
-        PrimaryKeyConstraint()._set_parent_with_dispatch(self)
+        PrimaryKeyConstraint(_implicit_generated=True).\
+            _set_parent_with_dispatch(self)
         self.foreign_keys = set()
         self._extra_dependencies = set()
         if self.schema is not None:
@@ -462,6 +488,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         autoload = kwargs.pop('autoload', autoload_with is not None)
         # this argument is only used with _init_existing()
         kwargs.pop('autoload_replace', True)
+        _extend_on = kwargs.pop("_extend_on", None)
+
         include_columns = kwargs.pop('include_columns', None)
 
         self.implicit_returning = kwargs.pop('implicit_returning', True)
@@ -481,19 +509,22 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         # we do it after the table is in the singleton dictionary to support
         # circular foreign keys
         if autoload:
-            self._autoload(metadata, autoload_with, include_columns)
+            self._autoload(
+                metadata, autoload_with,
+                include_columns, _extend_on=_extend_on)
 
         # initialize all the column, etc. objects.  done after reflection to
         # allow user-overrides
         self._init_items(*args)
 
     def _autoload(self, metadata, autoload_with, include_columns,
-                  exclude_columns=()):
+                  exclude_columns=(), _extend_on=None):
 
         if autoload_with:
             autoload_with.run_callable(
                 autoload_with.dialect.reflecttable,
-                self, include_columns, exclude_columns
+                self, include_columns, exclude_columns,
+                _extend_on=_extend_on
             )
         else:
             bind = _bind_or_error(
@@ -505,7 +536,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
                 "metadata.bind=<someengine>")
             bind.run_callable(
                 bind.dialect.reflecttable,
-                self, include_columns, exclude_columns
+                self, include_columns, exclude_columns,
+                _extend_on=_extend_on
             )
 
     @property
@@ -534,6 +566,8 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
         autoload = kwargs.pop('autoload', autoload_with is not None)
         autoload_replace = kwargs.pop('autoload_replace', True)
         schema = kwargs.pop('schema', None)
+        _extend_on = kwargs.pop('_extend_on', None)
+
         if schema and schema != self.schema:
             raise exc.ArgumentError(
                 "Can't change schema of existing table from '%s' to '%s'",
@@ -556,12 +590,15 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
 
         if autoload:
             if not autoload_replace:
+                # don't replace columns already present.
+                # we'd like to do this for constraints also however we don't
+                # have simple de-duping for unnamed constraints.
                 exclude_columns = [c.name for c in self.c]
             else:
                 exclude_columns = ()
             self._autoload(
                 self.metadata, autoload_with,
-                include_columns, exclude_columns)
+                include_columns, exclude_columns, _extend_on=_extend_on)
 
         self._extra_kwargs(**kwargs)
         self._init_items(*args)
@@ -572,18 +609,12 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
     def _init_collections(self):
         pass
 
-    @util.memoized_property
+    def _reset_exported(self):
+        pass
+
+    @property
     def _autoincrement_column(self):
-        for col in self.primary_key:
-            if (col.autoincrement and col.type._type_affinity is not None and
-                    issubclass(col.type._type_affinity,
-                               type_api.INTEGERTYPE._type_affinity) and
-                    (not col.foreign_keys or
-                     col.autoincrement == 'ignore_fk') and
-                    isinstance(col.default, (type(None), Sequence)) and
-                    (col.server_default is None or
-                     col.server_default.reflected)):
-                return col
+        return self.primary_key._autoincrement_column
 
     @property
     def key(self):
@@ -836,8 +867,14 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
                         schema if referred_schema == self.schema else None)
                 table.append_constraint(
                     c.copy(schema=fk_constraint_schema, target_table=table))
-
             elif not c._type_bound:
+                # skip unique constraints that would be generated
+                # by the 'unique' flag on Column
+                if isinstance(c, UniqueConstraint) and \
+                    len(c.columns) == 1 and \
+                        list(c.columns)[0].unique:
+                    continue
+
                 table.append_constraint(
                     c.copy(schema=schema, target_table=table))
         for index in self.indexes:
@@ -859,7 +896,7 @@ class Column(SchemaItem, ColumnClause):
     __visit_name__ = 'column'
 
     def __init__(self, *args, **kwargs):
-        """
+        r"""
         Construct a new ``Column`` object.
 
         :param name: The name of this column as represented in the database.
@@ -913,17 +950,40 @@ class Column(SchemaItem, ColumnClause):
           argument is available such as ``server_default``, ``default``
           and ``unique``.
 
-        :param autoincrement: This flag may be set to ``False`` to
-          indicate an integer primary key column that should not be
-          considered to be the "autoincrement" column, that is
-          the integer primary key column which generates values
-          implicitly upon INSERT and whose value is usually returned
-          via the DBAPI cursor.lastrowid attribute.   It defaults
-          to ``True`` to satisfy the common use case of a table
-          with a single integer primary key column.  If the table
-          has a composite primary key consisting of more than one
-          integer column, set this flag to True only on the
-          column that should be considered "autoincrement".
+        :param autoincrement: Set up "auto increment" semantics for an integer
+          primary key column.  The default value is the string ``"auto"``
+          which indicates that a single-column primary key that is of
+          an INTEGER type with no stated client-side or python-side defaults
+          should receive auto increment semantics automatically;
+          all other varieties of primary key columns will not.  This
+          includes that :term:`DDL` such as PostgreSQL SERIAL or MySQL
+          AUTO_INCREMENT will be emitted for this column during a table
+          create, as well as that the column is assumed to generate new
+          integer primary key values when an INSERT statement invokes which
+          will be retrieved by the dialect.
+
+          The flag may be set to ``True`` to indicate that a column which
+          is part of a composite (e.g. multi-column) primary key should
+          have autoincrement semantics, though note that only one column
+          within a primary key may have this setting.    It can also
+          be set to ``True`` to indicate autoincrement semantics on a
+          column that has a client-side or server-side default configured,
+          however note that not all dialects can accommodate all styles
+          of default as an "autoincrement".  It can also be
+          set to ``False`` on a single-column primary key that has a
+          datatype of INTEGER in order to disable auto increment semantics
+          for that column.
+
+          .. versionchanged:: 1.1 The autoincrement flag now defaults to
+             ``"auto"`` which indicates autoincrement semantics by default
+             for single-column integer primary keys only; for composite
+             (multi-column) primary keys, autoincrement is never implicitly
+             enabled; as always, ``autoincrement=True`` will allow for
+             at most one of those columns to be an "autoincrement" column.
+             ``autoincrement=True`` may also be set on a :class:`.Column`
+             that has an explicit client-side or server-side default,
+             subject to limitations of the backend database and dialect.
+
 
           The setting *only* has an effect for columns which are:
 
@@ -931,7 +991,7 @@ class Column(SchemaItem, ColumnClause):
 
           * Part of the primary key
 
-          * Not refering to another column via :class:`.ForeignKey`, unless
+          * Not referring to another column via :class:`.ForeignKey`, unless
             the value is specified as ``'ignore_fk'``::
 
                 # turn on autoincrement for this column despite
@@ -940,11 +1000,8 @@ class Column(SchemaItem, ColumnClause):
                             primary_key=True, autoincrement='ignore_fk')
 
             It is typically not desirable to have "autoincrement" enabled
-            on such a column as its value intends to mirror that of a
-            primary key column elsewhere.
-
-          * have no server side or client side defaults (with the exception
-            of Postgresql SERIAL).
+            on a column that refers to another via foreign key, as such a column
+            is required to refer to a value that originates from elsewhere.
 
           The setting has these two effects on columns that meet the
           above criteria:
@@ -952,7 +1009,7 @@ class Column(SchemaItem, ColumnClause):
           * DDL issued for the column will include database-specific
             keywords intended to signify this column as an
             "autoincrement" column, such as AUTO INCREMENT on MySQL,
-            SERIAL on Postgresql, and IDENTITY on MS-SQL.  It does
+            SERIAL on PostgreSQL, and IDENTITY on MS-SQL.  It does
             *not* issue AUTOINCREMENT for SQLite since this is a
             special SQLite flag that is not required for autoincrementing
             behavior.
@@ -961,20 +1018,15 @@ class Column(SchemaItem, ColumnClause):
 
                 :ref:`sqlite_autoincrement`
 
-          * The column will be considered to be available as
-            cursor.lastrowid or equivalent, for those dialects which
-            "post fetch" newly inserted identifiers after a row has
-            been inserted (SQLite, MySQL, MS-SQL).  It does not have
-            any effect in this regard for databases that use sequences
-            to generate primary key identifiers (i.e. Firebird, Postgresql,
-            Oracle).
+          * The column will be considered to be available using an
+            "autoincrement" method specific to the backend database, such
+            as calling upon ``cursor.lastrowid``, using RETURNING in an
+            INSERT statement to get at a sequence-generated value, or using
+            special functions such as "SELECT scope_identity()".
+            These methods are highly specific to the DBAPIs and databases in
+            use and vary greatly, so care should be taken when associating
+            ``autoincrement=True`` with a custom default generation function.
 
-          .. versionchanged:: 0.7.4
-              ``autoincrement`` accepts a special value ``'ignore_fk'``
-              to indicate that autoincrementing status regardless of foreign
-              key references.  This applies to certain composite foreign key
-              setups, such as the one demonstrated in the ORM documentation
-              at :ref:`post_update`.
 
         :param default: A scalar, Python callable, or
             :class:`.ColumnElement` expression representing the
@@ -1010,10 +1062,14 @@ class Column(SchemaItem, ColumnClause):
         :param info: Optional data dictionary which will be populated into the
             :attr:`.SchemaItem.info` attribute of this object.
 
-        :param nullable: If set to the default of ``True``, indicates the
-            column will be rendered as allowing NULL, else it's rendered as
-            NOT NULL. This parameter is only used when issuing CREATE TABLE
-            statements.
+        :param nullable: When set to ``False``, will cause the "NOT NULL"
+            phrase to be added when generating DDL for the column.   When
+            ``True``, will normally generate nothing (in SQL this defaults to
+            "NULL"), except in some very specific backend-specific edge cases
+            where "NULL" may render explicitly.   Defaults to ``True`` unless
+            :paramref:`~.Column.primary_key` is also ``True``, in which case it
+            defaults to ``False``.  This parameter is only used when issuing
+            CREATE TABLE statements.
 
         :param onupdate: A scalar, Python callable, or
             :class:`~sqlalchemy.sql.expression.ClauseElement` representing a
@@ -1022,6 +1078,10 @@ class Column(SchemaItem, ColumnClause):
             present in the SET clause of the update. This is a shortcut to
             using :class:`.ColumnDefault` as a positional argument with
             ``for_update=True``.
+
+            .. seealso::
+
+                :ref:`metadata_defaults` - complete discussion of onupdate
 
         :param primary_key: If ``True``, marks this column as a primary key
             column. Multiple columns can have this flag set to specify
@@ -1057,14 +1117,20 @@ class Column(SchemaItem, ColumnClause):
 
             .. seealso::
 
-                :ref:`server_defaults`
+                :ref:`server_defaults` - complete discussion of server side
+                defaults
 
         :param server_onupdate:   A :class:`.FetchedValue` instance
-             representing a database-side default generation function. This
+             representing a database-side default generation function,
+             such as a trigger. This
              indicates to SQLAlchemy that a newly generated value will be
-             available after updates. This construct does not specify any DDL
-             and the implementation is left to the database, such as via a
-             trigger.
+             available after updates. This construct does not actually
+             implement any kind of generation function within the database,
+             which instead must be specified separately.
+
+            .. seealso::
+
+                :ref:`triggered_columns`
 
         :param quote: Force quoting of this column's name on or off,
              corresponding to ``True`` or ``False``. When left at its default
@@ -1136,7 +1202,7 @@ class Column(SchemaItem, ColumnClause):
         self.system = kwargs.pop('system', False)
         self.doc = kwargs.pop('doc', None)
         self.onupdate = kwargs.pop('onupdate', None)
-        self.autoincrement = kwargs.pop('autoincrement', True)
+        self.autoincrement = kwargs.pop('autoincrement', "auto")
         self.constraints = set()
         self.foreign_keys = set()
 
@@ -1271,12 +1337,12 @@ class Column(SchemaItem, ColumnClause):
 
         if self.primary_key:
             table.primary_key._replace(self)
-            Table._autoincrement_column._reset(table)
         elif self.key in table.primary_key:
             raise exc.ArgumentError(
                 "Trying to redefine primary-key column '%s' as a "
                 "non-primary-key column on table '%s'" % (
                     self.key, table.fullname))
+
         self.table = table
 
         if self.index:
@@ -1449,7 +1515,7 @@ class ForeignKey(DialectKWArgs, SchemaItem):
                  initially=None, link_to_name=False, match=None,
                  info=None,
                  **dialect_kw):
-        """
+        r"""
         Construct a column-level FOREIGN KEY.
 
         The :class:`.ForeignKey` object when constructed generates a
@@ -1900,6 +1966,9 @@ class DefaultGenerator(_NotAColumnExpr, SchemaItem):
             bind = _bind_or_error(self)
         return bind._execute_default(self, **kwargs)
 
+    def _execute_on_connection(self, connection, multiparams, params):
+        return connection._execute_default(self, multiparams, params)
+
     @property
     def bind(self):
         """Return the connectable associated with this default."""
@@ -1989,13 +2058,14 @@ class ColumnDefault(DefaultGenerator):
         try:
             argspec = util.get_callable_argspec(fn, no_self=True)
         except TypeError:
-            return lambda ctx: fn()
+            return util.wrap_callable(lambda ctx: fn(), fn)
 
         defaulted = argspec[3] is not None and len(argspec[3]) or 0
         positionals = len(argspec[0]) - defaulted
 
         if positionals == 0:
-            return lambda ctx: fn()
+            return util.wrap_callable(lambda ctx: fn(), fn)
+
         elif positionals == 1:
             return fn
         else:
@@ -2114,12 +2184,15 @@ class Sequence(DefaultGenerator):
          .. versionadded:: 1.0.7
 
         :param schema: Optional schema name for the sequence, if located
-         in a schema other than the default.
+         in a schema other than the default.  The rules for selecting the
+         schema name when a :class:`.MetaData` is also present are the same
+         as that of :paramref:`.Table.schema`.
+
         :param optional: boolean value, when ``True``, indicates that this
          :class:`.Sequence` object only needs to be explicitly generated
          on backends that don't provide another way to generate primary
          key identifiers.  Currently, it essentially means, "don't create
-         this sequence on the Postgresql backend, where the SERIAL keyword
+         this sequence on the PostgreSQL backend, where the SERIAL keyword
          creates a sequence for us automatically".
         :param quote: boolean value, when ``True`` or ``False``, explicitly
          forces quoting of the schema name on or off.  When left at its
@@ -2163,7 +2236,9 @@ class Sequence(DefaultGenerator):
         self.nomaxvalue = nomaxvalue
         self.cycle = cycle
         self.optional = optional
-        if metadata is not None and schema is None and metadata.schema:
+        if schema is BLANK_SCHEMA:
+            self.schema = schema = None
+        elif metadata is not None and schema is None and metadata.schema:
             self.schema = schema = metadata.schema
         else:
             self.schema = quoted_name(schema, quote_schema)
@@ -2345,7 +2420,7 @@ class Constraint(DialectKWArgs, SchemaItem):
     def __init__(self, name=None, deferrable=None, initially=None,
                  _create_rule=None, info=None, _type_bound=False,
                  **dialect_kw):
-        """Create a SQL constraint.
+        r"""Create a SQL constraint.
 
         :param name:
           Optional, the in-database name of this ``Constraint``.
@@ -2458,7 +2533,10 @@ class ColumnCollectionMixin(object):
         for expr in expressions:
             strname = None
             column = None
-            if not isinstance(expr, ClauseElement):
+            if hasattr(expr, '__clause_element__'):
+                expr = expr.__clause_element__()
+
+            if not isinstance(expr, (ColumnElement, TextClause)):
                 # this assumes a string
                 strname = expr
             else:
@@ -2491,9 +2569,13 @@ class ColumnCollectionMixin(object):
             has_string_cols = set(self._pending_colargs).difference(col_objs)
             if not has_string_cols:
                 def _col_attached(column, table):
-                    cols_wo_table.discard(column)
-                    if not cols_wo_table:
-                        self._check_attach(evt=True)
+                    # this isinstance() corresponds with the
+                    # isinstance() above; only want to count Table-bound
+                    # columns
+                    if isinstance(table, Table):
+                        cols_wo_table.discard(column)
+                        if not cols_wo_table:
+                            self._check_attach(evt=True)
                 self._cols_wo_table = cols_wo_table
                 for col in cols_wo_table:
                     col._on_table_attach(_col_attached)
@@ -2525,7 +2607,7 @@ class ColumnCollectionConstraint(ColumnCollectionMixin, Constraint):
     """A constraint that proxies a ColumnCollection."""
 
     def __init__(self, *columns, **kw):
-        """
+        r"""
         :param \*columns:
           A sequence of column names or Column objects.
 
@@ -2547,6 +2629,12 @@ class ColumnCollectionConstraint(ColumnCollectionMixin, Constraint):
         _autoattach = kw.pop('_autoattach', True)
         Constraint.__init__(self, **kw)
         ColumnCollectionMixin.__init__(self, *columns, _autoattach=_autoattach)
+
+    columns = None
+    """A :class:`.ColumnCollection` representing the set of columns
+    for this constraint.
+
+    """
 
     def _set_parent(self, table):
         Constraint._set_parent(self, table)
@@ -2592,7 +2680,7 @@ class CheckConstraint(ColumnCollectionConstraint):
     def __init__(self, sqltext, name=None, deferrable=None,
                  initially=None, table=None, info=None, _create_rule=None,
                  _autoattach=True, _type_bound=False):
-        """Construct a CHECK constraint.
+        r"""Construct a CHECK constraint.
 
         :param sqltext:
           A string containing the constraint definition, which will be used
@@ -2680,7 +2768,7 @@ class ForeignKeyConstraint(ColumnCollectionConstraint):
                  ondelete=None, deferrable=None, initially=None,
                  use_alter=False, link_to_name=False, match=None,
                  table=None, info=None, **dialect_kw):
-        """Construct a composite-capable FOREIGN KEY.
+        r"""Construct a composite-capable FOREIGN KEY.
 
         :param columns: A sequence of local column names. The named columns
           must be defined and present in the parent Table. The names should
@@ -2788,6 +2876,22 @@ class ForeignKeyConstraint(ColumnCollectionConstraint):
     def _append_element(self, column, fk):
         self.columns.add(column)
         self.elements.append(fk)
+
+    columns = None
+    """A :class:`.ColumnCollection` representing the set of columns
+    for this constraint.
+
+    """
+
+    elements = None
+    """A sequence of :class:`.ForeignKey` objects.
+
+    Each :class:`.ForeignKey` represents a single referring column/referred
+    column pair.
+
+    This collection is intended to be read-only.
+
+    """
 
     @property
     def _elements(self):
@@ -2976,6 +3080,10 @@ class PrimaryKeyConstraint(ColumnCollectionConstraint):
 
     __visit_name__ = 'primary_key_constraint'
 
+    def __init__(self, *columns, **kw):
+        self._implicit_generated = kw.pop('_implicit_generated', False)
+        super(PrimaryKeyConstraint, self).__init__(*columns, **kw)
+
     def _set_parent(self, table):
         super(PrimaryKeyConstraint, self)._set_parent(table)
 
@@ -3033,10 +3141,76 @@ class PrimaryKeyConstraint(ColumnCollectionConstraint):
 
         self.columns.extend(columns)
 
+        PrimaryKeyConstraint._autoincrement_column._reset(self)
         self._set_parent_with_dispatch(self.table)
 
     def _replace(self, col):
+        PrimaryKeyConstraint._autoincrement_column._reset(self)
         self.columns.replace(col)
+
+    @property
+    def columns_autoinc_first(self):
+        autoinc = self._autoincrement_column
+
+        if autoinc is not None:
+            return [autoinc] + [c for c in self.columns if c is not autoinc]
+        else:
+            return list(self.columns)
+
+    @util.memoized_property
+    def _autoincrement_column(self):
+
+        def _validate_autoinc(col, autoinc_true):
+            if col.type._type_affinity is None or not issubclass(
+                col.type._type_affinity,
+                    type_api.INTEGERTYPE._type_affinity):
+                if autoinc_true:
+                    raise exc.ArgumentError(
+                        "Column type %s on column '%s' is not "
+                        "compatible with autoincrement=True" % (
+                            col.type,
+                            col
+                        ))
+                else:
+                    return False
+            elif not isinstance(col.default, (type(None), Sequence)) and \
+                    not autoinc_true:
+                    return False
+            elif col.server_default is not None and not autoinc_true:
+                return False
+            elif (
+                    col.foreign_keys and col.autoincrement
+                    not in (True, 'ignore_fk')):
+                return False
+            return True
+
+        if len(self.columns) == 1:
+            col = list(self.columns)[0]
+
+            if col.autoincrement is True:
+                _validate_autoinc(col, True)
+                return col
+            elif (
+                col.autoincrement in ('auto', 'ignore_fk') and
+                    _validate_autoinc(col, False)
+            ):
+                return col
+
+        else:
+            autoinc = None
+            for col in self.columns:
+                if col.autoincrement is True:
+                    _validate_autoinc(col, True)
+                    if autoinc is not None:
+                        raise exc.ArgumentError(
+                            "Only one Column may be marked "
+                            "autoincrement=True, found both %s and %s." %
+                            (col.name, autoinc.name)
+                        )
+                    else:
+                        autoinc = col
+
+            return autoinc
 
 
 class UniqueConstraint(ColumnCollectionConstraint):
@@ -3129,7 +3303,7 @@ class Index(DialectKWArgs, ColumnCollectionMixin, SchemaItem):
     __visit_name__ = 'index'
 
     def __init__(self, name, *expressions, **kw):
-        """Construct an index object.
+        r"""Construct an index object.
 
         :param name:
           The name of the index
@@ -3163,12 +3337,14 @@ class Index(DialectKWArgs, ColumnCollectionMixin, SchemaItem):
         self.table = None
 
         columns = []
+        processed_expressions = []
         for expr, column, strname, add_element in self.\
                 _extract_col_expression_collection(expressions):
             if add_element is not None:
                 columns.append(add_element)
+            processed_expressions.append(expr)
 
-        self.expressions = expressions
+        self.expressions = processed_expressions
         self.name = quoted_name(name, kw.pop("quote", None))
         self.unique = kw.pop('unique', False)
         if 'info' in kw:
@@ -3296,8 +3472,21 @@ class MetaData(SchemaItem):
 
         :param schema:
            The default schema to use for the :class:`.Table`,
-           :class:`.Sequence`, and other objects associated with this
-           :class:`.MetaData`. Defaults to ``None``.
+           :class:`.Sequence`, and potentially other objects associated with
+           this :class:`.MetaData`. Defaults to ``None``.
+
+           When this value is set, any :class:`.Table` or :class:`.Sequence`
+           which specifies ``None`` for the schema parameter will instead
+           have this schema name defined.  To build a :class:`.Table`
+           or :class:`.Sequence` that still has ``None`` for the schema
+           even when this parameter is present, use the :attr:`.BLANK_SCHEMA`
+           symbol.
+
+           .. seealso::
+
+                :paramref:`.Table.schema`
+
+                :paramref:`.Sequence.schema`
 
         :param quote_schema:
             Sets the ``quote_schema`` flag for those :class:`.Table`,
@@ -3363,7 +3552,7 @@ class MetaData(SchemaItem):
               present, the :class:`.Constraint` object's existing name will be
               replaced with one that is composed from template string that
               uses this token. When this token is present, it is required that
-              the :class:`.Constraint` is given an expicit name ahead of time.
+              the :class:`.Constraint` is given an explicit name ahead of time.
 
             * user-defined: any additional token may be implemented by passing
               it along with a ``fn(constraint, table)`` callable to the
@@ -3540,7 +3729,7 @@ class MetaData(SchemaItem):
                 extend_existing=False,
                 autoload_replace=True,
                 **dialect_kwargs):
-        """Load all available table definitions from the database.
+        r"""Load all available table definitions from the database.
 
         Automatically creates ``Table`` entries in this ``MetaData`` for any
         table available in the database but not yet present in the
@@ -3605,7 +3794,8 @@ class MetaData(SchemaItem):
                 'autoload': True,
                 'autoload_with': conn,
                 'extend_existing': extend_existing,
-                'autoload_replace': autoload_replace
+                'autoload_replace': autoload_replace,
+                '_extend_on': set()
             }
 
             reflect_opts.update(dialect_kwargs)
@@ -3646,8 +3836,8 @@ class MetaData(SchemaItem):
                     s = schema and (" schema '%s'" % schema) or ''
                     raise exc.InvalidRequestError(
                         'Could not reflect: requested table(s) not available '
-                        'in %s%s: (%s)' %
-                        (bind.engine.url, s, ', '.join(missing)))
+                        'in %r%s: (%s)' %
+                        (bind.engine, s, ', '.join(missing)))
                 load = [name for name in only if extend_existing or
                         name not in current]
 
@@ -3785,3 +3975,53 @@ class ThreadLocalMetaData(MetaData):
         for e in self.__engines.values():
             if hasattr(e, 'dispose'):
                 e.dispose()
+
+
+class _SchemaTranslateMap(object):
+    """Provide translation of schema names based on a mapping.
+
+    Also provides helpers for producing cache keys and optimized
+    access when no mapping is present.
+
+    Used by the :paramref:`.Connection.execution_options.schema_translate_map`
+    feature.
+
+    .. versionadded:: 1.1
+
+
+    """
+    __slots__ = 'map_', '__call__', 'hash_key', 'is_default'
+
+    _default_schema_getter = operator.attrgetter("schema")
+
+    def __init__(self, map_):
+        self.map_ = map_
+        if map_ is not None:
+            def schema_for_object(obj):
+                effective_schema = self._default_schema_getter(obj)
+                effective_schema = obj._translate_schema(
+                    effective_schema, map_)
+                return effective_schema
+            self.__call__ = schema_for_object
+            self.hash_key = ";".join(
+                "%s=%s" % (k, map_[k])
+                for k in sorted(map_, key=str)
+            )
+            self.is_default = False
+        else:
+            self.hash_key = 0
+            self.__call__ = self._default_schema_getter
+            self.is_default = True
+
+    @classmethod
+    def _schema_getter(cls, map_):
+        if map_ is None:
+            return _default_schema_map
+        elif isinstance(map_, _SchemaTranslateMap):
+            return map_
+        else:
+            return _SchemaTranslateMap(map_)
+
+_default_schema_map = _SchemaTranslateMap(None)
+_schema_getter = _SchemaTranslateMap._schema_getter
+

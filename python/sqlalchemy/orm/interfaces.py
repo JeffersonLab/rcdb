@@ -1,5 +1,5 @@
 # orm/interfaces.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -28,6 +28,7 @@ from .base import (InspectionAttr, InspectionAttr,
     InspectionAttrInfo, _MappedAttribute)
 import collections
 from .. import inspect
+from . import path_registry
 
 # imported later
 MapperExtension = SessionExtension = AttributeExtension = None
@@ -234,7 +235,7 @@ class MapperProperty(_MappedAttribute, InspectionAttr, util.MemoizedSlots):
         """
 
     def merge(self, session, source_state, source_dict, dest_state,
-              dest_dict, load, _recursive):
+              dest_dict, load, _recursive, _resolve_conflict_map):
         """Merge the attribute represented by this ``MapperProperty``
         from source to destination object.
 
@@ -247,7 +248,7 @@ class MapperProperty(_MappedAttribute, InspectionAttr, util.MemoizedSlots):
 
 
 class PropComparator(operators.ColumnOperators):
-    """Defines SQL operators for :class:`.MapperProperty` objects.
+    r"""Defines SQL operators for :class:`.MapperProperty` objects.
 
     SQLAlchemy allows for operators to
     be redefined at both the Core and ORM level.  :class:`.PropComparator`
@@ -273,9 +274,9 @@ class PropComparator(operators.ColumnOperators):
 
         # definition of custom PropComparator subclasses
 
-        from sqlalchemy.orm.properties import \\
-                                ColumnProperty,\\
-                                CompositeProperty,\\
+        from sqlalchemy.orm.properties import \
+                                ColumnProperty,\
+                                CompositeProperty,\
                                 RelationshipProperty
 
         class MyColumnComparator(ColumnProperty.Comparator):
@@ -387,14 +388,14 @@ class PropComparator(operators.ColumnOperators):
         return a.of_type(class_)
 
     def of_type(self, class_):
-        """Redefine this object in terms of a polymorphic subclass.
+        r"""Redefine this object in terms of a polymorphic subclass.
 
         Returns a new PropComparator from which further criterion can be
         evaluated.
 
         e.g.::
 
-            query.join(Company.employees.of_type(Engineer)).\\
+            query.join(Company.employees.of_type(Engineer)).\
                filter(Engineer.name=='foo')
 
         :param \class_: a class or mapper indicating that criterion will be
@@ -406,7 +407,7 @@ class PropComparator(operators.ColumnOperators):
         return self.operate(PropComparator.of_type_op, class_)
 
     def any(self, criterion=None, **kwargs):
-        """Return true if this collection contains any member that meets the
+        r"""Return true if this collection contains any member that meets the
         given criterion.
 
         The usual implementation of ``any()`` is
@@ -424,7 +425,7 @@ class PropComparator(operators.ColumnOperators):
         return self.operate(PropComparator.any_op, criterion, **kwargs)
 
     def has(self, criterion=None, **kwargs):
-        """Return true if this element references a member which meets the
+        r"""Return true if this element references a member which meets the
         given criterion.
 
         The usual implementation of ``has()`` is
@@ -459,9 +460,23 @@ class StrategizedProperty(MapperProperty):
 
     """
 
-    __slots__ = '_strategies', 'strategy'
+    __slots__ = (
+        '_strategies', 'strategy',
+        '_wildcard_token', '_default_path_loader_key'
+    )
 
     strategy_wildcard_key = None
+
+    def _memoized_attr__wildcard_token(self):
+        return ("%s:%s" % (
+            self.strategy_wildcard_key, path_registry._WILDCARD_TOKEN), )
+
+    def _memoized_attr__default_path_loader_key(self):
+        return (
+            "loader",
+            ("%s:%s" % (
+                self.strategy_wildcard_key, path_registry._DEFAULT_TOKEN), )
+        )
 
     def _get_context_loader(self, context, path):
         load = None
@@ -489,11 +504,8 @@ class StrategizedProperty(MapperProperty):
         except KeyError:
             cls = self._strategy_lookup(*key)
             self._strategies[key] = self._strategies[
-                cls] = strategy = cls(self)
+                cls] = strategy = cls(self, key)
             return strategy
-
-    def _get_strategy_by_cls(self, cls):
-        return self._get_strategy(cls._strategy_keys[0])
 
     def setup(
             self, context, entity, path, adapter, **kwargs):
@@ -518,7 +530,7 @@ class StrategizedProperty(MapperProperty):
 
     def do_init(self):
         self._strategies = {}
-        self.strategy = self._get_strategy_by_cls(self.strategy_class)
+        self.strategy = self._get_strategy(self.strategy_key)
 
     def post_instrument_class(self, mapper):
         if not self.parent.non_primary and \
@@ -603,13 +615,16 @@ class LoaderStrategy(object):
 
     """
 
-    __slots__ = 'parent_property', 'is_class_level', 'parent', 'key'
+    __slots__ = 'parent_property', 'is_class_level', 'parent', 'key', \
+        'strategy_key', 'strategy_opts'
 
-    def __init__(self, parent):
+    def __init__(self, parent, strategy_key):
         self.parent_property = parent
         self.is_class_level = False
         self.parent = self.parent_property.parent
         self.key = self.parent_property.key
+        self.strategy_key = strategy_key
+        self.strategy_opts = dict(strategy_key)
 
     def init_class_attribute(self, mapper):
         pass

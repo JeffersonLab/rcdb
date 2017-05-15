@@ -1,5 +1,5 @@
 # testing/exclusions.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -109,21 +109,21 @@ class compound(object):
         else:
             all_fails._expect_success(config._current)
 
-    def _do(self, config, fn, *args, **kw):
+    def _do(self, cfg, fn, *args, **kw):
         for skip in self.skips:
-            if skip(config):
+            if skip(cfg):
                 msg = "'%s' : %s" % (
                     fn.__name__,
-                    skip._as_string(config)
+                    skip._as_string(cfg)
                 )
                 config.skip_test(msg)
 
         try:
             return_value = fn(*args, **kw)
         except Exception as ex:
-            self._expect_failure(config, ex, name=fn.__name__)
+            self._expect_failure(cfg, ex, name=fn.__name__)
         else:
-            self._expect_success(config, name=fn.__name__)
+            self._expect_success(cfg, name=fn.__name__)
             return return_value
 
     def _expect_failure(self, config, ex, name='block'):
@@ -208,8 +208,10 @@ class Predicate(object):
         if negate:
             bool_ = not negate
         return self.description % {
-            "driver": config.db.url.get_driver_name(),
-            "database": config.db.url.get_backend_name(),
+            "driver": config.db.url.get_driver_name()
+            if config else "<no driver>",
+            "database": config.db.url.get_backend_name()
+            if config else "<no database>",
             "doesnt_support": "doesn't support" if bool_ else "does support",
             "does_support": "does support" if bool_ else "doesn't support"
         }
@@ -408,19 +410,19 @@ def future(fn, *arg):
 
 
 def fails_on(db, reason=None):
-    return fails_if(SpecPredicate(db), reason)
+    return fails_if(Predicate.as_predicate(db), reason)
 
 
 def fails_on_everything_except(*dbs):
     return succeeds_if(
         OrPredicate([
-            SpecPredicate(db) for db in dbs
+            Predicate.as_predicate(db) for db in dbs
         ])
     )
 
 
 def skip(db, reason=None):
-    return skip_if(SpecPredicate(db), reason)
+    return skip_if(Predicate.as_predicate(db), reason)
 
 
 def only_on(dbs, reason=None):

@@ -1,5 +1,5 @@
 # engine/result.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -10,7 +10,7 @@ and :class:`.RowProxy."""
 
 
 from .. import exc, util
-from ..sql import expression, sqltypes
+from ..sql import expression, sqltypes, util as sql_util
 import collections
 import operator
 
@@ -35,7 +35,10 @@ except ImportError:
 
 try:
     from sqlalchemy.cresultproxy import BaseRowProxy
+    _baserowproxy_usecext = True
 except ImportError:
+    _baserowproxy_usecext = False
+
     class BaseRowProxy(object):
         __slots__ = ('_parent', '_row', '_processors', '_keymap')
 
@@ -84,8 +87,8 @@ except ImportError:
                     raise
             if index is None:
                 raise exc.InvalidRequestError(
-                    "Ambiguous column name '%s' in result set! "
-                    "try 'use_labels' option on select statement." % key)
+                    "Ambiguous column name '%s' in "
+                    "result set column descriptions" % obj)
             if processor is not None:
                 return processor(self._row[index])
             else:
@@ -150,7 +153,7 @@ class RowProxy(BaseRowProxy):
         return self._op(other, operator.ne)
 
     def __repr__(self):
-        return repr(tuple(self))
+        return repr(sql_util._repr_row(self))
 
     def has_key(self, key):
         """Return True if this RowProxy contains the given key."""
@@ -186,114 +189,63 @@ class ResultMetaData(object):
     """Handle cursor.description, applying additional info from an execution
     context."""
 
-    def __init__(self, parent, metadata):
+    __slots__ = (
+        '_keymap', 'case_sensitive', 'matched_on_name',
+        '_processors', 'keys', '_orig_processors')
+
+    def __init__(self, parent, cursor_description):
         context = parent.context
         dialect = context.dialect
-        typemap = dialect.dbapi_type_map
-        translate_colname = context._translate_colname
-        self.case_sensitive = case_sensitive = dialect.case_sensitive
+        self.case_sensitive = dialect.case_sensitive
+        self.matched_on_name = False
+        self._orig_processors = None
 
         if context.result_column_struct:
-            result_columns, cols_are_ordered = context.result_column_struct
+            result_columns, cols_are_ordered, textual_ordered = \
+                context.result_column_struct
             num_ctx_cols = len(result_columns)
         else:
-            num_ctx_cols = None
+            result_columns = cols_are_ordered = \
+                num_ctx_cols = textual_ordered = False
 
-        if num_ctx_cols and \
-                cols_are_ordered and \
-                num_ctx_cols == len(metadata):
-            # case 1 - SQL expression statement, number of columns
-            # in result matches number of cols in compiled.  This is the
-            # vast majority case for SQL expression constructs.  In this
-            # case we don't bother trying to parse or match up to
-            # the colnames in the result description.
-            raw = [
-                (
-                    idx,
-                    key,
-                    name.lower() if not case_sensitive else name,
-                    context.get_result_processor(
-                        type_, key, metadata[idx][1]
-                    ),
-                    obj,
-                    None
-                ) for idx, (key, name, obj, type_)
-                in enumerate(result_columns)
-            ]
-            self.keys = [
-                elem[0] for elem in result_columns
-            ]
-        else:
-            # case 2 - raw string, or number of columns in result does
-            # not match number of cols in compiled.  The raw string case
-            # is very common.   The latter can happen
-            # when text() is used with only a partial typemap, or
-            # in the extremely unlikely cases where the compiled construct
-            # has a single element with multiple col expressions in it
-            # (e.g. has commas embedded) or there's some kind of statement
-            # that is adding extra columns.
-            # In all these cases we fall back to the "named" approach
-            # that SQLAlchemy has used up through 0.9.
+        # merge cursor.description with the column info
+        # present in the compiled structure, if any
+        raw = self._merge_cursor_description(
+            context, cursor_description, result_columns,
+            num_ctx_cols, cols_are_ordered, textual_ordered)
 
-            if num_ctx_cols:
-                result_map = self._create_result_map(
-                    result_columns, case_sensitive)
+        self._keymap = {}
+        if not _baserowproxy_usecext:
+            # keymap indexes by integer index: this is only used
+            # in the pure Python BaseRowProxy.__getitem__
+            # implementation to avoid an expensive
+            # isinstance(key, util.int_types) in the most common
+            # case path
 
-            raw = []
-            self.keys = []
-            untranslated = None
-            for idx, rec in enumerate(metadata):
-                colname = rec[0]
-                coltype = rec[1]
+            len_raw = len(raw)
 
-                if dialect.description_encoding:
-                    colname = dialect._description_decoder(colname)
-
-                if translate_colname:
-                    colname, untranslated = translate_colname(colname)
-
-                if dialect.requires_name_normalize:
-                    colname = dialect.normalize_name(colname)
-
-                self.keys.append(colname)
-                if not case_sensitive:
-                    colname = colname.lower()
-
-                if num_ctx_cols:
-                    try:
-                        ctx_rec = result_map[colname]
-                    except KeyError:
-                        mapped_type = typemap.get(coltype, sqltypes.NULLTYPE)
-                        obj = None
-                    else:
-                        obj = ctx_rec[1]
-                        mapped_type = ctx_rec[2]
-                else:
-                    mapped_type = typemap.get(coltype, sqltypes.NULLTYPE)
-                    obj = None
-                processor = context.get_result_processor(
-                    mapped_type, colname, coltype)
-
-                raw.append(
-                    (idx, colname, colname, processor, obj, untranslated)
-                )
-
-        # keymap indexes by integer index...
-        self._keymap = dict([
-            (elem[0], (elem[3], elem[4], elem[0]))
-            for elem in raw
-        ])
+            self._keymap.update([
+                (elem[0], (elem[3], elem[4], elem[0]))
+                for elem in raw
+            ] + [
+                (elem[0] - len_raw, (elem[3], elem[4], elem[0]))
+                for elem in raw
+            ])
 
         # processors in key order for certain per-row
         # views like __iter__ and slices
         self._processors = [elem[3] for elem in raw]
 
+        # keymap by primary string...
+        by_key = dict([
+            (elem[2], (elem[3], elem[4], elem[0]))
+            for elem in raw
+        ])
+
+        # for compiled SQL constructs, copy additional lookup keys into
+        # the key lookup map, such as Column objects, labels,
+        # column keys and other names
         if num_ctx_cols:
-            # keymap by primary string...
-            by_key = dict([
-                (elem[2], (elem[3], elem[4], elem[0]))
-                for elem in raw
-            ])
 
             # if by-primary-string dictionary smaller (or bigger?!) than
             # number of columns, assume we have dupes, rewrite
@@ -304,30 +256,251 @@ class ResultMetaData(object):
                 for rec in raw:
                     key = rec[1]
                     if key in seen:
-                        by_key[key] = (None, by_key[key][1], None)
+                        # this is an "ambiguous" element, replacing
+                        # the full record in the map
+                        key = key.lower() if not self.case_sensitive else key
+                        by_key[key] = (None, key, None)
                     seen.add(key)
 
-            # update keymap with secondary "object"-based keys
+                # copy secondary elements from compiled columns
+                # into self._keymap, write in the potentially "ambiguous"
+                # element
+                self._keymap.update([
+                    (obj_elem, by_key[elem[2]])
+                    for elem in raw if elem[4]
+                    for obj_elem in elem[4]
+                ])
+
+                # if we did a pure positional match, then reset the
+                # original "expression element" back to the "unambiguous"
+                # entry.  This is a new behavior in 1.1 which impacts
+                # TextAsFrom but also straight compiled SQL constructs.
+                if not self.matched_on_name:
+                    self._keymap.update([
+                        (elem[4][0], (elem[3], elem[4], elem[0]))
+                        for elem in raw if elem[4]
+                    ])
+            else:
+                # no dupes - copy secondary elements from compiled
+                # columns into self._keymap
+                self._keymap.update([
+                    (obj_elem, (elem[3], elem[4], elem[0]))
+                    for elem in raw if elem[4]
+                    for obj_elem in elem[4]
+                ])
+
+        # update keymap with primary string names taking
+        # precedence
+        self._keymap.update(by_key)
+
+        # update keymap with "translated" names (sqlite-only thing)
+        if not num_ctx_cols and context._translate_colname:
             self._keymap.update([
-                (obj_elem, by_key[elem[2]])
-                for elem in raw if elem[4]
-                for obj_elem in elem[4]
+                (elem[5], self._keymap[elem[2]])
+                for elem in raw if elem[5]
             ])
 
-            # update keymap with primary string names taking
-            # precedence
-            self._keymap.update(by_key)
+    def _merge_cursor_description(
+            self, context, cursor_description, result_columns,
+            num_ctx_cols, cols_are_ordered, textual_ordered):
+        """Merge a cursor.description with compiled result column information.
+
+        There are at least four separate strategies used here, selected
+        depending on the type of SQL construct used to start with.
+
+        The most common case is that of the compiled SQL expression construct,
+        which generated the column names present in the raw SQL string and
+        which has the identical number of columns as were reported by
+        cursor.description.  In this case, we assume a 1-1 positional mapping
+        between the entries in cursor.description and the compiled object.
+        This is also the most performant case as we disregard extracting /
+        decoding the column names present in cursor.description since we
+        already have the desired name we generated in the compiled SQL
+        construct.
+
+        The next common case is that of the completely raw string SQL,
+        such as passed to connection.execute().  In this case we have no
+        compiled construct to work with, so we extract and decode the
+        names from cursor.description and index those as the primary
+        result row target keys.
+
+        The remaining fairly common case is that of the textual SQL
+        that includes at least partial column information; this is when
+        we use a :class:`.TextAsFrom` construct.   This contruct may have
+        unordered or ordered column information.  In the ordered case, we
+        merge the cursor.description and the compiled construct's information
+        positionally, and warn if there are additional description names
+        present, however we still decode the names in cursor.description
+        as we don't have a guarantee that the names in the columns match
+        on these.   In the unordered case, we match names in cursor.description
+        to that of the compiled construct based on name matching.
+        In both of these cases, the cursor.description names and the column
+        expression objects and names are indexed as result row target keys.
+
+        The final case is much less common, where we have a compiled
+        non-textual SQL expression construct, but the number of columns
+        in cursor.description doesn't match what's in the compiled
+        construct.  We make the guess here that there might be textual
+        column expressions in the compiled construct that themselves include
+        a comma in them causing them to split.  We do the same name-matching
+        as with textual non-ordered columns.
+
+        The name-matched system of merging is the same as that used by
+        SQLAlchemy for all cases up through te 0.9 series.   Positional
+        matching for compiled SQL expressions was introduced in 1.0 as a
+        major performance feature, and positional matching for textual
+        :class:`.TextAsFrom` objects in 1.1.  As name matching is no longer
+        a common case, it was acceptable to factor it into smaller generator-
+        oriented methods that are easier to understand, but incur slightly
+        more performance overhead.
+
+        """
+
+        case_sensitive = context.dialect.case_sensitive
+
+        if num_ctx_cols and \
+                cols_are_ordered and \
+                not textual_ordered and \
+                num_ctx_cols == len(cursor_description):
+            self.keys = [elem[0] for elem in result_columns]
+            # pure positional 1-1 case; doesn't need to read
+            # the names from cursor.description
+            return [
+                (
+                    idx,
+                    key,
+                    name.lower() if not case_sensitive else name,
+                    context.get_result_processor(
+                        type_, key, cursor_description[idx][1]
+                    ),
+                    obj,
+                    None
+                ) for idx, (key, name, obj, type_)
+                in enumerate(result_columns)
+            ]
         else:
-            self._keymap.update([
-                (elem[2], (elem[3], elem[4], elem[0]))
-                for elem in raw
-            ])
-            # update keymap with "translated" names (sqlite-only thing)
+            # name-based or text-positional cases, where we need
+            # to read cursor.description names
+            if textual_ordered:
+                # textual positional case
+                raw_iterator = self._merge_textual_cols_by_position(
+                    context, cursor_description, result_columns)
+            elif num_ctx_cols:
+                # compiled SQL with a mismatch of description cols
+                # vs. compiled cols, or textual w/ unordered columns
+                raw_iterator = self._merge_cols_by_name(
+                    context, cursor_description, result_columns)
+            else:
+                # no compiled SQL, just a raw string
+                raw_iterator = self._merge_cols_by_none(
+                    context, cursor_description)
+
+            return [
+                (
+                    idx, colname, colname,
+                    context.get_result_processor(
+                        mapped_type, colname, coltype),
+                    obj, untranslated)
+
+                for idx, colname, mapped_type, coltype, obj, untranslated
+                in raw_iterator
+            ]
+
+    def _colnames_from_description(self, context, cursor_description):
+        """Extract column names and data types from a cursor.description.
+
+        Applies unicode decoding, column translation, "normalization",
+        and case sensitivity rules to the names based on the dialect.
+
+        """
+
+        dialect = context.dialect
+        case_sensitive = dialect.case_sensitive
+        translate_colname = context._translate_colname
+        description_decoder = dialect._description_decoder \
+            if dialect.description_encoding else None
+        normalize_name = dialect.normalize_name \
+            if dialect.requires_name_normalize else None
+        untranslated = None
+
+        self.keys = []
+
+        for idx, rec in enumerate(cursor_description):
+            colname = rec[0]
+            coltype = rec[1]
+
+            if description_decoder:
+                colname = description_decoder(colname)
+
             if translate_colname:
-                self._keymap.update([
-                    (elem[5], self._keymap[elem[2]])
-                    for elem in raw if elem[5]
-                ])
+                colname, untranslated = translate_colname(colname)
+
+            if normalize_name:
+                colname = normalize_name(colname)
+
+            self.keys.append(colname)
+            if not case_sensitive:
+                colname = colname.lower()
+
+            yield idx, colname, untranslated, coltype
+
+    def _merge_textual_cols_by_position(
+            self, context, cursor_description, result_columns):
+        dialect = context.dialect
+        typemap = dialect.dbapi_type_map
+        num_ctx_cols = len(result_columns) if result_columns else None
+
+        if num_ctx_cols > len(cursor_description):
+            util.warn(
+                "Number of columns in textual SQL (%d) is "
+                "smaller than number of columns requested (%d)" % (
+                    num_ctx_cols, len(cursor_description)
+                ))
+
+        seen = set()
+        for idx, colname, untranslated, coltype in \
+                self._colnames_from_description(context, cursor_description):
+            if idx < num_ctx_cols:
+                ctx_rec = result_columns[idx]
+                obj = ctx_rec[2]
+                mapped_type = ctx_rec[3]
+                if obj[0] in seen:
+                    raise exc.InvalidRequestError(
+                        "Duplicate column expression requested "
+                        "in textual SQL: %r" % obj[0])
+                seen.add(obj[0])
+            else:
+                mapped_type = typemap.get(coltype, sqltypes.NULLTYPE)
+                obj = None
+
+            yield idx, colname, mapped_type, coltype, obj, untranslated
+
+    def _merge_cols_by_name(self, context, cursor_description, result_columns):
+        dialect = context.dialect
+        typemap = dialect.dbapi_type_map
+        case_sensitive = dialect.case_sensitive
+        result_map = self._create_result_map(result_columns, case_sensitive)
+
+        self.matched_on_name = True
+        for idx, colname, untranslated, coltype in \
+                self._colnames_from_description(context, cursor_description):
+            try:
+                ctx_rec = result_map[colname]
+            except KeyError:
+                mapped_type = typemap.get(coltype, sqltypes.NULLTYPE)
+                obj = None
+            else:
+                obj = ctx_rec[1]
+                mapped_type = ctx_rec[2]
+            yield idx, colname, mapped_type, coltype, obj, untranslated
+
+    def _merge_cols_by_none(self, context, cursor_description):
+        dialect = context.dialect
+        typemap = dialect.dbapi_type_map
+        for idx, colname, untranslated, coltype in \
+                self._colnames_from_description(context, cursor_description):
+            mapped_type = typemap.get(coltype, sqltypes.NULLTYPE)
+            yield idx, colname, mapped_type, coltype, None, untranslated
 
     @classmethod
     def _create_result_map(cls, result_columns, case_sensitive=True):
@@ -346,22 +519,6 @@ class ResultMetaData(object):
             else:
                 d[key] = rec
         return d
-
-    @util.pending_deprecation("0.8", "sqlite dialect uses "
-                              "_translate_colname() now")
-    def _set_keymap_synonym(self, name, origname):
-        """Set a synonym for the given name.
-
-        Some dialects (SQLite at the moment) may use this to
-        adjust the column names that are significant within a
-        row.
-
-        """
-        rec = (processor, obj, i) = self._keymap[origname if
-                                                 self.case_sensitive
-                                                 else origname.lower()]
-        if self._keymap.setdefault(name, rec) is not rec:
-            self._keymap[name] = (processor, obj, None)
 
     def _key_fallback(self, key, raiseerr=True):
         map = self._keymap
@@ -416,19 +573,19 @@ class ResultMetaData(object):
         else:
             return self._key_fallback(key, False) is not None
 
-    def _getter(self, key):
+    def _getter(self, key, raiseerr=True):
         if key in self._keymap:
             processor, obj, index = self._keymap[key]
         else:
-            ret = self._key_fallback(key, False)
+            ret = self._key_fallback(key, raiseerr)
             if ret is None:
                 return None
             processor, obj, index = ret
 
         if index is None:
             raise exc.InvalidRequestError(
-                "Ambiguous column name '%s' in result set! "
-                "try 'use_labels' option on select statement." % key)
+                "Ambiguous column name '%s' in "
+                "result set column descriptions" % obj)
 
         return operator.itemgetter(index)
 
@@ -441,6 +598,7 @@ class ResultMetaData(object):
             ),
             'keys': self.keys,
             "case_sensitive": self.case_sensitive,
+            "matched_on_name": self.matched_on_name
         }
 
     def __setstate__(self, state):
@@ -454,7 +612,7 @@ class ResultMetaData(object):
             keymap[key] = (None, None, index)
         self.keys = state['keys']
         self.case_sensitive = state['case_sensitive']
-        self._echo = False
+        self.matched_on_name = state['matched_on_name']
 
 
 class ResultProxy(object):
@@ -480,7 +638,7 @@ class ResultProxy(object):
 
     _process_row = RowProxy
     out_parameters = None
-    _can_close_connection = False
+    _autoclose_connection = False
     _metadata = None
     _soft_closed = False
     closed = False
@@ -494,13 +652,13 @@ class ResultProxy(object):
             context.engine._should_log_debug()
         self._init_metadata()
 
-    def _getter(self, key):
+    def _getter(self, key, raiseerr=True):
         try:
             getter = self._metadata._getter
         except AttributeError:
             return self._non_result(None)
         else:
-            return getter(key)
+            return getter(key, raiseerr)
 
     def _has_key(self, key):
         try:
@@ -511,20 +669,20 @@ class ResultProxy(object):
             return has_key(key)
 
     def _init_metadata(self):
-        metadata = self._cursor_description()
-        if metadata is not None:
+        cursor_description = self._cursor_description()
+        if cursor_description is not None:
             if self.context.compiled and \
                     'compiled_cache' in self.context.execution_options:
                 if self.context.compiled._cached_metadata:
                     self._metadata = self.context.compiled._cached_metadata
                 else:
                     self._metadata = self.context.compiled._cached_metadata = \
-                        ResultMetaData(self, metadata)
+                        ResultMetaData(self, cursor_description)
             else:
-                self._metadata = ResultMetaData(self, metadata)
+                self._metadata = ResultMetaData(self, cursor_description)
             if self._echo:
                 self.context.engine.logger.debug(
-                    "Col %r", tuple(x[0] for x in metadata))
+                    "Col %r", tuple(x[0] for x in cursor_description))
 
     def keys(self):
         """Return the current set of string keys for rows."""
@@ -576,7 +734,7 @@ class ResultProxy(object):
         """
         try:
             return self.context.rowcount
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None, self.cursor, self.context)
 
@@ -598,7 +756,7 @@ class ResultProxy(object):
         """
         try:
             return self._saved_cursor.lastrowid
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None,
                 self._saved_cursor, self.context)
@@ -634,7 +792,7 @@ class ResultProxy(object):
 
         return self._saved_cursor.description
 
-    def _soft_close(self, _autoclose_connection=True):
+    def _soft_close(self):
         """Soft close this :class:`.ResultProxy`.
 
         This releases all DBAPI cursor resources, but leaves the
@@ -662,8 +820,7 @@ class ResultProxy(object):
         self._soft_closed = True
         cursor = self.cursor
         self.connection._safe_close_cursor(cursor)
-        if _autoclose_connection and \
-                self.connection.should_close_with_result:
+        if self._autoclose_connection:
             self.connection.close()
         self.cursor = None
 
@@ -671,7 +828,7 @@ class ResultProxy(object):
         """Close this ResultProxy.
 
         This closes out the underlying DBAPI cursor corresonding
-        to the statement execution, if one is stil present.  Note that the
+        to the statement execution, if one is still present.  Note that the
         DBAPI cursor is automatically released when the :class:`.ResultProxy`
         exhausts all available rows.  :meth:`.ResultProxy.close` is generally
         an optional method except in the case when discarding a
@@ -679,7 +836,7 @@ class ResultProxy(object):
 
         In the case of a result that is the product of
         :ref:`connectionless execution <dbengine_implicit>`,
-        the underyling :class:`.Connection` object is also closed, which
+        the underlying :class:`.Connection` object is also closed, which
         :term:`releases` DBAPI connection resources.
 
         After this method is called, it is no longer valid to call upon
@@ -934,7 +1091,7 @@ class ResultProxy(object):
             log = self.context.engine.logger.debug
             l = []
             for row in rows:
-                log("Row %r", row)
+                log("Row %r", sql_util._repr_row(row))
                 l.append(process_row(metadata, row, processors, keymap))
             return l
         else:
@@ -962,7 +1119,7 @@ class ResultProxy(object):
             l = self.process_rows(self._fetchall_impl())
             self._soft_close()
             return l
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None,
                 self.cursor, self.context)
@@ -976,7 +1133,7 @@ class ResultProxy(object):
         discarded.
 
         Calls to :meth:`.ResultProxy.fetchmany` after all rows have been
-        exhuasted will return
+        exhausted will return
         an empty list.   After the :meth:`.ResultProxy.close` method is
         called, the method will raise :class:`.ResourceClosedError`.
 
@@ -991,7 +1148,7 @@ class ResultProxy(object):
             if len(l) == 0:
                 self._soft_close()
             return l
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None,
                 self.cursor, self.context)
@@ -1020,7 +1177,7 @@ class ResultProxy(object):
             else:
                 self._soft_close()
                 return None
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None,
                 self.cursor, self.context)
@@ -1039,7 +1196,7 @@ class ResultProxy(object):
 
         try:
             row = self._fetchone_impl()
-        except Exception as e:
+        except BaseException as e:
             self.connection._handle_dbapi_exception(
                 e, None, None,
                 self.cursor, self.context)
@@ -1237,16 +1394,21 @@ class BufferedColumnResultProxy(ResultProxy):
 
     def _init_metadata(self):
         super(BufferedColumnResultProxy, self)._init_metadata()
+
         metadata = self._metadata
-        # orig_processors will be used to preprocess each row when they are
-        # constructed.
-        metadata._orig_processors = metadata._processors
-        # replace the all type processors by None processors.
-        metadata._processors = [None for _ in range(len(metadata.keys))]
-        keymap = {}
-        for k, (func, obj, index) in metadata._keymap.items():
-            keymap[k] = (None, obj, index)
-        self._metadata._keymap = keymap
+
+        # don't double-replace the processors, in the case
+        # of a cached ResultMetaData
+        if metadata._orig_processors is None:
+            # orig_processors will be used to preprocess each row when
+            # they are constructed.
+            metadata._orig_processors = metadata._processors
+            # replace the all type processors by None processors.
+            metadata._processors = [None for _ in range(len(metadata.keys))]
+            keymap = {}
+            for k, (func, obj, index) in metadata._keymap.items():
+                keymap[k] = (None, obj, index)
+            metadata._keymap = keymap
 
     def fetchall(self):
         # can't call cursor.fetchall(), since rows must be

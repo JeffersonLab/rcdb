@@ -1,5 +1,5 @@
 # sqlalchemy/events.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -76,7 +76,7 @@ class DDLEvents(event.Events):
     _dispatch_target = SchemaEventTarget
 
     def before_create(self, target, connection, **kw):
-        """Called before CREATE statements are emitted.
+        r"""Called before CREATE statements are emitted.
 
         :param target: the :class:`.MetaData` or :class:`.Table`
          object which is the target of the event.
@@ -92,7 +92,7 @@ class DDLEvents(event.Events):
         """
 
     def after_create(self, target, connection, **kw):
-        """Called after CREATE statements are emitted.
+        r"""Called after CREATE statements are emitted.
 
         :param target: the :class:`.MetaData` or :class:`.Table`
          object which is the target of the event.
@@ -108,7 +108,7 @@ class DDLEvents(event.Events):
         """
 
     def before_drop(self, target, connection, **kw):
-        """Called before DROP statements are emitted.
+        r"""Called before DROP statements are emitted.
 
         :param target: the :class:`.MetaData` or :class:`.Table`
          object which is the target of the event.
@@ -124,7 +124,7 @@ class DDLEvents(event.Events):
         """
 
     def after_drop(self, target, connection, **kw):
-        """Called after DROP statements are emitted.
+        r"""Called after DROP statements are emitted.
 
         :param target: the :class:`.MetaData` or :class:`.Table`
          object which is the target of the event.
@@ -178,7 +178,29 @@ class DDLEvents(event.Events):
         The dictionary of column information as returned by the
         dialect is passed, and can be modified.  The dictionary
         is that returned in each element of the list returned
-        by :meth:`.reflection.Inspector.get_columns`.
+        by :meth:`.reflection.Inspector.get_columns`:
+
+            * ``name`` - the column's name
+
+            * ``type`` - the type of this column, which should be an instance
+              of :class:`~sqlalchemy.types.TypeEngine`
+
+            * ``nullable`` - boolean flag if the column is NULL or NOT NULL
+
+            * ``default`` - the column's server default value.  This is
+              normally specified as a plain string SQL expression, however the
+              event can pass a :class:`.FetchedValue`, :class:`.DefaultClause`,
+              or :func:`.sql.expression.text` object as well.
+
+              .. versionchanged:: 1.1.6
+
+                    The :meth:`.DDLEvents.column_reflect` event allows a non
+                    string :class:`.FetchedValue`,
+                    :func:`.sql.expression.text`, or derived object to be
+                    specified as the value of ``default`` in the column
+                    dictionary.
+
+            * ``attrs``  - dict containing optional column attributes
 
         The event is called before any action is taken against
         this dictionary, and the contents can be modified.
@@ -409,6 +431,46 @@ class PoolEvents(event.Events):
 
         """
 
+    def close(self, dbapi_connection, connection_record):
+        """Called when a DBAPI connection is closed.
+
+        The event is emitted before the close occurs.
+
+        The close of a connection can fail; typically this is because
+        the connection is already closed.  If the close operation fails,
+        the connection is discarded.
+
+        The :meth:`.close` event corresponds to a connection that's still
+        associated with the pool. To intercept close events for detached
+        connections use :meth:`.close_detached`.
+
+        .. versionadded:: 1.1
+
+        """
+
+    def detach(self, dbapi_connection, connection_record):
+        """Called when a DBAPI connection is "detached" from a pool.
+
+        This event is emitted after the detach occurs.  The connection
+        is no longer associated with the given connection record.
+
+        .. versionadded:: 1.1
+
+        """
+
+    def close_detached(self, dbapi_connection):
+        """Called when a detached DBAPI connection is closed.
+
+        The event is emitted before the close occurs.
+
+        The close of a connection can fail; typically this is because
+        the connection is already closed.  If the close operation fails,
+        the connection is discarded.
+
+        .. versionadded:: 1.1
+
+        """
+
 
 class ConnectionEvents(event.Events):
     """Available events for :class:`.Connectable`, which includes
@@ -424,7 +486,7 @@ class ConnectionEvents(event.Events):
 
         def before_cursor_execute(conn, cursor, statement, parameters, context,
                                                         executemany):
-            log.info("Received statement: %s" % statement)
+            log.info("Received statement: %s", statement)
 
         engine = create_engine('postgresql://scott:tiger@localhost/test')
         event.listen(engine, "before_cursor_execute", before_cursor_execute)
@@ -435,7 +497,7 @@ class ConnectionEvents(event.Events):
             @event.listens_for(conn, 'before_cursor_execute')
             def before_cursor_execute(conn, cursor, statement, parameters,
                                             context, executemany):
-                log.info("Received statement: %s" % statement)
+                log.info("Received statement: %s", statement)
 
     When the methods are called with a `statement` parameter, such as in
     :meth:`.after_cursor_execute`, :meth:`.before_cursor_execute` and
@@ -677,7 +739,7 @@ class ConnectionEvents(event.Events):
         """
 
     def handle_error(self, exception_context):
-        """Intercept all exceptions processed by the :class:`.Connection`.
+        r"""Intercept all exceptions processed by the :class:`.Connection`.
 
         This includes all exceptions emitted by the DBAPI as well as
         within SQLAlchemy's statement invocation process, including
@@ -701,6 +763,9 @@ class ConnectionEvents(event.Events):
         * read-only, low-level exception handling for logging and
           debugging purposes
         * exception re-writing
+        * Establishing or disabling whether a connection or the owning
+          connection pool is invalidated or expired in response to a
+          specific exception.
 
         The hook is called while the cursor from the failed operation
         (if any) is still open and accessible.   Special cleanup operations
@@ -720,7 +785,7 @@ class ConnectionEvents(event.Events):
             @event.listens_for(Engine, "handle_error")
             def handle_exception(context):
                 if isinstance(context.original_exception,
-                    psycopg2.OperationalError) and \\
+                    psycopg2.OperationalError) and \
                     "failed" in str(context.original_exception):
                     raise MySpecialException("failed operation")
 
@@ -743,7 +808,7 @@ class ConnectionEvents(event.Events):
 
             @event.listens_for(Engine, "handle_error", retval=True)
             def handle_exception(context):
-                if context.chained_exception is not None and \\
+                if context.chained_exception is not None and \
                     "special" in context.chained_exception.message:
                     return MySpecialException("failed",
                         cause=context.chained_exception)
@@ -765,6 +830,13 @@ class ConnectionEvents(event.Events):
 
         .. versionadded:: 0.9.7 Added the
             :meth:`.ConnectionEvents.handle_error` hook.
+
+        .. versionchanged:: 1.1 The :meth:`.handle_error` event will now
+           receive all exceptions that inherit from ``BaseException``, including
+           ``SystemExit`` and ``KeyboardInterrupt``.  The setting for
+           :attr:`.ExceptionContext.is_disconnect` is ``True`` in this case
+           and the default for :attr:`.ExceptionContext.invalidate_pool_on_disconnect`
+           is ``False``.
 
         .. versionchanged:: 1.0.0 The :meth:`.handle_error` event is now
            invoked when an :class:`.Engine` fails during the initial

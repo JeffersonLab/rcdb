@@ -1,5 +1,5 @@
 # plugin/plugin_base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -67,6 +67,9 @@ def setup_options(make_option):
                 dest="low_connections",
                 help="Use a low number of distinct connections - "
                 "i.e. for Oracle TNS")
+    make_option("--write-idents", type="string", dest="write_idents",
+                help="write out generated follower idents to <file>, "
+                "when -n<num> is used")
     make_option("--reversetop", action="store_true",
                 dest="reversetop", default=False,
                 help="Use a random-ordering set implementation in the ORM "
@@ -174,6 +177,7 @@ def post_begin():
     warnings.setup_filters()
 
 
+
 def _log(opt_str, value, parser):
     global logging
     if not logging:
@@ -263,6 +267,7 @@ def _engine_uri(options, file_config):
     if not db_urls:
         db_urls.append(file_config.get('db', 'default'))
 
+    config._current = None
     for db_url in db_urls:
         cfg = provision.setup_config(
             db_url, options, file_config, provision.FOLLOWER_IDENT)
@@ -427,13 +432,21 @@ def stop_test_class(cls):
     #from sqlalchemy import inspect
     #assert not inspect(testing.db).get_table_names()
     engines.testing_reaper._stop_test_ctx()
-    if not options.low_connections:
-        assertions.global_cleanup_assertions()
-    _restore_engine()
+    try:
+        if not options.low_connections:
+            assertions.global_cleanup_assertions()
+    finally:
+        _restore_engine()
 
 
 def _restore_engine():
     config._current.reset(testing)
+
+
+def final_process_cleanup():
+    engines.testing_reaper._stop_test_ctx_aggressive()
+    assertions.global_cleanup_assertions()
+    _restore_engine()
 
 
 def _setup_engine(cls):

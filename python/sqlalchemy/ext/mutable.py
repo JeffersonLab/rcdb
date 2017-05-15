@@ -1,11 +1,11 @@
 # ext/mutable.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
 # the MIT License: http://www.opensource.org/licenses/mit-license.php
 
-"""Provide support for tracking of in-place changes to scalar values,
+r"""Provide support for tracking of in-place changes to scalar values,
 which are propagated into ORM change events on owning parent objects.
 
 .. versionadded:: 0.7 :mod:`sqlalchemy.ext.mutable` replaces SQLAlchemy's
@@ -46,7 +46,7 @@ with any type whose target Python type may be mutable, including
 :class:`.PickleType`, :class:`.postgresql.ARRAY`, etc.
 
 When using the :mod:`sqlalchemy.ext.mutable` extension, the value itself
-tracks all parents which reference it.  Below, we illustrate the a simple
+tracks all parents which reference it.  Below, we illustrate a simple
 version of the :class:`.MutableDict` dictionary object, which applies
 the :class:`.Mutable` mixin to a plain Python dictionary::
 
@@ -252,8 +252,8 @@ and to also route attribute set events via ``__setattr__`` to the
             return self.x, self.y
 
         def __eq__(self, other):
-            return isinstance(other, Point) and \\
-                other.x == self.x and \\
+            return isinstance(other, Point) and \
+                other.x == self.x and \
                 other.y == self.y
 
         def __ne__(self, other):
@@ -352,6 +352,7 @@ from ..orm.attributes import flag_modified
 from .. import event, types
 from ..orm import mapper, object_mapper, Mapper
 from ..util import memoized_property
+from ..sql.base import SchemaEventTarget
 import weakref
 
 
@@ -584,9 +585,27 @@ class Mutable(MutableBase):
         """
         sqltype = types.to_instance(sqltype)
 
+        # a SchemaType will be copied when the Column is copied,
+        # and we'll lose our ability to link that type back to the original.
+        # so track our original type w/ columns
+        if isinstance(sqltype, SchemaEventTarget):
+            @event.listens_for(sqltype, "before_parent_attach")
+            def _add_column_memo(sqltyp, parent):
+                parent.info['_ext_mutable_orig_type'] = sqltyp
+            schema_event_check = True
+        else:
+            schema_event_check = False
+
         def listen_for_type(mapper, class_):
             for prop in mapper.column_attrs:
-                if prop.columns[0].type is sqltype:
+                if (
+                        schema_event_check and
+                        hasattr(prop.expression, 'info') and
+                        prop.expression.info.get('_ext_mutable_orig_type')
+                        is sqltype
+                ) or (
+                    prop.columns[0].type is sqltype
+                ):
                     cls.associate_with_attribute(getattr(class_, prop.key))
 
         event.listen(mapper, 'mapper_configured', listen_for_type)
@@ -635,7 +654,25 @@ _setup_composite_listener()
 class MutableDict(Mutable, dict):
     """A dictionary type that implements :class:`.Mutable`.
 
+    The :class:`.MutableDict` object implements a dictionary that will
+    emit change events to the underlying mapping when the contents of
+    the dictionary are altered, including when values are added or removed.
+
+    Note that :class:`.MutableDict` does **not** apply mutable tracking to  the
+    *values themselves* inside the dictionary. Therefore it is not a sufficient
+    solution for the use case of tracking deep changes to a *recursive*
+    dictionary structure, such as a JSON structure.  To support this use case,
+    build a subclass of  :class:`.MutableDict` that provides appropriate
+    coersion to the values placed in the dictionary so that they too are
+    "mutable", and emit events up to their parent structure.
+
     .. versionadded:: 0.8
+
+    .. seealso::
+
+        :class:`.MutableList`
+
+        :class:`.MutableSet`
 
     """
 
@@ -687,3 +724,181 @@ class MutableDict(Mutable, dict):
 
     def __setstate__(self, state):
         self.update(state)
+
+
+class MutableList(Mutable, list):
+    """A list type that implements :class:`.Mutable`.
+
+    The :class:`.MutableList` object implements a list that will
+    emit change events to the underlying mapping when the contents of
+    the list are altered, including when values are added or removed.
+
+    Note that :class:`.MutableList` does **not** apply mutable tracking to  the
+    *values themselves* inside the list. Therefore it is not a sufficient
+    solution for the use case of tracking deep changes to a *recursive*
+    mutable structure, such as a JSON structure.  To support this use case,
+    build a subclass of  :class:`.MutableList` that provides appropriate
+    coersion to the values placed in the dictionary so that they too are
+    "mutable", and emit events up to their parent structure.
+
+    .. versionadded:: 1.1
+
+    .. seealso::
+
+        :class:`.MutableDict`
+
+        :class:`.MutableSet`
+
+    """
+
+    def __setitem__(self, index, value):
+        """Detect list set events and emit change events."""
+        list.__setitem__(self, index, value)
+        self.changed()
+
+    def __setslice__(self, start, end, value):
+        """Detect list set events and emit change events."""
+        list.__setslice__(self, start, end, value)
+        self.changed()
+
+    def __delitem__(self, index):
+        """Detect list del events and emit change events."""
+        list.__delitem__(self, index)
+        self.changed()
+
+    def __delslice__(self, start, end):
+        """Detect list del events and emit change events."""
+        list.__delslice__(self, start, end)
+        self.changed()
+
+    def pop(self, *arg):
+        result = list.pop(self, *arg)
+        self.changed()
+        return result
+
+    def append(self, x):
+        list.append(self, x)
+        self.changed()
+
+    def extend(self, x):
+        list.extend(self, x)
+        self.changed()
+
+    def insert(self, i, x):
+        list.insert(self, i, x)
+        self.changed()
+
+    def remove(self, i):
+        list.remove(self, i)
+        self.changed()
+
+    def clear(self):
+        list.clear(self)
+        self.changed()
+
+    def sort(self):
+        list.sort(self)
+        self.changed()
+
+    def reverse(self):
+        list.reverse(self)
+        self.changed()
+
+    @classmethod
+    def coerce(cls, index, value):
+        """Convert plain list to instance of this class."""
+        if not isinstance(value, cls):
+            if isinstance(value, list):
+                return cls(value)
+            return Mutable.coerce(index, value)
+        else:
+            return value
+
+    def __getstate__(self):
+        return list(self)
+
+    def __setstate__(self, state):
+        self[:] = state
+
+
+class MutableSet(Mutable, set):
+    """A set type that implements :class:`.Mutable`.
+
+    The :class:`.MutableSet` object implements a set that will
+    emit change events to the underlying mapping when the contents of
+    the set are altered, including when values are added or removed.
+
+    Note that :class:`.MutableSet` does **not** apply mutable tracking to  the
+    *values themselves* inside the set. Therefore it is not a sufficient
+    solution for the use case of tracking deep changes to a *recursive*
+    mutable structure.  To support this use case,
+    build a subclass of  :class:`.MutableSet` that provides appropriate
+    coersion to the values placed in the dictionary so that they too are
+    "mutable", and emit events up to their parent structure.
+
+    .. versionadded:: 1.1
+
+    .. seealso::
+
+        :class:`.MutableDict`
+
+        :class:`.MutableList`
+
+
+    """
+
+    def update(self, *arg):
+        set.update(self, *arg)
+        self.changed()
+
+    def intersection_update(self, *arg):
+        set.intersection_update(self, *arg)
+        self.changed()
+
+    def difference_update(self, *arg):
+        set.difference_update(self, *arg)
+        self.changed()
+
+    def symmetric_difference_update(self, *arg):
+        set.symmetric_difference_update(self, *arg)
+        self.changed()
+
+    def add(self, elem):
+        set.add(self, elem)
+        self.changed()
+
+    def remove(self, elem):
+        set.remove(self, elem)
+        self.changed()
+
+    def discard(self, elem):
+        set.discard(self, elem)
+        self.changed()
+
+    def pop(self, *arg):
+        result = set.pop(self, *arg)
+        self.changed()
+        return result
+
+    def clear(self):
+        set.clear(self)
+        self.changed()
+
+    @classmethod
+    def coerce(cls, index, value):
+        """Convert plain set to instance of this class."""
+        if not isinstance(value, cls):
+            if isinstance(value, set):
+                return cls(value)
+            return Mutable.coerce(index, value)
+        else:
+            return value
+
+    def __getstate__(self):
+        return set(self)
+
+    def __setstate__(self, state):
+        self.update(state)
+
+    def __reduce_ex__(self, proto):
+        return (self.__class__, (list(self), ))

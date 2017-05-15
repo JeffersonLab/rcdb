@@ -1,5 +1,5 @@
 # orm/events.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -317,6 +317,8 @@ class InstanceEvents(event.Events):
 
             :meth:`.InstanceEvents.refresh`
 
+            :meth:`.SessionEvents.loaded_as_persistent`
+
         """
 
     def refresh(self, target, context, attrs):
@@ -630,7 +632,7 @@ class MapperEvents(event.Events):
         _MapperEventsHold._clear()
 
     def instrument_class(self, mapper, class_):
-        """Receive a class when the mapper is first constructed,
+        r"""Receive a class when the mapper is first constructed,
         before instrumentation is applied to the mapped class.
 
         This event is the earliest phase of mapper construction.
@@ -653,7 +655,7 @@ class MapperEvents(event.Events):
         """
 
     def mapper_configured(self, mapper, class_):
-        """Called when a specific mapper has completed its own configuration
+        r"""Called when a specific mapper has completed its own configuration
         within the scope of the :func:`.configure_mappers` call.
 
         The :meth:`.MapperEvents.mapper_configured` event is invoked
@@ -1192,9 +1194,28 @@ class SessionEvents(event.Events):
         :param session: the target :class:`.Session`.
         :param transaction: the target :class:`.SessionTransaction`.
 
-        .. versionadded:: 0.8
+         To detect if this is the outermost
+         :class:`.SessionTransaction`, as opposed to a "subtransaction" or a
+         SAVEPOINT, test that the :attr:`.SessionTransaction.parent` attribute
+         is ``None``::
+
+                @event.listens_for(session, "after_transaction_create")
+                def after_transaction_create(session, transaction):
+                    if transaction.parent is None:
+                        # work with top-level transaction
+
+         To detect if the :class:`.SessionTransaction` is a SAVEPOINT, use the
+         :attr:`.SessionTransaction.nested` attribute::
+
+                @event.listens_for(session, "after_transaction_create")
+                def after_transaction_create(session, transaction):
+                    if transaction.nested:
+                        # work with SAVEPOINT transaction
+
 
         .. seealso::
+
+            :class:`.SessionTransaction`
 
             :meth:`~.SessionEvents.after_transaction_end`
 
@@ -1212,9 +1233,28 @@ class SessionEvents(event.Events):
         :param session: the target :class:`.Session`.
         :param transaction: the target :class:`.SessionTransaction`.
 
-        .. versionadded:: 0.8
+         To detect if this is the outermost
+         :class:`.SessionTransaction`, as opposed to a "subtransaction" or a
+         SAVEPOINT, test that the :attr:`.SessionTransaction.parent` attribute
+         is ``None``::
+
+                @event.listens_for(session, "after_transaction_create")
+                def after_transaction_end(session, transaction):
+                    if transaction.parent is None:
+                        # work with top-level transaction
+
+         To detect if the :class:`.SessionTransaction` is a SAVEPOINT, use the
+         :attr:`.SessionTransaction.nested` attribute::
+
+                @event.listens_for(session, "after_transaction_create")
+                def after_transaction_end(session, transaction):
+                    if transaction.nested:
+                        # work with SAVEPOINT transaction
+
 
         .. seealso::
+
+            :class:`.SessionTransaction`
 
             :meth:`~.SessionEvents.after_transaction_create`
 
@@ -1511,6 +1551,244 @@ class SessionEvents(event.Events):
 
         """
 
+    def transient_to_pending(self, session, instance):
+        """Intercept the "transient to pending" transition for a specific object.
+
+        This event is a specialization of the
+        :meth:`.SessionEvents.after_attach` event which is only invoked
+        for this specific transition.  It is invoked typically during the
+        :meth:`.Session.add` call.
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def pending_to_transient(self, session, instance):
+        """Intercept the "pending to transient" transition for a specific object.
+
+        This less common transition occurs when an pending object that has
+        not been flushed is evicted from the session; this can occur
+        when the :meth:`.Session.rollback` method rolls back the transaction,
+        or when the :meth:`.Session.expunge` method is used.
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def persistent_to_transient(self, session, instance):
+        """Intercept the "persistent to transient" transition for a specific object.
+
+        This less common transition occurs when an pending object that has
+        has been flushed is evicted from the session; this can occur
+        when the :meth:`.Session.rollback` method rolls back the transaction.
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def pending_to_persistent(self, session, instance):
+        """Intercept the "pending to persistent"" transition for a specific object.
+
+        This event is invoked within the flush process, and is
+        similar to scanning the :attr:`.Session.new` collection within
+        the :meth:`.SessionEvents.after_flush` event.  However, in this
+        case the object has already been moved to the persistent state
+        when the event is called.
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def detached_to_persistent(self, session, instance):
+        """Intercept the "detached to persistent" transition for a specific object.
+
+        This event is a specialization of the
+        :meth:`.SessionEvents.after_attach` event which is only invoked
+        for this specific transition.  It is invoked typically during the
+        :meth:`.Session.add` call, as well as during the
+        :meth:`.Session.delete` call if the object was not previously
+        associated with the
+        :class:`.Session` (note that an object marked as "deleted" remains
+        in the "persistent" state until the flush proceeds).
+
+        .. note::
+
+            If the object becomes persistent as part of a call to
+            :meth:`.Session.delete`, the object is **not** yet marked as
+            deleted when this event is called.  To detect deleted objects,
+            check the ``deleted`` flag sent to the
+            :meth:`.SessionEvents.persistent_to_detached` to event after the
+            flush proceeds, or check the :attr:`.Session.deleted` collection
+            within the :meth:`.SessionEvents.before_flush` event if deleted
+            objects need to be intercepted before the flush.
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def loaded_as_persistent(self, session, instance):
+        """Intercept the "loaded as persistent" transition for a specific object.
+
+        This event is invoked within the ORM loading process, and is invoked
+        very similarly to the :meth:`.InstanceEvents.load` event.  However,
+        the event here is linkable to a :class:`.Session` class or instance,
+        rather than to a mapper or class hierarchy, and integrates
+        with the other session lifecycle events smoothly.  The object
+        is guaranteed to be present in the session's identity map when
+        this event is called.
+
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def persistent_to_deleted(self, session, instance):
+        """Intercept the "persistent to deleted" transition for a specific object.
+
+        This event is invoked when a persistent object's identity
+        is deleted from the database within a flush, however the object
+        still remains associated with the :class:`.Session` until the
+        transaction completes.
+
+        If the transaction is rolled back, the object moves again
+        to the persistent state, and the
+        :meth:`.SessionEvents.deleted_to_persistent` event is called.
+        If the transaction is committed, the object becomes detached,
+        which will emit the :meth:`.SessionEvents.deleted_to_detached`
+        event.
+
+        Note that while the :meth:`.Session.delete` method is the primary
+        public interface to mark an object as deleted, many objects
+        get deleted due to cascade rules, which are not always determined
+        until flush time.  Therefore, there's no way to catch
+        every object that will be deleted until the flush has proceeded.
+        the :meth:`.SessionEvents.persistent_to_deleted` event is therefore
+        invoked at the end of a flush.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def deleted_to_persistent(self, session, instance):
+        """Intercept the "deleted to persistent" transition for a specific object.
+
+        This transition occurs only when an object that's been deleted
+        successfully in a flush is restored due to a call to
+        :meth:`.Session.rollback`.   The event is not called under
+        any other circumstances.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def deleted_to_detached(self, session, instance):
+        """Intercept the "deleted to detached" transition for a specific object.
+
+        This event is invoked when a deleted object is evicted
+        from the session.   The typical case when this occurs is when
+        the transaction for a :class:`.Session` in which the object
+        was deleted is committed; the object moves from the deleted
+        state to the detached state.
+
+        It is also invoked for objects that were deleted in a flush
+        when the :meth:`.Session.expunge_all` or :meth:`.Session.close`
+        events are called, as well as if the object is individually
+        expunged from its deleted state via :meth:`.Session.expunge`.
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
+    def persistent_to_detached(self, session, instance):
+        """Intercept the "persistent to detached" transition for a specific object.
+
+        This event is invoked when a persistent object is evicted
+        from the session.  There are many conditions that cause this
+        to happen, including:
+
+        * using a method such as :meth:`.Session.expunge`
+          or :meth:`.Session.close`
+
+        * Calling the :meth:`.Session.rollback` method, when the object
+          was part of an INSERT statement for that session's transaction
+
+
+        :param session: target :class:`.Session`
+
+        :param instance: the ORM-mapped instance being operated upon.
+
+        :param deleted: boolean.  If True, indicates this object moved
+         to the detached state because it was marked as deleted and flushed.
+
+
+        .. versionadded:: 1.1
+
+        .. seealso::
+
+            :ref:`session_lifecycle_events`
+
+        """
+
 
 class AttributeEvents(event.Events):
     """Define events for object attributes.
@@ -1534,7 +1812,7 @@ class AttributeEvents(event.Events):
         def validate_phone(target, value, oldvalue, initiator):
             "Strip non-numeric characters from a phone number"
 
-            return re.sub(r'(?![0-9])', '', value)
+            return re.sub(r'\D', '', value)
 
         # setup listener on UserContact.phone attribute, instructing
         # it to use the return value
@@ -1691,6 +1969,114 @@ class AttributeEvents(event.Events):
 
         :return: if the event was registered with ``retval=True``,
          the given value, or a new effective value, should be returned.
+
+        """
+
+    def init_scalar(self, target, value, dict_):
+        """Receive a scalar "init" event.
+
+        This event is invoked when an uninitialized, unpersisted scalar
+        attribute is accessed.  A value of ``None`` is typically returned
+        in this case; no changes are made to the object's state.
+
+        The event handler can alter this behavior in two ways.
+        One is that a value other than ``None`` may be returned.  The other
+        is that the value may be established as part of the object's state,
+        which will also have the effect that it is persisted.
+
+        Typical use is to establish a specific default value of an attribute
+        upon access::
+
+            SOME_CONSTANT = 3.1415926
+
+            @event.listens_for(
+                MyClass.some_attribute, "init_scalar",
+                retval=True, propagate=True)
+            def _init_some_attribute(target, dict_, value):
+                dict_['some_attribute'] = SOME_CONSTANT
+                return SOME_CONSTANT
+
+        Above, we initialize the attribute ``MyClass.some_attribute`` to the
+        value of ``SOME_CONSTANT``.   The above code includes the following
+        features:
+
+        * By setting the value ``SOME_CONSTANT`` in the given ``dict_``,
+          we indicate that the value is to be persisted to the database.
+          **The given value is only persisted to the database if we
+          explicitly associate it with the object**.  The ``dict_`` given
+          is the ``__dict__`` element of the mapped object, assuming the
+          default attribute instrumentation system is in place.
+
+        * By establishing the ``retval=True`` flag, the value we return
+          from the function will be returned by the attribute getter.
+          Without this flag, the event is assumed to be a passive observer
+          and the return value of our function is ignored.
+
+        * The ``propagate=True`` flag is significant if the mapped class
+          includes inheriting subclasses, which would also make use of this
+          event listener.  Without this flag, an inheriting subclass will
+          not use our event handler.
+
+        When we establish the value in the given dictionary, the value will
+        be used in the INSERT statement established by the unit of work.
+        Normally, the default returned value of ``None`` is not established as
+        part of the object, to avoid the issue of mutations occurring to the
+        object in response to a normally passive "get" operation, and also
+        sidesteps the issue of whether or not the :meth:`.AttributeEvents.set`
+        event should be awkwardly fired off during an attribute access
+        operation.  This does not impact the INSERT operation since the
+        ``None`` value matches the value of ``NULL`` that goes into the
+        database in any case; note that ``None`` is skipped during the INSERT
+        to ensure that column and SQL-level default functions can fire off.
+
+        The attribute set event :meth:`.AttributeEvents.set` as well as the
+        related validation feature provided by :obj:`.orm.validates` is
+        **not** invoked when we apply our value to the given ``dict_``.  To
+        have these events to invoke in response to our newly generated
+        value, apply the value to the given object as a normal attribute
+        set operation::
+
+            SOME_CONSTANT = 3.1415926
+
+            @event.listens_for(
+                MyClass.some_attribute, "init_scalar",
+                retval=True, propagate=True)
+            def _init_some_attribute(target, dict_, value):
+                # will also fire off attribute set events
+                target.some_attribute = SOME_CONSTANT
+                return SOME_CONSTANT
+
+        When multiple listeners are set up, the generation of the value
+        is "chained" from one listener to the next by passing the value
+        returned by the previous listener that specifies ``retval=True``
+        as the ``value`` argument of the next listener.
+
+        The :meth:`.AttributeEvents.init_scalar` event may be used to
+        extract values from the default values and/or callables established on
+        mapped :class:`.Column` objects.  See the "active column defaults"
+        example in :ref:`examples_instrumentation` for an example of this.
+
+        .. versionadded:: 1.1
+
+        :param target: the object instance receiving the event.
+         If the listener is registered with ``raw=True``, this will
+         be the :class:`.InstanceState` object.
+        :param value: the value that is to be returned before this event
+         listener were invoked.  This value begins as the value ``None``,
+         however will be the return value of the previous event handler
+         function if multiple listeners are present.
+        :param dict_: the attribute dictionary of this mapped object.
+         This is normally the ``__dict__`` of the object, but in all cases
+         represents the destination that the attribute system uses to get
+         at the actual value of this attribute.  Placing the value in this
+         dictionary has the effect that the value will be used in the
+         INSERT statement generated by the unit of work.
+
+
+        .. seealso::
+
+            :ref:`examples_instrumentation` - see the
+            ``active_column_defaults.py`` example.
 
         """
 

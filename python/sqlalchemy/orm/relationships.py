@@ -1,5 +1,5 @@
 # orm/relationships.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -114,7 +114,7 @@ class RelationshipProperty(StrategizedProperty):
                  cascade_backrefs=True,
                  load_on_pending=False,
                  bake_queries=True,
-                 strategy_class=None, _local_remote_pairs=None,
+                 _local_remote_pairs=None,
                  query_class=None,
                  info=None):
         """Provide a relationship between two mapped classes.
@@ -540,6 +540,26 @@ class RelationshipProperty(StrategizedProperty):
             support "write-only" attributes, or attributes which are
             populated in some manner specific to the application.
 
+          * ``raise`` - lazy loading is disallowed; accessing
+            the attribute, if its value were not already loaded via eager
+            loading, will raise an :exc:`~sqlalchemy.exc.InvalidRequestError`.
+            This strategy can be used when objects are to be detached from
+            their attached :class:`.Session` after they are loaded.
+
+            .. versionadded:: 1.1
+
+          * ``raise_on_sql`` - lazy loading that emits SQL is disallowed;
+            accessing the attribute, if its value were not already loaded via
+            eager loading, will raise an
+            :exc:`~sqlalchemy.exc.InvalidRequestError`, **if the lazy load
+            needs to emit SQL**.  If the lazy load can pull the related value
+            from the identity map or determine that it should be None, the
+            value is loaded.  This strategy can be used when objects will
+            remain associated with the attached :class:`.Session`, however
+            additional SELECT statements should be blocked.
+
+            .. versionadded:: 1.1
+
           * ``dynamic`` - the attribute will return a pre-configured
             :class:`.Query` object for all read
             operations, onto which further filtering operations can be
@@ -558,6 +578,8 @@ class RelationshipProperty(StrategizedProperty):
             configuration.
 
             :ref:`dynamic_relationship` - detail on the ``dynamic`` option.
+
+            :ref:`collections_noload_raiseload` - notes on "noload" and "raise"
 
         :param load_on_pending=False:
           Indicates loading behavior for transient or pending parent objects.
@@ -834,10 +856,7 @@ class RelationshipProperty(StrategizedProperty):
         if info is not None:
             self.info = info
 
-        if strategy_class:
-            self.strategy_class = strategy_class
-        else:
-            self.strategy_class = self._strategy_lookup(("lazy", self.lazy))
+        self.strategy_key = (("lazy", self.lazy), )
 
         self._reverse_property = set()
 
@@ -1430,7 +1449,7 @@ class RelationshipProperty(StrategizedProperty):
               source_dict,
               dest_state,
               dest_dict,
-              load, _recursive):
+              load, _recursive, _resolve_conflict_map):
 
         if load:
             for r in self._reverse_property:
@@ -1463,8 +1482,10 @@ class RelationshipProperty(StrategizedProperty):
                 current_state = attributes.instance_state(current)
                 current_dict = attributes.instance_dict(current)
                 _recursive[(current_state, self)] = True
-                obj = session._merge(current_state, current_dict,
-                                     load=load, _recursive=_recursive)
+                obj = session._merge(
+                    current_state, current_dict,
+                    load=load, _recursive=_recursive,
+                    _resolve_conflict_map=_resolve_conflict_map)
                 if obj is not None:
                     dest_list.append(obj)
 
@@ -1474,16 +1495,19 @@ class RelationshipProperty(StrategizedProperty):
                 for c in dest_list:
                     coll.append_without_event(c)
             else:
-                dest_state.get_impl(self.key)._set_iterable(
-                    dest_state, dest_dict, dest_list)
+                dest_state.get_impl(self.key).set(
+                    dest_state, dest_dict, dest_list,
+                    _adapt=False)
         else:
             current = source_dict[self.key]
             if current is not None:
                 current_state = attributes.instance_state(current)
                 current_dict = attributes.instance_dict(current)
                 _recursive[(current_state, self)] = True
-                obj = session._merge(current_state, current_dict,
-                                     load=load, _recursive=_recursive)
+                obj = session._merge(
+                    current_state, current_dict,
+                    load=load, _recursive=_recursive,
+                    _resolve_conflict_map=_resolve_conflict_map)
             else:
                 obj = None
 
@@ -1729,17 +1753,6 @@ class RelationshipProperty(StrategizedProperty):
                 (self.key, self.parent.class_.__name__,
                  self.parent.class_.__name__))
 
-        # check for conflicting relationship() on superclass
-        if not self.parent.concrete:
-            for inheriting in self.parent.iterate_to_root():
-                if inheriting is not self.parent \
-                        and inheriting.has_property(self.key):
-                    util.warn("Warning: relationship '%s' on mapper "
-                              "'%s' supersedes the same relationship "
-                              "on inherited mapper '%s'; this can "
-                              "cause dependency issues during flush"
-                              % (self.key, self.parent, inheriting))
-
     def _get_cascade(self):
         """Return the current cascade setting for this
         :class:`.RelationshipProperty`.
@@ -1812,15 +1825,16 @@ class RelationshipProperty(StrategizedProperty):
                 backref_key, kwargs = self.backref
             mapper = self.mapper.primary_mapper()
 
-            check = set(mapper.iterate_to_root()).\
-                union(mapper.self_and_descendants)
-            for m in check:
-                if m.has_property(backref_key):
-                    raise sa_exc.ArgumentError(
-                        "Error creating backref "
-                        "'%s' on relationship '%s': property of that "
-                        "name exists on mapper '%s'" %
-                        (backref_key, self, m))
+            if not mapper.concrete:
+                check = set(mapper.iterate_to_root()).\
+                    union(mapper.self_and_descendants)
+                for m in check:
+                    if m.has_property(backref_key) and not m.concrete:
+                        raise sa_exc.ArgumentError(
+                            "Error creating backref "
+                            "'%s' on relationship '%s': property of that "
+                            "name exists on mapper '%s'" %
+                            (backref_key, self, m))
 
             # determine primaryjoin/secondaryjoin for the
             # backref.  Use the one we had, so that

@@ -1,5 +1,5 @@
 # testing/config.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -15,7 +15,11 @@ file_config = None
 test_schema = None
 test_schema_2 = None
 _current = None
-_skip_test_exception = None
+
+try:
+    from unittest import SkipTest as _skip_test_exception
+except ImportError:
+    _skip_test_exception = None
 
 
 class Config(object):
@@ -90,3 +94,4 @@ class Config(object):
 
 def skip_test(msg):
     raise _skip_test_exception(msg)
+

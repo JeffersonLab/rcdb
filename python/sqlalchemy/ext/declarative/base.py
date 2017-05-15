@@ -1,5 +1,5 @@
 # ext/declarative/base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2017 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -351,7 +351,8 @@ class _MapperConfig(object):
                 util.warn(
                     "On class %r, Column object %r named "
                     "directly multiple times, "
-                    "only one will be used: %s" %
+                    "only one will be used: %s. "
+                    "Consider using orm.synonym instead" %
                     (self.classname, name, (", ".join(sorted(keys))))
                 )
 
@@ -491,8 +492,12 @@ class _MapperConfig(object):
 
             if 'exclude_properties' not in mapper_args:
                 mapper_args['exclude_properties'] = exclude_properties = \
-                    set([c.key for c in inherited_table.c
-                         if c not in inherited_mapper._columntoproperty])
+                    set(
+                        [c.key for c in inherited_table.c
+                         if c not in inherited_mapper._columntoproperty]
+                ).union(
+                    inherited_mapper.exclude_properties or ()
+                )
                 exclude_properties.difference_update(
                     [c.key for c in self.declared_columns])
 
