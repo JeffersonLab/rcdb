@@ -29,7 +29,6 @@ from rcdb.errors import OverrideConditionTypeError, NoConditionTypeFound, \
     NoRunFoundError, OverrideConditionValueError, QueryFormatError
 from rcdb.model import *
 
-
 log = logging.getLogger("rcdb.provider")
 
 
@@ -106,11 +105,13 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-
-            if not self.is_acceptable_sql_version():
-                message = "SQL schema version doesn't match. " \
-                          "Probably RCDB is connecting with wrong, empty or older/newer DB"
-                raise rcdb.errors.SqlSchemaVersionError(message)
+            try:
+                if not self.is_acceptable_sql_version():
+                    message = "SQL schema version doesn't match. " \
+                              "Probably RCDB is connecting with wrong, empty or older/newer DB"
+                    raise rcdb.errors.SqlSchemaVersionError(message)
+            except:
+                raise
 
     # ------------------------------------------------
     # Closes connection to data
@@ -645,7 +646,7 @@ class RCDBProvider(object):
 
         file_path = str(file_path)
 
-        query = self.session.query(ConfigurationFile).join(ConfigurationFile.runs)\
+        query = self.session.query(ConfigurationFile).join(ConfigurationFile.runs) \
             .filter(ConfigurationFile.runs.any(Run.number == run.number), ConfigurationFile.path == file_path)
 
         return query.first()
@@ -839,7 +840,7 @@ class RCDBProvider(object):
 
         target_cnd_types = []
         names = []
-        names_count = 1     # because run_number is always 1-st so index 0 is for it
+        names_count = 1  # because run_number is always 1-st so index 0 is for it
         for token in tokens:
             if token.type in lexer.rcdb_query_restricted:
                 raise QueryFormatError("Query contains restricted symbol: '{}'".format(token.value))
@@ -902,8 +903,8 @@ class RCDBProvider(object):
                 .format(table_name, ct.id, os.linesep)
 
         mighty_query = query + os.linesep \
-                       + query_joins + os.linesep \
-                       + where_clause
+                             + query_joins + os.linesep \
+                             + where_clause
 
         if not sort_desc:
             mighty_query = mighty_query + os.linesep + "ORDER BY runs.number"
@@ -915,7 +916,7 @@ class RCDBProvider(object):
 
         sql = text(mighty_query)
         if runs:
-            result = self.session.connection().execute(sql)     # runs are already in query
+            result = self.session.connection().execute(sql)  # runs are already in query
         else:
             result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
 
@@ -979,7 +980,7 @@ class RcdbSelectionResult(MutableSequence):
                             "start_time_stamp": js_now,
                             "get_conditions": 0,
                             "tabling_values": 0,
-                            "total":0
+                            "total": 0
                             }
 
         if rows is not None:
@@ -1507,6 +1508,7 @@ class ConfigurationProvider(RCDBProvider):
 
         return conf_file
 
+
 def alembic_set_stamp_head(connection_string):
     import os
     import argparse
@@ -1522,7 +1524,7 @@ def alembic_set_stamp_head(connection_string):
 
     config = Config(ini_path)
     config.set_main_option('script_location', alembic_directory)
-    config.cmd_opts = argparse.Namespace() # other command like options.
+    config.cmd_opts = argparse.Namespace()  # other command like options.
     x_arg = 'rcdb_connection=' + connection_string
     if not hasattr(config.cmd_opts, 'x'):
         if x_arg is not None:
@@ -1549,9 +1551,7 @@ def destroy_schema(db):
     try:
         db.session.connection().execute(drop_sql)
     except ProgrammingError:
-        pass   # because it might be such way
-
-
+        pass  # because it might be such way
 
 
 def destroy_all_create_schema(db):
@@ -1563,13 +1563,12 @@ def destroy_all_create_schema(db):
     assert isinstance(db, RCDBProvider)
     destroy_schema(db)
 
-    #rcdb.model.Base.metadata.create_all(db.engine)
+    # rcdb.model.Base.metadata.create_all(db.engine)
 
     alembic_set_stamp_head(db.connection_string)
 
-    #v = SchemaVersion()
-    #v.version = rcdb.SQL_SCHEMA_VERSION
-    #v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
-    #db.session.add(v)
-    #db.session.commit()
-
+    # v = SchemaVersion()
+    # v.version = rcdb.SQL_SCHEMA_VERSION
+    # v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
+    # db.session.add(v)
+    # db.session.commit()
