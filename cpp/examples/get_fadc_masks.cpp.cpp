@@ -43,7 +43,7 @@
 
 using namespace std;
 
-vector<string> MainConfigSections = {"TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH",
+vector<string> MainConfigSectionNames = {"TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH",
                                      "TAGM", "PS", "PSC", "TPOL", "CDC", "FDC"};
 
 
@@ -95,7 +95,7 @@ int main ( int argc, char *argv[] )
 
     // ==> 4. Parse run config file content
     string fileContent = file->GetContent();                               // Get file content
-    auto result = rcdb::ConfigParser::Parse(fileContent, SectionNames);    // Parse it!
+    auto result = rcdb::ConfigParser::Parse(fileContent, MainConfigSectionNames);    // Parse it!
 
     // NameValues member of Sections contains things like 'BLOCKLEVEL 1'
     cout<<"BLOCKLEVEL = "<<result.Sections["TRIGGER"].NameValues["BLOCKLEVEL"]<< endl;
