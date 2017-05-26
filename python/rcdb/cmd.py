@@ -6,6 +6,7 @@ import click
 
 from rcdb.app_context import RcdbApplicationContext, parse_run_range
 from rcdb import RCDBProvider
+from rcdb.model import ConfigurationFile
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
 
@@ -44,10 +45,7 @@ def cli(ctx, user_config, connection, config, verbose):
 @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 @pass_rcdb_context
 def ls(context, search, is_long):
-    """Lists condition
-
-
-    """
+    """Lists conditions"""
     db = context.db
     assert isinstance(db, RCDBProvider)
     cnd_types = db.get_condition_types_by_name()
@@ -60,6 +58,21 @@ def ls(context, search, is_long):
         cnd_type = cnd_types[name]
         click.echo("{0:<{1}}   {2}".format(name, longest_len, cnd_type.description))
 
+
+@cli.command()
+@click.argument('run', required=True, help="Run number to show files for")
+@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
+@pass_rcdb_context
+def files(context, run, is_long):
+    """Lists conditions"""
+    db = context.db
+    assert isinstance(db, RCDBProvider)
+
+    run = db.get_run(int(run))
+
+    for file in run.files:
+        assert isinstance(file, ConfigurationFile)
+        click.echo(file.path)
 
 def cat():
     pass
