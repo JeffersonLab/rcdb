@@ -84,7 +84,7 @@ SET(TEST_SOURCE_FILES
         tests/test_ConfigParser.cpp)
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
-add_executable(examples_trigger_params    examples/get_trigger_params.cpp examples/get_fadc_masks.cpp.cpp)
+add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
 add_executable(examples_fadc_masks        examples/get_fadc_masks.cpp)
 add_executable(examples_write_conditions  examples/write_conditions.cpp)
 

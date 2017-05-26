@@ -85,6 +85,11 @@ namespace rcdb{
             return _provider->GetFile(runNumber, name);
         }
 
+        virtual std::vector<std::string> GetFileNames(uint64_t runNumber)
+        {
+            return _provider->GetFileNames(runNumber);
+        }
+
     protected:
         std::string _connectionString;
         std::unique_ptr<DataProvider> _provider;

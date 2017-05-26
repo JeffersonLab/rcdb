@@ -186,7 +186,8 @@ namespace rcdb {
             std::vector<std::string> filePaths;
             MYSQL_ROW row;
             while ((row = mysql_fetch_row(result.get()))) {
-                filePaths.push_back(string(row[1]));
+
+                filePaths.push_back(string(row[0]));
             }
 
             return filePaths; //Empty ptr
