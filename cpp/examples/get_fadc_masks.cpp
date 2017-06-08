@@ -47,27 +47,6 @@ using namespace std;
 vector<string> MainConfigSectionNames = {"TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH",
                                      "TAGM", "PS", "PSC", "TPOL", "CDC", "FDC"};
 
-vector<string> FadcSlotNames = {
-        "FADC250_SLOTS   1",
-        "FADC250_SLOTS   2",
-        "FADC250_SLOTS   3",
-        "FADC250_SLOTS   4",
-        "FADC250_SLOTS   5",
-        "FADC250_SLOTS   6",
-        "FADC250_SLOTS   7",
-        "FADC250_SLOTS   8",
-        "FADC250_SLOTS   9",
-        "FADC250_SLOTS   10",
-        "FADC250_SLOTS   11",
-        "FADC250_SLOTS   12",
-        "FADC250_SLOTS   13",
-        "FADC250_SLOTS   14",
-        "FADC250_SLOTS   15",
-        "FADC250_SLOTS   16",
-        "FADC250_SLOTS   17",
-        "FADC250_SLOTS   18",
-        "FADC250_SLOTS   19",
-};
 
 
 rcdb::ConfigFileParseResult GetMainConfigParsed(rcdb::Connection &connection, int runNumber)
