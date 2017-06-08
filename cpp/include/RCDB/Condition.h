@@ -125,6 +125,10 @@ namespace rcdb {
             Condition::_id = _id;
         }
 
+        unsigned long GetId() {
+            return _id;
+        }
+
         void SetRunNumber(unsigned long _runNumber) {
             Condition::_runNumber = _runNumber;
         }
