@@ -14,6 +14,7 @@
 #include "DataProvider.h"
 #include "MySqlConnectionInfo.h"
 #include "Exceptions.h"
+#include "StringUtils.h"
 
 namespace rcdb {
     class MySqlProvider : public DataProvider {
@@ -150,7 +151,19 @@ namespace rcdb {
 
         /// Gets conditions by run and name
         std::unique_ptr<Condition> GetCondition(uint64_t runNumber, const std::string &name) {
-            return GetCondition(runNumber, _typesByName[name]);
+            return GetCondition(runNumber, GetConditionType(name));
+        }
+
+        ConditionType GetConditionType(const std::string &name)
+        {
+            try {
+                return _typesByName.at(name);
+            }
+            catch (std::out_of_range& e)
+            {
+                auto message = std::string("ConditionType with name '") + name + "' is not found in the database";
+                throw std::out_of_range(message);
+            }
         }
 
         /// Gets conditions by ConditionType and run (@see GetRun and SetRun)
@@ -387,22 +400,20 @@ namespace rcdb {
             std::ostringstream query;
             ThrowIfRunNotExists(runNumber);
 
-            query << "UPDATE runs SET started='" << GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
+            query << "UPDATE runs SET started='" << StringUtils::GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
                 throw std::logic_error(mysql_error(_connection.get()));
             }
 
             AddCondition(runNumber, "run_start_time", time);
-
-
         }
 
         void AddRunEndTime(uint64_t runNumber, std::tm time) {
             std::ostringstream query;
             ThrowIfRunNotExists(runNumber);
 
-            query << "UPDATE runs SET finished='" << GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
+            query << "UPDATE runs SET finished='" << StringUtils::GetFormattedTime(time) << "' WHERE runs.number = " << runNumber;
             // Run query
             if (mysql_query(_connection.get(), query.str().c_str())) {
                 throw std::logic_error(mysql_error(_connection.get()));
@@ -411,27 +422,17 @@ namespace rcdb {
             AddCondition(runNumber, "run_end_time", time);
         }
 
-        std::string GetFormattedTime(std::tm time) {
-            char buff[20];
-            strftime(buff, 20, "%Y-%m-%d %H:%M:%S", &time);
-            return std::string(buff);
-        }
-
-        std::string GetFormattedTime(std::time_t time) {
-            return GetFormattedTime(*localtime(&time));
-        }
-
         void AddCondition(uint64_t runNumber, const std::string &name, long value) {
             ThrowIfRunNotExists(runNumber);
 
-            auto conditionType = _typesByName[name.c_str()];
+            auto conditionType = GetConditionType(name);
             auto existingCondition = GetCondition(runNumber, conditionType);
 
             std::ostringstream query;
             if(existingCondition == nullptr){
                 query << "INSERT INTO conditions (int_value, run_number, condition_type_id, created) VALUES "
                         "(" << value << ", " << runNumber << ", " << conditionType.GetId() << ", '"
-                      << GetFormattedTime(time(NULL)) << "')";
+                      << StringUtils::GetFormattedTime(time(NULL)) << "')";
 
             }
             else {
@@ -447,17 +448,17 @@ namespace rcdb {
         void AddCondition(uint64_t runNumber, const std::string &name, std::tm value) {
             ThrowIfRunNotExists(runNumber);
 
-            auto conditionType = _typesByName[name.c_str()];
+            auto conditionType = GetConditionType(name);
             auto existingCondition = GetCondition(runNumber, conditionType);
 
             std::ostringstream query;
             if(existingCondition == nullptr) {
                 query << "INSERT INTO conditions (time_value, run_number, condition_type_id, created) VALUES "
-                        "('" << GetFormattedTime(value) << "', " << runNumber << ", " << conditionType.GetId() << ", '"
-                      << GetFormattedTime(time(NULL)) << "')";
+                        "('" << StringUtils::GetFormattedTime(value) << "', " << runNumber << ", " << conditionType.GetId() << ", '"
+                      << StringUtils::GetFormattedTime(time(NULL)) << "')";
             }
             else {
-                query << "UPDATE conditions SET `time_value` = '"<<GetFormattedTime(value)<<"', `created` = NOW() "
+                query << "UPDATE conditions SET `time_value` = '"<<StringUtils::GetFormattedTime(value)<<"', `created` = NOW() "
                         " WHERE `id` = "<<existingCondition->GetId()<<" ;";
 
             }
@@ -472,14 +473,14 @@ namespace rcdb {
         void AddCondition(uint64_t runNumber, const std::string &name, double value) {
             ThrowIfRunNotExists(runNumber);
 
-            auto conditionType = _typesByName[name.c_str()];
+            auto conditionType = GetConditionType(name);
             auto existingCondition = GetCondition(runNumber, conditionType);
 
             std::ostringstream query;
             if(existingCondition == nullptr) {
                 query << "INSERT INTO conditions (float_value, run_number, condition_type_id, created) VALUES "
                         "(" << value << ", " << runNumber << ", " << conditionType.GetId() << ", '"
-                      << GetFormattedTime(time(NULL)) << "')";
+                      << StringUtils::GetFormattedTime(time(NULL)) << "')";
             }
             else {
                 query << "UPDATE conditions SET `float_value` = "<<value<<", `created` = NOW() "
@@ -495,14 +496,14 @@ namespace rcdb {
         void AddCondition(uint64_t runNumber, const std::string &name, const std::string &value) {
             ThrowIfRunNotExists(runNumber);
 
-            auto conditionType = _typesByName[name.c_str()];
+            auto conditionType =  GetConditionType(name);
             auto existingCondition = GetCondition(runNumber, conditionType);
 
             std::ostringstream query;
             if(existingCondition == nullptr) {
                 query << "INSERT INTO conditions (text_value, run_number, condition_type_id, created) VALUES "
                         "('" << value << "', " << runNumber << ", " << conditionType.GetId() << ", '"
-                      << GetFormattedTime(time(NULL)) << "')";
+                      << StringUtils::GetFormattedTime(time(NULL)) << "')";
             }
             else {
                 query << "UPDATE conditions SET `text_value` = '"<<value<<"', `created` = NOW() "
@@ -511,7 +512,8 @@ namespace rcdb {
             }
 
             // Run query
-            if (mysql_query(_connection.get(), query.str().c_str())) {
+            auto query_str = query.str();
+            if (mysql_query(_connection.get(), query_str.c_str())) {
                 throw std::logic_error(mysql_error(_connection.get()));
             }
         }
@@ -519,14 +521,14 @@ namespace rcdb {
         void AddCondition(uint64_t runNumber, const std::string &name, bool value) {
             ThrowIfRunNotExists(runNumber);
 
-            auto conditionType = _typesByName[name.c_str()];
+            auto conditionType = GetConditionType(name);
             auto existingCondition = GetCondition(runNumber, conditionType);
 
             std::ostringstream query;
             if(existingCondition == nullptr) {
                 query << "INSERT INTO conditions (bool_value, run_number, condition_type_id, created) VALUES "
                         "(" << value << ", " << runNumber << ", " << conditionType.GetId() << ", '"
-                      << GetFormattedTime(time(NULL)) << "')";
+                      << StringUtils::GetFormattedTime(time(NULL)) << "')";
             }
             else {
                 query << "UPDATE conditions SET `bool_value` = "<<value<<", `created` = NOW() "

@@ -26,6 +26,15 @@
 class StringUtils {
 public:
 
+   static inline std::string GetFormattedTime(std::tm time) {
+        char buff[20];
+        strftime(buff, 20, "%Y-%m-%d %H:%M:%S", &time);
+        return std::string(buff);
+    }
+
+    static inline std::string GetFormattedTime(std::time_t time) {
+        return GetFormattedTime(*localtime(&time));
+    }
 
     // trim from start (in place)
     static inline void ltrim(std::string &s) {

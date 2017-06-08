@@ -20,7 +20,7 @@ int main ( int argc, char *argv[] )
 
     // Get a connection string from arguments
     if ( argc != 2 ) {
-        cout<<"This example gets event_count for a specified run"<<endl;
+        cout<<"This example writes some array as json field for a specified run"<<endl;
         cout<<"Before run, create condition types as follows:"<<endl;
         cout<<"rcnd --create json_cnd --type json --description \"JSON serialized values\""<<endl;
         cout<<"usage: "<< argv[0] <<" <connection_string>"<<endl;

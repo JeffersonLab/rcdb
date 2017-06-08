@@ -81,16 +81,18 @@ SET(TEST_SOURCE_FILES
 
         tests/catch.hpp
         tests/catch.cpp
-        tests/test_ConfigParser.cpp)
+        tests/test_ConfigParser.cpp include/json/json.hpp)
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
 add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
 add_executable(examples_fadc_masks        examples/get_fadc_masks.cpp)
 add_executable(examples_write_conditions  examples/write_conditions.cpp)
 add_executable(examples_write_array_to_json examples/write_array_to_json.cpp)
+add_executable(examples_write_objects_to_json examples/write_objects_to_json.cpp)
 
 target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_trigger_params ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_fadc_masks ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_write_array_to_json ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(examples_write_objects_to_json ${DB_REQIRED_LIBRARIES} dl pthread)
