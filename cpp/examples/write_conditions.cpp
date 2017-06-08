@@ -14,6 +14,12 @@ int main ( int argc, char *argv[] )
     // Get a connection string from arguments
     if ( argc != 2 ) {
         cout<<"This example gets event_count for a specified run"<<endl;
+        cout<<"Before run, create condition types as follows:"<<endl;
+        cout<<"rcnd --create int_cnd --type int --description \"Int value\""<<endl;
+        cout<<"rcnd --create float_cnd --type float --description \"Float value\""<<endl;
+        cout<<"rcnd --create time_cnd --type time --description \"Time value\""<<endl;
+        cout<<"rcnd --create text_cnd --type string --description \"Text value\""<<endl;
+        cout<<"rcnd --create bool_cnd --type bool --description \"Bool value\""<<endl;
         cout<<"usage: "<< argv[0] <<" <connection_string>"<<endl;
         cout<<"exmpl: "<< argv[0] <<" mysql://rcdb@localhost/rcdb"<<endl;
         return 1;
