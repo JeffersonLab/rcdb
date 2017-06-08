@@ -53,7 +53,7 @@ int main ( int argc, char *argv[] )
     end_time.tm_isdst = 0;
 
 
-    connection.AddRun(998);
+    connection.AddRun(999);
     connection.AddRunStartTime(999, start_time);
     connection.AddRunEndTime(999, end_time);
 
@@ -90,7 +90,7 @@ int main ( int argc, char *argv[] )
     // since we saved json as array, we can iterate it directly
     for(int i=0; i<json.Size(); i++)
     {
-        std::cout<< json[i].GetInt();
+        std::cout<<" "<< json[i].GetInt();
     }
     std::cout<<endl;
 
