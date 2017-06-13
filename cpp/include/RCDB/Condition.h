@@ -10,7 +10,6 @@
 #include <chrono>
 #include <string>
 #include "rapidjson/document.h"
-#include "json/json.hpp"
 
 class DataProvder;
 
@@ -101,15 +100,6 @@ namespace rcdb {
             }
 
             return document;
-        }
-
-        nlohmann::json ToJson()
-        {
-            if (GetValueType() != ValueTypes::Json) {
-                throw rcdb::ValueFormatError("Value type of the condition is not Json");
-            }
-
-            return nlohmann::json::parse(_text_value);
         }
 
 
