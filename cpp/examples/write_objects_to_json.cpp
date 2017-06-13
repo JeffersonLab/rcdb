@@ -116,7 +116,7 @@ id      name    value_type      created         description
     // P A R T   2 - r e a d i n g   a r r a y
 
     auto cnd = connection.GetCondition(999, "json_cnd");
-    auto data = cnd->ToJson();
+    auto data = json::parse(cnd->ToString());
 
     // iterate as the array
     for (json::iterator it = data.begin(); it != data.end(); ++it) {
