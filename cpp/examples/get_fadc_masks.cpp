@@ -178,7 +178,7 @@ int main ( int argc, char *argv[] )
     }
     // Parse COM file and get values from com FILE
     auto userParseResult = rcdb::ConfigParser::ParseWithSlots(userFile->GetContent(), "FADC250_SLOTS");
-    auto userValues = comParseResult.SectionsBySlotNumber[3].NameVectors["FADC250_TRG_MASK"];  // Parse it and return
+    auto userValues = userParseResult.SectionsBySlotNumber[3].NameVectors["FADC250_TRG_MASK"];  // Parse it and return
 
     cout<<"FADC250_TRG_MASK for slot 3 is:"<<endl;
     for (int i = 0; i < userValues.size(); ++i) {
