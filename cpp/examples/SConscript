@@ -39,3 +39,8 @@ env.Install('#bin', 'exmpl_get_trigger_params')
 # example from  get_trigger_params.cpp
 env.Program('exmpl_write_conditions', source = ["write_conditions.cpp"])
 env.Install('#bin', 'exmpl_write_conditions')
+
+
+# example from  get_fadc_masks.cpp
+env.Program('exmpl_fadc_masks', source = ["get_fadc_masks.cpp"])
+env.Install('#bin', 'exmpl_fadc_masks')
