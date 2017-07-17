@@ -7,9 +7,9 @@
 #include <iostream>
 
 #include "RCDB/WritingConnection.h"
-#include "json/json.hpp"
+#include <tao/json.hpp>
 
-using json = nlohmann::json;
+using namespace tao;
 
 int main(int argc, char *argv[]) {
     using namespace std;
@@ -17,8 +17,8 @@ int main(int argc, char *argv[]) {
 
     // Get a connection string from arguments
     if (argc != 2) {
-        cout << "This example writes objects as json for a specified run" << endl;
-        cout<<"rcnd --create json_cnd --type json --description \"JSON serialized values\""<<endl;
+        cout << "This example writes objects as j for a specified run" << endl;
+        cout<<"rcnd --create json_cnd --type j --description \"JSON serialized values\""<<endl;
         cout << "usage: " << argv[0] << " <connection_string>" << endl;
         cout << "exmpl: " << argv[0] << " mysql://rcdb@localhost/rcdb" << endl;
         cout << "exmpl: " << argv[0] << " mysql://rcdb:password@clondb1/rcdb" << endl;
@@ -55,21 +55,21 @@ int main(int argc, char *argv[]) {
 
 
 /*
-id      name    value_type      created         description
-1       event_count     int     2017-03-15 14:18:55     Number of events in run
-2       events_rate     float   2017-03-15 14:18:55     Daq events rate
-3       temperature     int     2017-03-15 14:18:55     Temperature of the Sun
-4       beam_energy     float   2017-03-15 18:57:22     Beam Energy
-5       test    float   2017-03-15 18:58:00     Beam test
-6       beam_current    float   2017-03-15 19:02:10     Beam current
-7       torus_scale     float   2017-03-15 19:02:10     Torus scale factor
-8       daq_trigger     string  2017-03-15 19:02:10     Trigger file
-9       target_position         float   2017-03-15 19:02:10     Target position
-10      daq_comment     string  2017-03-15 19:02:10     DAQ comment
-11      run_start_time  time    2017-04-21 10:28:49     Run start time
-12      run_end_time    time    2017-04-21 10:29:02     Run end time
-13      is_valid_run_end        bool    2017-04-21 10:48:35     True if a run has valid run-end record. False mean...
-14      status  int     2017-05-17 13:30:34     Run Status
+id      name           value_type      created              description
+1       event_count       int     2017-03-15 14:18:55     Number of events in run
+2       events_rate       float   2017-03-15 14:18:55     Daq events rate
+3       temperature       int     2017-03-15 14:18:55     Temperature of the Sun
+4       beam_energy       float   2017-03-15 18:57:22     Beam Energy
+5       test              float   2017-03-15 18:58:00     Beam test
+6       beam_current      float   2017-03-15 19:02:10     Beam current
+7       torus_scale       float   2017-03-15 19:02:10     Torus scale factor
+8       daq_trigger       string  2017-03-15 19:02:10     Trigger file
+9       target_position   float   2017-03-15 19:02:10     Target position
+10      daq_comment       string  2017-03-15 19:02:10     DAQ comment
+11      run_start_time    time    2017-04-21 10:28:49     Run start time
+12      run_end_time      time    2017-04-21 10:29:02     Run end time
+13      is_valid_run_end  bool    2017-04-21 10:48:35     True if a run has valid run-end record. False mean...
+14      status            int     2017-05-17 13:30:34     Run Status
 */
 
     int32_t event_count = 12345;
@@ -82,57 +82,66 @@ id      name    value_type      created         description
     std::vector<int> c_vector{1, 2, 3, 4};
 
 
+
+
     // P A R T   1 - w r i t i n g   a r r a y
 
-    // You can create json a way, which looks very similar to the JSON itself)
-    json j = {
+    // You can create j a way, which looks very similar to the JSON itself)
+    json::value j({
             {"event_count", event_count},
             {"events_rate", events_rate},
             {"temperature", temperature},
             {"beam_energy", beam_energy},
             {"daq_trigger", daq_trigger},
             {"test",        test},
-            {"list",        {1, 0, true}},
-            {"object",      {{"currency", "USD"}, {"value", 42.99}}},
-            {"c_vector", c_vector},
-            {"start_time", StringUtils::GetFormattedTime(start_time)}
-        };
+            {"list",        {json::value::array({1, 0, true})} },
+            {"object",      {{"currency", "USD"}, {"value", 42.99}} },
+            {"start_time",  StringUtils::GetFormattedTime(start_time)}
+        });
+
+    // copy array to json
+    auto c_vector_json = json::value::array({});
+    for(auto& item: c_vector) c_vector_json.emplace_back(item);
+
+    // + operator adds one json to another
+    j += {{"c_vector", c_vector_json }};
 
 
     // or act as a dictionary
     // add a number that is stored as double (note the implicit conversion of j to an object)
     j["pi"] = 3.141;
 
-    // Pretty formatted json
-    cout<<j.dump(4)<<endl;
+    // Pretty formatted j
+    cout << tao::json::to_string(j, 4) << endl;
 
-    // compact formatted json
-    cout<<j.dump()<<endl;
+    // compact formatted j
+    cout << tao::json::to_string(j) << endl;
 
     // Add condition
-    connection.AddCondition(999, "json_cnd", j.dump());
+    connection.AddCondition(999, "json_cnd", tao::json::to_string(j));
 
 
     // P A R T   2 - r e a d i n g   a r r a y
 
     auto cnd = connection.GetCondition(999, "json_cnd");
-    auto data = json::parse(cnd->ToString());
+    auto data = tao::json::from_string(cnd->ToString());
 
-    // iterate as the array
-    for (json::iterator it = data.begin(); it != data.end(); ++it) {
-        std::cout << *it << '\n';
-    }
+    // iterate underlying map<name, value>
+    auto &object = data.get_object();
+    //for ( auto it= object.begin(); it != object.end(); ++it) {
+        //std::cout << *it <<" "<< *it << std::endl;
+    //}
 
     // range-based for
-    for (auto& element : data) {
-        std::cout << element << '\n';
+    for (auto& element : object) {
+        std::cout << element.first << " " << element.first << std::endl;
     }
 
 
-    int32_t ev_cnt = data["event_count"];
+    int32_t ev_cnt = object["event_count"].get_unsigned();
 
     // explicit data conversion
-    auto trigger = data["daq_trigger"].get<std::string>();
+    auto trigger = data["daq_trigger"].get_string();
 
     cout<<"trigger= "<<trigger<<"   start_time="<<data["start_time"]<<endl;
 
