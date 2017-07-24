@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   Definition of the SQLITECPP_ASSERT() macro.
  *
- * Copyright (c) 2012-2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -30,7 +30,7 @@ namespace SQLite
                           const char* apExpr, const char* apMsg);
 
 #ifdef _MSC_VER
-#define __func__ __FUNCTION__
+    #define __func__ __FUNCTION__
 #endif
 // call the assert handler provided by user code
 #define SQLITECPP_ASSERT(expression, message) \

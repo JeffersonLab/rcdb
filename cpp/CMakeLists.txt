@@ -30,6 +30,7 @@ endif()
 if(WITH_SQLITE)
     add_definitions(-DRCDB_SQLITE)
     include_directories(include/SQLite)
+        include_directories(include/SQLiteCpp)
     set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
 
 endif()
@@ -39,12 +40,22 @@ MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
 
 
 set(SOURCE_FILES
+
         src/SQLite/sqlite3.c
-        src/SQLiteCpp/Backup.cpp
         src/SQLiteCpp/Column.cpp
         src/SQLiteCpp/Database.cpp
         src/SQLiteCpp/Statement.cpp
         src/SQLiteCpp/Transaction.cpp
+
+        include/SQLite/sqlite3.h
+
+        include/SQLiteCpp/Assertion.h
+        include/SQLiteCpp/Column.h
+        include/SQLiteCpp/Database.h
+        include/SQLiteCpp/Exception.h
+        include/SQLiteCpp/SQLiteCpp.h
+        include/SQLiteCpp/Statement.h
+        include/SQLiteCpp/Transaction.h
 
         include/RCDB/ConditionType.h
         include/RCDB/MySqlProvider.h
