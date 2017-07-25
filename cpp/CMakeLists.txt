@@ -4,7 +4,7 @@
 cmake_minimum_required(VERSION 3.4)
 project(rcdb_cpp)
 
-option(WITH_MYSQL  "Compile with MySQL support" OFF)
+option(WITH_MYSQL "Compile with MySQL support" OFF)
 option(WITH_SQLITE "Compile with SQLite support" ON)
 
 
@@ -18,36 +18,16 @@ include_directories(include)
 
 set(DB_REQIRED_LIBRARIES dl pthread)
 
-if(WITH_MYSQL)
-    add_definitions(-DRCDB_MYSQL)
-    include_directories(/usr/include/mysql)
-    set(DB_REQIRED_LIBRARIES mysqlclient ${DB_REQIRED_LIBRARIES})
+# add SQLite related source files
+#LIST(APPEND SOURCE_FILES
 
-endif()
+set(SQLITE_SOURCE_FILES
 
-
-
-if(WITH_SQLITE)
-    add_definitions(-DRCDB_SQLITE)
-    include_directories(include/SQLite)
-        include_directories(include/SQLiteCpp)
-    set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
-
-endif()
-
-MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
-MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
-
-
-set(SOURCE_FILES
-
-        src/SQLite/sqlite3.c
         src/SQLiteCpp/Column.cpp
         src/SQLiteCpp/Database.cpp
         src/SQLiteCpp/Statement.cpp
         src/SQLiteCpp/Transaction.cpp
-
-        include/SQLite/sqlite3.h
+        src/SQLiteCpp/Exception.cpp
 
         include/SQLiteCpp/Assertion.h
         include/SQLiteCpp/Column.h
@@ -56,6 +36,13 @@ set(SOURCE_FILES
         include/SQLiteCpp/SQLiteCpp.h
         include/SQLiteCpp/Statement.h
         include/SQLiteCpp/Transaction.h
+
+        include/SQLite/sqlite3.h
+        src/SQLite/sqlite3.c
+        )
+
+set(SOURCE_FILES
+        ${SQLITE_SOURCE_FILES}
 
         include/RCDB/ConditionType.h
         include/RCDB/MySqlProvider.h
@@ -70,34 +57,59 @@ set(SOURCE_FILES
         include/RCDB/RcdbFile.h
         )
 
-
 SET(TEST_SOURCE_FILES
         ${SOURCE_FILES}
-
-        include/RCDB/ConditionType.h
-        include/RCDB/MySqlProvider.h
-        include/RCDB/SqLiteProvider.h
-        include/RCDB/DataProvider.h
-        include/RCDB/Condition.h
-        include/RCDB/Exceptions.h
-        include/RCDB/MySqlConnectionInfo.h
-        include/RCDB/Connection.h
-        include/RCDB/StringUtils.h
-        include/RCDB/ConfigParser.h
 
         tests/test_Connection.cpp
         tests/test_ConditionType.cpp
         tests/test_MySqlProvider.cpp
-        tests/test_SqLiteProvider.cpp
+        tests/test_ConfigParser.cpp
+
+        include/json/json.hpp
 
         tests/catch.hpp
         tests/catch.cpp
-        tests/test_ConfigParser.cpp include/json/json.hpp)
+        )
+
+if (WITH_MYSQL)
+    add_definitions(-DRCDB_MYSQL)
+    include_directories(/usr/include/mysql)
+    set(DB_REQIRED_LIBRARIES mysqlclient ${DB_REQIRED_LIBRARIES})
+
+endif ()
+
+
+if (WITH_SQLITE)
+
+    #add_definitions(-DSQLITE_USE_LEGACY_STRUCT)
+        #add_definitions(-DSQLITE_INT64_TYPE)
+        #add_definitions(-DSQLITE_UINT64_TYPE)
+    add_definitions(-DRCDB_SQLITE)
+    include_directories(include/SQLite)
+    include_directories(include/SQLiteCpp)
+    set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
+
+
+
+    SET(TEST_SOURCE_FILES
+            ${TEST_SOURCE_FILES}
+
+            tests/test_SqLiteProvider.cpp
+            )
+
+    MESSAGE(STATUS "HERE HRER HRER" ${SOURCE_FILES})
+
+endif ()
+
+MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
+MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
+
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
-add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
-add_executable(examples_fadc_masks        examples/get_fadc_masks.cpp)
-add_executable(examples_write_conditions  examples/write_conditions.cpp)
+
+add_executable(examples_trigger_params examples/get_trigger_params.cpp)
+add_executable(examples_fadc_masks examples/get_fadc_masks.cpp)
+add_executable(examples_write_conditions examples/write_conditions.cpp)
 add_executable(examples_write_array_to_json examples/write_array_to_json.cpp)
 add_executable(examples_write_objects_to_json examples/write_objects_to_json.cpp)
 

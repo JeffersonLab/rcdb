@@ -5,7 +5,7 @@
 #ifndef RCDB_CPP_SQLITEPROVIDER_H
 #define RCDB_CPP_SQLITEPROVIDER_H
 
-
+#include <sqlite3.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
 #include <memory>
