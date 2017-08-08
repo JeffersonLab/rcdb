@@ -5,7 +5,7 @@
 Import('default_env')
 env = default_env.Clone()
 
-env.Append(CPPFLAGS = '-fPIC')
+env.Append(CPPFLAGS = '-fPIC -dSQLITE_USE_LEGACY_STRUCT')
 env.Append(LIBS=['pthread', 'dl', 'm'])
 
 sources = [
