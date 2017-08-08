@@ -10,7 +10,6 @@ env.Append(LIBS=['pthread', 'dl', 'm'])
 
 sources = [
     "SQLite/sqlite3.c",
-    "SQLiteCpp/Backup.cpp",
     "SQLiteCpp/Column.cpp",
     "SQLiteCpp/Database.cpp",
     "SQLiteCpp/Statement.cpp",
