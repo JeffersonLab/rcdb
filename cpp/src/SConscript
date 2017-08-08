@@ -5,7 +5,8 @@
 Import('default_env')
 env = default_env.Clone()
 
-env.Append(CPPFLAGS = '-fPIC -dRCDB_SQLITE')
+env.Append(CPPFLAGS = '-fPIC')
+env.Append(CPPDEFINES=['RCDB_SQLITE'])
 env.Append(LIBS=['pthread', 'dl', 'm'])
 
 sources = [
