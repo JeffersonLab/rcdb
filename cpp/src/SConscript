@@ -14,7 +14,7 @@ sources = [
     "SQLiteCpp/Column.cpp",
     "SQLiteCpp/Database.cpp",
     "SQLiteCpp/Statement.cpp",
-    "SQLiteCpp/Transaction.cpp"
+    "SQLiteCpp/Transaction.cpp",
     "SQLiteCpp/Exception.cpp"
 ]
 
