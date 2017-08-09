@@ -50,6 +50,7 @@ namespace rcdb{
                 #ifdef RCDB_MYSQL
                     _provider.reset(new MySqlProvider(_connectionString));
                 #else
+                #error HUYNYA!~!!!!!!
                     throw std::logic_error("RCDB built without MySQL support. Rebuild it using 'with-mysql=true' flag");
                 #endif
             }
