@@ -6,15 +6,16 @@ Import('default_env')
 env = default_env.Clone()
 
 env.Append(CPPFLAGS = '-fPIC')
+env.Append(CPPDEFINES=['RCDB_SQLITE', 'SQLITE_USE_LEGACY_STRUCT'])
 env.Append(LIBS=['pthread', 'dl', 'm'])
 
 sources = [
     "SQLite/sqlite3.c",
-    "SQLiteCpp/Backup.cpp",
     "SQLiteCpp/Column.cpp",
     "SQLiteCpp/Database.cpp",
     "SQLiteCpp/Statement.cpp",
-    "SQLiteCpp/Transaction.cpp"
+    "SQLiteCpp/Transaction.cpp",
+    "SQLiteCpp/Exception.cpp"
 ]
 
 

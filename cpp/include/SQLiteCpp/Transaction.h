@@ -3,7 +3,7 @@
  * @ingroup SQLiteCpp
  * @brief   A Transaction is way to group multiple SQL statements into an atomic secured operation.
  *
- * Copyright (c) 2012-2013 Sebastien Rombauts (sebastien.rombauts@gmail.com)
+ * Copyright (c) 2012-2016 Sebastien Rombauts (sebastien.rombauts@gmail.com)
  *
  * Distributed under the MIT License (MIT) (See accompanying file LICENSE.txt
  * or copy at http://opensource.org/licenses/MIT)
@@ -13,11 +13,12 @@
 #include <SQLiteCpp/Exception.h>
 
 
-namespace SQLite {
+namespace SQLite
+{
 
 
 // Forward declaration
-    class Database;
+class Database;
 
 /**
  * @brief RAII encapsulation of a SQLite Transaction.
@@ -39,38 +40,38 @@ namespace SQLite {
  *    because of the way it shares the underling SQLite precompiled statement
  *    in a custom shared pointer (See the inner class "Statement::Ptr").
  */
-    class Transaction {
-    public:
-        /**
-         * @brief Begins the SQLite transaction
-         *
-         * @param[in] aDatabase the SQLite Database Connection
-         *
-         * Exception is thrown in case of error, then the Transaction is NOT initiated.
-         */
-        explicit Transaction(Database &aDatabase);
+class Transaction
+{
+public:
+    /**
+     * @brief Begins the SQLite transaction
+     *
+     * @param[in] aDatabase the SQLite Database Connection
+     *
+     * Exception is thrown in case of error, then the Transaction is NOT initiated.
+     */
+    explicit Transaction(Database& aDatabase);
 
-        /**
-         * @brief Safely rollback the transaction if it has not been committed.
-         */
-        virtual ~Transaction() noexcept; // nothrow
+    /**
+     * @brief Safely rollback the transaction if it has not been committed.
+     */
+    virtual ~Transaction() noexcept; // nothrow
 
-        /**
-         * @brief Commit the transaction.
-         */
-        void commit();
+    /**
+     * @brief Commit the transaction.
+     */
+    void commit();
 
-    private:
-        // Transaction must be non-copyable
-        Transaction(const Transaction &);
+private:
+    // Transaction must be non-copyable
+    Transaction(const Transaction&);
+    Transaction& operator=(const Transaction&);
+    /// @}
 
-        Transaction &operator=(const Transaction &);
-        /// @}
-
-    private:
-        Database &mDatabase;  //!< Reference to the SQLite Database Connection
-        bool mbCommited; //!< True when commit has been called
-    };
+private:
+    Database&   mDatabase;  ///< Reference to the SQLite Database Connection
+    bool        mbCommited; ///< True when commit has been called
+};
 
 
 }  // namespace SQLite
