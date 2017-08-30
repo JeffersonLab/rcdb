@@ -13,14 +13,11 @@ SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
 
-
 include_directories(include)
 
 set(DB_REQIRED_LIBRARIES dl pthread)
 
 # add SQLite related source files
-#LIST(APPEND SOURCE_FILES
-
 set(SQLITE_SOURCE_FILES
 
         src/SQLiteCpp/Column.cpp
@@ -62,7 +59,6 @@ SET(TEST_SOURCE_FILES
 
         tests/test_Connection.cpp
         tests/test_ConditionType.cpp
-        tests/test_MySqlProvider.cpp
         tests/test_ConfigParser.cpp
 
         include/json/json.hpp
@@ -73,6 +69,10 @@ SET(TEST_SOURCE_FILES
 
 if (WITH_MYSQL)
     add_definitions(-DRCDB_MYSQL)
+    SET(TEST_SOURCE_FILES
+            ${TEST_SOURCE_FILES}
+            tests/test_MySqlProvider.cpp
+            )
     include_directories(/usr/include/mysql)
     set(DB_REQIRED_LIBRARIES mysqlclient ${DB_REQIRED_LIBRARIES})
 
@@ -89,21 +89,18 @@ if (WITH_SQLITE)
     include_directories(include/SQLiteCpp)
     set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
 
-
-
     SET(TEST_SOURCE_FILES
             ${TEST_SOURCE_FILES}
 
             tests/test_SqLiteProvider.cpp
             )
 
-    MESSAGE(STATUS "HERE HRER HRER" ${SOURCE_FILES})
-
+    MESSAGE(STATUS "SOURCES:" ${SOURCE_FILES})
+    MESSAGE(STATUS "TEST_SOURCE_FILES:" ${TEST_SOURCE_FILES})
 endif ()
 
 MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
 MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
-
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
 

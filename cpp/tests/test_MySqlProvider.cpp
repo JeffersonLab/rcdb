@@ -2,7 +2,6 @@
 #include "RCDB/MySqlProvider.h"
 #include <cstdlib>
 
-
 using namespace rcdb;
 using namespace std;
 
@@ -13,7 +12,11 @@ TEST_CASE("General test of MySql", "[mysql]") {
         FAIL("Environment variable RCDB_TEST_CONNECTION is not set");
     }
 
+
+
     if(string(env_p).find("mysql://") == string::npos) {
+        INFO("Connection string is not MySQL exiting MySQL provider tests");
+        CAPTURE(env_p)
         // The test only works with MySQL
         return;
     }
