@@ -2,12 +2,11 @@
 # Tests SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_static_lib', 'with_mysql', 'with_sqlite')
+Import('default_env', 'with_mysql', 'with_sqlite')
 env = default_env.Clone()
 
 if with_sqlite:
     env.Append(LIBPATH='#lib')
-    env.Append(LIBS=[rcdb_static_lib])
     env.Append(CPPDEFINES='RCDB_SQLITE')
 
 #Build with mysql or no?
@@ -26,6 +25,10 @@ if with_mysql:
     env.ParseConfig('mysql_config --libs --cflags')
     env.ParseFlags('mysql_config --include')
 
+if with_sqlite:
+    #User wants sqlite!
+    env.Append(CPPDEFINES='RCDB_SQLITE')
+    env.Append(LIBS=['sqlite3'])
 
 
 # example from  simple.cpp
@@ -36,11 +39,11 @@ env.Install('#bin', 'exmpl_simple')
 env.Program('exmpl_get_trigger_params', source = ["get_trigger_params.cpp"])
 env.Install('#bin', 'exmpl_get_trigger_params')
 
-# example from  get_trigger_params.cpp
-env.Program('exmpl_write_conditions', source = ["write_conditions.cpp"])
-env.Install('#bin', 'exmpl_write_conditions')
-
-
 # example from  get_fadc_masks.cpp
 env.Program('exmpl_fadc_masks', source = ["get_fadc_masks.cpp"])
 env.Install('#bin', 'exmpl_fadc_masks')
+
+if with_mysql:
+    # There is no Writing for SQLite
+    env.Program('exmpl_write_conditions', source = ["write_conditions.cpp"])
+    env.Install('#bin', 'exmpl_write_conditions')

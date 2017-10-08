@@ -2,16 +2,15 @@
 # Tests SConstcipt files
 #
 ##
-Import('default_env', 'rcdb_static_lib', 'with_mysql')
+Import('default_env', 'with_mysql', 'with_sqlite')
 env = default_env.Clone()
 env.Append(LIBPATH='#lib')
-env.Append(LIBS=[rcdb_static_lib])
+
 
 #Configure environment to create tests
 test_sources = [
     "catch.cpp",
     "test_ConditionType.cpp",
-    "test_SqLiteProvider.cpp",
 ]
 
 #Build with mysql or no?
@@ -41,7 +40,23 @@ if with_mysql:
     env.ParseFlags('mysql_config --include')
 
 else:
-    print "RCDB is being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
+    print "RCDB tests are being build WITHOUT MySQL support. Use 'with-mysql=true' flag to explicitly enable MySQL support"
+
+
+if with_sqlite:
+    #User wants sqlite!
+    print
+    print "Building RCDB using SQLite dependencies"
+    print "To build RCDB without SQLite dependencies. Run scons with 'with-sqlite=false'"
+    print
+
+    test_sources.extend(["test_SqLiteProvider.cpp",])
+
+    env.Append(CPPDEFINES='RCDB_SQLITE')
+    env.Append(LIBS=['sqlite3'])
+
+else:
+    print "RCDB tests are being build WITHOUT SQLite support. Use 'with-sqlite=true' flag to explicitly enable SQLite support"
 
 
 #Making tests

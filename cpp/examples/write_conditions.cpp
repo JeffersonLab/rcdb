@@ -4,8 +4,8 @@
 #include <string>
 #include <iostream>
 
-#include "RCDB/WritingConnection.h"
 
+#include "RCDB/WritingConnection.h"
 
 int main ( int argc, char *argv[] )
 {
@@ -81,3 +81,4 @@ int main ( int argc, char *argv[] )
     cout<<"event_count is: "<< value << endl;
     return 0;
 }
+

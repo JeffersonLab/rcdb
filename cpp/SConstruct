@@ -47,12 +47,19 @@ if supports_color():
 
 
 with_mysql = ARGUMENTS.get("with-mysql","true")=="true"
+with_sqlite = ARGUMENTS.get("with-sqlite","true")=="true"
+
 with_tests = ARGUMENTS.get("with-tests","false")=="true"
 with_examples = ARGUMENTS.get("with-examples","false")=="true"
-with_sqlite = ARGUMENTS.get("with-sqlite","true")=="true"
+
 
 
 help = ("""
+
+{WARNING}{BOLD}IMPORTANT(!!!){ENDC}
+RCDB now DOES NOT require compilation. It is HEADER ONLY library.
+This build script builds unit tests and examples. And does nothing to RCDB
+
 {HEADER}{BOLD}RCDB build scripts options:{ENDC}
 
 {BOLD}{OKBLUE}with-mysql{ENDC}="""+bool_to_colored_str(with_mysql)+""" \tBuild with MySql support
@@ -70,7 +77,7 @@ print(help)
 #Create 'default' environment. Other environments will be a copy of this one
 default_env = Environment(
     #>> CCDB related default staff <<
-    CPPPATH = ['#include', '#include/SQLite', '#src', '/usr/include'], #, '#include/SQLite'],
+    CPPPATH = ['#include', '#include/SQLiteCpp', '#src', '/usr/include'], #],
     ENV = os.environ,
     CXXFLAGS = '-std=c++11',
 )
@@ -79,11 +86,6 @@ default_env = Environment(
 #Export 'default' environment for everything that wishes to use it
 Export('default_env', 'with_mysql', 'with_sqlite')
 
-#Create 'working' environment
-#default_env.Repository('src')
-
-#Attach SConsctipts
-SConscript('src/SConscript', 'default_env', variant_dir='tmp/RcdbLib', duplicate=0)
 
 if with_tests:
     SConscript('tests/SConscript', 'default_env', variant_dir='tmp/Tests', duplicate=0)

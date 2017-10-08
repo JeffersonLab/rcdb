@@ -29,10 +29,8 @@ endif()
 
 if(WITH_SQLITE)
     add_definitions(-DRCDB_SQLITE)
-    include_directories(include/SQLite)
-        include_directories(include/SQLiteCpp)
+    include_directories(include/SQLiteCpp)
     set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
-
 endif()
 
 MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
@@ -40,23 +38,8 @@ MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
 
 
 set(SOURCE_FILES
-
-        src/SQLite/sqlite3.c
-        src/SQLiteCpp/Column.cpp
-        src/SQLiteCpp/Database.cpp
-        src/SQLiteCpp/Statement.cpp
-        src/SQLiteCpp/Transaction.cpp
-
-        include/SQLite/sqlite3.h
-
-        include/SQLiteCpp/Assertion.h
-        include/SQLiteCpp/Column.h
-        include/SQLiteCpp/Database.h
-        include/SQLiteCpp/Exception.h
-        include/SQLiteCpp/SQLiteCpp.h
-        include/SQLiteCpp/Statement.h
-        include/SQLiteCpp/Transaction.h
-
+        /usr/include/sqlite3.h
+        include/RCDB/SQLiteCpp.h
         include/RCDB/ConditionType.h
         include/RCDB/MySqlProvider.h
         include/RCDB/SqLiteProvider.h
@@ -92,7 +75,9 @@ SET(TEST_SOURCE_FILES
 
         tests/catch.hpp
         tests/catch.cpp
-        tests/test_ConfigParser.cpp include/json/json.hpp)
+        tests/test_ConfigParser.cpp
+        include/json/json.hpp
+        )
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
 add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
@@ -101,7 +86,7 @@ add_executable(examples_write_conditions  examples/write_conditions.cpp)
 add_executable(examples_write_array_to_json examples/write_array_to_json.cpp)
 add_executable(examples_write_objects_to_json examples/write_objects_to_json.cpp)
 
-target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread sqlite3)
 target_link_libraries(examples_trigger_params ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_fadc_masks ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
