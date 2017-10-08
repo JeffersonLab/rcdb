@@ -1561,7 +1561,10 @@ def destroy_all_create_schema(db):
     :return:
     """
     assert isinstance(db, RCDBProvider)
-    destroy_schema(db)
+    try:
+        destroy_schema(db)
+    except OperationalError as ex:
+        print("destroy_schema dropped OperationalError '{}' so it is considered that the database is empty".format(ex))
 
     # rcdb.model.Base.metadata.create_all(db.engine)
 
