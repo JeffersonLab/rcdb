@@ -24,8 +24,20 @@ def upgrade():
     from rcdb.provider import RCDBProvider
     from rcdb.model import ConditionType
 
+    x_args = context.get_x_argument(as_dictionary=True)
+
+    # It is very important, if we run it programmatically
+    # we have rcdb_connection. Otherwise connection_string is taken from alembic.ini
+    # (!) don't be confused by replacement of alembic_config["sqlalchemy.url"] in env.py
+    # in this file it reads the value from alembic.ini
+    if "rcdb_connection" in x_args:
+        connection_string = x_args["rcdb_connection"]
+    else:
+        alembic_config = context.config.get_section(context.config.config_ini_section)
+        connection_string = alembic_config["sqlalchemy.url"]
+
     # Create RCDBProvider object that connects to DB and provide most of the functions
-    db = RCDBProvider(context.config.get_main_option("sqlalchemy.url"))
+    db = RCDBProvider(connection_string, check_version=False)
 
     # Create condition type
     db.create_condition_type("run_start_time", ConditionType.TIME_FIELD, "Run start time")
