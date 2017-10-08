@@ -45,13 +45,16 @@ namespace rcdb{
                     throw std::logic_error("RCDB built without SQLite3 support. Rebuild it using 'with-sqlite=true' flag");
                 #endif
             }
-            else {
+            else if(_connectionString.find("mysql://") == 0){
 
                 #ifdef RCDB_MYSQL
                     _provider.reset(new MySqlProvider(_connectionString));
                 #else                
                     throw std::logic_error("RCDB built without MySQL support. Rebuild it using 'with-mysql=true' flag");
                 #endif
+            }
+            else{
+                throw ConnectionStringError("ERROR. Connection string must begin with 'mysql://' or sqlite:///");
             }
         }
 

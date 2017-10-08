@@ -1,7 +1,6 @@
 import os
 import sys
 import posixpath
-
 import click
 
 from rcdb.app_context import RcdbApplicationContext, parse_run_range
@@ -9,6 +8,7 @@ from rcdb import RCDBProvider
 from rcdb.model import ConfigurationFile
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
+
 
 def get_default_config_path():
     return os.path.join(os.path.expanduser('~'), '.rcdb_user')
@@ -27,7 +27,6 @@ def get_default_config_path():
 @click.pass_context
 def cli(ctx, user_config, connection, config, verbose):
     """'rcdb' is a RCDB (run conditions database) command line tool
-
     This tool allows to select runs and get values as well as manage RCDB values
     """
 
@@ -60,11 +59,15 @@ def ls(context, search, is_long):
 
 
 @cli.command()
-@click.argument('run', required=True, help="Run number to show files for")
-@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 @pass_rcdb_context
+@click.argument('run', required=True)
+@click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 def files(context, run, is_long):
-    """Lists conditions"""
+    """
+    Shows files stored for a current run:
+
+    RUN: Run number to show files for
+    """
     db = context.db
     assert isinstance(db, RCDBProvider)
 
@@ -73,6 +76,7 @@ def files(context, run, is_long):
     for file in run.files:
         assert isinstance(file, ConfigurationFile)
         click.echo(file.path)
+
 
 def cat():
     pass
@@ -107,8 +111,8 @@ def _process_sel_args(args, ):
 
 
 @cli.command()
-@click.argument('query')
-@click.argument('views_or_runs', nargs=-1)
+@click.argument('query', required=None)
+@click.argument('views_or_runs',  nargs=-1)
 @click.option('--dump', '-d', 'is_dump_view', is_flag=True,
               help='Display results as to export to file. No borders, "#" comments')
 @click.option('--desc/--asc', '-d/-a', 'is_descending', default=False,
@@ -137,7 +141,7 @@ def sel(rcdb_context, query, views_or_runs, is_dump_view, is_descending):
 
     conditions_to_show = view.split()
 
-    values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, is_descending)
+    values = rcdb_context.db.select_values([], query, run_min, run_max)
 
     if not is_dump_view:
         try:
@@ -156,158 +160,45 @@ def sel(rcdb_context, query, views_or_runs, is_dump_view, is_descending):
     for row in values:
         click.echo(" ".join(row))
 
-
-
-
-
-
-
-@cli.command()
-@click.argument('query')
-@click.argument('views_or_runs', nargs=-1)
-# @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
-@pass_rcdb_context
-def plot(rcdb_context, query, views_or_runs):
-    """ Command allows to select runs and get values from it"""
-    assert isinstance(rcdb_context.db, RCDBProvider)
-    args = [str(query)]
-    args.extend([str(v) for v in views_or_runs])
-    run_range_str, query, view = _process_sel_args(args)
-
-    (run_min, run_max) = parse_run_range(run_range_str, rcdb_context.db.get_run_periods())
-
-    if run_min is None:
-        run_min = 0
-
-    if run_max is None:
-        run_max = sys.maxint
-
-    if query == '@' or query is None:
-        query = ''
-
-    if not view:
-        view = "event_count run_config"
-
-    conditions_to_show = view.split()
-
-    import matplotlib.pyplot as plt
-
-    values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, True)
-    x_col = [v[0] for v in values]
-    plot_data = [x_col, [v[1] for v in values], "ro"]
-
-    plt.plot(*plot_data, label=conditions_to_show[0])
-    plt.show()
-
-
-def cfg():
-    pass
-
-
-#@cli.command()
-@click.argument('src')
-@click.argument('dest', required=False)
-@click.option('--shallow/--deep', default=False,
-              help='Makes a checkout shallow or deep.  Deep by default.')
-@click.option('--rev', '-r', default='HEAD',
-              help='Clone a specific revision instead of HEAD.')
-@pass_rcdb_context
-def clone(repo, src, dest, shallow, rev):
-    """Clones a repository.
-
-    This will clone the repository at SRC into the folder DEST.  If DEST
-    is not provided this will automatically use the last path component
-    of SRC and create that folder.
-    """
-    if dest is None:
-        dest = posixpath.split(src)[-1] or '.'
-    click.echo('Cloning repo %s to %s' % (src, os.path.abspath(dest)))
-    repo.home = dest
-    if shallow:
-        click.echo('Making shallow checkout')
-    click.echo('Checking out revision %s' % rev)
-
-
-#@cli.command()
-@click.confirmation_option()
-@pass_rcdb_context
-def delete(repo):
-    """Deletes a repository.
-
-    This will throw away the current repository.
-    """
-    click.echo('Destroying repo %s' % repo.home)
-    click.echo('Deleted!')
-
-
-#@cli.command()
-@click.option('--username', prompt=True,
-              help='The developer\'s shown username.')
-@click.option('--email', prompt='E-Mail',
-              help='The developer\'s email address')
-@click.password_option(help='The login password.')
-@pass_rcdb_context
-def setuser(repo, username, email, password):
-    """Sets the user credentials.
-
-    This will override the current user config.
-    """
-    repo.set_config('username', username)
-    repo.set_config('email', email)
-    repo.set_config('password', '*' * len(password))
-    click.echo('Changed credentials.')
-
-
-#@cli.command()
-@click.option('--message', '-m', multiple=True,
-              help='The commit message.  If provided multiple times each '
-              'argument gets converted into a new line.')
-@click.argument('files', nargs=-1, type=click.Path())
-@pass_rcdb_context
-def commit(repo, files, message):
-    """Commits outstanding changes.
-
-    Commit changes to the given files into the repository.  You will need to
-    "repo push" to push up your changes to other repositories.
-
-    If a list of files is omitted, all changes reported by "repo status"
-    will be committed.
-    """
-    if not message:
-        marker = '# Files to be committed:'
-        hint = ['', '', marker, '#']
-        for file in files:
-            hint.append('#   U %s' % file)
-        message = click.edit('\n'.join(hint))
-        if message is None:
-            click.echo('Aborted!')
-            return
-        msg = message.split(marker)[0].rstrip()
-        if not msg:
-            click.echo('Aborted! Empty commit message')
-            return
-    else:
-        msg = '\n'.join(message)
-    click.echo('Files to be committed: %s' % (files,))
-    click.echo('Commit message:\n' + msg)
-
-
-#@cli.command(short_help='Copies files.')
-@click.option('--force', is_flag=True,
-              help='forcibly copy over an existing managed file')
-@click.argument('src', nargs=-1, type=click.Path())
-@click.argument('dst', type=click.Path())
-@pass_rcdb_context
-def copy(repo, src, dst, force):
-    """Copies one or multiple files to a new location.  This copies all
-    files from SRC to DST.
-    """
-    for fn in src:
-        click.echo('Copy from %s -> %s' % (fn, dst))
-
-
-
-
+# @cli.command()
+# @click.argument('query')
+# @click.argument('views_or_runs', nargs=-1)
+# # @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
+# @pass_rcdb_context
+# def plot(rcdb_context, query, views_or_runs):
+#     """ Command allows to select runs and get values from it"""
+#     assert isinstance(rcdb_context.db, RCDBProvider)
+#     args = [str(query)]
+#     args.extend([str(v) for v in views_or_runs])
+#     run_range_str, query, view = _process_sel_args(args)
+#
+#     (run_min, run_max) = parse_run_range(run_range_str, rcdb_context.db.get_run_periods())
+#
+#     if run_min is None:
+#         run_min = 0
+#
+#     if run_max is None:
+#         run_max = sys.maxint
+#
+#     if query == '@' or query is None:
+#         query = ''
+#
+#     if not view:
+#         view = "event_count run_config"
+#
+#     conditions_to_show = view.split()
+#
+#     try:
+#         import matplotlib.pyplot as plt
+#
+#         values = rcdb_context.db.select_runs(query, run_min, run_max).get_values(conditions_to_show, True)
+#         x_col = [v[0] for v in values]
+#         plot_data = [x_col, [v[1] for v in values], "ro"]
+#
+#         plt.plot(*plot_data, label=conditions_to_show[0])
+#         plt.show()
+#     except ImportError:
+#         print("matplotlib library is not found. It is required for 'plot' command. ")
 
 
 if __name__ == '__main__':
