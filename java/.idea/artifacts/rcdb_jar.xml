@@ -3,9 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/rcdb_jar</output-path>
     <root id="archive" name="rcdb.jar">
       <element id="module-output" name="rcdb" />
-      <element id="library" level="project" name="sqlite-jdbc-3.7.2" />
-      <element id="library" level="project" name="mysql-connector-java-5.1.29-bin" />
       <element id="library" level="project" name="KotlinJavaRuntime" />
+      <element id="library" level="project" name="mysql-connector-java-5.1.29-bin" />
+      <element id="library" level="project" name="sqlite-jdbc-3.7.2" />
     </root>
   </artifact>
 </component>

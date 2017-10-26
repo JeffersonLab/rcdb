@@ -2,3 +2,4 @@
 /out/
 .idea/workspace.xml
 out/
+!out/artifacts/
