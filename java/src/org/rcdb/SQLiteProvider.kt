@@ -1,4 +1,4 @@
-package org.jlab.ccdb
+package org.rcdb
 
 import java.sql.DriverManager
 import java.sql.Connection
@@ -30,30 +30,21 @@ public class SQLiteProvider(connectionString:String): JDBCProvider(connectionStr
 
         val con:Connection = connection!!
 
-        prsDirectories = con.prepareStatement("SELECT id, parentId, name, created, modified, comment FROM directories");
-        prsVariationById = con.prepareStatement("SELECT id, parentId, name FROM variations WHERE id = ?")
-        prsVariationByName = con.prepareStatement("SELECT id, parentId, name FROM variations WHERE name = ?")
-        //ok now we must build our mighty query...
-        val dataQuery=
-                "SELECT `assignments`.`id` AS `asId`, "+
-                "`constantSets`.`vault` AS `blob`, "+
-                "`assignments`.`modified` as `asModified`"+
-                "FROM  `assignments` "+
-                "INNER JOIN `runRanges` ON `assignments`.`runRangeId`= `runRanges`.`id` "+
-                "INNER JOIN `constantSets` ON `assignments`.`constantSetId` = `constantSets`.`id` "+
-                "INNER JOIN `typeTables` ON `constantSets`.`constantTypeId` = `typeTables`.`id` "+
-                "WHERE  `runRanges`.`runMin` <= ? "+
-                "AND `runRanges`.`runMax` >= ? "+
-                "AND `assignments`.`variationId`= ? "+
-                "AND `constantSets`.`constantTypeId` = ? "
-
-        val timeConstrain = "AND `assignments`.`created` <= datetime(?, 'unixepoch', 'localtime')"
-        val orderBy = "ORDER BY `assignments`.`id` DESC LIMIT 1 "
-        prsData = con.prepareStatement(dataQuery + timeConstrain + orderBy)
-
-        prsTable = con.prepareStatement("SELECT `id`, `name`, `directoryId`, `nRows`, `nColumns`, `comment` FROM `typeTables` WHERE `name` = ? AND `directoryId` = ?;")
-        prsColumns = con.prepareStatement("SELECT `id`, `name`, `columnType` FROM `columns` WHERE `typeId` = ? ORDER BY `order`;")
-
+        prsConditionType = con.prepareStatement("SELECT id, name, value_type FROM condition_types")
+        prsCondition = con.prepareStatement("SELECT id, bool_value, float_value, int_value, text_value, time_value FROM conditions WHERE run_number = ? AND condition_type_id = ?")
+        prsFileNames = con.prepareStatement("SELECT files.path AS files_path "
+                                                + "FROM files, files_have_runs AS files_have_runs_1 "
+                                                + "WHERE files.id = files_have_runs_1.files_id "
+                                                + "AND ? = files_have_runs_1.run_number "
+                                                + "ORDER BY files.id DESC")
+        prsFile = con.prepareStatement("SELECT files.id AS files_id, "
+                                           + "       files.path AS files_path, "
+                                           + "       files.sha256 AS files_sha256, "
+                                           + "       files.content AS files_content "
+                                           + "FROM files, files_have_runs AS files_have_runs_1 "
+                                           + "WHERE files.path = ? AND files.id = files_have_runs_1.files_id "
+                                           + "      AND ? = files_have_runs_1.run_number "
+                                           + "ORDER BY files.id DESC")
         postConnect()
     }
 }

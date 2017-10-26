@@ -1,9 +1,6 @@
-package org.rcdb
+@file:JvmName("RCDB")
 
-import org.jlab.ccdb.JDBCProvider
-import org.jlab.ccdb.SQLiteProvider
-import org.jlab.ccdb.MySqlProvider
-import java.util.Date
+package org.rcdb
 
 /**
  * Creates CCDB data provider with connection string
@@ -28,33 +25,4 @@ public fun createProvider(connectionStr: String): JDBCProvider {
     throw IllegalArgumentException("Can't open the connection string. Current version of CCDB Java opens only MySql " +
     "(should start with 'mysql://') and SQLite (should start with 'sqlite:///'). " +
     " Provided string: '$connectionStr'")
-}
-
-/**
- * Creates CCDB data provider with connection string and default run number
- */
-public fun createProvider(connectionStr: String, run: Int): JDBCProvider {
-    val provider = createProvider(connectionStr)
-    provider.defaultRun = run
-    return provider
-}
-
-
-/**
- * Creates CCDB data provider with connection string and default run number and default variation
- */
-public fun createProvider(connectionStr: String, run: Int, variation: String): JDBCProvider {
-    val provider = createProvider(connectionStr, run)
-    provider.defaultVariation = variation
-    return provider
-}
-
-
-/**
- * Creates CCDB data provider with connection string and default run number, variation and date
- */
-public fun createProvider(connectionStr: String, run: Int, variation: String, date: Date): JDBCProvider {
-    val provider = createProvider(connectionStr, run, variation)
-    provider.defaultDate = date
-    return provider
 }

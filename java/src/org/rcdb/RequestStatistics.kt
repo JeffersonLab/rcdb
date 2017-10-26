@@ -1,25 +1,28 @@
-package org.jlab.ccdb
+package org.rcdb
 
 import java.util.ArrayList
 
 /**
  * Gets statistics of ccdb requests
  */
-public class RequestStatistics{
+class RequestStatistics{
 
     /**
      * A list of requests
      */
-    public val requests:ArrayList<RequestParseResult> = ArrayList<RequestParseResult>()
-    public var totalTime:Double = 0.0
-    public var lastRequestTime:Double = 0.0
+    val requests = ArrayList<RequestParseResult>()
+    var totalTime:Double = 0.0
+    var lastRequestTime:Double = 0.0
 
     /**
      * First data read after connection takes longer. So it is separated
      */
-    public var firstTime:Double = 0.0
+    var firstTime:Double = 0.0
 
-    public val averageTime:Double
+    /**
+     * Average request time
+     */
+    val averageTime:Double
         get(){
             if(requests.size == 0) return 0.0
             if(requests.size == 1) return firstTime
