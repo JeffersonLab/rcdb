@@ -34,10 +34,10 @@ public class SimpleExample {
         System.out.println();
         System.out.println("polarization_direction = " + polarizationCondition.toString());
         System.out.println(" Condition object introspection: ");
-        System.out.println("         db ID = " + dbId);
-        System.out.println("         name  = " + name);
-        System.out.println("       run num = " + runFromDb);
-        System.out.println("    valueType  = " + valueType.toString());
+        System.out.println("    db ID      : " + dbId);
+        System.out.println("    name       : " + name);
+        System.out.println("    run num    : " + runFromDb);
+        System.out.println("    valueType  : " + valueType.toString());
         System.out.println();
 
 
@@ -53,7 +53,7 @@ public class SimpleExample {
         // List all available condition names
         System.out.println("All conditions in the DB:");
         for(ConditionType cndType : cndTypes){
-            String row = String.format("   %-15s %s".format(cndType.getName(), cndType.getValueType().toString()));
+            String row = String.format("   %-30s %s", cndType.getName(), cndType.getValueType().toString());
             System.out.println(row);
         }
     }
