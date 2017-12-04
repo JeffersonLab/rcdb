@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from rcdb import UpdateContext, UpdateReasons, DefaultConditions
 from halld_rcdb.run_config_parser import HallDMainConfigParseResult
@@ -36,5 +37,12 @@ def add_roc_configuration_files(context, parse_result):
 
     for info in infos:
         log.debug(Lf("Adding roc configuration files for '{}'", info.name))
+        for file_path in info.final_files:
+            if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
+                log.debug(Lf("Adding roc configuration files for '{}'", file_path))
+
+                #    db.add_configuration_file(run.number,
+                #                              file_path,
+                #                              importance=ConfigurationFile.IMPORTANCE_LOW)
 
 
