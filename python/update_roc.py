@@ -6,6 +6,7 @@ from rcdb import UpdateContext, UpdateReasons, DefaultConditions
 from halld_rcdb.run_config_parser import HallDMainConfigParseResult
 from halld_rcdb.roc_config_finder import find_roc_configuration_files
 from rcdb.log_format import BraceMessage as Lf
+from rcdb.model import ConfigurationFile
 from rcdb.provider import RCDBProvider
 
 
@@ -40,9 +41,6 @@ def add_roc_configuration_files(context, parse_result):
         for file_path in info.final_files:
             if os.path.isfile(file_path) and os.access(file_path, os.R_OK):
                 log.debug(Lf("Adding roc configuration files for '{}'", file_path))
-
-                #    db.add_configuration_file(run.number,
-                #                              file_path,
-                #                              importance=ConfigurationFile.IMPORTANCE_LOW)
-
-
+                db.add_configuration_file(context.run.number,
+                                          file_path,
+                                          importance=ConfigurationFile.IMPORTANCE_LOW)
