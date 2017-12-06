@@ -13,6 +13,19 @@ default_aliases = [
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
 
+    ConditionSearchAlias('is_production2018', """daq_run == 'PHYSICS'
+                                             beam_current > 2 and
+                                             event_count > 5000000 and
+                                             solenoid_current > 100 and
+                                             collimator_diameter != 'Blocking'""",
+                         "Is production run"),
+    ConditionSearchAlias('is_production_long', """daq_run == 'PHYSICS_raw'
+                                             beam_current > 2 and
+                                             event_count > 5000000 and
+                                             solenoid_current > 100 and
+                                             collimator_diameter != 'Blocking'""",
+                         "Is production run with long mode data"),
+
     ConditionSearchAlias('is_cosmic', "(run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 1) or (radiator_type == 'RETRACTED' and collimator_diameter == 'Blocking')",
                          "Is cosmic run"),
 
