@@ -181,9 +181,11 @@ def setup_run_conds(run):
         
     # only save information about the diamond radiator (or whatever is in the goniometer)
     # if the amorphous radiator is not in
-    # yes, ID #1 is the retracted state, ID #2 is the blank state
+    # yes, ID #1 is the retracted state, ID #2 is the blank state... for 2016 at least.
+    # 12/7/2017: #5000 is the retracted state, and all of the non-diamond radiators have ID #0.
+    # the diamonds have more complicated IDs
     # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
-    if conditions["radiator_id"] != 1 and conditions["radiator_id"] != 2:
+    if conditions["radiator_id"] != 5000 and conditions["radiator_id"] != 0:
         # Polarization direction - parallel or perpendicular to floor
         try:
             polarization_dir = int(caget("HD:CBREM:PLANE"))
