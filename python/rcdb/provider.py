@@ -839,8 +839,7 @@ class RCDBProvider(object):
         tokens = [token for token in lexer.tokenize(search_str)]
 
         target_cnd_types = []
-        names = []
-        names_count = 1  # because run_number is always 1-st so index 0 is for it
+        names = ["run"]
         for token in tokens:
             if token.type in lexer.rcdb_query_restricted:
                 raise QueryFormatError("Query contains restricted symbol: '{}'".format(token.value))
@@ -865,15 +864,13 @@ class RCDBProvider(object):
 
                     target_cnd_types.append(cnd_type)
 
-                    token.value = "values[{}]".format(names_count)
-                    names_count += 1
-
+                    token.value = "values[{}]".format(len(names))
                     names.append(cnd_name)
                 else:
                     # we already has such name. We have to set token.value right
-                    token.value = "values[{}]".format(names.index(cnd_name)+1)  # +1 because run_num is alwais 0
+                    token.value = "values[{}]".format(names.index(cnd_name))  # +1 because run_num is alwais 0
 
-        # values table
+        # result values table
         val_indexes = []
         for name in val_names:
             if name in names:
@@ -881,8 +878,7 @@ class RCDBProvider(object):
             else:
                 cnd_type = all_cnd_types_by_name[name]
                 target_cnd_types.append(cnd_type)
-                val_indexes.append(names_count)
-                names_count += 1
+                val_indexes.append(len(names))
                 names.append(name)
 
         # PHASE 2: Database query
@@ -933,9 +929,6 @@ class RCDBProvider(object):
 
         query_sw.stop()
 
-        if not names_count:
-            return None
-
         search_eval = " ".join([token.value for token in tokens if isinstance(token, LexToken)])
 
         selection_sw = StopWatchTimer()
@@ -964,7 +957,7 @@ class RCDBProvider(object):
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
         result.sort_desc = sort_desc
-        result.selected_conditions = ['run_number'] + val_names if insert_run_number else [] + val_names
+        result.selected_conditions = ['run'] + val_names if insert_run_number else [] + val_names
         result.performance["preparation"] = preparation_sw.elapsed
         result.performance["query"] = query_sw.elapsed
         result.performance["selection"] = selection_sw.elapsed
