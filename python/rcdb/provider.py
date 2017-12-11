@@ -859,15 +859,19 @@ class RCDBProvider(object):
                 raise QueryFormatError(message)
             else:
                 cnd_name = token.value
-                cnd_type = all_cnd_types_by_name[token.value]
-                isinstance(cnd_type, ConditionType)
+                if cnd_name not in names:
+                    cnd_type = all_cnd_types_by_name[token.value]
+                    isinstance(cnd_type, ConditionType)
 
-                target_cnd_types.append(cnd_type)
+                    target_cnd_types.append(cnd_type)
 
-                token.value = "values[{}]".format(names_count)
-                names_count += 1
+                    token.value = "values[{}]".format(names_count)
+                    names_count += 1
 
-                names.append(cnd_name)
+                    names.append(cnd_name)
+                else:
+                    # we already has such name. We have to set token.value right
+                    token.value = "values[{}]".format(names.index(cnd_name)+1)  # +1 because run_num is alwais 0
 
         # values table
         val_indexes = []
@@ -897,10 +901,17 @@ class RCDBProvider(object):
         for ct in target_cnd_types:
             assert isinstance(ct, ConditionType)
             table_name = ct.name + "_table"
-            query += "  ,{}.{} {}{}".format(table_name, ct.get_value_field_name(), ct.name, os.linesep)
-            query_joins += "  LEFT JOIN conditions {0} " \
-                           "  ON {0}.run_number = runs.number AND {0}.condition_type_id = {1}{2}" \
-                .format(table_name, ct.id, os.linesep)
+            value_str = "  ,{}.{} {}{}".format(table_name, ct.get_value_field_name(), ct.name, os.linesep)
+            if not value_str in query:
+                query += value_str  # safe for duplicate entries which trigger DB errors
+
+            # Now joins region
+            join_str = "  LEFT JOIN conditions {0} " \
+                       "  ON {0}.run_number = runs.number AND {0}.condition_type_id = {1}{2}"\
+                       .format(table_name, ct.id, os.linesep)
+
+            if join_str not in query_joins:
+                query_joins += join_str   # safe for duplicate entries which trigger DB errors
 
         mighty_query = query + os.linesep \
                              + query_joins + os.linesep \
@@ -953,6 +964,7 @@ class RCDBProvider(object):
         result.filter_condition_names = names
         result.filter_condition_types = target_cnd_types
         result.sort_desc = sort_desc
+        result.selected_conditions = ['run_number'] + val_names if insert_run_number else [] + val_names
         result.performance["preparation"] = preparation_sw.elapsed
         result.performance["query"] = query_sw.elapsed
         result.performance["selection"] = selection_sw.elapsed
