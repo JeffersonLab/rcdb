@@ -153,7 +153,7 @@ def setup_run_conds(run):
     # Beam energy - HALLD:pX gives the corrected measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
-        conditions["beam_energy"] = float(caget("HALLD:pX"))
+        conditions["beam_energy"] = float(caget("HALLD:p"))
         #conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
@@ -185,7 +185,7 @@ def setup_run_conds(run):
     # 12/7/2017: #5000 is the retracted state, and all of the non-diamond radiators have ID #0.
     # the diamonds have more complicated IDs
     # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
-    if conditions["radiator_id"] != 5000 and conditions["radiator_id"] != 0:
+    if conditions["radiator_id"] != 5000 or conditions["radiator_id"] != 0:
         # Polarization direction - parallel or perpendicular to floor
         try:
             polarization_dir = int(caget("HD:CBREM:PLANE"))
