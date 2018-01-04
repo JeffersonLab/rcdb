@@ -135,7 +135,7 @@ def update_beam_conditions(run, log):
                 continue
             key = tokens[0]
             value = tokens[2]      # average value
-            if key == "HALLD:pX":
+            if key == "HALLD:p":
                 conditions["beam_energy"] = float(value)
 
     except Exception as e:
@@ -150,7 +150,7 @@ def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
-    # Beam energy - HALLD:pX gives the corrected measured beam energy
+    # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
         conditions["beam_energy"] = float(caget("HALLD:p"))
