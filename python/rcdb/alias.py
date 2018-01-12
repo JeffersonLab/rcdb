@@ -42,6 +42,8 @@ default_aliases = [
 
     ConditionSearchAlias('is_field_on', "solenoid_current >= 100", " Field On"),
 
+    ConditionSearchAlias('status_calibration', "status == 3", "Run status = calibration"),
+
     ConditionSearchAlias('status_approved_long', "status == 2", "Run status = approved (long)"),
 
     ConditionSearchAlias('status_approved', "status == 1", "Run status = approved"),
