@@ -175,33 +175,39 @@ def setup_run_conds(run):
 
     # set global radiator name
     try:
-        conditions["radiator_type"] = caget("hd:radiator:uname")
+        conditions["radiator_type"] = caget("hd:radiator:uname")  # this always fails!
     except:
         conditions["radiator_type"] = None
         
     # only save information about the diamond radiator (or whatever is in the goniometer)
-    # if the amorphous radiator is not in
+    # if the amorphous radiator ladder is not in
     # yes, ID #1 is the retracted state, ID #2 is the blank state... for 2016 at least.
     # 12/7/2017: #5000 is the retracted state, and all of the non-diamond radiators have ID #0.
     # the diamonds have more complicated IDs
     # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
-    if conditions["radiator_id"] != 5000 or conditions["radiator_id"] != 0:
-        # Polarization direction - parallel or perpendicular to floor
-        try:
-            polarization_dir = int(caget("HD:CBREM:PLANE"))
-            if polarization_dir == 1:
-                conditions["polarization_direction"] = "PARA"
-            elif polarization_dir == 2:
-                conditions["polarization_direction"] = "PERP"
-        except:
-            conditions["polarization_direction"] = "N/A"
+    if conditions["radiator_id"] != 5000:
+        # Save diamond info only if we aren't using an amorphous radiator
+        if conditions["radiator_id"] != 0:
+            # Polarization direction - parallel or perpendicular to floor
+            try:
+                polarization_dir = int(caget("HD:CBREM:PLANE"))
+                if polarization_dir == 1:
+                    conditions["polarization_direction"] = "PARA"
+                elif polarization_dir == 2:
+                    conditions["polarization_direction"] = "PERP"
+            except:
+                conditions["polarization_direction"] = "N/A"
             
-        # Coherent peak location
-        try:
-            conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
-        except:
+            # Coherent peak location
+            try:
+                conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
+            except:
+                conditions["coherent_peak"] = -1.
+        else:
             conditions["coherent_peak"] = -1.
-        # Diamond name
+            conditions["polarization_direction"] = "N/A"
+
+        # radiator name
         if conditions["radiator_type"] is None:
             try:
                 conditions["radiator_type"] = caget("HD:GONI:RADIATOR_NAME")
@@ -219,6 +225,7 @@ def setup_run_conds(run):
         conditions["coherent_peak"] = -1.
         conditions["radiator_index"] = -1
         conditions["radiator_type"] = ""
+        conditions["polarization_direction"] = "N/A"
 
 
     # set polarization angle
