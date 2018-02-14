@@ -118,8 +118,8 @@ def update_beam_conditions(run, log):
 
     try: 
         # also, get the current excluding periods when the beam is off
-        # we define this as the periods where the BCM reads 50 - 5000 nA
-        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "50:5000", "-l", "HALLD:p"]
+        # we define this as the periods where the BCM reads 30 - 5000 nA
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "30:5000", "-l", "HALLD:p"]
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
@@ -135,7 +135,7 @@ def update_beam_conditions(run, log):
                 continue
             key = tokens[0]
             value = tokens[2]      # average value
-            if key == "HALLD:pX":
+            if key == "HALLD:p":
                 conditions["beam_energy"] = float(value)
 
     except Exception as e:
@@ -150,7 +150,7 @@ def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 
-    # Beam energy - HALLD:pX gives the corrected measured beam energy
+    # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
         conditions["beam_energy"] = float(caget("HALLD:p"))
