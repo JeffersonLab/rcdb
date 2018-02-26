@@ -7,6 +7,7 @@
 #
 # * beam_beam_energy       (float)  # Beam current - uses the primary epics BCM, IBCAD00CRCUR6
 # * beam_energy            (float)  # Beam energy - from epics HALLD:p
+# * cdc_gas_pressure       (float)  # Gas pressure related to CDC.  EPICS: RESET:i:GasPanelBarPress1
 # * coherent_peak          (float)  # Coherent peak location
 # * collimator_diameter    (string) # Collimator diameter
 # * luminosity             (float)  # Estimated luminosity factor
@@ -18,6 +19,7 @@
 # * polarization_direction (string) # Polarization direction - parallel or perpendicular to floor
 # * radiator_type          (string) # Diamond name
 # * target_type            (string) # Target type/status
+# * tagger_current         (float)  # Current in tagger magnet
 #
 
 # More description of these variables is provided below
@@ -143,6 +145,32 @@ def update_beam_conditions(run, log):
         conditions["beam_energy"] = -1.
 
 
+    try: 
+        # also, get the average CDC gas pressure
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-l", "RESET:i:GasPanelBarPress1"]
+        log.debug(Lf("Requesting cdc_gas_pressure subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            print line.strip()
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]      # average value
+            if key == "RESET:i:GasPanelBarPress1":
+                conditions["cdc_gas_pressure"] = float(value)
+
+    except Exception as e:
+        log.warn(Lf("Error in a cdc_gas_pressure request : '{}'", e))
+        conditions["cdc_gas_pressure"] = -1.
+
+
     return conditions
 
 
@@ -157,6 +185,16 @@ def setup_run_conds(run):
         #conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
+    # Beam current from the tagger dump BCM
+    try: 
+        conditions["beam_current"] = float(caget("IBCAD00CRCUR6"))
+    except:
+        conditions["beam_current"] = -1.
+    # CDC gas pressure
+    try: 
+        conditions["cdc_gas_pressure"] = float(caget("RESET:i:GasPanelBarPress1"))
+    except:
+        conditions["cdc_gas_pressure"] = -1.
     # Solenoid current
     try: 
         conditions["solenoid_current"] = float(caget("HallD-PXI:Data:I_Shunt"))
