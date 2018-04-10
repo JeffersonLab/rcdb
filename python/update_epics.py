@@ -119,8 +119,37 @@ def update_beam_conditions(run, log):
 
 
     try: 
-        # also, get the current excluding periods when the beam is off
-        # we define this as the periods where the BCM reads 30 - 5000 nA
+        # also get the beam energy when current > 5 nA and beam energy > 10. MeV, to avoid problems
+        # where the CEBAF beam energy server fails and doesn't restart =(
+
+        avg_beam_energy = 0.
+        n = 0
+        cmds = ["myData", "-b", begin_time_str, "-e", end_time_str, "IBCAD00CRCUR6", "HALLD:p"]
+        log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            print line.strip()
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 4:
+                continue
+            the_beam_current = float(tokens[2])
+            the_beam_energy = float(tokens[3])
+            if (the_beam_current>5.) and (the_beam_energy>10.):
+                avg_beam_energy += the_beam_energy
+                n += 1
+
+        # experience has shown that the above myData command returns once or twice every second...
+        # so let's ignore the time periods and do a simple average
+        #avg_beam_energy /= float(n)
+        conditions["beam_energy"] = avg_beam_energy / float(n)
+
+        """
         cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "30:5000", "-l", "HALLD:p"]
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
@@ -139,6 +168,7 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "HALLD:p":
                 conditions["beam_energy"] = float(value)
+        """
 
     except Exception as e:
         log.warn(Lf("Error in a beam_energy request : '{}'", e))
