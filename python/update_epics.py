@@ -123,7 +123,7 @@ def update_beam_conditions(run, log):
         # where the CEBAF beam energy server fails and doesn't restart =(
 
         avg_beam_energy = 0.
-        n = 0
+        nentries = 0
         cmds = ["myData", "-b", begin_time_str, "-e", end_time_str, "IBCAD00CRCUR6", "HALLD:p"]
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
@@ -142,12 +142,12 @@ def update_beam_conditions(run, log):
             the_beam_energy = float(tokens[3])
             if (the_beam_current>5.) and (the_beam_energy>10.):
                 avg_beam_energy += the_beam_energy
-                n += 1
+                nentries += 1
 
         # experience has shown that the above myData command returns once or twice every second...
         # so let's ignore the time periods and do a simple average
         #avg_beam_energy /= float(n)
-        conditions["beam_energy"] = avg_beam_energy / float(n)
+        conditions["beam_energy"] = float("%7.1f"%(avg_beam_energy / float(nentries)))
 
         """
         cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "30:5000", "-l", "HALLD:p"]
