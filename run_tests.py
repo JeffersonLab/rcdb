@@ -3,6 +3,7 @@ import unittest
 import inspect
 import subprocess
 import sys
+from unittest import TestSuite
 
 this_folder = os.path.realpath(os.path.abspath(os.path.split(inspect.getfile(inspect.currentframe()))[0]))
 python_folder = os.path.join(this_folder, "python")
@@ -17,7 +18,11 @@ sys.path.append(python_folder)
 
 
 def load_tests(loader, tests, pattern):
-    return loader.discover(python_tests_folder)
+    test_suits = loader.discover(python_tests_folder)
+    for test_suit in test_suits:
+        assert isinstance(test_suit, TestSuite)
+        test_suit.
+    return result
 
 
 if __name__ == "__main__":
