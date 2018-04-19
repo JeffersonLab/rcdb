@@ -13,7 +13,7 @@ default_aliases = [
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
 
-    ConditionSearchAlias('is_production2018', """daq_run == 'PHYSICS'
+    ConditionSearchAlias('is_2018production', """daq_run == 'PHYSICS' and
                                              beam_current > 2 and
                                              event_count > 5000000 and
                                              solenoid_current > 100 and
@@ -41,6 +41,8 @@ default_aliases = [
     ConditionSearchAlias('is_field_off', "solenoid_current < 100", " Field Off"),
 
     ConditionSearchAlias('is_field_on', "solenoid_current >= 100", " Field On"),
+
+    ConditionSearchAlias('status_calibration', "status == 3", "Run status = calibration"),
 
     ConditionSearchAlias('status_approved_long', "status == 2", "Run status = approved (long)"),
 
