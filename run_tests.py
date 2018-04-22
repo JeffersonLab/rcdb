@@ -21,7 +21,8 @@ def load_tests(loader, tests, pattern):
     test_suits = loader.discover(python_tests_folder)
     for test_suit in test_suits:
         assert isinstance(test_suit, TestSuite)
-        test_suit.
+        #test_suit.run(False, True)
+        unittest.TextTestRunner(verbosity=2).run(test_suit)
     return result
 
 

@@ -19,10 +19,14 @@ class TestSqlSchemaVersion(unittest.TestCase):
         rcdb.model.Base.metadata.create_all(self.db.engine)
         v = SchemaVersion()
         v.version = rcdb.SQL_SCHEMA_VERSION
+        self.db.session.add(v)
 
+        v = SchemaVersion()
+        v.version = rcdb.SQL_SCHEMA_VERSION - 1
         self.db.session.add(v)
         self.db.session.commit()
-        self.assertTrue(self.db.is_acceptable_sql_version())
+
+        self.assertEqual(self.db.get_sql_schema_version(), rcdb.SQL_SCHEMA_VERSION)
 
     def test_no_schema_version(self):
         """Test of Run in db function"""
@@ -30,7 +34,7 @@ class TestSqlSchemaVersion(unittest.TestCase):
         def should_raise():
             rcdb.RCDBProvider("sqlite://", check_version=True)
 
-        self.assertRaises(rcdb.errors.SqlSchemaVersionError, should_raise)
+        self.assertRaises(Exception, should_raise)
 
     def test_lower_schema_version(self):
         """Checks that lower schema version wouldn't work"""
@@ -40,7 +44,7 @@ class TestSqlSchemaVersion(unittest.TestCase):
         v.version = 0
         self.db.session.add(v)
         self.db.session.commit()
-        self.assertFalse(self.db.is_acceptable_sql_version())
+        self.assertFalse(self.db.get_sql_schema_version())
 
 
 

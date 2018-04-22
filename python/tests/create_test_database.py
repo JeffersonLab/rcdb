@@ -81,8 +81,8 @@ if __name__ == "__main__":
 
     # Tell the dangers!
 
-    print "This script is to create DB schema and fill it with test values to run UNIT TESTS"
-    print "(!) WARNING the database structure will be removed and recreated. All data will be lost"
+    print("This script is to create DB schema and fill it with test values to run UNIT TESTS")
+    print("(!) WARNING the database structure will be removed and recreated. All data will be lost")
 
     parser = argparse.ArgumentParser()
     parser.add_argument("connection_str", help="Connection string to the database")
@@ -92,7 +92,7 @@ if __name__ == "__main__":
 
     # validate SQLite link
     if connection_str.startswith("sqlite") and os.path.exists(connection_str[10:]):
-        print "Such file already exists. Remove it first or give another path"
+        print ("Such file already exists. Remove it first or give another path")
         exit(1)
 
     # Connection to DB

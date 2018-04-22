@@ -13,7 +13,8 @@ THIS SCRIPT IS FOR TESTS ONLY USE alembic TO INITIATE OR UPGRADE THE PRODUCTION 
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='A foo that bars')
+    parser = argparse.ArgumentParser(description='The utility to create RCDB empty database. '
+                                                 'Erases the existing database')
     parser.add_argument("-c", "--connection", help="Connection string for mysql database")
     parser.add_argument('--i-am-sure', action='store_true', help="Place it to run the script")
     args = parser.parse_args()
