@@ -15,7 +15,7 @@ default_aliases = [
 
     ConditionSearchAlias('is_2018production', """daq_run == 'PHYSICS' and
                                              beam_current > 2 and
-                                             event_count > 5000000 and
+                                             event_count > 10000000 and
                                              solenoid_current > 100 and
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
