@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from collections import defaultdict
-from rcdb.model import Run, BoardInstallation, Condition, ConditionType
+from rcdb.model import Run, Condition, ConditionType
 from sqlalchemy.orm import subqueryload
 
 mod = Blueprint('conditions', __name__, url_prefix='/conditions')

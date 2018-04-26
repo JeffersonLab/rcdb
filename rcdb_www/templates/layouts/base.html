@@ -97,9 +97,6 @@
                     <!-- right links -->
                     <ul class="nav navbar-nav navbar-right">
                         <!-- Boards -->
-                        <li {% if request.endpoint == 'boards.index' %} class="active"{% endif %}>
-                            <a href="{{ url_for('boards.index') }}">Boards</a>
-                        </li>
                         <li class="dropdown {% if request.endpoint in ['logs.index', 'statistics.index'] %} active{% endif %}">
                             <a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Meta <span class="caret"></span></a>
                         <ul class="dropdown-menu">

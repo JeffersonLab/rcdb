@@ -12,7 +12,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 import rcdb
 from collections import defaultdict
 from rcdb import DefaultConditions
-from rcdb.model import Run, BoardInstallation, Condition, ConditionType, ConfigurationFile
+from rcdb.model import Run, Condition, ConditionType, ConfigurationFile
 from rcdb.stopwatch import StopWatchTimer
 from rcdb_www.pagination import Pagination
 from sqlalchemy import func
