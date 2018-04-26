@@ -1,4 +1,5 @@
-from rcdb.provider import RCDBProvider
+import sys
+from rcdb.provider import RCDBProvider, destroy_all_create_schema
 from rcdb.model import ConditionType
 
 
@@ -14,8 +15,16 @@ except ImportError:
     exit(1)
 
 
-# Create RCDBProvider provider object and connect it to DB
-db = RCDBProvider("sqlite:///example.db")
+if len(sys.argv) > 1:
+    # Open database using connection string from command line argument
+    db = RCDBProvider(sys.argv[1])
+else:
+    # Create in-memory database
+    db = RCDBProvider("sqlite://", check_version=False)
+    destroy_all_create_schema(db)
+
+# Create run number 1 (in case it doesn't exist)
+db.create_run(1)
 
 # Create condition type
 db.create_condition_type("cat", ConditionType.JSON_FIELD, "The Cat lives here")

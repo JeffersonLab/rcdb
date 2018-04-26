@@ -1,22 +1,24 @@
-import rcdb
+# This is an advanced example, that illustrates how to use SQLAlchemu Kung fu on RCDB
+
 from rcdb.model import ConditionType, Run, Condition
-from sqlalchemy import or_
+from rcdb.provider import destroy_all_create_schema, RCDBProvider
+
 from sqlalchemy.orm import joinedload
 
 
 def make_dummy_db():
     """ Creates inmemory SQLite database"""
 
-    # create in memory SQLite database
-    db = rcdb.RCDBProvider("sqlite://")
-    rcdb.model.Base.metadata.create_all(db.engine)
+    # Create in-memory database
+    db = RCDBProvider("sqlite://", check_version=False)
+    destroy_all_create_schema(db)
 
     print("Dummy memory database created!")
 
     # create conditions types
-    event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD)
-    data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD)
-    tag_type = db.create_condition_type("tag", ConditionType.STRING_FIELD)
+    event_count_type = db.create_condition_type("event_count", ConditionType.INT_FIELD, "The event count")
+    data_value_type = db.create_condition_type("data_value", ConditionType.FLOAT_FIELD, "Some data value")
+    tag_type = db.create_condition_type("tag", ConditionType.STRING_FIELD, "Tag... What it means... hm...")
 
     # create runs and fill values
     for i in range(0, 100):
@@ -78,21 +80,19 @@ def querying_specific_conditions(db):
         print result[row*2].name, result[row*2], "\t\t\t", result[row*2 + 1].name, result[row*2+1]
 
 
-
-
 if __name__ == "__main__":
     db = make_dummy_db()
 
-    print
+    print('')
     print("querying_using_condition_type")
     querying_using_condition_type(db)
 
-    print()
+    print('')
     print("querying_using_alchemy")
     querying_using_alchemy(db)
 
-    print()
+    print('')
     print("querying_specific_conditions")
-    querying_specific_conditions(db);
+    querying_specific_conditions(db)
 
 

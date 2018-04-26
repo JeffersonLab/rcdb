@@ -1,9 +1,18 @@
 import json
-from rcdb.provider import RCDBProvider
+import sys
+from rcdb.provider import RCDBProvider, destroy_all_create_schema
 from rcdb.model import ConditionType
 
-# Create RCDBProvider provider object and connect it to DB
-db = RCDBProvider("sqlite:///example.db")
+if len(sys.argv) > 1:
+    # Open database from command line argument
+    db = RCDBProvider(sys.argv[1])
+else:
+    # Create in-memory database
+    db = RCDBProvider("sqlite://", check_version=False)
+    destroy_all_create_schema(db)
+
+# Create run (just in case it is not there)
+db.create_run(1)
 
 # Create condition type
 db.create_condition_type("list_data", ConditionType.JSON_FIELD, "Data list")

@@ -310,7 +310,6 @@ if __name__ == "__main__":
         show_value(db, args.run_number, args.condition_name)
         exit(0)
 
-
     # Print stats?
     if args.run_number == -1 and not args.condition_name:
         log.debug("No run_number, no condition_name. Show stats")
