@@ -60,14 +60,14 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Check DB version
     # ------------------------------------------------
-    def is_acceptable_sql_version(self):
+    def get_sql_schema_version(self):
         """Check if connected SQL schema is of the right version"""
-        try:
-            return bool(self.session.query(func.count(SchemaVersion.version))
-                        .filter(SchemaVersion.version == rcdb.SQL_SCHEMA_VERSION)
-                        .scalar())
-        except OperationalError:
-            return False
+
+        schema_version, = self.session.query(SchemaVersion.version) \
+            .order_by(desc(SchemaVersion.version)) \
+            .first()
+
+        return schema_version
 
     # ------------------------------------------------
     # Connects to database using connection string
@@ -105,13 +105,15 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-            try:
-                if not self.is_acceptable_sql_version():
-                    message = "SQL schema version doesn't match. " \
-                              "Probably RCDB is connecting with wrong, empty or older/newer DB"
-                    raise rcdb.errors.SqlSchemaVersionError(message)
-            except:
-                raise
+            db_version = self.get_sql_schema_version()
+
+            if db_version != rcdb.SQL_SCHEMA_VERSION:
+                message = "SQL schema version doesn't match. " \
+                          "Probably RCDB is connecting with wrong, empty or older/newer DB" \
+                          "Retrieved DB version is {0}, required version is {1}" \
+                    .format(db_version, rcdb.SQL_SCHEMA_VERSION)
+                raise rcdb.errors.SqlSchemaVersionError(message)
+
 
     # ------------------------------------------------
     # Closes connection to data
@@ -903,15 +905,15 @@ class RCDBProvider(object):
 
             # Now joins region
             join_str = "  LEFT JOIN conditions {0} " \
-                       "  ON {0}.run_number = runs.number AND {0}.condition_type_id = {1}{2}"\
-                       .format(table_name, ct.id, os.linesep)
+                       "  ON {0}.run_number = runs.number AND {0}.condition_type_id = {1}{2}" \
+                .format(table_name, ct.id, os.linesep)
 
             if join_str not in query_joins:
-                query_joins += join_str   # safe for duplicate entries which trigger DB errors
+                query_joins += join_str  # safe for duplicate entries which trigger DB errors
 
         mighty_query = query + os.linesep \
-                             + query_joins + os.linesep \
-                             + where_clause
+                       + query_joins + os.linesep \
+                       + where_clause
 
         if not sort_desc:
             mighty_query = mighty_query + os.linesep + "ORDER BY runs.number"
@@ -1514,49 +1516,9 @@ class ConfigurationProvider(RCDBProvider):
         return conf_file
 
 
-def alembic_set_stamp_head(connection_string):
-    import os
-    import argparse
-    from alembic.config import Config
-    from alembic import command
-
-    import inspect
-    this_directory = os.path.dirname(os.path.abspath(inspect.stack()[0][1]))
-    root_directory = os.path.join(this_directory, '..', '..')
-    alembic_directory = os.path.join(root_directory, 'alembic')
-
-    ini_path = os.path.join(root_directory, 'alembic.ini')
-
-    config = Config(ini_path)
-    config.set_main_option('script_location', alembic_directory)
-    config.cmd_opts = argparse.Namespace()  # other command like options.
-    x_arg = 'rcdb_connection=' + connection_string
-    if not hasattr(config.cmd_opts, 'x'):
-        if x_arg is not None:
-            setattr(config.cmd_opts, 'x', [])
-            if isinstance(x_arg, list) or isinstance(x_arg, tuple):
-                for x in x_arg:
-                    config.cmd_opts.x.append(x)
-            else:
-                config.cmd_opts.x.append(x_arg)
-        else:
-            setattr(config.cmd_opts, 'x', None)
-
-    revision = 'head'
-    sql = False
-    tag = None
-
-    command.upgrade(config, revision, sql=sql, tag=tag)
-
-
 def destroy_schema(db):
     assert isinstance(db, RCDBProvider)
-    drop_sql = "DROP TABLE alembic_version;"
     rcdb.model.Base.metadata.drop_all(db.engine)
-    try:
-        db.session.connection().execute(drop_sql)
-    except ProgrammingError:
-        pass  # because it might be such way
 
 
 def destroy_all_create_schema(db):
@@ -1571,12 +1533,10 @@ def destroy_all_create_schema(db):
     except OperationalError as ex:
         print("destroy_schema dropped OperationalError '{}' so it is considered that the database is empty".format(ex))
 
-    # rcdb.model.Base.metadata.create_all(db.engine)
+    rcdb.model.Base.metadata.create_all(db.engine)
 
-    alembic_set_stamp_head(db.connection_string)
-
-    # v = SchemaVersion()
-    # v.version = rcdb.SQL_SCHEMA_VERSION
-    # v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
-    # db.session.add(v)
-    # db.session.commit()
+    v = SchemaVersion()
+    v.version = rcdb.SQL_SCHEMA_VERSION
+    v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
+    db.session.add(v)
+    db.session.commit()

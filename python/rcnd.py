@@ -51,7 +51,11 @@ Names policy:
 1. Write value for the run:
 > rcnd --write "value to write" --replace 1000 my_value
 
-Without --replace error is raised, if run 1000 already have different value for 'my_value'
+   Without --replace error is raised, if run 1000 already have different value for 'my_value'
+
+2. Create a new run (Use it only for test purpuses!)
+> rcnd --new-run <run number>
+ 
 """
 
 
@@ -169,7 +173,9 @@ def print_stats(db):
     run_query = db.session.query(Run)
     condition_type_query = db.session.query(ConditionType)
     print("Runs total: {}".format(run_query.count()))
-    print("Last run  : {}".format(run_query.order_by(desc(Run.number)).first().number))
+    run = run_query.order_by(desc(Run.number)).first()
+    if run is not None:
+        print("Last run  : {}".format(run.number))
     print("Condition types total: {}".format(condition_type_query.count()))
     print("Conditions: ")
     print("")
@@ -197,6 +203,15 @@ def write_value(db, run_number, name, value, replace):
     print ("Written '{}' to run number {}".format(name, run_number))
 
 
+def new_run(db, run_number):
+    run = db.create_run(run_number)
+    if not run:
+        print ("Run number '{}' is NOT created DB".format(run_number))
+        exit(1)
+
+    print ("Created run number {}".format(run_number))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=help_text, epilog=examples,
                                      formatter_class=RawDescriptionHelpFormatter)
@@ -204,6 +219,7 @@ if __name__ == "__main__":
     parser.add_argument("-v", "--verbose", help="Show detailed information about script actions", action='store_true')
     parser.add_argument("-l", "--list", help="List condition names, types and description", action='store_true')
     parser.add_argument("--create", help="Create condition with this name", metavar='<name>', default="")
+    parser.add_argument("--new-run", help="Creates a new run", metavar='<name>', default="")
     parser.add_argument("--type", type=str, help="Set condition type (for --create)", choices=all_value_types,
                         default=ConditionType.FLOAT_FIELD)
     parser.add_argument("-d", "--description", help="Description", default="")
@@ -274,6 +290,12 @@ if __name__ == "__main__":
     if args.create:
         log.debug("Create a condition type")
         create_type(db, args.create, args.type, args.description)
+        exit(0)
+
+    # Create a new run
+    if args.new_run:
+        log.debug("Create a new run")
+        new_run(db, int(args.new_run))
         exit(0)
 
     # List all conditions for the run
