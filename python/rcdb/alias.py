@@ -19,6 +19,9 @@ default_aliases = [
                                              solenoid_current > 100 and
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
+
+    ConditionSearchAlias('is_dirc_production', "daq_config in ['FCAL_BCAL_PS_DIRC_m9.conf', 'FCAL_BCAL_PS_DIRC_m10.conf'] "),
+
     ConditionSearchAlias('is_production_long', """daq_run == 'PHYSICS_raw'
                                              beam_current > 2 and
                                              event_count > 5000000 and
