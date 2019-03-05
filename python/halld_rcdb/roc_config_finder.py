@@ -147,6 +147,12 @@ def find_roc_configuration_files(parse_result):
     if parse_result.st_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('st', parse_result.st_fadc250_files_info))
 
+    if parse_result.st_fadc250_files_info:
+        infos.append(HallDFilesGrabInfo('dirc', parse_result.dirc_fadc250_files_info))
+
+    if parse_result.st_fadc250_files_info:
+        infos.append(HallDFilesGrabInfo('ccal', parse_result.ccal_fadc250_files_info))
+
     return infos
 
 
