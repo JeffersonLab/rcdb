@@ -19,6 +19,14 @@ default_aliases = [
                                              solenoid_current > 100 and
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
+
+    ConditionSearchAlias('is_primex_production', """daq_run == 'PHYSICS_PRIMEX' and
+                                             event_count > 1000000 and
+                                             collimator_diameter != 'Blocking'""",
+                         "Is PrimEx production run"),
+
+    ConditionSearchAlias('is_dirc_production', "daq_config in ['FCAL_BCAL_PS_DIRC_m9.conf', 'FCAL_BCAL_PS_DIRC_m10.conf'] ", "Is DIRC production run"),
+
     ConditionSearchAlias('is_production_long', """daq_run == 'PHYSICS_raw'
                                              beam_current > 2 and
                                              event_count > 5000000 and
