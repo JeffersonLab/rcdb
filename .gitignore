@@ -116,3 +116,7 @@ cpp/\.idea/workspace\.xml
 
 \.sconsign\.dblite
 .idea/misc.xml
+
+# build_scripts
+.clone_done
+rcdb_prereqs_version.xml

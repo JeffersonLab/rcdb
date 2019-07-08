@@ -22,183 +22,9 @@ class ModelBase(Base):
         return self.__tablename__ + "_" + str(self.id)
 
 
-# objects for many to many association
-_board_conf_have_runs_association = Table('board_configurations_have_runs', Base.metadata,
-                                          Column('board_configuration_id', Integer,
-                                                 ForeignKey('board_configurations.id')),
-                                          Column('run_number', Integer, ForeignKey('runs.number')))
-
-_board_inst_have_runs_association = Table('board_installations_have_runs', Base.metadata,
-                                          Column('board_installation_id', Integer,
-                                                 ForeignKey('board_installations.id')),
-                                          Column('run_number', Integer, ForeignKey('runs.number')))
-
 _files_have_runs_association = Table('files_have_runs', Base.metadata,
                                      Column('files_id', Integer, ForeignKey('files.id')),
                                      Column('run_number', Integer, ForeignKey('runs.number')))
-
-
-def _count_version(context, table_name):
-    """ counts a number of previous configuration """
-    assert isinstance(table_name, basestring)
-    board_id = context.current_parameters["board_id"]
-    result = context.engine.execute("SELECT count(*) AS n FROM " + table_name + " WHERE board_id=%s", str(board_id))
-    for row in result:
-        context.current_parameters["version"] = int(row['n'])
-        return int(row['n'])
-
-
-# --------------------------------------------
-# class Board
-# --------------------------------------------
-class Board(ModelBase):
-    """
-    Represents trigger DB board.
-    """
-    __tablename__ = 'boards'
-    id = Column(Integer, primary_key=True)
-    serial = Column(String(512))
-    board_type = Column(String(45))
-    modified = Column(DateTime, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-    readout_thresholds = relationship("ReadoutThresholdPreset", cascade="all, delete, delete-orphan")
-    trigger_thresholds = relationship("TriggerThresholdPreset", cascade="all, delete, delete-orphan")
-    readout_masks = relationship("ReadoutMaskPreset", cascade="all, delete, delete-orphan")
-    trigger_masks = relationship("TriggerMaskPreset", cascade="all, delete, delete-orphan")
-    dac_presets = relationship("DacPreset", cascade="all, delete, delete-orphan")
-    configs = relationship("BoardConfiguration", cascade="all, delete, delete-orphan", back_populates="board")
-    installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan", back_populates="board")
-
-    def __repr__(self):
-        return "<Board id='{0}' name='{1}'>".format(self.id, self.board_name)
-
-
-# --------------------------------------------
-# class Crate
-# --------------------------------------------
-class Crate(ModelBase):
-    """
-    Represents Crate where boards are placed
-    """
-    __tablename__ = 'crates'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(45))
-    created = Column(DateTime, default=datetime.datetime.now)
-    installations = relationship("BoardInstallation", cascade="all, delete, delete-orphan", back_populates="crate")
-
-
-# --------------------------------------------
-# class BoardInstallation
-# --------------------------------------------
-class BoardInstallation(ModelBase):
-    """
-    Represents board installation
-    """
-    __tablename__ = 'board_installations'
-    id = Column(Integer, primary_key=True)
-    board_id = Column(Integer, ForeignKey('boards.id'))
-    board = relationship("Board", back_populates="installations")
-    crate_id = Column(Integer, ForeignKey('crates.id'))
-    crate = relationship("Crate", back_populates="installations")
-    slot = Column(Integer)
-    runs = relationship("Run",
-                        secondary=_board_inst_have_runs_association,
-                        back_populates="board_installations")
-
-
-# --------------------------------------------
-# class PerChannelData
-# --------------------------------------------
-class PerChannelPresetMixin(object):
-    id = Column(Integer, primary_key=True)
-    text_values = Column('values', String(1024))
-
-    @declared_attr
-    def board_id(cls):
-        return Column(Integer, ForeignKey('boards.id'), nullable=False)
-
-    version = Column(Integer, default=0)  # lambda context: _count_version(context, 'dac_presets'))
-
-    @property
-    def values(self):
-        """:return: list with pedestal values as strings"""
-        return str(self.text_values).split()
-
-    @values.setter
-    def values(self, values):
-        self.text_values = list_to_db_text(list(values))
-
-    def _get_next_version(self):
-        return len(self.board.threshold_presets)
-
-    def __repr__(self):
-        return "<PerChannelPreset id='{0}' table='{1}'>".format(self.id, self.__tablename__)
-
-
-# --------------------------------------------
-# Per channel preset classes
-# --------------------------------------------
-class DacPreset(PerChannelPresetMixin, Base):
-    __tablename__ = 'dac_presets'
-
-
-class ReadoutThresholdPreset(PerChannelPresetMixin, Base):
-    __tablename__ = 'readout_thresholds'
-
-
-class TriggerThresholdPreset(PerChannelPresetMixin, Base):
-    __tablename__ = 'trigger_thresholds'
-
-
-class ReadoutMaskPreset(PerChannelPresetMixin, Base):
-    __tablename__ = 'readout_masks'
-
-
-class TriggerMaskPreset(PerChannelPresetMixin, Base):
-    __tablename__ = 'trigger_masks'
-
-
-# --------------------------------------------
-# class
-# --------------------------------------------
-class BoardConfiguration(ModelBase):
-    """
-
-    """
-    __tablename__ = 'board_configurations'
-    id = Column(Integer, primary_key=True)
-    readout_thresholds_id = Column("readout_threshold_id", Integer, ForeignKey('readout_thresholds.id'), nullable=True)
-    readout_threshold_preset = relationship("ReadoutThresholdPreset")
-
-    trigger_thresholds_id = Column("trigger_threshold_id", Integer, ForeignKey('trigger_thresholds.id'), nullable=True)
-    trigger_threshold_preset = relationship("TriggerThresholdPreset")
-
-    readout_masks_id = Column("readout_mask_id", Integer, ForeignKey('readout_masks.id'), nullable=True)
-    readout_mask_preset = relationship("ReadoutMaskPreset")
-
-    trigger_masks_id = Column("trigger_mask_id", Integer, ForeignKey('trigger_masks.id'), nullable=True)
-    trigger_mask_preset = relationship("TriggerMaskPreset")
-
-    dac_preset_id = Column(Integer, ForeignKey('dac_presets.id'), nullable=True)
-    dac_preset = relationship("DacPreset")
-
-    # _parameters_id = Column("board_parameters_id", Integer, ForeignKey('board_parameters.id'), nullable=True)
-    # parameter_preset = relationship("BoardParameterPreset")
-
-    board_id = Column(Integer, ForeignKey('boards.id'))
-    board = relationship("Board", back_populates="configs")
-    runs = relationship("Run",
-                        secondary=_board_conf_have_runs_association,
-                        back_populates="board_configs")
-    version = Column(Integer, default=0)  # lambda context:_count_version(context, 'board_configurations'))
-
-    @property
-    def log_id(self):
-        """returns id suitable for log. Which is tablename_id"""
-        return self.__tablename__ + "_" + str(self.id)
-
-    def __repr__(self):
-        return "<BoardConfiguration id='{0}'>".format(self.id)
-
 
 # --------------------------------------------
 # class RUN
@@ -214,18 +40,6 @@ class Run(ModelBase):
     __tablename__ = 'runs'
 
     number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
-
-    #
-    board_configs = relationship("BoardConfiguration", secondary=_board_conf_have_runs_association,
-                                 back_populates="runs")
-    """[BoardConfiguration]: Link to board channels and etc. configured for the run"""
-
-    #
-    board_installations = relationship("BoardInstallation",
-                                       secondary=_board_inst_have_runs_association,
-                                       order_by=lambda: BoardInstallation.crate_id,
-                                       back_populates="runs")
-    "[BoardInstallation]: Link to crate and slot information for the board"
 
     #
     files = relationship("ConfigurationFile", secondary=_files_have_runs_association, back_populates="runs")
@@ -319,23 +133,6 @@ class ConfigurationFile(ModelBase):
     def __repr__(self):
         return "<ConfigurationFile id='{0}', path='{1}'>".format(self.id, self.path)
 
-
-#
-# #--------------------------------------------
-# # class
-# #--------------------------------------------
-# class TriggerConfiguration(Base):
-#     """
-#     Holds information about trigger configuration for this run
-#     """
-#     __tablename__ = 'trigger_configurations'
-#     id = Column(Integer, primary_key=True)
-#     type = Column(String, nullable=False)
-#     runs = relationship("Run",  back_populates="trigger")
-#
-#     def __repr__(self):
-#         return "<TriggerConfiguration id='{0}'>".format(self.id)
-#
 
 class ConditionType(ModelBase):
     """

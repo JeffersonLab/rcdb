@@ -74,19 +74,17 @@ def url_for_other_page(page):
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['rcdb_default_alias'] = rcdb.alias.default_aliases
 # register modules
-from boards.views import mod as boards_module
 from runs.views import mod as runs_module
 from logs.views import mod as logs_module
 from files.views import mod as files_module
-from crates.views import mod as crates_module
+
 from statistics.views import mod as statistics_module
 from conditions.views import mod as conditions_module
 
-app.register_blueprint(boards_module)
+
 app.register_blueprint(runs_module)
 app.register_blueprint(logs_module)
 app.register_blueprint(files_module)
-app.register_blueprint(crates_module)
 app.register_blueprint(statistics_module)
 app.register_blueprint(conditions_module)
 

@@ -8,7 +8,8 @@ from rcdb.log_format import BraceMessage as F
 # Setup logger
 log = logging.getLogger('rcdb.halld.main_config_parser')  # create run configuration standard logger
 
-section_names = ["TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH", "TAGM", "PS", "PSC", "TPOL", "CDC", "FDC"]
+section_names = ["TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH", "TAGM", "PS",
+                 "PSC", "TPOL", "CDC", "FDC", "DIRC", "CCAL"]
 
 
 class HallDMainConfigParseResult(object):
@@ -36,6 +37,8 @@ class HallDMainConfigParseResult(object):
         self.tof_fadc250_files_info = (None, None, None, None)
         self.tagh_fadc250_files_info = (None, None, None, None)
         self.st_fadc250_files_info = (None, None, None, None)
+        self.ccal_fadc250_files_info = (None, None, None, None)
+        self.dirc_fadc250_files_info = (None, None, None, None)
 
         # --type json --description "some FADC250_* parameters from FCAL section of run config"
 
@@ -86,6 +89,8 @@ def _process_parse_result(parse_result, file_name=""):
     result.tof_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TOF')
     result.tagh_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TAGH')
     result.st_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'ST')
+    result.ccal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'CCAL')
+    result.dirc_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'DIRC')
 
     return result
 

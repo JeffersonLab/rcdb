@@ -193,7 +193,7 @@ namespace rcdb
             vector<string> sectionNames;
 
             //First auto find sections
-            for (int i = 0; i < sections.size(); ++i) {
+            for (uint i = 0; i < sections.size(); ++i) {
                 sectionNames.push_back(sections[i].FullLine);
             }
 
@@ -201,7 +201,7 @@ namespace rcdb
             auto result = Parse(lines, sectionNames, true);
 
             // Update parse result
-            for (int i = 0; i < sections.size(); ++i) {
+            for (uint i = 0; i < sections.size(); ++i) {
                 result.SectionsBySlotNumber[sections[i].SlotNumber] = result.Sections[sections[i].FullLine];
             }
             return result;

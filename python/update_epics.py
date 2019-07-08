@@ -7,6 +7,7 @@
 #
 # * beam_beam_energy       (float)  # Beam current - uses the primary epics BCM, IBCAD00CRCUR6
 # * beam_energy            (float)  # Beam energy - from epics HALLD:p
+# * cdc_gas_pressure       (float)  # Gas pressure related to CDC.  EPICS: RESET:i:GasPanelBarPress1
 # * coherent_peak          (float)  # Coherent peak location
 # * collimator_diameter    (string) # Collimator diameter
 # * luminosity             (float)  # Estimated luminosity factor
@@ -18,6 +19,7 @@
 # * polarization_direction (string) # Polarization direction - parallel or perpendicular to floor
 # * radiator_type          (string) # Diamond name
 # * target_type            (string) # Target type/status
+# * tagger_current         (float)  # Current in tagger magnet
 #
 
 # More description of these variables is provided below
@@ -117,9 +119,38 @@ def update_beam_conditions(run, log):
 
 
     try: 
-        # also, get the current excluding periods when the beam is off
-        # we define this as the periods where the BCM reads 50 - 5000 nA
-        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "50:5000", "-l", "HALLD:p"]
+        # also get the beam energy when current > 5 nA and beam energy > 10. MeV, to avoid problems
+        # where the CEBAF beam energy server fails and doesn't restart =(
+
+        avg_beam_energy = 0.
+        nentries = 0
+        cmds = ["myData", "-b", begin_time_str, "-e", end_time_str, "IBCAD00CRCUR6", "HALLD:p"]
+        log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            print line.strip()
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 4:
+                continue
+            the_beam_current = float(tokens[2])
+            the_beam_energy = float(tokens[3])
+            if (the_beam_current>5.) and (the_beam_energy>10.):
+                avg_beam_energy += the_beam_energy
+                nentries += 1
+
+        # experience has shown that the above myData command returns once or twice every second...
+        # so let's ignore the time periods and do a simple average
+        #avg_beam_energy /= float(n)
+        conditions["beam_energy"] = float("%7.1f"%(avg_beam_energy / float(nentries)))
+
+        """
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "30:5000", "-l", "HALLD:p"]
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
@@ -137,10 +168,37 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "HALLD:p":
                 conditions["beam_energy"] = float(value)
+        """
 
     except Exception as e:
         log.warn(Lf("Error in a beam_energy request : '{}'", e))
         conditions["beam_energy"] = -1.
+
+
+    try: 
+        # also, get the average CDC gas pressure
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-l", "RESET:i:GasPanelBarPress1"]
+        log.debug(Lf("Requesting cdc_gas_pressure subprocess flags: '{}'", cmds))
+        # execute external command
+        p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        # iterate over output
+        n = 0
+        for line in p.stdout:
+            print line.strip()
+            n += 1
+            if n == 1:     # skip header
+                continue 
+            tokens = line.strip().split()
+            if len(tokens) < 3:
+                continue
+            key = tokens[0]
+            value = tokens[2]      # average value
+            if key == "RESET:i:GasPanelBarPress1":
+                conditions["cdc_gas_pressure"] = float(value)
+
+    except Exception as e:
+        log.warn(Lf("Error in a cdc_gas_pressure request : '{}'", e))
+        conditions["cdc_gas_pressure"] = -1.
 
 
     return conditions
@@ -157,6 +215,16 @@ def setup_run_conds(run):
         #conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
+    # Beam current from the tagger dump BCM
+    try: 
+        conditions["beam_current"] = float(caget("IBCAD00CRCUR6"))
+    except:
+        conditions["beam_current"] = -1.
+    # CDC gas pressure
+    try: 
+        conditions["cdc_gas_pressure"] = float(caget("RESET:i:GasPanelBarPress1"))
+    except:
+        conditions["cdc_gas_pressure"] = -1.
     # Solenoid current
     try: 
         conditions["solenoid_current"] = float(caget("HallD-PXI:Data:I_Shunt"))
@@ -175,33 +243,39 @@ def setup_run_conds(run):
 
     # set global radiator name
     try:
-        conditions["radiator_type"] = caget("hd:radiator:uname")
+        conditions["radiator_type"] = caget("hd:radiator:uname")  # this always fails!
     except:
         conditions["radiator_type"] = None
         
     # only save information about the diamond radiator (or whatever is in the goniometer)
-    # if the amorphous radiator is not in
+    # if the amorphous radiator ladder is not in
     # yes, ID #1 is the retracted state, ID #2 is the blank state... for 2016 at least.
     # 12/7/2017: #5000 is the retracted state, and all of the non-diamond radiators have ID #0.
     # the diamonds have more complicated IDs
     # see:  https://halldsvn.jlab.org/repos/trunk/controls/epics/app/goniApp/Db/goni.substitutions
-    if conditions["radiator_id"] != 5000 or conditions["radiator_id"] != 0:
-        # Polarization direction - parallel or perpendicular to floor
-        try:
-            polarization_dir = int(caget("HD:CBREM:PLANE"))
-            if polarization_dir == 1:
-                conditions["polarization_direction"] = "PARA"
-            elif polarization_dir == 2:
-                conditions["polarization_direction"] = "PERP"
-        except:
-            conditions["polarization_direction"] = "N/A"
+    if conditions["radiator_id"] != 5000:
+        # Save diamond info only if we aren't using an amorphous radiator
+        if conditions["radiator_id"] != 0:
+            # Polarization direction - parallel or perpendicular to floor
+            try:
+                polarization_dir = int(caget("HD:CBREM:PLANE"))
+                if polarization_dir == 1:
+                    conditions["polarization_direction"] = "PARA"
+                elif polarization_dir == 2:
+                    conditions["polarization_direction"] = "PERP"
+            except:
+                conditions["polarization_direction"] = "N/A"
             
-        # Coherent peak location
-        try:
-            conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
-        except:
+            # Coherent peak location
+            try:
+                conditions["coherent_peak"] = float(caget("HD:CBREM:REQ_EDGE"))
+            except:
+                conditions["coherent_peak"] = -1.
+        else:
             conditions["coherent_peak"] = -1.
-        # Diamond name
+            conditions["polarization_direction"] = "N/A"
+
+        # radiator name
         if conditions["radiator_type"] is None:
             try:
                 conditions["radiator_type"] = caget("HD:GONI:RADIATOR_NAME")
@@ -219,6 +293,7 @@ def setup_run_conds(run):
         conditions["coherent_peak"] = -1.
         conditions["radiator_index"] = -1
         conditions["radiator_type"] = ""
+        conditions["polarization_direction"] = "N/A"
 
 
     # set polarization angle

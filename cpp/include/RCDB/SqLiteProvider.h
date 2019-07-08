@@ -5,8 +5,8 @@
 #ifndef RCDB_CPP_SQLITEPROVIDER_H
 #define RCDB_CPP_SQLITEPROVIDER_H
 
-
-#include <RCDB/SQLiteCpp.h>
+#include <sqlite3.h>
+#include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
 #include <memory>
 #include "DataProvider.h"

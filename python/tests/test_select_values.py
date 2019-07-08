@@ -3,6 +3,7 @@ import unittest
 import rcdb
 import rcdb.model
 from rcdb.model import Run, ConditionType
+from rcdb.provider import destroy_all_create_schema
 
 
 class TestRun(unittest.TestCase):
@@ -10,7 +11,7 @@ class TestRun(unittest.TestCase):
 
     def setUp(self):
         self.db = rcdb.RCDBProvider("sqlite://", check_version=False)
-        rcdb.provider.destroy_all_create_schema(self.db)
+        destroy_all_create_schema(self.db)
         runs = {}
         # create runs
         for i in range(1, 6):
@@ -78,8 +79,17 @@ class TestRun(unittest.TestCase):
 
     def test_select_values(self):
         """Test of Run in db function"""
-        result = self.db.select_values(['b', 'd', 'f'], "a in [1,2,4,9] and b > 2", run_min=2)
-        self.assertEqual(result.rows, [[2, 2, None, None], [9, 9, u'mew', None]])
+        result = self.db.select_values(['c', 'd', 'f'], "a in [1,2,4,9] and b > 2", run_min=2)
+
+        """
+        run |     a     |     b     |     c     |      d     |     e         |     f         |     g  
+        -----------------------------------------------------------------------------------------------------
+          2 | 2         | 2.333...  | True      | None       | None          | None          | None
+          9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None          | None   
+
+        """
+
+        self.assertEqual(result.rows, [[2, True, None, None], [9, True, u'mew', None]])
 
     def test_select_values_no_filter(self):
         """Test of Run in db function"""

@@ -1,12 +1,11 @@
 
 #   E X A M P L E   1
 # 3 Lines to get values!!!
-
 from rcdb.provider import RCDBProvider
 
 db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
 
-table = db.select_values(['polarization_angle','polarization_direction'], run_min=30000, run_max=30050)
+table = db.select_values(['polarization_angle', 'polarization_direction'], runs=[30641, 30653])
 
 #   P R I N T   O U T   1
 # Print results
@@ -20,7 +19,7 @@ for row in table:
 
                                                                              # Default value | Descrition
                                                                              #---------------+------------------------------------
-table = db. select_values(val_names=['event_count'],                         # []            | List of conditions names to select, empty by default
+table = db. select_values(val_names=['event_count', 'beam_current'],         # []            | List of conditions names to select, empty by default
                           search_str="@is_production and event_count>1000",  # ""            | Search pattern.
                           run_min=30200,                                     # 0             | minimum run to search/select
                           run_max=30301,                                     # sys.maxsize   | maximum run to search/select
@@ -36,13 +35,26 @@ table = db. select_values(val_names=['event_count'],                         # [
 #
 # 3. runs. One can insert a list of run_numbers like [30001, 30004, ...] here. Then the search/selection will go through
 #          this list instead of  'run_min', 'run_max'
+#   P R I N T   O U T   2
+# table.selected_conditions === table column titles
+print("We selected: " + ", ".join(table.selected_conditions))
+
+for row in table:
+    print ("run: {0}   event_count: {1}      {2}".format(row[0], row[1], row[2]))
+
+# table.performance holds info about selection timing
+print("It took {:.2f} sec ".format(table.performance['total']))
+
+
+table = db.select_values(['beam_current'], "@is_production", runs=[30300, 30298, 30286])
+
 
 #   P R I N T   O U T   2
 # table.selected_conditions === table column titles
 print("We selected: " + ", ".join(table.selected_conditions))
 
 for row in table:
-    print ("run: {0}   event_count: {1}".format(row[0], row[1]))
+    print ("run: {0}".format(row[0]))
 
 # table.performance holds info about selection timing
 print("It took {:.2f} sec ".format(table.performance['total']))
