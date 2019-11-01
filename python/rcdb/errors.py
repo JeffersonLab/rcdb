@@ -1,6 +1,4 @@
 
-
-
 class OverrideConditionTypeError(Exception):
     pass
 

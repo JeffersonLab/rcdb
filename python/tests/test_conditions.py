@@ -154,7 +154,7 @@ class TestConditions(unittest.TestCase):
         self.db.create_condition_type("lunch_bell_rang", ConditionType.TIME_FIELD, "")
 
         # add value to run 1
-        time = datetime(2015, 9, 1, 14, 21, 01)
+        time = datetime(2015, 9, 1, 14, 21, 1)
         self.db.add_condition(1, "lunch_bell_rang", time)
 
         # get from DB

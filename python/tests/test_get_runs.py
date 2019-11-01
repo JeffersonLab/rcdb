@@ -2,7 +2,7 @@ import unittest
 
 import rcdb
 import rcdb.model
-from rcdb.model import Run, ConditionType
+from rcdb.model import ConditionType
 
 
 class TestRun(unittest.TestCase):
@@ -41,9 +41,9 @@ class TestRun(unittest.TestCase):
         self.assertEqual(test_prev_run, test_prev_run2)
 
     def test_get_runs(self):
-        run1 = self.db.create_run(1)
-        run3 = self.db.create_run(3)
-        run5 = self.db.create_run(5)
+        self.db.create_run(1)
+        self.db.create_run(3)
+        self.db.create_run(5)
 
         runs = self.db.get_runs(0, 3)
         self.assertEqual(len(runs), 2)
@@ -69,16 +69,9 @@ class TestRun(unittest.TestCase):
         run2 = self.db.create_run(2)
         ct = self.db.create_condition_type("ct", ConditionType.STRING_FIELD, "Some condition type")
         self.db.add_condition(run1, ct, "haha")
+        self.assertEqual(run2.number, 2)
 
         run1 = self.db.get_run(1)
         run2 = self.db.get_run(2)
         self.assertEqual(run1.get_condition_value("ct"), "haha")
         self.assertIsNone(run2.get_condition_value("ct"))
-
-
-        
-
-        
-
-
-

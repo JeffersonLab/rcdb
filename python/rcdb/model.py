@@ -12,6 +12,7 @@ from sqlalchemy.sql.expression import func
 
 Base = declarative_base()
 
+RCDB_MAX_RUN = 18446744073709551615   # 2**64 - 1
 
 class ModelBase(Base):
     __abstract__ = True

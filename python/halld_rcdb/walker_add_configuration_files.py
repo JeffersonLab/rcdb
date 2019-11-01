@@ -3,25 +3,22 @@ Adds run_start_time and run_end_time conditions and fills them with run.start_ti
 
 """
 import argparse
+import json
 import os
 import sys
-import json
 
 from rcdb import ConfigurationProvider
-
-import run_config_parser
-from rcdb.model import ConditionType, Run, ConfigurationFile
-from rcdb import DefaultConditions
-
-import roc_config_finder
+from rcdb.model import ConfigurationFile, RCDB_MAX_RUN
+from . import roc_config_finder
+from . import run_config_parser
 
 if __name__ == "__main__":
-    print sys.argv
+    print(sys.argv)
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")
     parser.add_argument("connection_string", nargs='?', default="mysql://rcdb@hallddb.jlab.org/rcdb")
     parser.add_argument("--run-start", default=0)
-    parser.add_argument("--run-end", default=sys.maxint)
+    parser.add_argument("--run-end", default=RCDB_MAX_RUN)
     parser.add_argument('--save', action='store_true')
 
     args = parser.parse_args()
@@ -65,4 +62,3 @@ if __name__ == "__main__":
                                                   importance=ConfigurationFile.IMPORTANCE_LOW)
 
         print("Done run {}\n".format(run.number))
-        

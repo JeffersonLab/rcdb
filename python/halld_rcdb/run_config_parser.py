@@ -95,10 +95,10 @@ def _process_parse_result(parse_result, file_name=""):
     return result
 
 
-def _fill_com_user_dir_ver(parse_result, sectionName):
-    if sectionName in parse_result.found_section_names:
+def _fill_com_user_dir_ver(parse_result, section_name):
+    if section_name in parse_result.found_section_names:
         try:
-            section = parse_result.sections[sectionName]
+            section = parse_result.sections[section_name]
             com_dir = section.entities['FADC250_COM_DIR'] if 'FADC250_COM_DIR' in section.entities else None
             com_ver = section.entities['FADC250_COM_VER'] if 'FADC250_COM_VER' in section.entities else None
             user_dir = section.entities['FADC250_USER_DIR'] if 'FADC250_USER_DIR' in section.entities else None
@@ -106,8 +106,6 @@ def _fill_com_user_dir_ver(parse_result, sectionName):
 
             return com_dir, com_ver, user_dir, user_ver
         except KeyError:
-            log.warning(F("KeyError reading com_user_dir_ver for section '{}' ", sectionName))
+            log.warning(F("KeyError reading com_user_dir_ver for section '{}' ", section_name))
 
     return None, None, None, None
-
-

@@ -1,10 +1,8 @@
-from run_config_parser import ConfigFileParseResult, HallDMainConfigParseResult
-
-import logging
 import glob
+import logging
 import os
 
-from rcdb.log_format import BraceMessage as F
+from .run_config_parser import HallDMainConfigParseResult
 
 # Setup logger
 log = logging.getLogger('rcdb.halld.config_files_grabber')      # create run configuration standard logger
@@ -29,7 +27,7 @@ class HallDFilesGrabInfo(object):
     
     The major remark is that user file may contain only a part of data. For example:
     
-     COM_DIR/rocfcal11_default.cnf      - contains all masks for all boards in crate
+    COM_DIR/rocfcal11_default.cnf      - contains all masks for all boards in crate
     USER_DIR/rocfcal11_ring2_hot_v2.cnf - contain masks for board 2 ONLY
     
     This class implements its logic and provides excessive information about ROC files
@@ -100,7 +98,8 @@ class HallDFilesGrabInfo(object):
         for file_name in self.final_files:
             log.debug("   {}".format(file_name))
 
-    def _map_by_roc(self, file_paths):
+    @staticmethod
+    def _map_by_roc(file_paths):
         """
         Each file path contains rocfcal11_...., rocfcal12_...
         This function create a map of like {"rocfcal11": <full_path>,  "rocfcal12": <full_path>}
@@ -154,5 +153,3 @@ def find_roc_configuration_files(parse_result):
         infos.append(HallDFilesGrabInfo('ccal', parse_result.ccal_fadc250_files_info))
 
     return infos
-
-

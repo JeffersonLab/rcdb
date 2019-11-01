@@ -3,6 +3,7 @@ Documentation for this module.
 
 More details.
 """
+
 import os
 import re
 import logging
@@ -30,6 +31,11 @@ from rcdb.errors import OverrideConditionTypeError, NoConditionTypeFound, \
 from rcdb.model import *
 
 log = logging.getLogger("rcdb.provider")
+
+# Python 2 to 3 fix
+if sys.version_info[0] == 3:
+    # noinspection PyUnresolvedReferences
+    basestring = str,
 
 
 class RCDBProvider(object):
@@ -156,7 +162,7 @@ class RCDBProvider(object):
         """
         Adds log record to the database
         :param table_ids: Str in form tablename_id, or list of such strings, or ModelBase object, or list[ModelBase]
-        :type table_ids:list[str] or list[ModelBase] or Base or str
+        :type table_ids:str or list[str] or list[ModelBase] or Base or str
 
         :param description: Text description of what has been done
         :type description: str
@@ -383,7 +389,7 @@ class RCDBProvider(object):
         :type value_type: str
 
         :param description: Short description of the condition. 255 chars max
-        :type description: basestring
+        :type description: str
 
         :return: ConditionType object that corresponds to created DB record
         :rtype: ConditionType
@@ -648,6 +654,7 @@ class RCDBProvider(object):
 
         file_path = str(file_path)
 
+        # noinspection PyUnresolvedReferences
         query = self.session.query(ConfigurationFile).join(ConfigurationFile.runs) \
             .filter(ConfigurationFile.runs.any(Run.number == run.number), ConfigurationFile.path == file_path)
 
@@ -798,7 +805,7 @@ class RCDBProvider(object):
 
         return result
 
-    def select_values(self, val_names=[], search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False,
+    def select_values(self, val_names=None, search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False,
                       insert_run_number=True, runs=None):
         """ Searches RCDB for runs with e
         
@@ -874,6 +881,11 @@ class RCDBProvider(object):
 
         # result values table
         val_indexes = []
+
+        # Check if val_names are given
+        if not val_names:
+            val_names = []
+
         for name in val_names:
             if name in names:
                 val_indexes.append(names.index(name))
@@ -1199,192 +1211,6 @@ class ConfigurationProvider(RCDBProvider):
     """
     RCDB data provider that uses SQLAlchemy for accessing databases
     """
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def obtain_board(self, board_type, serial):
-        query = self.session.query(Board).filter(Board.board_type == board_type, Board.serial == serial)
-        if not query.count():
-            log.debug(Lf("Board type='{}' sn='{}' is not found in DB. Creating record", board_type, serial))
-            board = Board()
-            board.serial = serial
-            board.board_type = board_type
-            self.session.add(board)
-            self.session.commit()
-            log.info(Lf("Board type='{}' sn='{}' added to DB", board_type, serial))
-            return board
-        else:
-            return query.first()
-
-    # ---------------------------
-    #
-    # ---------------------------
-    def obtain_crate(self, name):
-        """
-        Gets or creates crate with the name
-        :param name: Crate name
-        """
-        query = self.session.query(Crate).filter(Crate.name == name)
-        if not query.count():
-            log.debug(Lf("Crate '{}' is not found in DB. Creating record...", name))
-            crate = Crate()
-            crate.name = name
-            self.session.add(crate)
-            self.session.commit()
-            log.info(Lf("Crate '{}' is added to DB", name))
-            return crate
-        else:
-            return query.first()
-
-    # -----------------------------------------------------
-    #
-    # ------------------------------------------------------
-    def obtain_board_installation(self, crate, board, slot):
-        """
-        Gets board installation by crate, board, slot. Create a new one in DB
-        if there is no such installation
-        """
-        # some validation and value checks
-        if isinstance(crate, basestring):
-            crate = self.obtain_crate(crate)
-
-        if isinstance(board, tuple):
-            board_type, serial = board
-            board = self.obtain_board(board_type, serial)
-        assert isinstance(crate, Crate)
-        assert isinstance(board, Board)
-        slot = int(slot)
-
-        query = self.session.query(BoardInstallation).filter(BoardInstallation.board_id == board.id,
-                                                             BoardInstallation.crate_id == crate.id,
-                                                             BoardInstallation.slot == slot)
-        if not query.count():
-            log.debug(Lf("Board installation for crate='{}', "
-                         "board='{}', sn='{}', slot='{}' is not found in DB. Creating record...",
-                         crate.name, board.board_type, board.serial, slot))
-            installation = BoardInstallation()
-            installation.board = board
-            installation.crate = crate
-            installation.slot = slot
-            self.session.add(installation)
-            self.session.commit()
-            self.add_log_record(installation,
-                                "Board installation for crate='{}', board='{}', sn='{}', slot='{}' added to DB".format(
-                                    crate.name, board.board_type, board.serial, slot),
-                                0)
-            return installation
-        else:
-            return query.first()
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def obtain_dac_preset(self, board, values):
-        """Gets or creates dac preset for board and dac values"""
-        query = self.session.query(DacPreset) \
-            .filter(DacPreset.board_id == board.id,
-                    DacPreset.text_values == list_to_db_text(values))
-        if not query.count():
-            preset = DacPreset()
-            preset.board = board
-            preset.values = values
-            self.session.add(preset)
-            self.session.commit()
-        else:
-            preset = query.first()
-
-        assert isinstance(preset, DacPreset)
-        return preset
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_board_config_to_run(self, run, board, dac_preset):
-        """sets that the board have the dac preset values in the run"""
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(int(run))
-
-        if not isinstance(dac_preset, DacPreset):
-            dac_preset = self.obtain_dac_preset(board, dac_preset)
-
-        # query = self.session.query(BoardConfiguration).join(BoardConfiguration.runs) \
-        # .filter(RunConfiguration.id == run.id,
-        # BoardConfiguration.board_id == board.id,
-        # BoardConfiguration.dac_preset_id == dac_preset.id)
-
-        query = self.session.query(BoardConfiguration) \
-            .filter(BoardConfiguration.board_id == board.id,
-                    BoardConfiguration.dac_preset_id == dac_preset.id)
-
-        # Get or create board configuration
-        if not query.count():
-            log.debug(Lf("Board configuration for board.id='{}', dac_preset.id='{}' not found",
-                         board.id, dac_preset.id))
-            board_config = BoardConfiguration()
-            board_config.board = board
-            board_config.dac_preset = dac_preset
-            self.session.add(board_config)
-            self.session.commit()
-            self.add_log_record([board_config, board, dac_preset],
-                                "Board conf create. board.id='{}', dac_preset.id='{}'".format(board.id, dac_preset.id),
-                                run.number)
-        else:
-            board_config = query.first()
-
-        # check for run!
-        if run not in board_config.runs:
-            log.debug(Lf("Board configuration id='{}' not found in run='{}'", board_config.id, run.number))
-            board_config.runs.append(run)
-            self.session.commit()
-            self.add_log_record(board_config,
-                                "Board conf id='{}' added to run='{}'".format(board_config.id, run.number),
-                                run.number)
-        else:
-            log.debug(Lf("Board configuration id='{}' is already in run='{}'", board_config.id, run.number))
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_board_installation_to_run(self, run, board_installation):
-        """Adds board installation to run using crate, board, slot
-        :run: run number or RunConfiguration object
-        :board_installation: board installation object
-        """
-        if isinstance(board_installation, tuple):
-            # it is (crate, board, slot)
-            crate, board, slot = board_installation
-            board_installation = self.obtain_board_installation(crate, board, slot)
-
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(int(run))
-        assert isinstance(board_installation, BoardInstallation)
-
-        if board_installation not in run.board_installations:
-            log.debug(Lf("Board installation id='{}' is not associated with run='{}'",
-                         board_installation.id, run.number))
-            run.board_installations.append(board_installation)
-            self.session.commit()
-            self.add_log_record(board_installation,
-                                "Add board_installation='{}' to run='{}'".format(board_installation.id, run.number),
-                                run.number)
-        else:
-            log.debug(Lf("Board installation id='{}' already associated with run='{}'",
-                         board_installation.id, run.number))
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_run_statistics(self, run, total_events):
-        """adds run statistics like total events number, etc"""
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(int(run))
-
-        run.total_events = total_events
-        log.debug(Lf("Updating run statistics. total_events='{}'", total_events))
-
-        self.session.commit()
-        self.add_log_record(run, "Run statistics updated. total_events='{}'. Etc...".format(total_events), run.number)
 
     # ------------------------------------------------
     #
