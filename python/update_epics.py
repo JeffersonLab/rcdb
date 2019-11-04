@@ -101,7 +101,7 @@ def update_beam_conditions(run, log):
         # iterate over output
         n = 0
         for line in p.stdout:
-            print line.strip()
+            print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -131,7 +131,7 @@ def update_beam_conditions(run, log):
         # iterate over output
         n = 0
         for line in p.stdout:
-            print line.strip()
+            print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -157,7 +157,7 @@ def update_beam_conditions(run, log):
         # iterate over output
         n = 0
         for line in p.stdout:
-            print line.strip()
+            print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -184,7 +184,7 @@ def update_beam_conditions(run, log):
         # iterate over output
         n = 0
         for line in p.stdout:
-            print line.strip()
+            print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -428,6 +428,6 @@ if __name__ == "__main__":
     update_rcdb_conds(db, int(sys.argv[2]), "update")
 
     #query = db.session.query(Run).filter(Run.number > 9999)
-    #print query.all() 
+    #print(query.all())
     #for run in query.all():
     #    update_rcdb_conds(db, run.number)
