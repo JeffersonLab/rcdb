@@ -185,7 +185,7 @@ def parse_files():
             wait_count += 1
             log.debug(F("{script_name}: Waiting lock for {waited}s", script_name=script_name, waited=wait_count))
 
-            if wait_count > 10:
+            if wait_count > 30:
                 log.error(F("The other instance is running. Since this update reason is '{}', "
                             "this instance waited > 10s for the other one to end. But it still holds the lock",
                             update_reason))
