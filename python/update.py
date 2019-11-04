@@ -1,3 +1,4 @@
+import binascii
 import logging
 import os
 import sys
@@ -26,9 +27,9 @@ log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
 
-SECTION_GLOBAL="GLOBAL"
-SECTION_TRIGGER="TRIGGER"
-SECTION_HEADER="=========================="
+SECTION_GLOBAL = "GLOBAL"
+SECTION_TRIGGER = "TRIGGER"
+SECTION_HEADER = "=========================="
 
 section_names = [SECTION_GLOBAL, SECTION_TRIGGER, ]
 
@@ -101,7 +102,7 @@ def parse_files():
     # We will use this to identify this process in logs. Is done for investigation of double messages
     script_start_datetime = datetime.now()
     script_start_time = time.time()
-    script_name = os.urandom(8).encode('hex')
+    script_name = binascii.hexlify(os.urandom(8)).decode()
     script_pid = os.getpid()
     script_ppid = os.getppid()
     script_uid = os.getuid()
@@ -264,9 +265,9 @@ def parse_files():
                 add_roc_configuration_files(update_context, run_config_parse_result)
                 log.debug("Done ROC config files!")
         else:
-            log.warn("Config file '{}' is missing or is not readable".format(run_config_file))
+            log.warning("Config file '{}' is missing or is not readable".format(run_config_file))
             if "roc" in update_parts:
-                log.warn("Can't parse roc configs because there is no main config")
+                log.warning("Can't parse roc configs because there is no main config")
 
     # Parse run configuration file and save to DB
 
@@ -288,14 +289,14 @@ def parse_files():
                                       epics_end_clock - script_start_clock, datetime.now()), run_number)
 
         except Exception as ex:
-            log.warn("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
+            log.warning("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
             epics_end_clock = time.clock()
 
             # >oO DEBUG log message
             db.add_log_record("",
                               "'{}': ERROR update epics. Error type: '{}' message: '{}' trace: '{}' "
                               "||epics_clocks:'{}' clocks:'{}' time: '{}'"
-                              .format(script_name, type(ex), ex.message, traceback.format_exc(),
+                              .format(script_name, type(ex), str(ex), traceback.format_exc(),
                                       epics_end_clock - epics_start_clock, epics_end_clock - script_start_clock,
                                       datetime.now()), run_number)
 
