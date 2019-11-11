@@ -26,7 +26,7 @@ def parse_file(filename, section_names):
     :return: ConfigParserResult (it is filled after parsing the file)
     """
 
-    with file(filename) as f:
+    with open(filename) as f:
         content = f.read()
     return parse_content(content, section_names)
 
