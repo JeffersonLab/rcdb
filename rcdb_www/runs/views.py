@@ -1,7 +1,5 @@
 import json
 import re
-import urllib2
-
 import sys
 from time import mktime, time
 
@@ -152,10 +150,16 @@ def info(run_number):
 
 @mod.route('/elog/<int:run_number>')
 def elog(run_number):
+
     try:
-        elog_json = urllib2.urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
+        from urllib2 import urlopen, HTTPError
+    except ImportError:
+        from urllib.request import urlopen
+        from urllib.error import HTTPError
+    try:
+        elog_json = urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
                                     .format(run_number)).read()
-    except urllib2.HTTPError as e:
+    except HTTPError as e:
         return jsonify(stat=str(e.code))
 
     resp = Response(response=elog_json, status=200, mimetype="application/json")
