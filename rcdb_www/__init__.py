@@ -11,7 +11,7 @@ DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
 PASSWORD = 'default'
-SQL_CONNECTION_STRING = "mysql+mysqlconnector://rcdb@127.0.0.1/rcdb"
+SQL_CONNECTION_STRING = "mysql+pymysql://rcdb@127.0.0.1/rcdb"
 
 app = Flask(__name__)
 app.config.from_object(__name__)
