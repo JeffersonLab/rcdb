@@ -89,15 +89,15 @@ if __name__ == '__main__':
     sw = StopWatchTimer()
     runs = db.select_runs("@is_production", 0, 20000)
     sw.stop()
-    print sw.elapsed, len(runs)
+    print(sw.elapsed, len(runs))
 
     sw = StopWatchTimer()
     runs = db.select_runs("@is_cosmic", 0, 20000)
     sw.stop()
-    print sw.elapsed, len(runs)
+    print(sw.elapsed, len(runs))
 
     sw = StopWatchTimer()
     runs = db.select_runs("@is_production", 0, 20000)
     sw.stop()
-    print sw.elapsed, len(runs)
+    print(sw.elapsed, len(runs))
 

@@ -23,7 +23,7 @@ import sys
 from rcdb import RCDBProvider
 
 
-def get_runs_by_date(db, query, run_min=0, run_max=sys.maxint):
+def get_runs_by_date(db, query, run_min=0, run_max=2147483647):
     """
     Returns dictionary of dates with all runs per date
     
@@ -58,7 +58,7 @@ def get_runs_by_date(db, query, run_min=0, run_max=sys.maxint):
 
 
 if __name__ == "__main__":
-    print sys.argv
+    print(sys.argv)
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")
     parser.add_argument("connection_string",

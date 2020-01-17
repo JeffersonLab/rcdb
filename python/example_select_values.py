@@ -11,7 +11,7 @@ table = db.select_values(['polarization_angle', 'polarization_direction'], runs=
 # Print results
 print(" run_number, polarization_angle, polarization_direction")
 for row in table:
-    print row[0], row[1], row[2]
+    print (row[0], row[1], row[2])
 
 
 #   E X A M P L E   2

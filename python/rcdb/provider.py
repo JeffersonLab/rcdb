@@ -78,7 +78,7 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Connects to database using connection string
     # ------------------------------------------------
-    def connect(self, connection_string="mysql+mysqlconnector://rcdb@127.0.0.1/rcdb", check_version=True):
+    def connect(self, connection_string="mysql+pymysql://rcdb@127.0.0.1/rcdb", check_version=True):
         """
         Connects to database using connection string
 
@@ -99,8 +99,8 @@ class RCDBProvider(object):
         except ImportError as err:
             # sql alchemy uses MySQLdb by default. But it might be not install in the system
             # in such case we fallback to mysqlconnector which is embedded in CCDB
-            if connection_string.startswith("mysql://") and "No module named MySQLdb" in repr(err):
-                connection_string = connection_string.replace("mysql://", "mysql+mysqlconnector://")
+            if connection_string.startswith("mysql://") and "No module named" in str(err) and 'MySQLdb' in str(err):
+                connection_string = connection_string.replace("mysql://", "mysql+pymysql://")
                 self.engine = sqlalchemy.create_engine(connection_string)
             else:
                 raise

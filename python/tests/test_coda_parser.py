@@ -2,7 +2,7 @@ import inspect
 import os
 from datetime import datetime
 import unittest
-from . import test_get_runs
+from tests import test_get_runs
 from rcdb.coda_parser import parse_file, CodaRunLogParseResult
 
 
