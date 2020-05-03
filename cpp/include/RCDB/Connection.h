@@ -33,6 +33,7 @@ namespace rcdb{
                 Connect();
             }
         }
+        virtual ~Connection() {}
 
         void Connect()
         {
