@@ -104,7 +104,7 @@ def show_value(db, run_number, name):
         return
 
     condition = result
-    print condition.value
+    print(condition.value)
 
 
 def show_run_conditions(db, run_number):
@@ -132,13 +132,13 @@ def show_run_conditions(db, run_number):
         if condition_type.value_type in [ConditionType.INT_FIELD,
                                          ConditionType.BOOL_FIELD,
                                          ConditionType.FLOAT_FIELD]:
-            print "{} = {}".format(condition_type.name, condition.value)
+            print("{} = {}".format(condition_type.name, condition.value))
         elif condition_type.value_type == ConditionType.STRING_FIELD:
-            print "{} = '{}'".format(condition_type.name, condition.value)
+            print("{} = '{}'".format(condition_type.name, condition.value))
         else:
             # it is something big...
             value = str(condition.value).replace('\n', "")[:50]
-            print "{} = ({}){}...".format(condition_type.name, condition_type.value_type, value)
+            print("{} = ({}){}...".format(condition_type.name, condition_type.value_type, value))
 
 
 def list_all_condition_types(db, extended=False, prefix=""):
@@ -159,7 +159,7 @@ def list_all_condition_types(db, extended=False, prefix=""):
         else:
             line = "{}{}".format(prefix, condition_type.name)
 
-        print line
+        print(line)
 
 
 def print_stats(db):
