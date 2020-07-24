@@ -135,41 +135,41 @@ class InheritanceTestCase(JinjaTestCase):
 
     def test_dynamic_inheritance(self):
         env = Environment(loader=DictLoader({
-            'master1': 'MASTER1{% block x %}{% endblock %}',
-            'master2': 'MASTER2{% block x %}{% endblock %}',
-            'child': '{% extends master %}{% block x %}CHILD{% endblock %}'
+            'main1': 'MASTER1{% block x %}{% endblock %}',
+            'main2': 'MASTER2{% block x %}{% endblock %}',
+            'child': '{% extends main %}{% block x %}CHILD{% endblock %}'
         }))
         tmpl = env.get_template('child')
         for m in range(1, 3):
-            assert tmpl.render(master='master%d' % m) == 'MASTER%dCHILD' % m
+            assert tmpl.render(main='main%d' % m) == 'MASTER%dCHILD' % m
 
     def test_multi_inheritance(self):
         env = Environment(loader=DictLoader({
-            'master1': 'MASTER1{% block x %}{% endblock %}',
-            'master2': 'MASTER2{% block x %}{% endblock %}',
-            'child': '''{% if master %}{% extends master %}{% else %}{% extends
-                        'master1' %}{% endif %}{% block x %}CHILD{% endblock %}'''
+            'main1': 'MASTER1{% block x %}{% endblock %}',
+            'main2': 'MASTER2{% block x %}{% endblock %}',
+            'child': '''{% if main %}{% extends main %}{% else %}{% extends
+                        'main1' %}{% endif %}{% block x %}CHILD{% endblock %}'''
         }))
         tmpl = env.get_template('child')
-        assert tmpl.render(master='master2') == 'MASTER2CHILD'
-        assert tmpl.render(master='master1') == 'MASTER1CHILD'
+        assert tmpl.render(main='main2') == 'MASTER2CHILD'
+        assert tmpl.render(main='main1') == 'MASTER1CHILD'
         assert tmpl.render() == 'MASTER1CHILD'
 
     def test_scoped_block(self):
         env = Environment(loader=DictLoader({
-            'master.html': '{% for item in seq %}[{% block item scoped %}'
+            'main.html': '{% for item in seq %}[{% block item scoped %}'
                            '{% endblock %}]{% endfor %}'
         }))
-        t = env.from_string('{% extends "master.html" %}{% block item %}'
+        t = env.from_string('{% extends "main.html" %}{% block item %}'
                             '{{ item }}{% endblock %}')
         assert t.render(seq=list(range(5))) == '[0][1][2][3][4]'
 
     def test_super_in_scoped_block(self):
         env = Environment(loader=DictLoader({
-            'master.html': '{% for item in seq %}[{% block item scoped %}'
+            'main.html': '{% for item in seq %}[{% block item scoped %}'
                            '{{ item }}{% endblock %}]{% endfor %}'
         }))
-        t = env.from_string('{% extends "master.html" %}{% block item %}'
+        t = env.from_string('{% extends "main.html" %}{% block item %}'
                             '{{ super() }}|{{ item * 2 }}{% endblock %}')
         assert t.render(seq=list(range(5))) == '[0|0][1|2][2|4][3|6][4|8]'
 
