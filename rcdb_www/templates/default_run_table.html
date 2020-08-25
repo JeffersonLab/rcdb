@@ -22,7 +22,7 @@
                                                 if (DefaultConditions.IS_VALID_RUN_END in conditions_by_name)
                                                 else False%}
                         {% set is_active_run = True
-                                               if (run.end_time and not is_valid_run_end and loop.index == 1) and (now_time - run.end_time).total_seconds()<120
+                                               if (run.end_time and not is_valid_run_end and loop.index == 1) and (now_time - run.end_time).total_seconds()<180
                                                 else False %}
                         <!-- now_time={{ now_time }}  run.end_time={{ run.end_time }}
                         {% if (run.end_time) and (now_time) %}

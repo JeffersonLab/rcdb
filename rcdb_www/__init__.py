@@ -44,6 +44,8 @@ def sample():
 
 @app.route('/')
 def index():
+
+    # Select the last 50 runs and
     runs = g.tdb.session\
         .query(Run)\
         .order_by(Run.number.desc())\
