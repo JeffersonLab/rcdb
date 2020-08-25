@@ -26,7 +26,7 @@ log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less
 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
 
-
+LOCK_WAIT_TIME = 30   # seconds
 SECTION_GLOBAL = "GLOBAL"
 SECTION_TRIGGER = "TRIGGER"
 SECTION_HEADER = "=========================="
@@ -180,23 +180,26 @@ def parse_files():
             # We failed to obtain the lock. Some other instance of this script is running now.
             if update_reason == UpdateReasons.UPDATE:
                 log.info("The other instance is running. Since update_reason = update we just exit")
+                db.add_log_record("",
+                                  "'{}': Lock exit. The other instance is running. update_reason = update we just exit"
+                                  .format(script_name),
+                                  0)
                 exit(0)
 
             time.sleep(1)
             wait_count += 1
             log.debug(F("{script_name}: Waiting lock for {waited}s", script_name=script_name, waited=wait_count))
 
-            if wait_count > 30:
+            if wait_count > LOCK_WAIT_TIME:
                 log.error(F("The other instance is running. Since this update reason is '{}', "
                             "this instance waited > 10s for the other one to end. But it still holds the lock",
                             update_reason))
 
                 # this is major problem. We'll try send it to DB before exit
                 db.add_log_record("",
-                                  "'{}': Exit!. The other instance is running. This instance waited > 10s! {}"
-                                  .format(
-                                      script_name,
-                                      script_info), 0)
+                                  "'{}': Lock timeout exit!. Other instance is running. This instance waited > {}s! {}"
+                                  .format(script_name, LOCK_WAIT_TIME, script_info),
+                                  0)
                 exit(1)
             lock_success = try_set_interprocess_lock()
 
@@ -282,8 +285,7 @@ def parse_files():
             conditions = update_epics.update_rcdb_conds(db, run_number, update_reason)
             epics_end_clock = time.clock()
             # >oO DEBUG log message
-            if "beam_current" in conditions:
-                db.add_log_record("",
+            db.add_log_record("",
                               "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
                               .format(script_name, conditions["beam_current"], epics_end_clock - epics_start_clock,
                                       epics_end_clock - script_start_clock, datetime.now()), run_number)

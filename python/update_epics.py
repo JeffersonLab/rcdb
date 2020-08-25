@@ -407,10 +407,12 @@ def update_rcdb_conds(db, run, reason):
     if reason == "update" or reason == "end":
         conditions.update( update_beam_conditions(run, log) )
 
-    # Add all the values that we've determined to the RCDB
+    # Debug output with the list of conditions
+    log.debug(Lf("Name value of updating conditions:"))
     for (key, value) in conditions.items():
-        log.debug(Lf("Adding cnd '{}'='{}'", key, value))
+        log.debug(Lf("   '{}' = '{}'", key, value))
 
+    # Add all the values that we've determined to the RCDB
     db.add_conditions(run, conditions, True)
 
     log.debug("Committed to DB. End of update_rcdb_conds()")
