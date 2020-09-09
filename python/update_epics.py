@@ -119,7 +119,7 @@ def update_beam_conditions(run, log):
 
 
     try: 
-        # also get the beam energy when current > 5 nA and beam energy > 10. MeV, to avoid problems
+        # also get the beam energy when current > 35 nA and beam energy > 10. MeV, to avoid problems
         # where the CEBAF beam energy server fails and doesn't restart =(
 
         avg_beam_energy = 0.
@@ -140,7 +140,7 @@ def update_beam_conditions(run, log):
                 continue
             the_beam_current = float(tokens[2])
             the_beam_energy = float(tokens[3])
-            if (the_beam_current>5.) and (the_beam_energy>10.):
+            if (the_beam_current>35.) and (the_beam_energy>10.):
                 avg_beam_energy += the_beam_energy
                 nentries += 1
 
