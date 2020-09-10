@@ -287,8 +287,12 @@ def parse_files():
             # >oO DEBUG log message
             db.add_log_record("",
                               "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
-                              .format(script_name, conditions["beam_current"], epics_end_clock - epics_start_clock,
-                                      epics_end_clock - script_start_clock, datetime.now()), run_number)
+                              .format(script_name,
+                                      conditions["beam_current"] if "beam_current" in conditions else None,
+                                      epics_end_clock - epics_start_clock,
+                                      epics_end_clock - script_start_clock,
+                                      datetime.now()),
+                              run_number)
 
         except Exception as ex:
             log.warning("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
