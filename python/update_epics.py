@@ -128,6 +128,8 @@ def update_beam_conditions(run, log):
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
+        log.debug(Lf("DONE with beam_energy subprocess"))
+
         # iterate over output
         n = 0
         for line in p.stdout:
