@@ -112,7 +112,7 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "IBCAD00CRCUR6":
                 conditions["beam_on_current"] = float(value)
-
+        log.debug("Done with beam_current")
     except Exception as e:
         log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_on_current"] = -1.
@@ -143,7 +143,7 @@ def update_beam_conditions(run, log):
             if (the_beam_current>35.) and (the_beam_energy>10.):
                 avg_beam_energy += the_beam_energy
                 nentries += 1
-
+        log.debug("Done with beam_energy")
         # experience has shown that the above myData command returns once or twice every second...
         # so let's ignore the time periods and do a simple average
         #avg_beam_energy /= float(n)
@@ -195,11 +195,10 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "RESET:i:GasPanelBarPress1":
                 conditions["cdc_gas_pressure"] = float(value)
-
+        log.debug("Done with cdc_gas_pressure")
     except Exception as e:
         log.warn(Lf("Error in a cdc_gas_pressure request : '{}'", e))
         conditions["cdc_gas_pressure"] = -1.
-
 
     return conditions
 
@@ -207,6 +206,7 @@ def update_beam_conditions(run, log):
 def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
+    log.debug("Start of setup_run_conds()")
 
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
@@ -383,6 +383,7 @@ def setup_run_conds(run):
     except:
         conditions["target_type"] = "Unknown"
 
+    log.debug(Lf("End of setup_run_conds. Conditions gathered: '{}'", conditions.keys()))
     return conditions
 
 
