@@ -442,8 +442,14 @@ where <reason> is one of: start, update, end""")
     # Main program shell take
     # db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
     # db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
-    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%sys.argv[1])
-    update_rcdb_conds(db, int(sys.argv[2]), sys.argv[3])
+    password = sys.argv[1]
+    run_number = int(sys.argv[2])
+    update_reason = sys.argv[3]
+
+    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%password)
+    if db.get_run(run_number):
+        raise ValueError("Run number '{}' is not found in DB", run_number)
+    update_rcdb_conds(db, run_number, update_reason)
 
     #query = db.session.query(Run).filter(Run.number > 9999)
     #print(query.all())
