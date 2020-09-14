@@ -447,7 +447,7 @@ where <reason> is one of: start, update, end""")
     update_reason = sys.argv[3]
 
     db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%password)
-    if db.get_run(run_number):
+    if not db.get_run(run_number):
         raise ValueError("Run number '{}' is not found in DB", run_number)
     update_rcdb_conds(db, run_number, update_reason)
 
