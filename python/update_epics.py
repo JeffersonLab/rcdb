@@ -3,6 +3,10 @@
 # This script is used to load standard conditions information into the RCDB
 # It sources the condition values from EPICS and the CCDB
 #
+# This script can be used standalone as:
+#   > python3 update_epics.py <db_password> <run_num> <reason>
+# where <reason> is one of start, update, end
+#
 # The following condition variables are currently loaded from this script:
 #
 # * beam_beam_energy       (float)  # Beam current - uses the primary epics BCM, IBCAD00CRCUR6
@@ -208,6 +212,7 @@ def update_beam_conditions(run, log):
     return conditions
 
 
+# noinspection PyBroadException
 def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
@@ -217,7 +222,7 @@ def setup_run_conds(run):
     #             - MMSHLDE gives beam energy from model
     try: 
         conditions["beam_energy"] = float(caget("HALLD:p"))
-        #conditions["beam_energy"] = float(caget("MMSHLDE"))
+        # conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
     # Beam current from the tagger dump BCM
@@ -321,7 +326,7 @@ def setup_run_conds(run):
     # conditions["luminosity"] = -1.
     # Run status - Used to store rough information about run (e.g. is it "good" or not).
     # Exact usage is still being discussed
-    conditions["status"] = -1;
+    conditions["status"] = -1
     # Collimator diameter
     try: 
         if abs(int(caget("hd:collimator_at_block"))) == 1:
@@ -406,10 +411,10 @@ def update_rcdb_conds(db, run, reason):
     conditions = {}
 
     if reason == "start":
-        conditions.update( setup_run_conds(run) )
+        conditions.update(setup_run_conds(run))
 
-    if reason == "update" or reason == "end":
-        conditions.update( update_beam_conditions(run, log) )
+    if reason in ["update", "end"]:
+        conditions.update(update_beam_conditions(run, log))
 
     # Debug output with the list of conditions
     log.debug(Lf("Name value of updating conditions:"))
@@ -427,10 +432,18 @@ if __name__ == "__main__":
     log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
     log.setLevel(logging.DEBUG)                          # print everything. Change to logging.INFO for less output
 
-    #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
-    #db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
+    if len(sys.argv) < 4:
+        print("""
+This script usage
+ > python3 update_epics.py <db_password> <run_num> <reason>
+where <reason> is one of: start, update, end""")
+        exit(1)
+
+    # Main program shell take
+    # db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
+    # db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
     db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%sys.argv[1])
-    update_rcdb_conds(db, int(sys.argv[2]), "update")
+    update_rcdb_conds(db, int(sys.argv[2]), sys.argv[3])
 
     #query = db.session.query(Run).filter(Run.number > 9999)
     #print(query.all())
