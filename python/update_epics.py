@@ -39,6 +39,10 @@ import subprocess
 import datetime
 from rcdb.log_format import BraceMessage as Lf
 
+
+# Logging
+
+log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
 ######################################
 
 def update_beam_conditions(run, log):
@@ -390,8 +394,6 @@ def setup_run_conds(run):
 
 # Master function to update the conditions
 def update_rcdb_conds(db, run, reason):
-
-    log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
     log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
 
     TOLERANCE = 1.e-5  # constant used for comparisons
@@ -422,7 +424,6 @@ def update_rcdb_conds(db, run, reason):
 
 # entry point
 if __name__ == "__main__":
-    log = logging.getLogger('rcdb.update')               # create run configuration standard logger
     log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
     log.setLevel(logging.DEBUG)                          # print everything. Change to logging.INFO for less output
 
