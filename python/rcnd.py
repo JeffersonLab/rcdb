@@ -40,7 +40,7 @@ WRITING DATA
 Where --type is:
     bool, int, float, string - basic types. float is the default
     json - to store arrays or custom objects
-    time - to store just time. (You can alwais add time information to any other type)
+    time - to store just time. (You can always add time information to any other type)
     blob - binary blob. Don't use it if possible
 
 Names policy:
@@ -53,7 +53,7 @@ Names policy:
 
    Without --replace error is raised, if run 1000 already have different value for 'my_value'
 
-2. Create a new run (Use it only for test purpuses!)
+2. Create a new run (Use it only for test purposes!)
 > rcnd --new-run <run number>
  
 """
@@ -69,6 +69,7 @@ def create_type(db, name, value_type, description):
     """
     Shows condition value for run
 
+    :param description:
     :param db: RCDBProvider to database
     :type db: RCDBProvider
     :param name: Condition type name
@@ -94,7 +95,7 @@ def show_value(db, run_number, name):
 
     run = db.get_run(run_number)
     if not run:
-        print ("Run number '{}' is not found in DB".format(run_number))
+        print("Run number '{}' is not found in DB".format(run_number))
         exit(1)
 
     ct = db.get_condition_type(name)
@@ -104,7 +105,7 @@ def show_value(db, run_number, name):
         return
 
     condition = result
-    print condition.value
+    print(condition.value)
 
 
 def show_run_conditions(db, run_number):
@@ -112,13 +113,13 @@ def show_run_conditions(db, run_number):
 
     :param db: RCDBProvider to database
     :type db: RCDBProvider
-    :param run:
+    :param run_number: The run number
     :return:
     """
 
     run = db.get_run(run_number)
     if not run:
-        print ("Run number {} is not found in DB".format(run_number))
+        print("Run number {} is not found in DB".format(run_number))
         exit(1)
 
     conditions = db.session.query(Condition).join(Run).join(ConditionType) \
@@ -132,19 +133,21 @@ def show_run_conditions(db, run_number):
         if condition_type.value_type in [ConditionType.INT_FIELD,
                                          ConditionType.BOOL_FIELD,
                                          ConditionType.FLOAT_FIELD]:
-            print "{} = {}".format(condition_type.name, condition.value)
+            print("{} = {}".format(condition_type.name, condition.value))
         elif condition_type.value_type == ConditionType.STRING_FIELD:
-            print "{} = '{}'".format(condition_type.name, condition.value)
+            print("{} = '{}'".format(condition_type.name, condition.value))
         else:
             # it is something big...
             value = str(condition.value).replace('\n', "")[:50]
-            print "{} = ({}){}...".format(condition_type.name, condition_type.value_type, value)
+            print("{} = ({}){}...".format(condition_type.name, condition_type.value_type, value))
 
 
 def list_all_condition_types(db, extended=False, prefix=""):
     """
     Lists all condition_types in database
 
+    :param prefix: Prefix to print on each line
+    :param extended: Print extended information
     :param db: RCDBProvider to database
     :type db: RCDBProvider
     :return:
@@ -159,7 +162,7 @@ def list_all_condition_types(db, extended=False, prefix=""):
         else:
             line = "{}{}".format(prefix, condition_type.name)
 
-        print line
+        print(line)
 
 
 def print_stats(db):
@@ -186,6 +189,8 @@ def write_value(db, run_number, name, value, replace):
     """
     Writes value to the run
 
+    :param replace: True - replacing existing values is OK
+    :param value: Condition value
     :param db: RCDBProvider to database
     :type db: RCDBProvider
     :param run_number: The run number
@@ -195,27 +200,27 @@ def write_value(db, run_number, name, value, replace):
 
     run = db.get_run(run_number)
     if not run:
-        print ("Run number '{}' is not found in DB".format(run_number))
+        print("Run number '{}' is not found in DB".format(run_number))
         exit(1)
 
     ct = db.get_condition_type(name)
     db.add_condition(run, ct, value, replace)
-    print ("Written '{}' to run number {}".format(name, run_number))
+    print("Written '{}' to run number {}".format(name, run_number))
 
 
 def new_run(db, run_number):
     run = db.create_run(run_number)
     if not run:
-        print ("Run number '{}' is NOT created DB".format(run_number))
+        print("Run number '{}' is NOT created DB".format(run_number))
         exit(1)
 
-    print ("Created run number {}".format(run_number))
+    print("Created run number {}".format(run_number))
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=help_text, epilog=examples,
                                      formatter_class=RawDescriptionHelpFormatter)
-    parser.add_argument("-c", "--connection", help="Connection string to database", metavar='<srting>', default="")
+    parser.add_argument("-c", "--connection", help="Connection string to database", metavar='<string>', default="")
     parser.add_argument("-v", "--verbose", help="Show detailed information about script actions", action='store_true')
     parser.add_argument("-l", "--list", help="List condition names, types and description", action='store_true')
     parser.add_argument("--create", help="Create condition with this name", metavar='<name>', default="")
@@ -263,7 +268,7 @@ if __name__ == "__main__":
 
     # Connect
     log.debug("Opening database")
-    db = RCDBProvider(connection_string)
+    rcdb_db = RCDBProvider(connection_string)
     log.debug("Opened! (But still no data has been transferred)")
 
     # CHOOSE ACTION
@@ -271,49 +276,47 @@ if __name__ == "__main__":
     # List names only
     if args.list_names:
         log.debug("Listing names only")
-        list_all_condition_types(db)
+        list_all_condition_types(rcdb_db)
         exit(0)
 
     # List all condition types with additional info
     if args.list:
         log.debug("Listing conditions ")
-        list_all_condition_types(db, True)
+        list_all_condition_types(rcdb_db, True)
         exit(0)
 
     # Write value to the run
     if args.write:
         log.debug("Write value to the run")
-        write_value(db, args.run_number, args.condition_name, args.write, args.replace)
+        write_value(rcdb_db, args.run_number, args.condition_name, args.write, args.replace)
         exit(0)
 
     # Create a condition type
     if args.create:
         log.debug("Create a condition type")
-        create_type(db, args.create, args.type, args.description)
+        create_type(rcdb_db, args.create, args.type, args.description)
         exit(0)
 
     # Create a new run
     if args.new_run:
         log.debug("Create a new run")
-        new_run(db, int(args.new_run))
+        new_run(rcdb_db, int(args.new_run))
         exit(0)
 
     # List all conditions for the run
     if args.run_number != -1 and not args.condition_name:
         log.debug("run_number given, no condition_name. Show conditions for run")
-        show_run_conditions(db, args.run_number)
+        show_run_conditions(rcdb_db, args.run_number)
         exit(0)
 
     # Get condition value
     if args.run_number != -1 and args.condition_name:
         log.debug("run_number given, condition_name given. Show condition value for run")
-        show_value(db, args.run_number, args.condition_name)
+        show_value(rcdb_db, args.run_number, args.condition_name)
         exit(0)
 
     # Print stats?
     if args.run_number == -1 and not args.condition_name:
         log.debug("No run_number, no condition_name. Show stats")
-        print_stats(db)
+        print_stats(rcdb_db)
         exit(0)
-
-

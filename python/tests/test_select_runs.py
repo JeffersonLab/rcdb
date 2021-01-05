@@ -9,6 +9,18 @@ class TestRun(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
+        """
+        run |     a     |     b     |     c     |      d     |     e         |     f
+        -------------------------------------------------------------------------------------
+          1 | 1         | 1.01      | False     | haha       | {"a":1}       | None
+          2 | 2         | 2.54      | True      | None       | None          | None
+          3 | 3         | 2.55      | True      | None       | None          | None
+          4 | 4         | 1.64      | True      | hoho       | [1,2,3]       | my only value
+          5 | None      | 2.32      | False     | bang       | None          | None
+          9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None
+
+        """
+
         self.db = rcdb.RCDBProvider("sqlite://", check_version=False)
         rcdb.provider.destroy_all_create_schema(self.db)
         runs = {}
@@ -57,20 +69,8 @@ class TestRun(unittest.TestCase):
 
         self.db.add_condition(4, "f", "my only value")
 
-        """
-        run |     a     |     b     |     c     |      d     |     e         |     f
-        -------------------------------------------------------------------------------------
-          1 | 1         | 1.01      | False     | haha       | {"a":1}       | None
-          2 | 2         | 2.54      | True      | None       | None          | None
-          3 | 3         | 2.55      | True      | None       | None          | None
-          4 | 4         | 1.64      | True      | hoho       | [1,2,3]       | my only value
-          5 | None      | 2.32      | False     | bang       | None          | None
-          9 | 9         | 2.02      | True      | mew        | [3,2,{"b":5}] | None
-
-        """
-
-        def tearDown(self):
-            self.db.disconnect()
+    def tearDown(self):
+        self.db.disconnect()
 
     def test_select_runs(self):
         """Test of Run in db function"""
