@@ -7,9 +7,9 @@ class ConditionSearchAlias(object):
 
 default_aliases = [
     ConditionSearchAlias('is_production', """run_type in ['hd_all.tsg', 'hd_all.tsg_ps', 'hd_all.bcal_fcal_st.tsg'] and
-                                             beam_current > 2 and
+                                             beam_current and beam_current > 2 and
                                              event_count > 500000 and
-                                             solenoid_current > 100 and
+                                             solenoid_current and solenoid_current > 100 and
                                              collimator_diameter != 'Blocking'""",
                          "Is production run"),
 
