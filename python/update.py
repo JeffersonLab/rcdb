@@ -19,9 +19,12 @@ from update_roc import add_roc_configuration_files
 from update_run_config import update_run_config_conditions
 from halld_rcdb.run_config_parser import parse_file as parse_run_config_file
 
-log = logging.getLogger('rcdb')  # create run configuration standard logger
-log.addHandler(logging.StreamHandler(sys.stdout))  # add console output for logger
-log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less output
+log = logging.getLogger('rcdb')                     # create run configuration standard logger
+sh = logging.StreamHandler(sys.stdout)
+sh.formatter = logging.Formatter('%(asctime)s:%(levelname)s:%(message)s')
+log.addHandler(sh)   # add console output for logger
+log.setLevel(logging.DEBUG)                         # print everything. Change to logging.INFO for less output
+#logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
 
 # [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand

@@ -3,6 +3,10 @@
 # This script is used to load standard conditions information into the RCDB
 # It sources the condition values from EPICS and the CCDB
 #
+# This script can be used standalone as:
+#   > python3 update_epics.py <db_password> <run_num> <reason>
+# where <reason> is one of start, update, end
+#
 # The following condition variables are currently loaded from this script:
 #
 # * beam_beam_energy       (float)  # Beam current - uses the primary epics BCM, IBCAD00CRCUR6
@@ -39,6 +43,10 @@ import subprocess
 import datetime
 from rcdb.log_format import BraceMessage as Lf
 
+
+# Logging
+
+log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
 ######################################
 
 def update_beam_conditions(run, log):
@@ -112,7 +120,7 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "IBCAD00CRCUR6":
                 conditions["beam_on_current"] = float(value)
-
+        log.debug("Done with beam_current")
     except Exception as e:
         log.warn(Lf("Error in a beam_current request : '{}'", e))
         conditions["beam_on_current"] = -1.
@@ -128,7 +136,8 @@ def update_beam_conditions(run, log):
         log.debug(Lf("Requesting beam_energy subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
-        # iterate over output
+
+        # wait process end and iterate over output
         n = 0
         for line in p.stdout:
             print(line.strip())
@@ -143,7 +152,7 @@ def update_beam_conditions(run, log):
             if (the_beam_current>35.) and (the_beam_energy>10.):
                 avg_beam_energy += the_beam_energy
                 nentries += 1
-
+        log.debug("Done with beam_energy")
         # experience has shown that the above myData command returns once or twice every second...
         # so let's ignore the time periods and do a simple average
         #avg_beam_energy /= float(n)
@@ -195,24 +204,25 @@ def update_beam_conditions(run, log):
             value = tokens[2]      # average value
             if key == "RESET:i:GasPanelBarPress1":
                 conditions["cdc_gas_pressure"] = float(value)
-
+        log.debug("Done with cdc_gas_pressure")
     except Exception as e:
         log.warn(Lf("Error in a cdc_gas_pressure request : '{}'", e))
         conditions["cdc_gas_pressure"] = -1.
 
-
     return conditions
 
 
+# noinspection PyBroadException
 def setup_run_conds(run):
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
+    log.debug("Start of setup_run_conds()")
 
     # Beam energy - HALLD:p gives the measured beam energy
     #             - MMSHLDE gives beam energy from model
     try: 
         conditions["beam_energy"] = float(caget("HALLD:p"))
-        #conditions["beam_energy"] = float(caget("MMSHLDE"))
+        # conditions["beam_energy"] = float(caget("MMSHLDE"))
     except:
         conditions["beam_energy"] = -1.
     # Beam current from the tagger dump BCM
@@ -316,7 +326,7 @@ def setup_run_conds(run):
     # conditions["luminosity"] = -1.
     # Run status - Used to store rough information about run (e.g. is it "good" or not).
     # Exact usage is still being discussed
-    conditions["status"] = -1;
+    conditions["status"] = -1
     # Collimator diameter
     try: 
         if abs(int(caget("hd:collimator_at_block"))) == 1:
@@ -383,13 +393,12 @@ def setup_run_conds(run):
     except:
         conditions["target_type"] = "Unknown"
 
+    log.debug(Lf("End of setup_run_conds. Conditions gathered: '{}'", conditions.keys()))
     return conditions
 
 
 # Master function to update the conditions
 def update_rcdb_conds(db, run, reason):
-
-    log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
     log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
 
     TOLERANCE = 1.e-5  # constant used for comparisons
@@ -402,10 +411,10 @@ def update_rcdb_conds(db, run, reason):
     conditions = {}
 
     if reason == "start":
-        conditions.update( setup_run_conds(run) )
+        conditions.update(setup_run_conds(run))
 
-    if reason == "update" or reason == "end":
-        conditions.update( update_beam_conditions(run, log) )
+    if reason in ["update", "end"]:
+        conditions.update(update_beam_conditions(run, log))
 
     # Debug output with the list of conditions
     log.debug(Lf("Name value of updating conditions:"))
@@ -420,14 +429,27 @@ def update_rcdb_conds(db, run, reason):
 
 # entry point
 if __name__ == "__main__":
-    log = logging.getLogger('rcdb.update')               # create run configuration standard logger
     log.addHandler(logging.StreamHandler(sys.stdout))    # add console output for logger
     log.setLevel(logging.DEBUG)                          # print everything. Change to logging.INFO for less output
 
-    #db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
-    #db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
-    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%sys.argv[1])
-    update_rcdb_conds(db, int(sys.argv[2]), "update")
+    if len(sys.argv) < 4:
+        print("""
+This script usage
+ > python3 update_epics.py <db_password> <run_num> <reason>
+where <reason> is one of: start, update, end""")
+        exit(1)
+
+    # Main program shell take
+    # db = rcdb.RCDBProvider("sqlite:///"+sys.argv[1])
+    # db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
+    password = sys.argv[1]
+    run_number = int(sys.argv[2])
+    update_reason = sys.argv[3]
+
+    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%password)
+    if not db.get_run(run_number):
+        raise ValueError("Run number '{}' is not found in DB", run_number)
+    update_rcdb_conds(db, run_number, update_reason)
 
     #query = db.session.query(Run).filter(Run.number > 9999)
     #print(query.all())
