@@ -27,7 +27,7 @@ from rcdb.log_format import BraceMessage as Lf
 from rcdb import lexer
 from rcdb.stopwatch import StopWatchTimer
 from rcdb.errors import OverrideConditionTypeError, NoConditionTypeFound, \
-    NoRunFoundError, OverrideConditionValueError, QueryFormatError
+    NoRunFoundError, OverrideConditionValueError, QueryFormatError, QueryEvaluationError
 from rcdb.model import *
 
 log = logging.getLogger("rcdb.provider")
@@ -958,12 +958,20 @@ class RCDBProvider(object):
 
         for values in result:
             run = values[0]
-            if not search_eval or eval(compiled_search_eval):
-                result_row = [run] if insert_run_number else []
-                for i in val_indexes:
-                    val = values[i]
-                    result_row.append(val)
-                result_table.append(result_row)
+            try:
+                if not search_eval or eval(compiled_search_eval):
+                    result_row = [run] if insert_run_number else []
+                    for i in val_indexes:
+                        val = values[i]
+                        result_row.append(val)
+                    result_table.append(result_row)
+            except Exception as ex:
+                message = f'Error evaluating search query.\n' \
+                          f'  Query: <<"{search_eval}">>, \n' \
+                          f'  Names: {names}, \n' \
+                          f'  Values: {values} \n' \
+                          f'  Error: {ex}'
+                raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
         total_sw.stop()
