@@ -39,7 +39,7 @@ default_aliases = [
                                              collimator_diameter != 'Blocking'""",
                          "Is production run with long mode data"),
 
-    ConditionSearchAlias('is_cosmic', "\"cosmic\" in run_config and beam_current < 1 and event_count > 5000",
+    ConditionSearchAlias('is_cosmic', '"cosmic" in run_config and beam_current < 1 and event_count > 5000',
                          "Is cosmic run"),
 
     ConditionSearchAlias('is_empty_target', "target_type == 'EMPTY & Ready'", "Target is empty"),
