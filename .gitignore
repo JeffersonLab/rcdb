@@ -120,3 +120,5 @@ cpp/\.idea/workspace\.xml
 # build_scripts
 .clone_done
 rcdb_prereqs_version.xml
+
+.idea/
