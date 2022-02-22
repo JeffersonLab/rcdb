@@ -955,7 +955,7 @@ class RCDBProvider(object):
             compiled_search_eval = None
 
         result_table = []
-
+        
         for values in result:
             run = values[0]
             try:
@@ -966,11 +966,11 @@ class RCDBProvider(object):
                         result_row.append(val)
                     result_table.append(result_row)
             except Exception as ex:
-                message = f'Error evaluating search query.\n' \
-                          f'  Query: <<"{search_eval}">>, \n' \
-                          f'  Names: {names}, \n' \
-                          f'  Values: {values} \n' \
-                          f'  Error: {ex}'
+                message = 'Error evaluating search query.\n' \
+                          + '  Query: <<"{}">>, \n'.format(search_eval) \
+                          + '  Names: {}, \n'.format(names) \
+                          + '  Values: {} \n'.format(values) \
+                          + '  Error: {}'.format(ex)
                 raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
