@@ -1,4 +1,4 @@
-name: Python package
+name: Python tests
 
 on: [push]
 
@@ -24,5 +24,6 @@ jobs:
       
       - name: Test with unittest
         run: |
+          cd $GITHUB_WORKSPACE/python
           python -m unittest discover -s $GITHUB_WORKSPACE/python/tests -t $GITHUB_WORKSPACE/python/tests
           
