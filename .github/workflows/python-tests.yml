@@ -24,4 +24,5 @@ jobs:
       
       - name: Test with unittest
         run: |
-          ls $GITHUB_WORKSPACE
+          python -m unittest discover -s $GITHUB_WORKSPACE/python/tests -t $GITHUB_WORKSPACE/python/tests
+          
