@@ -25,7 +25,7 @@ def load_tests(loader, tests, pattern):
 
 
 if __name__ == "__main__":
-    result = unittest.main(exit=False)
+    result = unittest.main(exit=True)
     if not result.result.wasSuccessful():
         print("ERROR. Python tests are not passed")
         exit(1)

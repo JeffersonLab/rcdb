@@ -9,16 +9,16 @@ import re
 import logging
 import sys
 from time import mktime
-from collections import MutableSequence
+from collections.abc import MutableSequence
 
 from sqlalchemy import text
-from sqlalchemy.exc import OperationalError, ProgrammingError
+from sqlalchemy.exc import OperationalError, ProgrammingError, NoResultFound
 
 from ply.lex import LexToken
 
 import sqlalchemy.orm
 from sqlalchemy.orm import aliased
-from sqlalchemy.orm.exc import NoResultFound
+#from sqlalchemy.orm.exc import NoResultFound
 
 import rcdb
 import rcdb.file_archiver

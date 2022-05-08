@@ -1,0 +1,8 @@
+click
+flask
+markupsafe
+pymysql
+sqlalchemy
+ply
+mako
+
