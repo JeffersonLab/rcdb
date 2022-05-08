@@ -1,6 +1,6 @@
 ## RCDB
 
-[![Build Status](https://travis-ci.org/JeffersonLab/rcdb.svg?branch=master)](https://travis-ci.org/JeffersonLab/rcdb)
+![Python tests](https://github.com/JeffersonLab/rcdb/actions/workflows/python-tests.yml/badge.svg)
 
 Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
