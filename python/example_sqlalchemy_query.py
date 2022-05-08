@@ -1,4 +1,4 @@
-# This is an advanced example, that illustrates how to use SQLAlchemu Kung fu on RCDB
+# This is an advanced example, that illustrates how to use SQLAlchemy Kung fu on RCDB
 
 from rcdb.model import ConditionType, Run, Condition
 from rcdb.provider import destroy_all_create_schema, RCDBProvider
@@ -39,21 +39,21 @@ def querying_using_condition_type(db):
     # select runs where event_count > 1000
     query = event_count_type.run_query\
         .filter(event_count_type.value_field > 1000)\
-        .filter(Run.number <=53)
+        .filter(Run.number <= 53)
 
-    print query.all()
+    print(query.all())
 
     # select runs where 1.52 < data_value < 1.7
     query2 = data_value_type.run_query\
         .filter(data_value_type.value_field.between(1.52, 1.7))\
         .filter(Run.number < 55)
-    print query2.all()
+    print(query2.all())
 
     # combine results of this two queries
-    print "Results intersect is:"
-    print query.intersect(query2).all()
-    print "Results union is:"
-    print query.union(query2).all()
+    print("Results intersect is:")
+    print(query.intersect(query2).all())
+    print("Results union is:")
+    print(query.union(query2).all())
 
 
 def querying_using_alchemy(db):
@@ -64,7 +64,7 @@ def querying_using_alchemy(db):
                 ((ConditionType.name == "data_value") & (Condition.float_value.between(1.52, 1.6))))\
         .order_by(Run.number)
 
-    print query.all()
+    print(query.all())
 
 
 def querying_specific_conditions(db):
@@ -77,7 +77,7 @@ def querying_specific_conditions(db):
     result = query.all()
 
     for row in range(len(query.all())/2):
-        print result[row*2].name, result[row*2], "\t\t\t", result[row*2 + 1].name, result[row*2+1]
+        print(result[row*2].name, result[row*2], "\t\t\t", result[row*2 + 1].name, result[row*2+1])
 
 
 if __name__ == "__main__":
@@ -94,5 +94,3 @@ if __name__ == "__main__":
     print('')
     print("querying_specific_conditions")
     querying_specific_conditions(db)
-
-

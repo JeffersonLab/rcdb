@@ -14,7 +14,7 @@ log.setLevel(logging.DEBUG)  # print everything. Change to logging.INFO for less
 
 if __name__ == '__main__':
     # times
-    time_cursor = datetime.datetime(2014, 03, 04, 14, 10)
+    time_cursor = datetime.datetime(2014, 3, 4, 14, 10)
 
     # create  and connect to DB
     con_srt = os.environ["RCDB_CONNECTION"] \

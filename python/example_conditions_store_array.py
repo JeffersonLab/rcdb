@@ -29,13 +29,9 @@ db.add_condition(1, "dict_data", json.dumps(dict_to_store))
 restored_list = json.loads(db.get_condition(1, "list_data").value)
 restored_dict = json.loads(db.get_condition(1, "dict_data").value)
 
-print restored_list
-print restored_dict
+print(restored_list)
+print(restored_dict)
 
-print restored_dict["x"]
-print restored_dict["y"]
-print restored_dict["z"]
-
-
-
-
+print(restored_dict["x"])
+print(restored_dict["y"])
+print(restored_dict["z"])

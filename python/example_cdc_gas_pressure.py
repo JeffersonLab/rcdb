@@ -9,4 +9,4 @@ table = db.select_values(['cdc_gas_pressure'], run_min=41512, run_max=41540)
 
 for row in table:
     (run_number, cdc_gas_pressure) = tuple(row)
-    print("{}   {}".format(run_number, cdc_gas_pressure))
+    print(f"{run_number}   {cdc_gas_pressure}")

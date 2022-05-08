@@ -13,7 +13,7 @@ from rcdb import RCDBProvider
 
 
 if __name__ == "__main__":
-    print sys.argv
+    print(sys.argv)
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows basics of how to select runs using search queries")
     parser.add_argument("connection_string", help="RCDB connection string mysql://rcdb@localhost/rcdb",

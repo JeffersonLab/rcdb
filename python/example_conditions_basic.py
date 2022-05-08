@@ -40,12 +40,12 @@ print("value_type =", ct.value_type)
 # Get all existing conditions names and their descriptions
 print("Get all existing conditions names and their descriptions")
 for ct in db.get_condition_types():
-    print ct.name, ':', ct.description
+    print(ct.name, ':', ct.description)
 
 # Get all existing conditions names and their descriptions
 print("Get all existing condition names quicker...")
 for ct in db.get_condition_types():
-    print ct.name, ':', ct.description
+    print(ct.name, ':', ct.description)
 
 
 # Getting Run information and conditions
@@ -56,6 +56,6 @@ print(run)
 print("run_number =", run.number)
 
 print("Conditions for run {}".format(run.number))
+# noinspection PyTypeChecker
 for condition in run.conditions:
     print(condition.name, '=', condition.value)
-
