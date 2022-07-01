@@ -14,6 +14,7 @@
 # * cdc_gas_pressure       (float)  # Gas pressure related to CDC.  EPICS: RESET:i:GasPanelBarPress1
 # * coherent_peak          (float)  # Coherent peak location
 # * collimator_diameter    (string) # Collimator diameter
+# * halfwave_plate         (string) # Is the insertable half wave plate in or not?
 # * luminosity             (float)  # Estimated luminosity factor
 # * ps_converter           (string) # PS converter
 # * solenoid_current       (float)  # Solenoid current
@@ -24,6 +25,9 @@
 # * radiator_type          (string) # Diamond name
 # * target_type            (string) # Target type/status
 # * tagger_current         (float)  # Current in tagger magnet
+# * wien_angle_horizontal  (float)  # Various Wien Angle measurements 
+# * wien_angle_solenoid    (float)
+# * wien_angle_vertical    (float)
 #
 
 # More description of these variables is provided below
@@ -393,6 +397,26 @@ def setup_run_conds(run):
     except:
         conditions["target_type"] = "Unknown"
 
+    # Insertable Half-wave plate
+    try: 
+        conditions["halfwave_plate"] = caget("IGL1I00DI24_24M", as_string=True)
+    except:
+        conditions["halfwave_plate"] = "Unknown"
+
+    # Various Wien Angle measurements                                                                                                                                                                                                           
+    try: 
+        conditions["wien_angle_horizontal"] = float(caget("PWF1I06:spinCalc"))
+    except:
+        conditions["wien_angle_horizontal"] = -1.
+    try: 
+        conditions["wien_angle_solenoid"] = float(caget("MFGANGLE"))
+    except:
+        conditions["wien_angle_solenoid"] = -1.
+    try: 
+        conditions["wien_angle_vertical"] = float(caget("PWF1I04:spinCalc"))
+    except:
+        conditions["wien_angle_vertical"] = -1.
+
     log.debug(Lf("End of setup_run_conds. Conditions gathered: '{}'", conditions.keys()))
     return conditions
 
@@ -415,7 +439,7 @@ def update_rcdb_conds(db, run, reason):
 
     if reason in ["update", "end"]:
         conditions.update(update_beam_conditions(run, log))
-
+        
     # Debug output with the list of conditions
     log.debug(Lf("Name value of updating conditions:"))
     for (key, value) in conditions.items():
