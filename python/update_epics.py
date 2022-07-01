@@ -417,8 +417,6 @@ def setup_run_conds(run):
     except:
         conditions["wien_angle_vertical"] = -1.
 
-    print(conditions)
-
     log.debug(Lf("End of setup_run_conds. Conditions gathered: '{}'", conditions.keys()))
     return conditions
 
@@ -441,8 +439,6 @@ def update_rcdb_conds(db, run, reason):
 
     if reason in ["update", "end"]:
         conditions.update(update_beam_conditions(run, log))
-
-    return     
         
     # Debug output with the list of conditions
     log.debug(Lf("Name value of updating conditions:"))
