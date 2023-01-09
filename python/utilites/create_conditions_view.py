@@ -6,8 +6,9 @@ from rcdb import ConditionType
 
 description = """
 Test script that create conditions_view for all existing conditions
-
 """
+
+
 if __name__ == "__main__":
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")

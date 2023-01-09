@@ -7,8 +7,6 @@ This script (re)creates empty RCDB database.
 If the database already exists, the script CLEARS IT COMPLETELY and creates a fresh empty schema.
 
 THIS SCRIPT IS FOR TESTS ONLY USE alembic TO INITIATE OR UPGRADE THE PRODUCTION DATABASE
-
-
 """
 
 

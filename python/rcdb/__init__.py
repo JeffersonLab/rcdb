@@ -1,14 +1,6 @@
-from rcdb.model import ConditionType
-import sqlalchemy
-from sqlalchemy.orm import sessionmaker
-# from .model import Board
-
+from .model import ConditionType
 from .provider import RCDBProvider
-from .provider import ConfigurationProvider
-from .errors import OverrideConditionTypeError, NoConditionTypeFound
-from .errors import OverrideConditionValueError, NoRunFoundError, SqlSchemaVersionError
-from sqlalchemy.orm.exc import NoResultFound
-from rcdb.constants import START_COMMENT_RECORD_KEY, END_COMMENT_RECORD_KEY, COMPONENT_STAT_KEY, FADC250_KEY
+
 
 # This thing separates cells in data blob
 blob_delimiter = "|"
@@ -132,4 +124,3 @@ def create_condition_types(db):
     create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of the run ")
     create_condition_type(DefaultConditions.RUN_START_TIME, ConditionType.TIME_FIELD, "Run start time ")
     create_condition_type(DefaultConditions.RUN_END_TIME, ConditionType.TIME_FIELD, "Run end time (last CODA update)")
-
