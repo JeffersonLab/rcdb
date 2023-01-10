@@ -1,0 +1,125 @@
+#!/bin/bash
+#
+# $Id: run_prestart 19781 2015-12-08 01:11:51Z furletov $
+# $HeadURL: https://halldsvn.jlab.org/repos/trunk/online/daq/scripts/run_prestart $
+#
+# RUN_PERIOD and RAWDATA_DIR environment variables are set in the file
+# /gluex/etc/hdonline.cshrc 
+# 
+# CODA will write files to:
+#
+#    $RAWDATA_DIR/active/$RUN_PERIOD/rawdata/RunXXXXXX
+#
+# where "XXXXXX" is the zero padded run number. Other files
+# related to the run are also placed in this directory. 
+# Some details on the strategy here are given in:
+#
+# https://halldweb1/wiki/index.php/Raid-to-Silo_Transfer_Strategy
+#
+#---- jcedit --------
+#  %(DAQ_HOME)/scripts
+#  run_prestart %(rn)  %(udl)  %(config) %(rt)
+#  run_go       %(rn)  %(udl)  %(config) %(rt)
+#  run_end      %(rn)  %(udl)  %(config) %(rt)
+#===========================================================================================
+
+# !!!!!!!!  STD in/out is not allowed in this script !!!!!!
+STDO=/tmp/${USER}_RCDB.$1
+exec >$STDO 2>&1
+
+date                               
+echo "----- > run_update_rcdb  ENTER <---- "
+
+#source /gluex/etc/hdonline.cshrc
+ENV_RAWDATA_DIR=`awk '/RAWDATA_DIR/ {printf "%s %s=%s\n",$1,$2,$3 }' /gluex/etc/hdonline.cshrc | grep setenv | sed s/setenv/export/g `
+ENV_RUN_PERIOD=`awk '/RUN_PERIOD/ {printf "%s %s=%s\n",$1,$2,$3 }' /gluex/etc/hdonline.cshrc | grep setenv | sed s/setenv/export/g  | sed s/\"//g`
+$ENV_RAWDATA_DIR
+$ENV_RUN_PERIOD
+echo "ENV_RAWDATA_DIR=$ENV_RAWDATA_DIR  : $RAWDATA_DIR " 
+echo "ENV_RUN_PERIOD=$ENV_RUN_PERIOD    : $RUN_PERIOD"  
+
+UDL=$2
+
+CONFIG_FILE=$3
+source run_lib.sh
+CONFIG_DIR=`dirname $CONFIG_FILE `
+ER_name=ERsoftROC
+get_host $ER_name ER_host
+
+#===========================================================================================
+RCM_HOST=gluon25
+RCM_PORT=32767
+RCM_LOG=/dev/tcp/${RCM_HOST}/${RCM_PORT}
+RCM_LOG_FILE=$DAQ_HOME/../work/rcm_rc.log
+#-------------------------------------------------------------------------------------------
+function rcm_log() {
+    echo -e " $1 $2 "
+    [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_update_rcdb  -subject Prcdb -type DAQ -text "$1"  -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand
+#   cMsgCommand -u cMsg://gluon100:45000/cMsg/$EXPID  -name run_prestart -subject Prestart -type DAQ -text "$1"     -string severity=$2
+    [ -n "$RCM_LOG" ] && echo -e "msg:GUI_runconf rcdb_update:: $1 " > $RCM_LOG
+    echo -e "`date` :run_rcdb::  $2: $1 " >> $RCM_LOG_FILE
+}
+
+
+#rcm_log "Run=$1 user=$USER `date` UDL=$2 config=$3  4=$4 5=$5 " "INFO"
+sleep 10
+
+if [ "$#" -lt 1 ]; then
+  echo "You must provide a run number!"   
+  echo ""                               
+  echo "Usage:"                         
+  echo "   run_rcdb RUN"             
+  echo ""                                
+#  exit -1
+fi
+
+export RUN=$(printf '%06d' $1) 
+
+#===========================================================================================
+#      DAQ TEST MODE
+#
+if [ x$DAQMODE == "xtest" ] ; then
+    rcm_log "WARN: DAQMODE=$DAQMODE " "WARN"
+    exit 0
+fi
+#===========================================================================================
+
+#===========================================================================================
+#      any other accounts ..
+#
+if [ $USER != "hdops" ] ; then
+    which run_log.sh
+#    run_log.sh "UPDATE" $RUN $CONFIG_FILE
+    exit 0
+fi
+echo " start: parse_coda_log  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose "
+python --version
+
+#exit 0
+sleep 10
+for ff in 1    ; do
+    RUNPROC=`ps -efww | grep run_ | grep -v grep | grep -v run_update_rcdb `
+    echo "RUN PROC = $RUNPROC "
+    [[ x$RUNPROC = x ]] && break
+    echo "wait for $RUNPROC ends .... "
+#    sleep 10
+done
+
+${DAQ_HOME}/rcdb/parse_coda_log  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose 
+
+#===========================================================================================
+#            HDOPS account only ...
+#-------------------------------------------------------------------------------------------
+
+# after rcdb !!! replace event count
+LOGFILE=$COOL_HOME/$SESSION/ddb/run-log/$SESSION/current_run.log
+COOL_RUNTYPE=`cat $LOGFILE | grep \<coda | awk -F'"' '/runtype/{print $2}'`
+block_count=`xmlstarlet sel -t -v "//coda/run-start/components/component[@name='TSG']/evt-number" $LOGFILE `
+event_count=$(($block_count * 40 ))
+RUN_NUM=$1
+echo "cDAQ event_count=$event_count"
+[[ -n `echo $COOL_RUNTYPE | grep rocs_tcp` ]] && rcnd.sh --write $event_count   --replace $RUN_NUM  event_count ||  echo "coda"
+
+echo "-------> run_update_rcdb EXIT `date` <-------"
+
+

@@ -1,0 +1,134 @@
+#!/bin/bash
+#
+# $Id: run_go 25316 2023-01-10 20:33:40Z furletov $
+# $HeadURL: https://halldsvn.jlab.org/repos/trunk/online/daq/scripts/run_go $
+
+
+# !!!!!!!!  STD in/out is not allowed in this script !!!!!!
+STDO=/tmp/${USER}_GO.$1
+exec >$STDO 2>&1
+date                           
+echo "--->  run_go ENTER <-----"     
+
+UDL=$2
+
+CONFIG_FILE=$3
+source run_lib.sh
+CONFIG_DIR=`dirname $CONFIG_FILE `
+ER_name=ERsoftROC
+get_host $ER_name ER_host
+
+#---------------------------------------
+# do not use .local script , due to rcdb update lock file !!!!
+# get_host USE_LOCAL USE_LOCAL_SCRIPT
+echo " USE_LOCAL = $USE_LOCAL_SCRIPT "
+if [ $USE_LOCAL_SCRIPT = "yes" ]; then
+    echo " ssh here !!! ER=$ER_host "
+    echo "exec: ssh $ER_host run_go.local '$1' '$2' '$3'  '$4' '$5' "
+    ssh  $ER_host "run_go.local '$1' '$2' '$3'  '$4' '$5' "
+    exit $?
+fi
+#-------- delete everything below this line later  --------------!!
+
+#===========================================================================================
+RCM_HOST=gluon25
+RCM_PORT=32767
+RCM_LOG=/dev/tcp/${RCM_HOST}/${RCM_PORT}
+RCM_LOG_FILE=$DAQ_HOME/../work/rcm_rc.log
+#-------------------------------------------------------------------------------------------
+function rcm_log() {
+    echo -e " $1 $2 "
+     [ -n "$UDL" ]  && cMsgCommand -u $UDL  -name run_go -subject RunGo -type DAQ -text "$1"     -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand 
+#   cMsgCommand -u cMsg://gluon100:45000/cMsg/$EXPID  -name run_go -subject Prestart -type DAQ -text "$1"     -string severity=$2
+     [ -n "$RCM_LOG" ] && echo -e "msg:GUI_runconf run_go:: $1 " > $RCM_LOG
+    echo -e "`date` :run_go ::  $2: $1 " >> $RCM_LOG_FILE
+}
+#===========================================================================================
+
+rcm_log "Run=$1 user=$USER `date` UDL=$2  config=$3  4=$4 5=$5" "INFO"
+
+# Get run number
+export RUN=$(printf '%06d' $1) 
+
+#===========================================================================================
+#      DAQ TEST MODE
+#
+if [ x$DAQMODE == "xtest" ] ; then
+    rcm_log "WARN: DAQMODE=$DAQMODE " "WARN"
+    exit 0
+fi
+#===========================================================================================
+#      any other accounts ..
+#
+if [ $USER != "hdops" ] ; then
+    rcm_log "execute run_log.sh $RUN   $CONFIG_FILE " "INFO"
+    run_log.sh "START" $RUN $CONFIG_FILE
+    exit 0
+fi
+#===========================================================================================
+date
+
+#-------------------------------------------------------------------------------------------
+#         start epics2et 
+#
+#  This was moved from the run_prestart script on 1/16/2018 to
+# side step a problem in CODA where the ER was not releasing 
+# the EPICS events between prestart and go causing the go transition
+# to hang indefinetely. Ask CODA group for details.
+#  David L.
+#-------------------------------------------------------------------------------------------
+${DAQ_HOME}/scripts/run_epics2et
+
+
+#
+date
+echo "-----------------------------------------------------------------------------------" 
+echo "  set HD:coda:daq:status  "   
+echo "-----------------------------------------------------------------------------------"  
+caput HD:coda:daq:status 2 &
+
+# Record run configuration to database and copy files to RAID
+# disk so they can be copied to tape library
+
+date
+echo "-----------------------------------------------------------------------------------" 
+echo "   RCDB parse  "   
+echo "-----------------------------------------------------------------------------------"  
+sleep 1
+#${DAQ_HOME}/rcdb/run_prestart   
+${DAQ_HOME}/rcdb/parse_coda_log   --update=epics,coda,config,roc --reason=start  --ipl --verbose  --udl=$UDL 
+ERRRCDB=$?
+[[ $ERRRCDB != 0 ]] && rcm_log "rcdb Error  rc=$ERRRCDB " "WARN"
+#
+date
+echo "-----------------------------------------------------------------------------------"  
+echo "   RUN LOG run_go , after parse_coda_log  finished !!!                             "       
+echo "-----------------------------------------------------------------------------------"  
+rcm_log "Sleep 1 sec. " "INFO"
+sleep 1
+rcm_log "execute run_log.sh $RUN   $CONFIG_FILE " "INFO"
+run_log.sh "START" $RUN   $CONFIG_FILE 
+#
+date
+echo "-----------------------------------------------------------------------------------" 
+echo "  run_epics_info.py  "   
+echo "-----------------------------------------------------------------------------------"  
+sleep 1
+${DAQ_HOME}/scripts/run_epics_info.py  -R$1 &
+#
+date
+echo "-----------------------------------------------------------------------------------" 
+echo "  run_elog.py  "   
+echo "-----------------------------------------------------------------------------------"  
+${DAQ_HOME}/scripts/run_elog.py  $1  &
+# move current files to PREVIOUS directory since they have been used
+mkdir -p ${DAQ_HOME}/../work/DAQ_CONFIG_OUT/PREVIOUS
+touch ${DAQ_HOME}/../work/DAQ_CONFIG_OUT/daq_junk.dat  # make sure "a" file exists to move
+mv ${DAQ_HOME}/../work/DAQ_CONFIG_OUT/daq_*.dat ${DAQ_HOME}/../work/DAQ_CONFIG_OUT/PREVIOUS
+date
+rcm_log "done for run $RUN " "INFO"
+echo "--->  run_go EXIT "        
+date
+
+
+

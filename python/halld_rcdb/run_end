@@ -1,0 +1,252 @@
+#!/bin/bash
+#
+# $Id: run_end 25226 2022-06-11 15:00:23Z davidl $
+# $HeadURL: https://halldsvn.jlab.org/repos/trunk/online/daq/scripts/run_end $
+
+# !!!!!!!!  STD in/out is not allowed in this script  !!!!!!
+STDO=/tmp/${USER}_END.$1
+exec >$STDO 2>&1
+date                          
+echo "-------> run_end ENTER <------"        
+
+UDL=$2
+
+CONFIG_FILE=$3
+source run_lib.sh
+CONFIG_DIR=`dirname $CONFIG_FILE `
+ER_name=ERsoftROC
+get_host $ER_name ER_host
+
+#---------------------------------------
+get_host USE_LOCAL USE_LOCAL_SCRIPT
+echo " USE_LOCAL = $USE_LOCAL_SCRIPT "
+if [ $USE_LOCAL_SCRIPT = "yes" ]; then
+    echo " ssh here !!! ER=$ER_host "
+    echo "exec: ssh $ER_host run_end.local '$1' '$2' '$3'  '$4' '$5' "
+    ssh $ER_host "run_end.local  '$1' '$2' '$3'  '$4' '$5' "
+    exit $?
+fi
+#-------- delete everything below this line later  --------------!!
+
+# Keep in sync with run_prestart !
+get_host MONITOR_HOST MONITOR_START_HOST
+
+get_host MONITOR  MONITOR_START
+echo "start MONITOR = $MONITOR_START"
+
+#===========================================================================================
+RCM_HOST=gluon25
+RCM_PORT=32767
+RCM_LOG=/dev/tcp/${RCM_HOST}/${RCM_PORT}
+RCM_LOG_FILE=$DAQ_HOME/../work/rcm_rc.log
+
+echo "Enter:: RCM_LOG=$RCM_LOG"
+#-------------------------------------------------------------------------------------------
+function rcm_log() {
+    echo -e " $1 $2 "
+    [ -n "$UDL" ] && cMsgCommand -u $UDL  -name run_end -subject RunEnd -type DAQ -text "$1"   -string severity=$2  2>&1 > /tmp/${USER}_cMsgCommand 
+#   cMsgCommand -u cMsg://gluon100:45000/cMsg/$EXPID  -name run_end -subject RunEnd -type DAQ -text "$1" -string severity=$2
+    [ -n "$RCM_LOG" ]  && echo -e "msg:GUI_runconf run_end:: $1 " > $RCM_LOG
+    echo -e "`date` :run_end::  $2: $1 " >> $RCM_LOG_FILE
+}
+#===========================================================================================
+
+rcm_log " script = $0 " "INFO"
+
+rcm_log "Run=$1 user=$USER UDL=$2   config=$3  4=$4 5=$5" "INFO"
+
+# Get run number
+export RUN=$(printf '%06d' $1) 
+
+
+#===========================================================================================
+#      DAQ TEST MODE
+#
+if [ x$DAQMODE == "xtest" ] ; then
+    rcm_log "WARN: DAQMODE=$DAQMODE " "WARN"
+    #-------------------------------------------------------------------------------------------
+    #         clean up,  REMOVE DATA link  !!!!
+    #-------------------------------------------------------------------------------------------
+
+    if [ -z "$DAQ_HOME" ] ; then
+        rcm_log "ERROR:: DAQ_HOME=$DAQ_HOME is not set "  "ERROR"
+    fi
+    DATA_DIR=`dirname  $DAQ_HOME`/DATA
+    DATA_DIR1=`dirname  $DAQ_HOME`/DATA1
+    DATA_HOME=`dirname  $DAQ_HOME`
+    rcm_log "Run=$1 check link DATA path=$DATA_DIR "  "INFO"
+    rcm_log "Run=$1 check link DATA1 path=$DATA_DIR1 "  "INFO"
+    
+    if  [ -L $DATA_DIR ] ; then
+        rcm_log "Run=$1 delete link DATA1: $DATA_DIR1 -> `readlink $DATA_DIR1 `"  "INFO"
+        [[ -L $DATA_DIR1 ]] && rm $DATA_DIR1
+        rcm_log "Run=$1 delete link DATA: $DATA_DIR -> `readlink $DATA_DIR`"  "INFO"
+        [[ -L $DATA_DIR ]] && rm $DATA_DIR 
+        if [ $? != 0 ] ; then  
+            ERC=$?
+            rcm_log "ERROR: delete link $DATA_DIR err=$ERC "   "ERROR"
+        else
+            rcm_log "Delete link: check link on nfs/gluonraid[1,2,3] ..  ER on $ER_host"  "INFO"
+            while true ; do  
+                ssh $ER_host "ls -l $DATA_HOME"
+                ssh $ER_host "ls -l $DATA_DIR"
+                if [ $? = 0 ] ; then 
+                    rcm_log "Delete link: wait for nfs/$ER_host , ret=$? "  "WARN"
+                else
+                    break
+                fi
+            done
+        fi
+    else 
+        [ -d $DATA_DIR ] &&  rcm_log "ERROR: $DATA_DIR is not a link "   "ERROR"
+    fi
+
+    exit 0
+fi
+
+#===========================================================================================
+
+#
+echo "-----------------------------------------------------------------------------------" 
+echo "  set HD:coda:daq:status  "   
+echo "-----------------------------------------------------------------------------------"  
+caput HD:coda:daq:status 0 &
+rcm_log "caput done  " "INFO"
+
+# Record run configuration to database and copy files to RAID
+# disk so they can be copied to tape library
+#
+sleep 1
+echo "-----------------------------------------------------------------------------------"  
+echo "   RUN LOG  run_end  "     
+echo "-----------------------------------------------------------------------------------"  
+rcm_log "run_log enter " "INFO"
+run_log.sh "STOP" $RUN  $CONFIG_FILE      
+rcm_log "run_log done " "INFO"
+#
+
+#===========================================================================================
+#      any other accounts ..
+#
+if [ $USER != "hdops" ] ; then
+#    which run_log.sh
+#    run_log.sh "PRESTART" $RUN $CONFIG_FILE
+    exit 0
+fi
+
+#===========================================================================================
+#            HDOPS account only ...
+#-------------------------------------------------------------------------------------------
+
+# !!-- should be started after run_log.sh --!
+echo "-----------------------------------------------------------------------------------"  
+echo "   RCDB parse run end  "         
+echo "-----------------------------------------------------------------------------------"  
+#${DAQ_HOME}/rcdb/run_end         
+
+while true ; do
+    RUNPROC=`ps -efww | grep run_ | grep -v grep | grep -v run_end `
+    echo "RUN PROC = $RUNPROC "
+    [[ x$RUNPROC = x ]] && break
+    echo "wait for $RUNPROC ends .... "
+    sleep 1
+done
+
+${DAQ_HOME}/rcdb/parse_coda_log   --update=epics,coda,conf --verbose --ipl --reason=end  --udl=$UDL  
+ERRRCDB=$?
+[[ $ERRRCDB != 0 ]] && rcm_log "rcdb Error  rc=$ERRRCDB " "WARN"
+#
+rcm_log "rcdb done " "INFO"
+
+#-------------------------------------------------------------------------------------------
+#         clean up,  REMOVE DATA link  !!!!
+#-------------------------------------------------------------------------------------------
+
+#rcm_log "Run $1 Ended !!! keep DATA link !! `date` " "INFO"
+#exit 0
+
+
+if [ -z "$DAQ_HOME" ] ; then
+  rcm_log "ERROR:: DAQ_HOME=$DAQ_HOME is not set "  "ERROR"
+fi
+DATA_DIR=`dirname  $DAQ_HOME`/DATA
+DATA_DIR1=`dirname  $DAQ_HOME`/DATA1
+DATA_HOME=`dirname  $DAQ_HOME`
+rcm_log "Run=$1 check link DATA path=$DATA_DIR"  "INFO"
+rcm_log "Run=$1 check link DATA1 path=$DATA_DIR1 "  "INFO"
+
+if  [ -L $DATA_DIR ] ; then
+    rcm_log "Run=$1 delete link DATA1: $DATA_DIR1  -> `readlink $DATA_DIR1`"  "INFO"
+    [[ -L $DATA_DIR1 ]] && rm $DATA_DIR1
+    rcm_log "Run=$1 delete link DATA: $DATA_DIR  -> `readlink $DATA_DIR`"  "INFO"
+    [[ -L $DATA_DIR ]] && rm $DATA_DIR
+    if [ $? != 0 ] ; then  
+        rcm_log "ERROR: delete link $DATA_DIR "   "ERROR"
+    else
+        rcm_log "Delete link: check link on nfs/gluonraid[1,2,3] ..  ER on $ER_host"  "INFO"
+        while true ; do  
+            ssh $ER_host "ls -l $DATA_HOME"
+            ssh $ER_host "ls -l $DATA_DIR"
+            if [ $? = 0 ] ; then 
+                rcm_log "Delete link: wait for nfs/$ER_host , ret=$? "  "WARN"
+            else
+                break
+            fi
+        done
+    fi
+else 
+    [ -d $DATA_DIR ] &&  rcm_log "ERROR: $DATA_DIR is not a link "   "ERROR"
+fi
+
+#-------------------------------------------------------------------------------------------
+#         stop online monitoring system 
+#-------------------------------------------------------------------------------------------
+if [ $MONITOR_START = "yes" ]; then
+
+# The check on start_monitoring being in the PATH is
+# unusable since we split the compiler and thus BMS_OSNAME
+# for gluon0X and gluon4X. The DAQ system is sometimes started
+# from say, gluon05 which uses gcc4.4.7. The online software
+# cannot compile with this so start_monitoring does not get
+# installed for that platform. Thus, we ssh to a gluon4X computer
+# to run it. I hate disabling this check, but we need to for
+# the moment to get this working. The whole control system vs.
+# online system needs an overhaul.
+
+#sm=`which start_monitoring`
+#ERR=$?
+#if [ $ERR != 0 ]; then 
+#    rcm_log "ERROR: start_monitoring not found! code=$ERR " "ERROR"
+#    rcm_log "== Online monitoring must be stopped by hand!! ==" "ERROR"
+#else
+#    if [ -x $sm ]; then
+	sm=start_monitoring
+	rcm_log "Stopping $sm on $MONITOR_START_HOST" "INFO"
+	echo "====================== Online Monitoring Stopping ======================"
+	echo ssh $MONITOR_START_HOST $sm -R$1 -e
+	ssh $MONITOR_START_HOST $sm -R$1 -e &
+	echo "========================================================================" 
+#    fi
+#fi
+else 
+     	rcm_log "Monitoring is not started ..." "WARN"   
+fi
+#-------------------------------------------------------------------------------------------
+#         stop epics2et 
+#-------------------------------------------------------------------------------------------
+${DAQ_HOME}/scripts/run_epics2et -e 
+
+#-------------------------------------------------------------------------------------------
+#         Clear HD:coda:daq:cdc_used so atmospheric pressure alarms are masked
+#         (see comments in run_go)
+#-------------------------------------------------------------------------------------------
+caput HD:coda:daq:cdc_used 0
+
+#-------------------------------------------------------------------------------------------
+rcm_log "Run $1 Ended !!! `date` " "INFO"
+
+#cat $COOL_HOME/$SESSION/ddb/run-log/$SESSION/current_run.log
+
+echo "run_end EXIT "            
+
+exit 0
