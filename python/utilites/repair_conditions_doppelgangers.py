@@ -22,15 +22,13 @@ def fix_double_runs(db, execute):
 
             if cnd_count > 1:
                 if not run_is_printed:
-                    print
-                    print
-                    print "Run = {:<6}, started={} is_valid_run_end={}".format(run.number, run.start_time, is_valid_run_end)
+                    print("Run = {:<6}, started={} is_valid_run_end={}".format(run.number, run.start_time, is_valid_run_end))
                     run_is_printed = True
                     bad_runs_count += 1
                     if is_valid_run_end:
                         bad_runs_with_valid_end_count += 1
 
-                print "   {:<20}: count {} ".format(ct.name, cnd_count)
+                print("   {:<20}: count {} ".format(ct.name, cnd_count))
                 conditions = db.session.query(Condition) \
                     .filter(Condition.type == ct, Condition.run == run).order_by(Condition.id).all()
 
@@ -39,33 +37,33 @@ def fix_double_runs(db, execute):
                         or conditions[0].value != conditions[1].value:
 
                     for condition in conditions:
-                        print "      id={:<7} date={} value={}" \
+                        print ("      id={:<7} date={} value={}" \
                             .format(condition.id, condition.created.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3],
-                                    condition.value if ct.value_type != "json" else "json")
+                                    condition.value if ct.value_type != "json" else "json"))
 
                 if execute:
-                    print "      deleting ", conditions[1]
+                    print("      deleting ", conditions[1])
                     db.session.delete(conditions[1])
                     db.session.commit()
 
-    print "bad_runs_count=", bad_runs_count, "bad_runs_with_valid_end_count=", bad_runs_with_valid_end_count
+    print ("bad_runs_count=", bad_runs_count, "bad_runs_with_valid_end_count=", bad_runs_with_valid_end_count)
 
 
 def fix_no_daq_run(db, execute):
     result = db.select_runs()
     daq_run_values = result.get_values(['daq_run'])
-    print "Runs with daq_run==None"
-    print "Run       Started"
-    print "==========================================="
+    print ("Runs with daq_run==None")
+    print ("Run       Started")
+    print ("===========================================")
     for i, run in enumerate(result):
         if daq_run_values[i][0] is None:
-            print "{:<10}{}".format(run.number, run.start_time)
+            print ("{:<10}{}".format(run.number, run.start_time))
             if execute:
                 db.add_condition(run, "daq_run", "EXPERT", auto_commit=False)
-    print "==========================================="
+    print ("===========================================")
 
     if execute:
-        print "Committing to DB"
+        print ("Committing to DB")
         db.session.commit()
 
 

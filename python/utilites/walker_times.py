@@ -4,12 +4,15 @@ Adds run_start_time and run_end_time conditions and fills them with run.start_ti
 """
 import argparse
 import sys
+from pprint import pprint
+from rcdb.errors import OverrideConditionValueError
 from rcdb import RCDBProvider
 from rcdb.model import ConditionType, Run
 from rcdb import DefaultConditions
 
 if __name__ == "__main__":
-    print(sys.argv)
+    print("ARGS:")
+    pprint(sys.argv)
     # Get connection string from arguments
     parser = argparse.ArgumentParser(description="This example shows select runs and put them by dates")
     parser.add_argument("connection_string", nargs='?', default="mysql://rcdb@hallddb.jlab.org/rcdb")
@@ -26,8 +29,15 @@ if __name__ == "__main__":
     runs = db.get_runs(0, sys.maxsize)
     for run in runs:
         print(run.number)
-        if run.start_time:
-            db.add_condition(run, DefaultConditions.RUN_START_TIME, run.start_time)
-        if run.end_time:
-            db.add_condition(run, DefaultConditions.RUN_END_TIME, run.end_time)
+        try:
+            start_time_cnd_value = db.get_condition(run, DefaultConditions.RUN_START_TIME)
+            end_time_cnd_value = db.get_condition(run, DefaultConditions.RUN_END_TIME)
+            if run.start_time and not start_time_cnd_value:
+                print(f"Adding start time {run.start_time}")
+                db.add_condition(run, DefaultConditions.RUN_START_TIME, run.start_time)                
+            if run.end_time and not end_time_cnd_value:
+                print(f"Adding end time {run.end_time}")
+                db.add_condition(run, DefaultConditions.RUN_END_TIME, run.end_time)
+        except OverrideConditionValueError as ex:
+            print(ex)
 

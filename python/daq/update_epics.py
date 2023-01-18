@@ -53,7 +53,10 @@ from rcdb.log_format import BraceMessage as Lf
 log = logging.getLogger('rcdb.update.epics')               # create run configuration standard logger
 ######################################
 
-def update_beam_conditions(run, log):
+def update_beam_conditions(run, log=log):
+
+    assert isinstance(run, Run)
+    
     # Build mapping of conditions to add to the RCDB, key is name of condition
     conditions = {}
 

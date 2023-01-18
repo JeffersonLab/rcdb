@@ -73,3 +73,21 @@ def parse_run_range(run_range_str, run_periods=None):
 
     # Default return is index
     return None, None
+
+
+def minmax_run_range(run_range: tuple):
+    """If one or both values of run_range tuple is None, replaces it to 0 or sys.maxsize
+
+    > minmax_run_range((None, None)) 
+    (0, sys.maxsize)
+    > minmax_run_range((None, value2)) 
+    (0, value2)
+    > minmax_run_range((value1, None)) 
+    (value1, sys.maxsize)
+    > minmax_run_range((value1, value2)) 
+    (value1, value2)
+    """
+
+    min_run = 0 if run_range[0] is None else run_range[0]
+    max_run = sys.maxsize if run_range[1] is None else run_range[1]
+    return min_run, max_run
