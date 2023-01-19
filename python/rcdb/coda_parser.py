@@ -31,9 +31,36 @@ class CodaRunLogParseResult(object):
         self.run_config_file = None      # config file with full path. E.g. /home/.../TRG_COSMIC_BCAL_raw_cdc_b1.conf
         self.run_config = None           # config file name. E.g. TRG_COSMIC_BCAL_raw_cdc_b1
         self.user_comment = None         # Daq comment by user
-        self.evio_last_file = None       # Filename of the last evio file written by CODA ER
-        self.evio_files_count = None     # The number of evio files written by CODA Event Recorder
         self.evio_files = []             # Evio file names
+    
+    @property
+    def evio_last_file(self):
+        """Filename of the last evio file written by CODA ER"""
+        if not self.evio_files:
+            return None
+        
+        self.evio_files.sort()
+        return self.evio_files[-1]
+    
+    @property
+    def evio_files_count(self):
+        """The number of evio files written by CODA Event Recorder
+           Parsed from ER records (so there might be different number of files)
+        """
+        # the last file is something like: hd_rawdata_011410_055.evio
+        if not self.evio_files:
+            return None
+        last_file = self.evio_last_file
+        u_pos = last_file.rfind('_')
+        d_pos = last_file.rfind('.')
+        # noinspection PyBroadException
+        try:
+            return int(last_file[u_pos + 1:d_pos]) + 1
+        except:
+            log.warning(Lf("Can't parse file index for '{}' file", last_file))
+            return None
+
+
 
 
 def parse_file(filename):
@@ -196,6 +223,8 @@ def parse_components(parse_result, xml_components):
 
         """
 
+    assert isinstance(parse_result, CodaRunLogParseResult)
+
     if xml_components is not None:
         components = {}
         component_stats = {}
@@ -219,18 +248,13 @@ def parse_components(parse_result, xml_components):
             component_stats[xml_component.attrib['name']] = stats
 
             if component_type == 'ER':
-                last_file_xml = xml_component.find('out-file')
-                if last_file_xml is not None and last_file_xml.text:
-                    last_file = last_file_xml.text
-                    # the last file is something like: hd_rawdata_011410_055.evio
-                    u_pos = last_file.rfind('_')
-                    d_pos = last_file.find('.')
-                    # noinspection PyBroadException
-                    try:
-                        parse_result.evio_files_count = int(last_file[u_pos + 1:d_pos]) + 1
-                    except:
-                        log.warning(Lf("Can't parse file index for '{}' file", last_file))
-                    parse_result.evio_last_file = last_file
+                log.info("Parsing ER section:")
+                for evio_file_xml in xml_component.findall('out-file'):
+                    if evio_file_xml is not None and evio_file_xml.text:
+                        evio_file = evio_file_xml.text
+                        log.info("|- Found evio file name: " + evio_file)
+                        parse_result.evio_files.append(evio_file)
+                        
 
         parse_result.components = components
         parse_result.component_stats = component_stats

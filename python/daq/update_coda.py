@@ -42,18 +42,22 @@ def update_coda_conditions(context, parse_result):
 
     # Run type condition
     if parse_result.run_type is not None:
+        log.info(f" |- {DefaultConditions.RUN_TYPE:<17} : {parse_result.run_type}")
         conditions.append((DefaultConditions.RUN_TYPE, parse_result.run_type))
 
     # Session (like hdops)
     if parse_result.session is not None:
+        log.info(f" |- {DefaultConditions.SESSION:<17} : {parse_result.session}")
         conditions.append((DefaultConditions.SESSION, parse_result.session))
 
     # Set the run as not properly finished (We hope that the next section will
     if parse_result.has_run_end is not None:
+        log.info(f" |- {DefaultConditions.IS_VALID_RUN_END:<17} : {parse_result.has_run_end}")
         conditions.append((DefaultConditions.IS_VALID_RUN_END, parse_result.has_run_end))
 
     # The number of events in the run
     if parse_result.event_count is not None:
+        log.info(f" |- {DefaultConditions.EVENT_COUNT:<17} : {parse_result.event_count}")
         conditions.append((DefaultConditions.EVENT_COUNT, parse_result.event_count))
 
     # a list of names of <components> section . E.g. ['ROCBCAL13', 'ROCFDC11', ...]
@@ -78,10 +82,12 @@ def update_coda_conditions(context, parse_result):
 
     # Filename of the last evio file written by CODA ER
     if parse_result.evio_last_file is not None:
+        log.info(f" |- evio_last_file    : {parse_result.evio_last_file}")
         conditions.append(('evio_last_file', parse_result.evio_last_file))
 
     # The number of evio files written by CODA Event Recorder
     if parse_result.evio_files_count is not None:
+        log.info(f" |- evio_files_count  : {parse_result.evio_files_count}")
         conditions.append(('evio_files_count', parse_result.evio_files_count))
 
     # SAVE CONDITIONS
