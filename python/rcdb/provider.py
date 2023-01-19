@@ -1279,7 +1279,7 @@ class ConfigurationProvider(RCDBProvider):
         log.debug("Processing configuration file")
 
         if content is None:
-            log.debug(Lf("|- Content parameter is None, reading file from FS '{}'", path))
+            log.debug(Lf("|- Content is not provided as func param, reading from FS '{}'", path))
             check_sum = rcdb.file_archiver.get_file_sha256(path)
         else:
             log.debug(Lf("|- Content is NOT none, using it to put to DB", path))
