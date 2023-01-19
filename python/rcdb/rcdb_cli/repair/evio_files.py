@@ -47,14 +47,31 @@ def read_run_directories(mask, run_min, run_max):
     return run_files
 
 @click.command()
-@click.argument('run_range', required=False, default=None)
-@click.argument('mask', required=False, default="/gluex/data/rawdata/all/Run*111*")
+@click.option('--run-range', required=False, default=None)
+@click.option('--mask', required=False, default="/gluex/data/rawdata/all/Run*111*")
 @click.option('--save-list', required=False, default=None, help="Save found evio files to json file with this name")
 @click.option('--load-list', required=False, default=None, help="Instead of scanning, load eviofiles from a list")
+@click.option('--execute', is_flag=True, required=False, default=False, help="Instead of scanning, load eviofiles from a list")
 @pass_rcdb_context
-def evio_files(ctx, run_range, mask, save_list, load_list):
+def evio_files(ctx, run_range, mask, save_list, load_list, execute):
+    """ 
+    Example of usage: 
+      # search /mss and save evio files to a json file list
+      rcdb repair evio-files --run-range=0 --mask="/mss/halld/RunPeriod-2022-08/rawdata/Run*" --save-list RunPeriod-2022-08_evio_files.json
 
-    print(run_range, mask, save_list, load_list)
+      # same but for all run ranges
+      rcdb repair evio-files --run-range=0 --mask="/mss/halld/RunPeriod*/rawdata/Run*" --save-list all_evio_files.json
+
+      # load files and show what is to be done (no fix though)
+      rcdb -c mysql://rcdb@hallddb/rcdb repair evio-files --load-list 2023_01_18_all_evio_files.json
+
+      # add --execute to make changes in DB
+      # (hallddb is readonly and this command will fail, use the correct db and password)
+      rcdb -c mysql://rcdb@hallddb/rcdb repair evio-files --load-list 2023_01_18_all_evio_files.json --execute
+    
+    """
+    click.echo("Executing evio-files with:")
+    click.echo((run_range, mask, save_list, load_list, execute))
 
     run_min, run_max = minmax_run_range(parse_run_range(run_range))
     click.echo(f"Scanning all runs between: {run_min} - {run_max}")
@@ -79,35 +96,49 @@ def evio_files(ctx, run_range, mask, save_list, load_list):
     assert isinstance(db, RCDBProvider)
     click.echo(f"\n\n PROCESSING {len(run_files)} RUNS")
     for run_num, evio_files in run_files.items():
+        # Skip this run if needed
+        if int(run_num) < run_min or int(run_num) > run_max:
+            continue
+
         run = db.get_run(run_num)
 
         if run is None: 
             print(f"WARNING! Run {run_num} exists on disk, but not in DB")
             click.echo(f"run has: {len(evio_files)} evio files. Checking...")
-            for file_path in evio_files:
-                            # extract file size: 
-                file_size = os.stat(file_path)
-                print(f"Size of file {file_path} : {sizeof_fmt(file_size.st_size)}")
+            # for file_path in evio_files:
+            #                 # extract file size: 
+            #     file_size = os.stat(file_path)
+            #     print(f"Size of file {file_path} : {sizeof_fmt(file_size.st_size)}")
             continue
+
+        click.echo(f"RUN # {run.number}")
 
 
         evio_files.sort()
-        for file_path in evio_files:
-                        # extract file size: 
-            file_size = os.stat(file_path)            
-            print(file_path)
+        # for file_path in evio_files:
+        #                 # extract file size: 
+        #     file_size = os.stat(file_path)            
+        #     print(file_path)
             
-
-        break
-
         evio_files_count_cnd = run.get_condition("evio_files_count")
         if not evio_files_count_cnd:
-            print("No condition 'evio_files_count' found for run")
-            continue
+            print("  No condition 'evio_files_count' found for run")
+            print(f"  Adding evio_files_count = {len(evio_files)}")
+            if execute:
+                db.add_condition(run, "evio_files_count", len(evio_files))
+        else:
+            if evio_files_count_cnd.value != len(evio_files):
+                "  Number of files mistmatch:"
+                print(f"  {evio_files_count_cnd.value} = {len(evio_files)}")
+        
+        evio_last_file_cnd = run.get_condition("evio_last_file")
+        if not evio_last_file_cnd and evio_files:
+            print("  No condition 'evio_last_file' found for run")
+            print(f"  Adding evio_last_file = {evio_files[-1]}")
+            if execute:
+                db.add_condition(run, "evio_last_file", evio_files[-1])
 
         
-        print(f"{evio_files_count_cnd.value} = {len(evio_files)}")
-        click.echo(f"{run_num:<20} {len(evio_files)}")
 
 
     
