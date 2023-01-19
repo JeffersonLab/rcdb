@@ -1,5 +1,6 @@
 from .model import ConditionType
 from .provider import RCDBProvider
+from .provider import ConfigurationProvider
 
 
 # This thing separates cells in data blob

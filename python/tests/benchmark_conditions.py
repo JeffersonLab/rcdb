@@ -57,11 +57,11 @@ if __name__ == "__main__":
     parser.add_argument("-c", "--cycles", type=int, default=1000, help="Number of repetition of benchmark action")
     args = parser.parse_args()
 
-    start_clock = time.clock()
+    start_clock = time.process_time()
     start_time = time.time()
     if args.mode == 'add':
         benchmark_conditions_add(args.cycles)
     else:
         benchmark_conditions_add(args.cycles, auto_commit=False)
     print("Approximate time using time.clock() is: {} \t time is {}"
-          .format(time.clock() - start_clock, time.time() - start_time))
+          .format(time.process_time() - start_clock, time.time() - start_time))

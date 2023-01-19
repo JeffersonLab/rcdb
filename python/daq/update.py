@@ -109,7 +109,7 @@ def parse_files():
     script_pid = os.getpid()
     script_ppid = os.getppid()
     script_uid = os.getuid()
-    script_start_clock = time.clock()
+    script_start_clock = time.process_time()
 
     description = "The script updates RCDB gathering different sources given in --update flag:" \
                   "   coda   - information from coda file (file is required anyway to get run)" \
@@ -225,7 +225,7 @@ def parse_files():
                 coda_xml_log_file, run_number, run_config_file))
 
     # >oO DEBUG log message
-    now_clock = time.clock()
+    now_clock = time.process_time()
     db.add_log_record("", "'{}':Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}', clocks='{}', time: '{}'"
                       .format(script_name, coda_xml_log_file, run_number, run_config_file, run_number,
                               now_clock - script_start_clock, datetime.now()), run_number)
@@ -279,14 +279,14 @@ def parse_files():
 
     # EPICS
     # Get EPICS variables
-    epics_start_clock = time.clock()
+    epics_start_clock = time.process_time()
     if 'epics' in update_parts and run_number:
         log.debug(F("Performing update_epics.py", ))
         # noinspection PyBroadException
         try:
             import update_epics
             conditions = update_epics.update_rcdb_conds(db, run_number, update_reason)
-            epics_end_clock = time.clock()
+            epics_end_clock = time.process_time()
             # >oO DEBUG log message
             db.add_log_record("",
                               "'{}': Update epics. beam_current:'{}', epics_clocks:'{}' clocks:'{}', time: '{}'"
@@ -299,7 +299,7 @@ def parse_files():
 
         except Exception as ex:
             log.warning("update_epics.py failure. Impossible to run the script. Internal exception is:\n" + str(ex))
-            epics_end_clock = time.clock()
+            epics_end_clock = time.process_time()
 
             # >oO DEBUG log message
             db.add_log_record("",
@@ -312,7 +312,7 @@ def parse_files():
     log.debug("End of update")
 
     # >oO DEBUG log message
-    now_clock = time.clock()
+    now_clock = time.process_time()
     db.add_log_record("",
                       "'{}': End of update. Script proc clocks='{}', wall time: '{}', datetime: '{}'"
                       .format(script_name,

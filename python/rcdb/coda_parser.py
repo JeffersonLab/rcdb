@@ -33,6 +33,7 @@ class CodaRunLogParseResult(object):
         self.user_comment = None         # Daq comment by user
         self.evio_last_file = None       # Filename of the last evio file written by CODA ER
         self.evio_files_count = None     # The number of evio files written by CODA Event Recorder
+        self.evio_files = []             # Evio file names
 
 
 def parse_file(filename):
