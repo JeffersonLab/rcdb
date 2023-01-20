@@ -96,7 +96,7 @@ echo "   RCDB parse  "
 echo "-----------------------------------------------------------------------------------"  
 sleep 1
 #${DAQ_HOME}/rcdb/run_prestart   
-${DAQ_HOME}/rcdb/parse_coda_log   --update=epics,coda,config,roc --reason=start  --ipl --verbose  --udl=$UDL 
+${DAQ_HOME}/rcdb/parse_coda_log_v2   --update=epics,coda,config,roc --reason=start  --ipl --verbose  --udl=$UDL 
 ERRRCDB=$?
 [[ $ERRRCDB != 0 ]] && rcm_log "rcdb Error  rc=$ERRRCDB " "WARN"
 #

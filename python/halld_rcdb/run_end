@@ -152,7 +152,7 @@ while true ; do
     sleep 1
 done
 
-${DAQ_HOME}/rcdb/parse_coda_log   --update=epics,coda,conf --verbose --ipl --reason=end  --udl=$UDL  
+${DAQ_HOME}/rcdb/parse_coda_log_v2   --update=epics,coda,conf --verbose --ipl --reason=end  --udl=$UDL  
 ERRRCDB=$?
 [[ $ERRRCDB != 0 ]] && rcm_log "rcdb Error  rc=$ERRRCDB " "WARN"
 #

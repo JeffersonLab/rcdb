@@ -92,7 +92,7 @@ if [ $USER != "hdops" ] ; then
 #    run_log.sh "UPDATE" $RUN $CONFIG_FILE
     exit 0
 fi
-echo " start: parse_coda_log  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose "
+echo " start: parse_coda_log_v2  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose "
 python --version
 
 #exit 0
@@ -105,7 +105,7 @@ for ff in 1    ; do
 #    sleep 10
 done
 
-${DAQ_HOME}/rcdb/parse_coda_log  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose 
+${DAQ_HOME}/rcdb/parse_coda_log_v2  --update=epics,coda,config --reason=update  --ipl  --udl=$UDL --verbose 
 
 #===========================================================================================
 #            HDOPS account only ...

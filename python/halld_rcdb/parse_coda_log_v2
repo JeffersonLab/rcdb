@@ -8,16 +8,23 @@
 
 
 # 2. IS ENVIRONMENT SET?
+unset PYTHONPATH
 
 export RCDB_HOME=${DAQ_HOME}/rcdb/rcdb_master
 export LD_LIBRARY_PATH="$RCDB_HOME/cpp/lib":$LD_LIBRARY_PATH
 export PYTHONPATH="$RCDB_HOME/python":$PYTHONPATH
 export PATH="$RCDB_HOME":"$RCDB_HOME/bin":"$RCDB_HOME/cpp/bin":$PATH
 
+
 # 1. Setup python
 source ${DAQ_HOME}/rcdb/miniconda3/etc/profile.d/conda.sh
 conda activate
 
+# 4. DEAL WITH CONNECTION TO DATABASE
+if [ -f ~/.rcdb ];
+then
+   source ~/.rcdb
+fi
 
 #3. PYTHON SCRIPT START
 
@@ -40,6 +47,6 @@ echo "update.py params: $*"
 echo `which python3`
 python3 --version 
 which python3
-python3 $RCDB_HOME/python/update.py $LOGFILE "$@" 
+python3 $RCDB_HOME/python/daq/update.py $LOGFILE "$@" 
 #gdb -ex run --args python $RCDB_HOME/python/update.py $LOGFILE "$@" 
 
