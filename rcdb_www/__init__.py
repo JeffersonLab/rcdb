@@ -7,6 +7,13 @@ from datetime import datetime
 # configuration
 from sqlalchemy.orm import subqueryload
 
+# register modules
+from rcdb_www.runs.views import mod as runs_module
+from rcdb_www.logs.views import mod as logs_module
+from rcdb_www.files.views import mod as files_module
+from rcdb_www.statistics.views import mod as statistics_module
+from rcdb_www.conditions.views import mod as conditions_module
+
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
@@ -62,9 +69,7 @@ def remove_dot_conf_filter(s):
     :type s:str
 
     """
-    return s[:-5] if s.endswith(".conf") else s;
-
-    return s[::-1]
+    return s[:-5] if s.endswith(".conf") else s
 
 
 def url_for_other_page(page):
@@ -75,13 +80,7 @@ def url_for_other_page(page):
 
 app.jinja_env.globals['url_for_other_page'] = url_for_other_page
 app.jinja_env.globals['rcdb_default_alias'] = rcdb.alias.default_aliases
-# register modules
-from runs.views import mod as runs_module
-from logs.views import mod as logs_module
-from files.views import mod as files_module
 
-from statistics.views import mod as statistics_module
-from conditions.views import mod as conditions_module
 
 
 app.register_blueprint(runs_module)

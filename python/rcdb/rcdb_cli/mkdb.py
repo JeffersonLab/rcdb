@@ -8,7 +8,7 @@ from .context import pass_rcdb_context
 @click.argument('search', required=False)
 @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 @pass_rcdb_context
-def ls(context, search, is_long):
+def mkdb(context, search, is_long):
     """Lists conditions"""
 
     print(context)

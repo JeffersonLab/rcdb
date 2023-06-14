@@ -1,6 +1,7 @@
 from .model import ConditionType
 from .provider import RCDBProvider
 from .provider import ConfigurationProvider
+from .rcdb_cli.app import rcdb_cli as run_rcdb_cli
 
 
 # This thing separates cells in data blob
@@ -125,3 +126,5 @@ def create_condition_types(db):
     create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of the run ")
     create_condition_type(DefaultConditions.RUN_START_TIME, ConditionType.TIME_FIELD, "Run start time ")
     create_condition_type(DefaultConditions.RUN_END_TIME, ConditionType.TIME_FIELD, "Run end time (last CODA update)")
+
+

@@ -4,9 +4,8 @@ import inspect
 
 
 def get_this_folder():
-    """Returns the folder of
+    """Returns the folder of"""
 
-    """
 
 if __name__ == '__main__':
 

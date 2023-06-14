@@ -113,6 +113,90 @@ class Run(ModelBase):
 
 
 # --------------------------------------------
+# class RUN
+# --------------------------------------------
+class RunRange(ModelBase):
+    """
+    Represents a set of runs
+
+    Attributes:
+        Run.number (int): The run number
+
+    """
+    __tablename__ = 'runs'
+
+    number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
+
+    #
+    files = relationship("ConfigurationFile", secondary=_files_have_runs_association, back_populates="runs")
+    """[ConfigurationFile]: Configuration and log files associated with the run"""
+
+    #
+    start_time = Column('started', DateTime, nullable=True)
+    """Run start time"""
+
+    #
+    end_time = Column('finished', DateTime, nullable=True)
+    """Run end time"""
+
+    #
+    conditions = relationship("Condition", back_populates="run")
+    """Conditions associated with the run"""
+
+    def __init__(self):
+        self._conditions_by_name = None
+
+    @reconstructor
+    def init_on_load(self):
+        self._conditions_by_name = None
+
+    @property
+    def log_id(self):
+        """returns id suitable for log. Which is tablename_id"""
+        return self.__tablename__ + "_" + str(self.number)
+
+    def get_conditions_by_name(self):
+        """
+        Create and returns dictionary of condition.name -> condition
+
+        Returns:
+            dict[str, Condition]: Dictionary where key is condition.name and value is condition
+        """
+        d = dict()
+        for condition in self.conditions:
+            d[condition.name] = condition
+        return d
+
+    def get_condition(self, condition_name):
+        """ Gets the Condition object by name if such name condition exist for the run. Null otherwise
+
+        :param condition_name: The condition name
+        :type condition_name: string
+        :return: Condition for this name for run or null
+        :rtype: Condition or None
+        """
+        if self._conditions_by_name is None:
+            self._conditions_by_name = self.get_conditions_by_name()
+
+        return self._conditions_by_name[condition_name] \
+            if condition_name in self._conditions_by_name.keys() \
+            else None
+
+    def get_condition_value(self, condition_name):
+        """ Gets the condition value if such name condition exist for the run. Null otherwise
+
+        :param condition_name: The condition name
+        :type condition_name: string
+        :return: Condition value for this name for run or None
+
+        """
+        cnd = self.get_condition(condition_name)
+        return cnd.value if cnd is not None else None
+
+    def __repr__(self):
+        return "<Run number='{0}'>".format(self.number)
+
+# --------------------------------------------
 # class
 # --------------------------------------------
 class ConfigurationFile(ModelBase):

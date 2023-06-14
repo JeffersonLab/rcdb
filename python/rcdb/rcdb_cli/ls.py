@@ -3,6 +3,7 @@ import click
 from rcdb.provider import RCDBProvider
 from .context import pass_rcdb_context
 
+
 @click.command()
 @click.argument('search', required=False)
 @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')

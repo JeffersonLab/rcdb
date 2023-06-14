@@ -1,0 +1,10 @@
+exclude .gitignore
+exclude daq
+exclude examples
+exclude halld_rcdb
+exclude tests
+exclude utilites
+
+
+include ../README.md
+recursive-include rcdb *.py
