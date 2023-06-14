@@ -14,7 +14,7 @@ One can consider two main aspects of what conceptually RCDB is designed for:
 
 ## Concepts 
 
-[daq concepts](daq/daq_concepts.md ':include')
+[daq_concepts](daq/daq_concepts.md ':include')
 
 Software wise:
   
