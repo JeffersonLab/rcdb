@@ -7,7 +7,7 @@ import rcdb
 from rcdb import RCDBProvider
 from rcdb.model import SchemaVersion
 from rcdb.rcdb_cli.context import pass_rcdb_context
-
+from rcdb.provider import stamp_schema_version
 
 @click.group(invoke_without_command=True)
 @click.pass_context
@@ -73,12 +73,10 @@ def init(context, drop_all):
     else:
         print('The schema version table does not exist.')
 
+    # CREATE ALL TABLES
     rcdb.model.Base.metadata.create_all(provider.engine)
-    print("Created schema existing RCDB data")
+    print("Created RCDB schema")
 
-    v = SchemaVersion()
-    v.version = rcdb.SQL_SCHEMA_VERSION
-    v.comment = "Schema V{} for RCDB 0.9+ (2023)"
-    provider.session.add(v)
-    provider.session.commit()
-    print("Schema version: {} - '{}'".format(v.version, v.comment))
+    # Set correct version
+    version = stamp_schema_version(provider)
+    print("Stamped schema version: {} - '{}'".format(version.version, version.comment))

@@ -428,7 +428,7 @@ class LogRecord(ModelBase):
 # --------------------------------------------
 # class RUN RANGE
 # --------------------------------------------
-class Aliases(ModelBase):
+class Alias(ModelBase):
     """ Query aliases """
 
     __tablename__ = 'aliases'

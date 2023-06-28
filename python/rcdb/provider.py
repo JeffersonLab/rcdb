@@ -1353,6 +1353,21 @@ def destroy_schema(db):
     rcdb.model.Base.metadata.drop_all(db.engine)
 
 
+def stamp_schema_version(db):
+    """
+    Stamp DB with current schema version.
+    It is assumed that the function is used when schema is just created or updated from older version
+    """
+
+    db.session.query(SchemaVersion).delete()
+    v = SchemaVersion()
+    v.version = rcdb.SQL_SCHEMA_VERSION
+    v.comment = "Schema V{} for RCDB>v0.9 (2023)".format(v.version)
+    db.session.add(v)
+    db.session.commit()
+    return v
+
+
 def destroy_all_create_schema(db):
     """
     Creates RCDB schema in database. Used for test purpuses
@@ -1366,9 +1381,6 @@ def destroy_all_create_schema(db):
         print("destroy_schema dropped OperationalError '{}' so it is considered that the database is empty".format(ex))
 
     rcdb.model.Base.metadata.create_all(db.engine)
+    stamp_schema_version(db)
 
-    v = SchemaVersion()
-    v.version = rcdb.SQL_SCHEMA_VERSION
-    v.comment = "Schema V{} for RCDB 0.9+ (2023)"
-    db.session.add(v)
-    db.session.commit()
+
