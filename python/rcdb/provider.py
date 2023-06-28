@@ -18,7 +18,7 @@ from ply.lex import LexToken
 
 import sqlalchemy.orm
 from sqlalchemy.orm import aliased
-#from sqlalchemy.orm.exc import NoResultFound
+# from sqlalchemy.orm.exc import NoResultFound
 
 import rcdb
 import rcdb.file_archiver
@@ -38,6 +38,7 @@ if sys.version_info[0] == 3:
     basestring = str,
 
 
+# noinspection PyTypeChecker
 class RCDBProvider(object):
     """ RCDB data provider that uses SQLAlchemy for accessing databases """
 
@@ -98,7 +99,7 @@ class RCDBProvider(object):
             self.engine = sqlalchemy.create_engine(connection_string)
         except ImportError as err:
             # sql alchemy uses MySQLdb by default. But it might be not install in the system
-            # in such case we fallback to mysqlconnector which is embedded in CCDB
+            # in such case we fall back to mysqlconnector
             if connection_string.startswith("mysql://") and "No module named" in str(err) and 'MySQLdb' in str(err):
                 connection_string = connection_string.replace("mysql://", "mysql+pymysql://")
                 self.engine = sqlalchemy.create_engine(connection_string)
@@ -112,14 +113,11 @@ class RCDBProvider(object):
 
         if check_version:
             db_version = self.get_sql_schema_version()
-
             if db_version != rcdb.SQL_SCHEMA_VERSION:
                 message = "SQL schema version doesn't match. " \
-                          "Probably RCDB is connecting with wrong, empty or older/newer DB" \
                           "Retrieved DB version is {0}, required version is {1}" \
                     .format(db_version, rcdb.SQL_SCHEMA_VERSION)
                 raise rcdb.errors.SqlSchemaVersionError(message)
-
 
     # ------------------------------------------------
     # Closes connection to data
@@ -955,7 +953,7 @@ class RCDBProvider(object):
             compiled_search_eval = None
 
         result_table = []
-        
+
         for values in result:
             run = values[0]
             try:
@@ -1371,6 +1369,6 @@ def destroy_all_create_schema(db):
 
     v = SchemaVersion()
     v.version = rcdb.SQL_SCHEMA_VERSION
-    v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
+    v.comment = "Schema V{} for RCDB 0.9+ (2023)"
     db.session.add(v)
     db.session.commit()

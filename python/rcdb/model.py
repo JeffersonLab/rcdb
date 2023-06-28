@@ -1,9 +1,10 @@
 import datetime
 
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import Column, ForeignKey, Table
-from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText
+from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText, Date
 from sqlalchemy.orm import sessionmaker, reconstructor, object_session
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.expression import desc
@@ -13,6 +14,7 @@ from sqlalchemy.sql.expression import func
 Base = declarative_base()
 
 RCDB_MAX_RUN = 18446744073709551615   # 2**64 - 1
+
 
 class ModelBase(Base):
     __abstract__ = True
@@ -27,17 +29,12 @@ _files_have_runs_association = Table('files_have_runs', Base.metadata,
                                      Column('files_id', Integer, ForeignKey('files.id')),
                                      Column('run_number', Integer, ForeignKey('runs.number')))
 
+
 # --------------------------------------------
 # class RUN
 # --------------------------------------------
 class Run(ModelBase):
-    """
-    Represents data for run
-
-    Attributes:
-        Run.number (int): The run number
-
-    """
+    """ Represents data for one run """
     __tablename__ = 'runs'
 
     number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
@@ -113,88 +110,23 @@ class Run(ModelBase):
 
 
 # --------------------------------------------
-# class RUN
+# class RUN RANGE
 # --------------------------------------------
-class RunRange(ModelBase):
-    """
-    Represents a set of runs
+class RunPeriod(ModelBase):
+    """ Represents a set of runs """
 
-    Attributes:
-        Run.number (int): The run number
-
-    """
-    __tablename__ = 'runs'
-
-    number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
-
-    #
-    files = relationship("ConfigurationFile", secondary=_files_have_runs_association, back_populates="runs")
-    """[ConfigurationFile]: Configuration and log files associated with the run"""
-
-    #
-    start_time = Column('started', DateTime, nullable=True)
-    """Run start time"""
-
-    #
-    end_time = Column('finished', DateTime, nullable=True)
-    """Run end time"""
-
-    #
-    conditions = relationship("Condition", back_populates="run")
-    """Conditions associated with the run"""
-
-    def __init__(self):
-        self._conditions_by_name = None
-
-    @reconstructor
-    def init_on_load(self):
-        self._conditions_by_name = None
-
-    @property
-    def log_id(self):
-        """returns id suitable for log. Which is tablename_id"""
-        return self.__tablename__ + "_" + str(self.number)
-
-    def get_conditions_by_name(self):
-        """
-        Create and returns dictionary of condition.name -> condition
-
-        Returns:
-            dict[str, Condition]: Dictionary where key is condition.name and value is condition
-        """
-        d = dict()
-        for condition in self.conditions:
-            d[condition.name] = condition
-        return d
-
-    def get_condition(self, condition_name):
-        """ Gets the Condition object by name if such name condition exist for the run. Null otherwise
-
-        :param condition_name: The condition name
-        :type condition_name: string
-        :return: Condition for this name for run or null
-        :rtype: Condition or None
-        """
-        if self._conditions_by_name is None:
-            self._conditions_by_name = self.get_conditions_by_name()
-
-        return self._conditions_by_name[condition_name] \
-            if condition_name in self._conditions_by_name.keys() \
-            else None
-
-    def get_condition_value(self, condition_name):
-        """ Gets the condition value if such name condition exist for the run. Null otherwise
-
-        :param condition_name: The condition name
-        :type condition_name: string
-        :return: Condition value for this name for run or None
-
-        """
-        cnd = self.get_condition(condition_name)
-        return cnd.value if cnd is not None else None
+    __tablename__ = 'run_periods'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    description = Column(String(255), nullable=True)
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
+    run_min = Column(Integer, nullable=False)
+    run_max = Column(Integer, nullable=False)
 
     def __repr__(self):
-        return "<Run number='{0}'>".format(self.number)
+        return "<RunRange name='{0}' range=[{1}-{2}]>".format(self.name, self.run_min, self.run_max)
+
 
 # --------------------------------------------
 # class
@@ -219,6 +151,7 @@ class ConfigurationFile(ModelBase):
         return "<ConfigurationFile id='{0}', path='{1}'>".format(self.id, self.path)
 
 
+# noinspection DuplicatedCode
 class ConditionType(ModelBase):
     """
     Holds type and constants name of data attached to particular run.
@@ -490,6 +423,22 @@ class LogRecord(ModelBase):
 
     def __repr__(self):
         return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)
+
+
+# --------------------------------------------
+# class RUN RANGE
+# --------------------------------------------
+class Aliases(ModelBase):
+    """ Query aliases """
+
+    __tablename__ = 'aliases'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    code = Column(Text, nullable=False)
+    description = Column(String(255), nullable=True)
+
+    def __repr__(self):
+        return "<Alias id='{0}' name='{1}'>".format(self.id, self.name)
 
 
 run_periods = {

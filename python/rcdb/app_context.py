@@ -2,14 +2,22 @@ import click
 from rcdb import RCDBProvider
 import sys
 
+
 class RcdbApplicationContext(object):
 
     def __init__(self, home, connection_str):
         self.home = home
-        self.db = RCDBProvider(connection_str)
+        self._db_instance = None
+
         self.config = {}
         self.verbose = False
         self.connection_str = connection_str
+
+    @property
+    def db(self):
+        if not self._db_instance:
+            self._db_instance = RCDBProvider(self.connection_str)
+        return self._db_instance
 
     def set_config(self, key, value):
         self.config[key] = value
@@ -24,7 +32,6 @@ class RcdbAdminApplicationContext(RcdbApplicationContext):
 
     def __init__(self, home, connection_str):
         super(RcdbAdminApplicationContext).__init__(home, connection_str)
-
 
 
 def parse_run_range(run_range_str, run_periods=None):

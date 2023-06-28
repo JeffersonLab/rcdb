@@ -11,9 +11,7 @@ blob_delimiter = "|"
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
 
-SQL_SCHEMA_VERSION = 1
-
-SQL_ALEMBIC_VERSION = ''
+SQL_SCHEMA_VERSION = 2
 
 
 class UpdateReasons(object):

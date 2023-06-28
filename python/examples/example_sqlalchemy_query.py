@@ -81,16 +81,13 @@ def querying_specific_conditions(db):
 
 
 if __name__ == "__main__":
-    db = make_dummy_db()
+    _db = make_dummy_db()
 
-    print('')
-    print("querying_using_condition_type")
-    querying_using_condition_type(db)
+    print("\nquerying_using_condition_type")
+    querying_using_condition_type(_db)
 
-    print('')
-    print("querying_using_alchemy")
-    querying_using_alchemy(db)
+    print("\nQuerying_using_alchemy")
+    querying_using_alchemy(_db)
 
-    print('')
-    print("querying_specific_conditions")
-    querying_specific_conditions(db)
+    print("\nQuerying_specific_conditions")
+    querying_specific_conditions(_db)
