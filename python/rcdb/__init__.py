@@ -94,7 +94,7 @@ class DefaultConditions(object):
     IS_VALID_RUN_END = 'is_valid_run_end'
 
 
-def create_condition_types(db):
+def create_default_condition_types(db):
     """
     Checks if condition types listed in class exist in the database and create them if not
     :param db: RCDBProvider connected to database
@@ -109,10 +109,10 @@ def create_condition_types(db):
             else db.create_condition_type(name, value_type, description)
 
     # get or create condition type
-    create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)
-    create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD)
-    create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD)
-    create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD, "Average event rate")
+    create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD, "Number of events")
+    create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD, "DAQ Run type")
+    create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD, "DAQ Run configuration")
     create_condition_type(DefaultConditions.SESSION, ConditionType.STRING_FIELD)
     create_condition_type(DefaultConditions.USER_COMMENT, ConditionType.STRING_FIELD)
     create_condition_type(DefaultConditions.COMPONENTS, ConditionType.JSON_FIELD)

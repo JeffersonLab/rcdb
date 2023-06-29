@@ -9,6 +9,7 @@ from rcdb.model import SchemaVersion
 from rcdb.rcdb_cli.context import pass_rcdb_context
 from rcdb.provider import stamp_schema_version
 
+
 @click.group(invoke_without_command=True)
 @click.pass_context
 def db(ctx):
@@ -35,9 +36,10 @@ def update(connection):
 
 
 @db.command()
+@click.option('--no-defaults', is_flag=True, help="Don't create default condition types")
 @click.option('--drop-all', is_flag=True, help='Drops existing RCDB data if exists')
 @pass_rcdb_context
-def init(context, drop_all):
+def init(context, drop_all, no_defaults):
     """Database management commands."""
 
     # PRINTOUT PART
@@ -80,3 +82,9 @@ def init(context, drop_all):
     # Set correct version
     version = stamp_schema_version(provider)
     print("Stamped schema version: {} - '{}'".format(version.version, version.comment))
+
+    if no_defaults:
+        print("--no-defaults flag is given. Skipping creation of default conditions")
+    else:
+        rcdb.create_default_condition_types(provider)
+        print("Created default conditions")
