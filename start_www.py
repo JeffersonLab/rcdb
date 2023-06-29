@@ -16,9 +16,9 @@ if __name__ == '__main__':
         sys.path.insert(0, python_folder)
 
     # import and start web site
-    import rcdb_www
+    import rcdb_web
 
     if "RCDB_CONNECTION" in os.environ.keys():
-        rcdb_www.app.config["SQL_CONNECTION_STRING"] = os.environ["RCDB_CONNECTION"]
+        rcdb_web.app.config["SQL_CONNECTION_STRING"] = os.environ["RCDB_CONNECTION"]
 
-    rcdb_www.app.run()
+    rcdb_web.app.run()

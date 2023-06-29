@@ -8,11 +8,11 @@ from datetime import datetime
 from sqlalchemy.orm import subqueryload
 
 # register modules
-from rcdb_www.runs.views import mod as runs_module
-from rcdb_www.logs.views import mod as logs_module
-from rcdb_www.files.views import mod as files_module
-from rcdb_www.statistics.views import mod as statistics_module
-from rcdb_www.conditions.views import mod as conditions_module
+from rcdb_web.runs.views import mod as runs_module
+from rcdb_web.logs.views import mod as logs_module
+from rcdb_web.files.views import mod as files_module
+from rcdb_web.statistics.views import mod as statistics_module
+from rcdb_web.conditions.views import mod as conditions_module
 
 DEBUG = True
 SECRET_KEY = 'development key'
