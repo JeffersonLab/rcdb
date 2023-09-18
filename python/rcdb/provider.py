@@ -67,7 +67,7 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Check DB version
     # ------------------------------------------------
-    def get_sql_schema_version(self):
+    def get_schema_version(self):
         """Check if connected SQL schema is of the right version"""
 
         schema_version, = self.session.query(SchemaVersion.version) \
@@ -112,7 +112,7 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-            db_version = self.get_sql_schema_version()
+            db_version = self.get_schema_version()
             if db_version != rcdb.SQL_SCHEMA_VERSION:
                 message = "SQL schema version doesn't match. " \
                           "Retrieved DB version is {0}, required version is {1}" \

@@ -26,7 +26,7 @@ class TestSqlSchemaVersion(unittest.TestCase):
         self.db.session.add(v)
         self.db.session.commit()
 
-        self.assertEqual(self.db.get_sql_schema_version(), rcdb.SQL_SCHEMA_VERSION)
+        self.assertEqual(self.db.get_schema_version(), rcdb.SQL_SCHEMA_VERSION)
 
     def test_no_schema_version(self):
         """Test of Run in db function"""
@@ -44,7 +44,7 @@ class TestSqlSchemaVersion(unittest.TestCase):
         v.version = 0
         self.db.session.add(v)
         self.db.session.commit()
-        self.assertFalse(self.db.get_sql_schema_version())
+        self.assertFalse(self.db.get_schema_version())
 
 
 

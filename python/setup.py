@@ -37,8 +37,8 @@ setup(
     ],
     packages=["rcdb"],
     include_package_data=True,
-    setup_requires=["click"],
-    install_requires=["click"],
+    setup_requires=["click", "ply", "pymysql"],
+    install_requires=["click", "ply", "pymysql"],
     entry_points={
         "console_scripts": [
             "rcdb=rcdb:run_rcdb_cli",
