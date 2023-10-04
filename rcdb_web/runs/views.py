@@ -18,12 +18,13 @@ from sqlalchemy.orm import subqueryload, joinedload
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 
-_nsre=re.compile("([0-9]+)")
+_nsre = re.compile("([0-9]+)")
+
 
 def natural_sort_key(l):
     convert = lambda text: int(text) if text.isdigit() else text.lower()
-    alphanum_key = lambda key: [ convert(c) for c in re.split('([0-9]+)', key) ]
-    return sorted(l, key = alphanum_key)
+    alphanum_key = lambda key: [convert(c) for c in re.split('([0-9]+)', key)]
+    return sorted(l, key=alphanum_key)
 
 
 PER_PAGE = 200
@@ -33,7 +34,6 @@ PER_PAGE = 200
 @mod.route('/page/<int:page>', defaults={'run_from': -1, 'run_to': -1})
 @mod.route('/<int:run_from>-<int:run_to>', defaults={'page': 1})
 def index(page, run_from, run_to):
-
     start_time_stamp = int(time() * 1000)
     preparation_sw = StopWatchTimer()
 
@@ -50,7 +50,8 @@ def index(page, run_from, run_to):
 
         # Filter query and count results
         query = query.filter(Run.number >= run_min, Run.number <= run_max)
-        count = g.tdb.session.query(func.count(Run.number)).filter(Run.number >= run_min, Run.number <= run_max).scalar()
+        count = g.tdb.session.query(func.count(Run.number)).filter(Run.number >= run_min,
+                                                                   Run.number <= run_max).scalar()
 
         # we don't want pagination in this case, setting page size same/bigger than count
         per_page = run_max - run_min
@@ -64,9 +65,9 @@ def index(page, run_from, run_to):
     preparation_sw.stop()
     query_sw = StopWatchTimer()
     # Get runs from query
-    runs = query.options(subqueryload(Run.conditions))\
-        .order_by(Run.number.desc())\
-        .slice(pagination.item_limit_from, pagination.item_limit_to)\
+    runs = query.options(subqueryload(Run.conditions)) \
+        .order_by(Run.number.desc()) \
+        .slice(pagination.item_limit_from, pagination.item_limit_to) \
         .all()
     query_sw.stop()
     performance = {
@@ -150,7 +151,6 @@ def info(run_number):
 
 @mod.route('/elog/<int:run_number>')
 def elog(run_number):
-
     try:
         from urllib2 import urlopen, HTTPError
     except ImportError:
@@ -158,7 +158,7 @@ def elog(run_number):
         from urllib.error import HTTPError
     try:
         elog_json = urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
-                                    .format(run_number)).read()
+                            .format(run_number)).read()
     except HTTPError as e:
         return jsonify(stat=str(e.code))
 
@@ -217,7 +217,6 @@ def search():
     run_to_str = request.args.get('runTo', '')
     if run_from_str or run_to_str:
         run_range = run_from_str + "-" + run_to_str
-
 
     args = {}
     run_from, run_to = _parse_run_range(run_range)
@@ -307,7 +306,6 @@ def search2():
         else:
             run.is_active = False
 
-
     return render_template("runs/custom_column.html",
                            rows=result.get_values(columns, True),
                            column_condition_types=column_condition_types,
@@ -318,20 +316,4 @@ def search2():
                            search_query=search_query,
                            performance=result.performance,
                            columns=columns)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

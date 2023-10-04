@@ -13,6 +13,7 @@ from rcdb_web.logs.views import mod as logs_module
 from rcdb_web.files.views import mod as files_module
 from rcdb_web.statistics.views import mod as statistics_module
 from rcdb_web.conditions.views import mod as conditions_module
+from rcdb_web.test_conditions.veiws import mod as test_conditions_module
 
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -88,6 +89,7 @@ app.register_blueprint(logs_module)
 app.register_blueprint(files_module)
 app.register_blueprint(statistics_module)
 app.register_blueprint(conditions_module)
+app.register_blueprint(test_conditions_module)
 
 if __name__ == '__main__':
     app.run()
