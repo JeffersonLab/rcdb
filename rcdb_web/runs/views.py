@@ -233,7 +233,7 @@ def search():
         run_from = 0
 
     if run_to is None:
-        run_to = sys.maxint
+        run_to = sys.maxsize
 
     try:
         result = g.tdb.select_runs(search_query, run_to, run_from, sort_desc=True)
@@ -250,7 +250,7 @@ def search():
                            pagination=pagination,
                            condition_types=condition_types,
                            run_from=run_from,
-                           run_to=run_to if run_to != sys.maxint else -1,
+                           run_to=run_to if run_to != sys.maxsize else -1,
                            search_query=search_query,
                            performance=result.performance)
 

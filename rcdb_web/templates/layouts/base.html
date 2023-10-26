@@ -63,6 +63,9 @@
                         <li {% if request.endpoint == 'conditions.index' %} class="active"{% endif %}>
                             <a href="{{ url_for('conditions.index') }}">Conditions</a>
                         </li>
+                        <li {% if request.endpoint == 'select_values.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('select_values.index') }}">Select values</a>
+                        </li>
 
                     </ul>
 

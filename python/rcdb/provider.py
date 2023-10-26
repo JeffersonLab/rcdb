@@ -937,7 +937,10 @@ class RCDBProvider(object):
         if runs:
             result = self.session.connection().execute(sql)  # runs are already in query
         else:
-            result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
+
+            #sql.bindparams(run_max=run_max, run_min=run_min)
+            #result = self.session.connection().execute(sql)
+            result = self.session.connection().execute(sql, parameters={"run_min": run_min, "run_max":run_max})
 
         query_sw.stop()
 
