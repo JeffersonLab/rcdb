@@ -1,6 +1,12 @@
 {% macro run_search_box(condition_types=[], run_from=-1, run_to=-1, search_query="", form_url=url_for("runs.search")) %}
     {% set run_from_str = "" if run_from == -1 else run_from %}
     {% set run_to_str = "" if run_to == -1 else run_to %}
+    <style>
+    .toggle-icon {
+        transition: transform 0.2s;
+        transform-origin: center;
+    }
+    </style>
 
     <div class="container">
         <div class="panel panel-default">
@@ -78,9 +84,16 @@
                              </div>
                          </div>
                          <div class="col-sm-4">
-                             <label class="small" for="req_conditions">Conditions</label>
-                             <input class="form-control  input-sm" rows="1" id="req_conditions" name="cnd" placeholder="Enter conditions" value="{{ req_conditions_str|safe }}"  />
-                         </div>
+                            <label class="small" for="req_conditions">Conditions</label>
+                            <div class="input-group">
+                                <input class="form-control input-sm" rows="1" id="req_conditions" name="cnd" placeholder="Enter conditions" value="{{ req_conditions_str|safe }}" />
+                                <div class="input-group-append" style="display: flex; align-items: center;">
+                                    <button id="toggleButton" type="button" class="toggle-button btn btn-info btn-sm">
+                                        <span id="toggleIcon" class="toggle-icon">▼</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                      </div>
                  </form>
             </div>
@@ -195,5 +208,17 @@
                 }
             });
         });
+
+        const toggleButton = document.getElementById('toggleButton');
+        const hiddenTable = document.querySelector('.hidden-table');
+        const toggleIcon = document.getElementById('toggleIcon');
+
+        toggleButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            hiddenTable.classList.toggle('hidden');
+            toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+
     </script>
+
 {% endmacro %}

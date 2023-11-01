@@ -18,15 +18,6 @@ mod = Blueprint('select_values', __name__, url_prefix='/select_values')
 @mod.route('/')
 def index():
     all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
-    # req_conditions_str = request.args.get('cnd', '')
-    # run_range = request.args.get('rr', '')
-    # req_conditions_str = ['beam_current', 'event_count', 'daq_run', 'run_config']  # Conditions that user requested
-
-
-
-    # db = RCDBProvider("mysql://localhost/rcdb")
-    # (!) don't forget that if conditions are not found this will fail
-    # table = g.tdb.select_values(req_conditions_value, search_str="", run_min=30000, run_max=30050)
 
     return render_template("select_values/index.html",
                            all_conditions=all_conditions)
@@ -35,6 +26,7 @@ def index():
 
 @mod.route('/search', methods=['GET'])
 def search():
+    all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
     req_conditions_str = request.args.get('cnd', '')
@@ -50,7 +42,8 @@ def search():
     run_from, run_to = _parse_run_range(run_range)
 
     try:
-        table = g.tdb.select_values(val_names=req_conditions_value, search_str=search_query, run_min=run_from, run_max=run_to, sort_desc=True)
+        table = g.tdb.select_values(val_names=req_conditions_value, search_str=search_query, run_min=run_from,
+                                    run_max=run_to, sort_desc=True)
         print(req_conditions_value, run_from, run_to)
     except Exception as err:
         flash("Error in performing request: {}".format(err), 'danger')
@@ -60,10 +53,10 @@ def search():
     print(run_to, run_from)
 
     return render_template("select_values/index.html",
+                           all_conditions=all_conditions,
                            run_range=run_range,
                            run_from=run_from,
                            run_to=run_to,
                            search_query=search_query,
                            req_conditions_value=req_conditions_value,
                            table=table)
-

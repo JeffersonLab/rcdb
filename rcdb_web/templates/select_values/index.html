@@ -1,7 +1,7 @@
 {% extends 'layouts/base.html' %}
 {% import 'run_search_box.html' as search_box%}
 
-{% set page_title = 'Test Conditions' %}
+{% set page_title = 'Select values' %}
 
 {% block container %}
 
@@ -10,8 +10,29 @@
 <div class="container">
 
     <div class="blog-header"><h3 class="blog-title">Custom table</h3></div>
+    <div class="hidden-table">
+        <form id="condition-form">
+            <table class="table condition-table">
+                <tr>
+                    <th></th>
+                    <th style="width: 5%">Type</th>
+                    <th>Name</th>
+                    <th style="width: 70%">Description</th>
+                </tr>
 
-
+                {% for condition in all_conditions %}
+                <tr>
+                    <td><input type="checkbox" name="selected_conditions" value="{{ condition.name }}" onchange="updateSearchBox(this)"></td>
+                    <td><span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
+                    <td>{{ condition.name }}</td>
+                    <td>{{ condition.description }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            <input type="hidden" name="q" id="queryInput" value="{{ search_query }}">
+            <input type="hidden" name="r" id="req_conditions" value="{{ req_conditions_str }}">
+        </form>
+    </div>
     <div class="row">
         <div class="col-md-4">
             <table class="table">
@@ -35,7 +56,6 @@
             </table>
         </div>
     </div>
-
 </div>
 
 {% endblock %}
@@ -45,22 +65,23 @@
 
 
     <script>
+        function updateSearchBox(checkbox) {
+            const searchInput = document.getElementById('req_conditions');
+            const conditionName = checkbox.value;
 
-        let conditionSelect = document.getElementById('condition-select');
-        let column2Body = document.getElementById('column2-body');
+            if (checkbox.checked) {
 
-        conditionSelect.addEventListener('change', function() {
-            let selectedValue = conditionSelect.value;
-            column2Body.innerHTML = '';
-
-            if (selectedValue) {
-                let newRow = document.createElement('tr');
-                let column2 = document.createElement('td');
-                column2.textContent = selectedValue;
-                newRow.appendChild(column2);
-                column2Body.appendChild(newRow);
+                if (!searchInput.value) {
+                    searchInput.value = conditionName;
+                } else {
+                    searchInput.value += `,${conditionName}`;
+                }
+            } else {
+                searchInput.value = searchInput.value.replace(`${conditionName},`, '').replace(conditionName, '');
             }
-        });
+        }
+        
+
     </script>
     {{ search_box.run_search_box_scripts(condition_types) }}
 {% endblock %}
