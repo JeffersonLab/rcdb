@@ -788,8 +788,16 @@ class RCDBProvider(object):
             if isinstance(value, Condition):
                 value = (value,)
             run = value[0].run
-            if eval(compiled_search_eval):
-                sel_runs.append(run)
+            try:
+                if eval(compiled_search_eval):
+                    sel_runs.append(run)
+            except Exception as ex:
+                message = 'Error evaluating search query.\n' \
+                          + '  Query: <<"{}">>, \n'.format(search_eval) \
+                          + '  Names: {}, \n'.format(names) \
+                          + '  Values: {} \n'.format(values) \
+                          + '  Error ({}): {}'.format(type(ex), ex)
+                raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
         result = RunSelectionResult(sel_runs, self)
@@ -971,7 +979,7 @@ class RCDBProvider(object):
                           + '  Query: <<"{}">>, \n'.format(search_eval) \
                           + '  Names: {}, \n'.format(names) \
                           + '  Values: {} \n'.format(values) \
-                          + '  Error: {}'.format(ex)
+                          + '  Error ({}): {}'.format(type(ex), ex)
                 raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
