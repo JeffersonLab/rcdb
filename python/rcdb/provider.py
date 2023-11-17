@@ -975,6 +975,11 @@ class RCDBProvider(object):
                         result_row.append(val)
                     result_table.append(result_row)
             except Exception as ex:
+                # Condition value might be NoneType if it's not added to a run
+                # TypeError arises when comparing none with value and it's OK
+                if isinstance(ex, TypeError) and "NoneType" in str(ex):
+                    continue
+
                 message = 'Error evaluating search query.\n' \
                           + '  Query: <<"{}">>, \n'.format(search_eval) \
                           + '  Names: {}, \n'.format(names) \
