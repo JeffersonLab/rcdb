@@ -5,7 +5,7 @@
 
 {% block container %}
 
-{{ search_box.run_search_box(condition_types=all_conditions, run_from=run_from, run_to=run_to, search_query=search_query, form_url=url_for("select_values.search")) }}
+{{ search_box.run_search_box(condition_types=all_conditions, run_from=run_from, run_to=run_to, search_query=search_query, req_conditions_str=req_conditions_str, form_url=url_for("select_values.search")) }}
 
 <div class="container">
 
@@ -22,15 +22,13 @@
 
                 {% for condition in all_conditions %}
                 <tr>
-                    <td><input type="checkbox" name="selected_conditions" value="{{ condition.name }}" onchange="updateSearchBox(this)"></td>
+                    <td><input id="cnd_checkbox" type="checkbox" name="selected_conditions" value="{{ condition.name }}" onchange="updateSearchBox(this)"></td>
                     <td><span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
                     <td>{{ condition.name }}</td>
                     <td>{{ condition.description }}</td>
                 </tr>
                 {% endfor %}
             </table>
-            <input type="hidden" name="q" id="queryInput" value="{{ search_query }}">
-            <input type="hidden" name="r" id="req_conditions" value="{{ req_conditions_str }}">
         </form>
     </div>
     <div class="row">
@@ -39,7 +37,7 @@
                 <thead>
                     <tr>
                         <th>Run</th>
-                        {% for cnd_name in req_conditions_value %}
+                        {% for cnd_name in req_conditions_values %}
                             <th>{{ cnd_name }}</th>
                         {% endfor %}
                     </tr>
@@ -77,9 +75,44 @@
                     searchInput.value += `,${conditionName}`;
                 }
             } else {
-                searchInput.value = searchInput.value.replace(`${conditionName},`, '').replace(conditionName, '');
+                searchInput.value = searchInput.value.replace(`${conditionName},`, '').replace(`,${conditionName}`, '').replace(conditionName, '');
             }
         }
+
+        function updateLocalStorage() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(function(checkbox) {
+                localStorage.setItem(checkbox.value, checkbox.checked);
+            });
+        }
+
+        function loadCheckboxState() {
+            var checkboxState = {};
+
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                checkboxState[key] = localStorage.getItem(key) === 'true';
+            }
+
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = checkboxState[checkbox.value] || false;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckboxState();
+        });
+
+
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateLocalStorage();
+            });
+        });
+
         
 
     </script>

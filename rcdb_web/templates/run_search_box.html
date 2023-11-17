@@ -1,17 +1,11 @@
-{% macro run_search_box(condition_types=[], run_from=-1, run_to=-1, search_query="", form_url=url_for("runs.search")) %}
+{% macro run_search_box(condition_types=[], run_from=-1, run_to=-1, search_query="", req_conditions_str="", form_url=url_for("runs.search")) %}
     {% set run_from_str = "" if run_from == -1 else run_from %}
     {% set run_to_str = "" if run_to == -1 else run_to %}
-    <style>
-    .toggle-icon {
-        transition: transform 0.2s;
-        transform-origin: center;
-    }
-    </style>
 
     <div class="container">
         <div class="panel panel-default">
             <div class="panel-body">
-                 <form  role="search" action="{{ form_url }}" method="get">
+                 <form  role="search" id="main_form" action="{{ form_url }}" method="get">
                      <div class="row ">
                          <div class="col-md-3">
                              <div class="row ">
@@ -61,8 +55,8 @@
                                  </div>
                              </div>
                          </div>
-                         <div class="col-sm-8">
-                             <label class="small" for="queryInput">Search query</label>
+                         <div class="col-sm-9">
+                                <label class="small" for="queryInput">Search query</label>
                              <div class="input-group ">
                                  <input class="form-control  input-sm" rows="1" id="queryInput" name="q" placeholder="event_count>10000 ...(ctrl+space for autocomplete)" value="{{ search_query|safe }}"  />
                                  <div class="input-group-btn">
@@ -83,17 +77,18 @@
                                  </div>
                              </div>
                          </div>
-                         <div class="col-sm-4">
-                            <label class="small" for="req_conditions">Conditions</label>
-                            <div class="input-group">
-                                <input class="form-control input-sm" rows="1" id="req_conditions" name="cnd" placeholder="Enter conditions" value="{{ req_conditions_str|safe }}" />
-                                <div class="input-group-append" style="display: flex; align-items: center;">
-                                    <button id="toggleButton" type="button" class="toggle-button btn btn-info btn-sm">
-                                        <span id="toggleIcon" class="toggle-icon">▼</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                         <div class="col-md-12">
+                             <label class="small" for="req_conditions">Conditions</label>
+                             <div class="input-group">
+                                 <input class="form-control" id="req_conditions" name="cnd" placeholder="Enter conditions" value="{{ req_conditions_str|safe }}" />
+                                 <div class="input-group-btn">
+                                     <button id="toggleButton" type="button" class="toggle-button btn btn-info">
+                                        <span id="toggleIcon" class="caret"></span>
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+
                      </div>
                  </form>
             </div>
@@ -133,14 +128,35 @@
     </div>
 {% endmacro %}
 
-{% macro run_search_box_scripts(condition_types=[], run_from=-1, run_to=-1, search_query="") %}
+{% macro run_search_box_scripts(condition_types=[], run_from=-1, run_to=-1, search_query="", req_conditions="") %}
     <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/webintellisense.js') }}"></script>
     <script src="{{ url_for('static', filename='js/webintellisense-textbox.js') }}"></script>
 
 
     <script>
+        function handleFormSubmission() {
+
+            var runFromValue = document.getElementById("run-min-inp").value;
+            var runToValue = document.getElementById("run-max-inp").value;
+            var searchQueryValue = document.getElementById("queryInput").value;
+            var req_conditionsValue = document.getElementById("req_conditions").value;
+
+            console.log(req_conditionsValue);
+            localStorage.setItem("runFromValue", runFromValue);
+            localStorage.setItem("runToValue", runToValue);
+            localStorage.setItem("searchQueryValue", searchQueryValue);
+            localStorage.setItem("req_conditionsValue", req_conditionsValue);
+
+        }
+
         jQuery(document).ready(function() {
+
+            $("#run-min-inp").val(localStorage.getItem("runFromValue"));
+            $("#run-max-inp").val(localStorage.getItem("runToValue"));
+            $("#queryInput").val(localStorage.getItem("searchQueryValue"));
+            $("#req_conditions").val(localStorage.getItem("req_conditionsValue"));
+
             $(".rr-min-selector").click(function( event ) {
                 event.preventDefault();
                 var lnk_btn = $(this);
@@ -207,17 +223,37 @@
                      intellisense.setDeclarations(cnd_types);
                 }
             });
+
+            let myForm = document.getElementById("main_form");
+            console.log(myForm);
+
+            myForm.addEventListener('submit', handleFormSubmission);
         });
 
         const toggleButton = document.getElementById('toggleButton');
         const hiddenTable = document.querySelector('.hidden-table');
         const toggleIcon = document.getElementById('toggleIcon');
+        toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
 
         toggleButton.addEventListener('click', function(event) {
             event.preventDefault();
             hiddenTable.classList.toggle('hidden');
             toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </script>
 
