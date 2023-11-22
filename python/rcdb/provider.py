@@ -96,6 +96,9 @@ class RCDBProvider(object):
         :type connection_string: str
         """
 
+        if not connection_string:
+            raise ValueError("Connection string is whitespace or empty. Provide proper connection string for DB")
+
         try:
             self.engine = sqlalchemy.create_engine(connection_string)
         except ImportError as err:
@@ -315,6 +318,57 @@ class RCDBProvider(object):
             return self._run_periods_cache
         except NoResultFound:
             return []
+
+    # ------------------------------------------------
+    # Creates run period
+    # ------------------------------------------------
+    def create_run_period(self, name, description, run_min, run_max, start_date, end_date):
+        """
+        Creates run period
+
+        :param name: Short name or run period e.g. Gluex Spring 2018
+        :type name: str
+
+        :param description: More detailed description if needed
+        :type description: str
+
+        :return: ConditionType object that corresponds to created DB record
+        :rtype: ConditionType
+        """
+
+        query = self.session.query(RunPeriod).filter(RunPeriod.run_min == run_min, RunPeriod.run_max == run_max)
+
+        if query.count():
+            # we've found a run period with this run_max and run_min
+            rp = query.first()
+            assert isinstance(rp, RunPeriod)
+
+            message = f"Run period with run_min={run_min} and run_max={run_max} already exists in DB:" \
+                      f"name={rp.name}, descr.={rp.description}, start_date={rp.start_date}, end_date={rp.end_date}"
+
+            raise ValueError(message)
+        else:
+            # no such ConditionType found in the database
+            rp = RunPeriod()
+            rp.name = name
+            rp.description = description
+            rp.start_date = start_date
+            rp.end_date = end_date
+            rp.run_min = run_min
+            rp.run_max = run_max
+
+            try:
+                self.session.add(rp)
+                self.session.commit()
+                # clear cache
+                self._run_periods_cache = None
+            except:
+                self.session.rollback()
+                raise
+
+            log_desc = f"RunPeriod created with name='{name}', run_min='{run_min}' run_max='{run_max}'"
+            self.add_log_record(rp, log_desc, 0)
+            return rp
 
     # ------------------------------------------------
     # Returns condition type
