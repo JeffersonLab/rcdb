@@ -52,6 +52,7 @@ class RCDBProvider(object):
         self._cnd_types_cache = None
         self._cnd_types_by_name = None
         self.aliases = default_aliases
+        self._run_periods_cache = None
 
         # username for record
         self.user_name = user_name
@@ -298,24 +299,22 @@ class RCDBProvider(object):
         return run
 
     # ------------------------------------------------
-    # Get run periods
+    # Returns run periods
     # ------------------------------------------------
+
     def get_run_periods(self):
-        """Returns dict with run-periods
+        """Gets all run periods as a list of RunPeriod objects
 
-        :return: dict with {"name":(run_min, run_max, description)}
+        :return: all RunPeriods in db
+        :rtype: list, [RunPeriod]
         """
-        return rcdb.model.run_periods
-
-    # ------------------------------------------------
-    # Get run periods
-    # ------------------------------------------------
-    def get_run_period(self, name):
-        """Returns dict with run-periods
-        :param name: Run period name in form of YYYY-MM, like 2016-02
-        :return: dict with {"name":(run_min, run_max, description)}
-        """
-        return rcdb.model.run_periods[str(name)]
+        if self._run_periods_cache is not None:
+            return self._run_periods_cache
+        try:
+            self._run_periods_cache = self.session.query(RunPeriod).all()
+            return self._run_periods_cache
+        except NoResultFound:
+            return []
 
     # ------------------------------------------------
     # Returns condition type
