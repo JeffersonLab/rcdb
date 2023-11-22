@@ -42,6 +42,9 @@ def rcdb_cli(ctx, user_config, connection, config, verbose):
     # Create a rcdb_app_context object and remember it as the context object.  From
     # this point onwards other commands can refer to it by using the
     # @pass_rcdb_context decorator.
+    if not connection:
+        print("(!)WARNING no connection provided! "
+              "Provide DB connection string via --connection/-c or RCDB_CONNECTION environment variable.")
     ctx.obj = RcdbApplicationContext(os.path.abspath(user_config), connection)
     ctx.obj.verbose = verbose
     for key, value in config:

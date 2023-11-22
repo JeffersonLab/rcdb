@@ -16,8 +16,16 @@ def db(ctx):
     """Database management commands."""
     if ctx.invoked_subcommand is None:
         connection_str = ctx.obj.connection_str
-        provider = RCDBProvider(connection_str, check_version=False)
-        schema_version, = provider.session.execute(select(SchemaVersion).order_by(SchemaVersion.version.desc())).first()
+
+        # We create provider manually and not using ctx.obj.db because we need check_version=False
+        # We separate class creation and connection because connection_str might be null
+        provider = RCDBProvider()
+        if not connection_str:
+            print("ERROR connection string is missing.")
+            exit(1)
+        provider.connect(connection_str, check_version=False)
+        query = select(SchemaVersion).order_by(SchemaVersion.version.desc())
+        schema_version, = provider.session.execute(query).first()
         print("Schema version: {} - '{}'".format(schema_version.version, schema_version.comment))
 
 
