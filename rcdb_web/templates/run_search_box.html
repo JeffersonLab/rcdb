@@ -1,4 +1,4 @@
-{% macro run_search_box(condition_types=[], run_from=-1, run_to=-1, search_query="", form_url=url_for("runs.search"), req_conditions_str="", show_req_conditions=False) %}
+{% macro run_search_box(condition_types=[], run_periods=[], run_from=-1, run_to=-1, search_query="", form_url=url_for("runs.search"), req_conditions_str="", show_req_conditions=False) %}
     {% set run_from_str = "" if run_from == -1 else run_from %}
     {% set run_to_str = "" if run_to == -1 else run_to %}
 
@@ -18,15 +18,9 @@
                                              <ul class="dropdown-menu">
                                                  <li><p class="text-center"><strong>Run periods:</strong></p></li>
                                                  <li class="divider"></li>
-                                                 <li><a class="rr-min-selector" data-run-min="70000" data-run-max="79999" href="#">[70000+] 2019-01 2020</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="60000" data-run-max="69999" href="#">[60000+] 2019-01 2019-04 – DIRC-com/PrimEx</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="50000" data-run-max="59999" href="#">[50000+] 2018-08 2018-11 – 78B GlueX-I/PrimEx-Com</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="40000" data-run-max="49999" href="#">[40000+] 2018-01 2018-05 – 145B</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="30000" data-run-max="39999" href="#">[30000+] 2017-01 2017-04 – 50B 12 GeV e-</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="20000" data-run-max="29999" href="#">[20000+] 2016-10 2016-12 – 7B  12 GeV e-</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="10000" data-run-max="19999" href="#">[10000+] 2016-02</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="3939" data-run-max="9999" href="#">[3939, 10000) 2015-12</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="3607" data-run-max="3939" href="#">[3607, 3939]2015-06</a></li>
+                                                 {% for period in run_periods %}
+                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">{{ period.description }}</a></li>
+                                                 {% endfor %}
                                              </ul>
                                          </div>
                                     </div>
@@ -40,21 +34,25 @@
                                              <ul class="dropdown-menu">
                                                  <li><p class="text-center"><strong>Run periods:</strong></p></li>
                                                  <li class="divider"></li>
-                                                 <li><a class="rr-min-selector" data-run-min="70000" data-run-max="79999" href="#">[70000+] 2019-01 2020</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="60000" data-run-max="69999" href="#">[60000+] 2019-01 2019-04 – DIRC-com/PrimEx</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="50000" data-run-max="59999" href="#">[50000+] 2018-08 2018-11 – 78B GlueX-I/PrimEx-Com</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="40000" data-run-max="49999" href="#">[40000+] 2018-01 2018-05 – 145B</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="30000" data-run-max="39999" href="#">[30000+] 2017-01 2017-04 – 50B 12 GeV e-</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="20000" data-run-max="29999" href="#">[20000+] 2016-10 2016-12 – 7B  12 GeV e-</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="10000" data-run-max="19999" href="#">[10000+] 2016-02</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="3939" data-run-max="9999" href="#">[3939, 10000) 2015-12</a></li>
-                                                 <li><a class="rr-min-selector" data-run-min="3607" data-run-max="3939" href="#">[3607, 3939]2015-06</a></li>
+                                                 {% for period in run_periods %}
+                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">{{ period.name + " " +  period.description }}</a></li>
+                                                 {% endfor %}
                                              </ul>
                                          </div>
                                      </div>
                                  </div>
                              </div>
                          </div>
+{#                     Primex, GluexI, Gluex-II, CLASS-12, CSR,#}
+{#                   <li><a class="rr-min-selector" data-run-min="70000" data-run-max="79999" href="#">[70000+] 2019-01 2020</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="60000" data-run-max="69999" href="#">[60000+] 2019-01 2019-04 – DIRC-com/PrimEx</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="50000" data-run-max="59999" href="#">[50000+] 2018-08 2018-11 – 78B GlueX-I/PrimEx-Com</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="40000" data-run-max="49999" href="#">[40000+] 2018-01 2018-05 – 145B</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="30000" data-run-max="39999" href="#">[30000+] 2017-01 2017-04 – 50B 12 GeV e-</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="20000" data-run-max="29999" href="#">[20000+] 2016-10 2016-12 – 7B  12 GeV e-</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="10000" data-run-max="19999" href="#">[10000+] 2016-02</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="3939" data-run-max="9999" href="#">[3939, 10000) 2015-12</a></li>#}
+{#                   <li><a class="rr-min-selector" data-run-min="3607" data-run-max="3939" href="#">[3607, 3939]2015-06</a></li>#}
                          <div class="col-sm-9">
                                 <label class="small" for="queryInput">Search query</label>
                              <div class="input-group ">
@@ -93,7 +91,6 @@
                      </div>
                  </form>
             </div>
-
             <!-- Modal -->
             <div class="modal fade " id="slectConditionTypeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
@@ -225,10 +222,8 @@
                 }
             });
 
-            let myForm = document.getElementById("main_form");
-            console.log(myForm);
-
-            myForm.addEventListener('submit', handleFormSubmission);
+            let mainForm = document.getElementById("main_form");
+            mainForm.addEventListener('submit', handleFormSubmission);
         });
 
         const toggleButton = document.getElementById('toggleButton');

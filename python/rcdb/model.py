@@ -119,10 +119,10 @@ class RunPeriod(ModelBase):
     id = Column(Integer, primary_key=True)
     name = Column(String(255), nullable=False)
     description = Column(String(255), nullable=True)
-    start_date = Column(Date, nullable=True)
-    end_date = Column(Date, nullable=True)
     run_min = Column(Integer, nullable=False)
     run_max = Column(Integer, nullable=False)
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
 
     def __repr__(self):
         return "<RunRange name='{0}' range=[{1}-{2}]>".format(self.name, self.run_min, self.run_max)

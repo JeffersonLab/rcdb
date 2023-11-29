@@ -6,7 +6,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from collections import defaultdict
-from rcdb.model import Run, Condition, ConditionType
+from rcdb.model import Run, Condition, ConditionType, RunPeriod
 from sqlalchemy.orm import subqueryload
 
 from rcdb.provider import RCDBProvider
@@ -18,15 +18,17 @@ mod = Blueprint('select_values', __name__, url_prefix='/select_values')
 @mod.route('/')
 def index():
     all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
+    run_periods = g.tdb.session.query(RunPeriod).all()
     run_from_str = request.args.get('runFrom', '')
     run_to_str = request.args.get('runTo', '')
     search_query = request.args.get('q', '')
     req_conditions_str = request.args.get('cnd', '')
 
-    print("search" + search_query)
+    print(run_periods)
 
     return render_template("select_values/index.html",
                            all_conditions=all_conditions,
+                           run_periods=run_periods,
                            run_from_str=run_from_str,
                            run_to_str=run_to_str,
                            search_query=search_query,
@@ -36,6 +38,7 @@ def index():
 @mod.route('/search', methods=['GET'])
 def search():
     all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
+    run_periods = g.tdb.session.query(RunPeriod).all()
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
     req_conditions_str = request.args.get('cnd', '')
@@ -52,15 +55,15 @@ def search():
     try:
         table = g.tdb.select_values(val_names=req_conditions_values, search_str=search_query, run_min=run_from,
                                     run_max=run_to, sort_desc=True)
-        print(req_conditions_values, run_from, run_to)
     except Exception as err:
         flash("Error in performing request: {}".format(err), 'danger')
         return redirect(url_for('select_values.index'))
 
-    print(search_query)
+    
 
     return render_template("select_values/index.html",
                            all_conditions=all_conditions,
+                           run_periods=run_periods,
                            run_range=run_range,
                            run_from=run_from,
                            run_to=run_to,
