@@ -1,22 +1,14 @@
-import json
-import re
-import sys
-
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
-# from werkzeug import check_password_hash, generate_password_hash
-import rcdb
-from collections import defaultdict
-from rcdb.model import Run, Condition, ConditionType, RunPeriod
-from sqlalchemy.orm import subqueryload
-
-from rcdb.provider import RCDBProvider
+from flask import Blueprint, request, render_template, flash, g, redirect, url_for
+from rcdb.model import ConditionType
 from runs.views import _parse_run_range
 
 mod = Blueprint('select_values', __name__, url_prefix='/select_values')
 
+# rcdb/select_value
 
 @mod.route('/', methods=['GET'])
 def index():
+    # noinspection PyUnresolvedReferences
     all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
     run_periods = g.tdb.session.query(RunPeriod).all()
 
