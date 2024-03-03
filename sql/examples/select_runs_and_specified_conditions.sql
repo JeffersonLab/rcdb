@@ -1,15 +1,11 @@
-/*SELECT
-  runs.number    run,
-  event_count_table.int_value   event_count,
-  C2.float_value events_rate,
-  C3.int_value   temperature
-FROM runs
-  LEFT JOIN conditions event_count_table
-    ON event_count_table.run_number = runs.number AND event_count_table.condition_type_id = 1
-  LEFT JOIN conditions C2
-    ON C2.run_number = runs.number AND C2.condition_type_id = 2
-  LEFT JOIN conditions C3
-    ON C3.run_number = runs.number AND C3.condition_type_id = 3;
+/*
+Queries specified conditions over a range of runs.
+Returns a convenient table where rows are run number
+and columns are condition values.
+
+(!) note that types of values of conditions are specified manually:
+    'event_count_table.int_value event_count'
+    So one has to
 */
 
 
@@ -31,5 +27,8 @@ FROM runs
       ON run_config_table.run_number = runs.number AND run_config_table.condition_type_id = 4
     LEFT JOIN conditions polarization_angle_table
       ON polarization_angle_table.run_number = runs.number AND polarization_angle_table.condition_type_id = 56
-  WHERE runs.number > 10000 AND event_count_table.int_value > 1000000
+  WHERE
+      runs.number > 10000
+    AND
+      event_count_table.int_value > 1000000
 ;
