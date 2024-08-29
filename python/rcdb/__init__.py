@@ -1,7 +1,8 @@
 from .model import ConditionType
 from .provider import RCDBProvider
 from .provider import ConfigurationProvider
-
+from .rcdb_cli.app import rcdb_cli as run_rcdb_cli
+from .errors import *
 
 # This thing separates cells in data blob
 blob_delimiter = "|"
@@ -10,9 +11,7 @@ blob_delimiter = "|"
 # we have to encode blob_delimiter to blob_delimiter_replace on data write and decode it bach on data read
 blob_delimiter_replacement = "&delimiter;"
 
-SQL_SCHEMA_VERSION = 1
-
-SQL_ALEMBIC_VERSION = ''
+SQL_SCHEMA_VERSION = 2
 
 
 class UpdateReasons(object):
@@ -95,7 +94,7 @@ class DefaultConditions(object):
     IS_VALID_RUN_END = 'is_valid_run_end'
 
 
-def create_condition_types(db):
+def create_default_condition_types(db):
     """
     Checks if condition types listed in class exist in the database and create them if not
     :param db: RCDBProvider connected to database
@@ -110,10 +109,10 @@ def create_condition_types(db):
             else db.create_condition_type(name, value_type, description)
 
     # get or create condition type
-    create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD)
-    create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD)
-    create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD)
-    create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD)
+    create_condition_type(DefaultConditions.EVENT_RATE, ConditionType.FLOAT_FIELD, "Average event rate")
+    create_condition_type(DefaultConditions.EVENT_COUNT, ConditionType.INT_FIELD, "Number of events")
+    create_condition_type(DefaultConditions.RUN_TYPE, ConditionType.STRING_FIELD, "DAQ Run type")
+    create_condition_type(DefaultConditions.RUN_CONFIG, ConditionType.STRING_FIELD, "DAQ Run configuration")
     create_condition_type(DefaultConditions.SESSION, ConditionType.STRING_FIELD)
     create_condition_type(DefaultConditions.USER_COMMENT, ConditionType.STRING_FIELD)
     create_condition_type(DefaultConditions.COMPONENTS, ConditionType.JSON_FIELD)
@@ -125,3 +124,5 @@ def create_condition_types(db):
     create_condition_type(DefaultConditions.RUN_LENGTH, ConditionType.INT_FIELD, "Length of the run ")
     create_condition_type(DefaultConditions.RUN_START_TIME, ConditionType.TIME_FIELD, "Run start time ")
     create_condition_type(DefaultConditions.RUN_END_TIME, ConditionType.TIME_FIELD, "Run end time (last CODA update)")
+
+

@@ -1,9 +1,10 @@
 import datetime
 
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import Column, ForeignKey, Table
-from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText
+from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText, Date
 from sqlalchemy.orm import sessionmaker, reconstructor, object_session
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.sql.expression import desc
@@ -13,6 +14,7 @@ from sqlalchemy.sql.expression import func
 Base = declarative_base()
 
 RCDB_MAX_RUN = 18446744073709551615   # 2**64 - 1
+
 
 class ModelBase(Base):
     __abstract__ = True
@@ -27,17 +29,12 @@ _files_have_runs_association = Table('files_have_runs', Base.metadata,
                                      Column('files_id', Integer, ForeignKey('files.id')),
                                      Column('run_number', Integer, ForeignKey('runs.number')))
 
+
 # --------------------------------------------
 # class RUN
 # --------------------------------------------
 class Run(ModelBase):
-    """
-    Represents data for run
-
-    Attributes:
-        Run.number (int): The run number
-
-    """
+    """ Represents data for one run """
     __tablename__ = 'runs'
 
     number = Column(Integer, primary_key=True, unique=True, autoincrement=False)
@@ -113,6 +110,25 @@ class Run(ModelBase):
 
 
 # --------------------------------------------
+# class RUN RANGE
+# --------------------------------------------
+class RunPeriod(ModelBase):
+    """ Represents a set of runs """
+
+    __tablename__ = 'run_periods'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    description = Column(String(255), nullable=True)
+    run_min = Column(Integer, nullable=False)
+    run_max = Column(Integer, nullable=False)
+    start_date = Column(Date, nullable=True)
+    end_date = Column(Date, nullable=True)
+
+    def __repr__(self):
+        return "<RunRange name='{0}' range=[{1}-{2}]>".format(self.name, self.run_min, self.run_max)
+
+
+# --------------------------------------------
 # class
 # --------------------------------------------
 class ConfigurationFile(ModelBase):
@@ -135,6 +151,7 @@ class ConfigurationFile(ModelBase):
         return "<ConfigurationFile id='{0}', path='{1}'>".format(self.id, self.path)
 
 
+# noinspection DuplicatedCode
 class ConditionType(ModelBase):
     """
     Holds type and constants name of data attached to particular run.
@@ -408,16 +425,32 @@ class LogRecord(ModelBase):
         return "<LogRecord id='{0}', description='{1}'>".format(self.id, self.description)
 
 
-run_periods = {
-    "2017-01": (30000, 39999, "23 Jan 2017 - 13 Mar 2017   12 GeV e-"),
-    "2016-10": (20000, 29999, "15 Sep 2016 - 21 Dec 2016   12 GeV e-"),
-    "2016-02": (10000, 19999, "28 Jan 2016 - 24 Apr 2016   Commissioning, 12 GeV e-"),
-    "2015-12": (3939, 4807,   "01 Dec 2015 - 28 Jan 2016   Commissioning, 12 GeV e-, Cosmics"),
-    "2015-06": (3386, 3938,   "29 May 2015 - 01 Dec 2015   Cosmics"),
-    "2015-03": (2607, 3385,   "11 Mar 2015 - 29 May 2015   Commissioning, 5.5 GeV e-"),
-    "2015-01": (2440, 2606,   "06 Feb 2015 - 11 Mar 2015   Cosmics"),
-    "2014-10": (630, 2439,    "28 Oct 2014 - 21 Dec 2014   Commissioning, 10 GeV e-"),
-}
+# --------------------------------------------
+# class RUN RANGE
+# --------------------------------------------
+class Alias(ModelBase):
+    """ Query aliases """
+
+    __tablename__ = 'aliases'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False)
+    code = Column(Text, nullable=False)
+    description = Column(String(255), nullable=True)
+
+    def __repr__(self):
+        return "<Alias id='{0}' name='{1}'>".format(self.id, self.name)
+
+
+# run_periods = {
+#     "2017-01": (30000, 39999, "23 Jan 2017 - 13 Mar 2017   12 GeV e-"),
+#     "2016-10": (20000, 29999, "15 Sep 2016 - 21 Dec 2016   12 GeV e-"),
+#     "2016-02": (10000, 19999, "28 Jan 2016 - 24 Apr 2016   Commissioning, 12 GeV e-"),
+#     "2015-12": (3939, 4807,   "01 Dec 2015 - 28 Jan 2016   Commissioning, 12 GeV e-, Cosmics"),
+#     "2015-06": (3386, 3938,   "29 May 2015 - 01 Dec 2015   Cosmics"),
+#     "2015-03": (2607, 3385,   "11 Mar 2015 - 29 May 2015   Commissioning, 5.5 GeV e-"),
+#     "2015-01": (2440, 2606,   "06 Feb 2015 - 11 Mar 2015   Cosmics"),
+#     "2014-10": (630, 2439,    "28 Oct 2014 - 21 Dec 2014   Commissioning, 10 GeV e-"),
+# }
 
 
 # -------------------------------------------------

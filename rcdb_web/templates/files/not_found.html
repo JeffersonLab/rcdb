@@ -1,0 +1,16 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'File not found' %}
+
+{% block container %}
+<div class="container">
+    <!-- HEADER -->
+    <div class="blog-header">
+        <h1 class="blog-title">File not found</h1>
+
+        {% if id is defined %}
+        <p class="lead blog-description">File with id={{ id }} is not found in DB</p>
+        {% else %}
+    </div>
+</div>
+{% endblock %}

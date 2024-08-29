@@ -1,0 +1,120 @@
+{% extends 'layouts/base.html' %}
+{% import 'run_search_box.html' as search_box%}
+
+{% set page_title = 'Select values' %}
+
+{% block container %}
+
+{{ search_box.run_search_box(condition_types=all_conditions, run_periods=run_periods, run_from=run_from, run_to=run_to, search_query=search_query, req_conditions_str=req_conditions_str, form_url=url_for("select_values.index"), show_req_conditions=True) }}
+
+<div class="container">
+
+    <div class="blog-header"><h3 class="blog-title">Custom table</h3></div>
+    <div class="hidden-table">
+        <form id="condition-form">
+            <table class="table condition-table">
+                <tr>
+                    <th></th>
+                    <th style="width: 5%">Type</th>
+                    <th>Name</th>
+                    <th style="width: 70%">Description</th>
+                </tr>
+
+                {% for condition in all_conditions %}
+                <tr>
+                    <td><input id="cnd_checkbox" type="checkbox" name="selected_conditions" value="{{ condition.name }}" onchange="updateSearchBox(this)"></td>
+                    <td><span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
+                    <td>{{ condition.name }}</td>
+                    <td>{{ condition.description }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Run</th>
+                        {% for cnd_name in req_conditions_values %}
+                            <th>{{ cnd_name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody id="column1-body">
+                    {% for row in table %}
+                        <tr>
+                            {% for col in row %}
+                                <td>{{ col }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block js_btm %}
+    {{ super() }}
+
+
+    <script>
+        function updateSearchBox(checkbox) {
+            const searchInput = document.getElementById('req_conditions');
+            const conditionName = checkbox.value;
+
+            if (checkbox.checked) {
+
+                if (!searchInput.value) {
+                    searchInput.value = conditionName;
+                } else {
+                    searchInput.value += `,${conditionName}`;
+                }
+            } else {
+                searchInput.value = searchInput.value.replace(`${conditionName},`, '').replace(`,${conditionName}`, '').replace(conditionName, '');
+            }
+        }
+
+        function updateLocalStorage() {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+            checkboxes.forEach(function(checkbox) {
+                localStorage.setItem(checkbox.value, checkbox.checked);
+            });
+        }
+
+        function loadCheckboxState() {
+            var checkboxState = {};
+
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                checkboxState[key] = localStorage.getItem(key) === 'true';
+            }
+
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = checkboxState[checkbox.value] || false;
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCheckboxState();
+        });
+
+
+        var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                updateLocalStorage();
+            });
+        });
+
+        
+
+    </script>
+    {{ search_box.run_search_box_scripts(condition_types, run_periods) }}
+{% endblock %}

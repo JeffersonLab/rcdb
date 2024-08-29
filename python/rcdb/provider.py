@@ -18,7 +18,7 @@ from ply.lex import LexToken
 
 import sqlalchemy.orm
 from sqlalchemy.orm import aliased
-#from sqlalchemy.orm.exc import NoResultFound
+# from sqlalchemy.orm.exc import NoResultFound
 
 import rcdb
 import rcdb.file_archiver
@@ -38,6 +38,7 @@ if sys.version_info[0] == 3:
     basestring = str,
 
 
+# noinspection PyTypeChecker
 class RCDBProvider(object):
     """ RCDB data provider that uses SQLAlchemy for accessing databases """
 
@@ -51,6 +52,7 @@ class RCDBProvider(object):
         self._cnd_types_cache = None
         self._cnd_types_by_name = None
         self.aliases = default_aliases
+        self._run_periods_cache = None
 
         # username for record
         self.user_name = user_name
@@ -66,7 +68,7 @@ class RCDBProvider(object):
     # ------------------------------------------------
     # Check DB version
     # ------------------------------------------------
-    def get_sql_schema_version(self):
+    def get_schema_version(self):
         """Check if connected SQL schema is of the right version"""
 
         schema_version, = self.session.query(SchemaVersion.version) \
@@ -94,11 +96,14 @@ class RCDBProvider(object):
         :type connection_string: str
         """
 
+        if not connection_string:
+            raise ValueError("Connection string is whitespace or empty. Provide proper connection string for DB")
+
         try:
             self.engine = sqlalchemy.create_engine(connection_string)
         except ImportError as err:
             # sql alchemy uses MySQLdb by default. But it might be not install in the system
-            # in such case we fallback to mysqlconnector which is embedded in CCDB
+            # in such case we fall back to mysqlconnector
             if connection_string.startswith("mysql://") and "No module named" in str(err) and 'MySQLdb' in str(err):
                 connection_string = connection_string.replace("mysql://", "mysql+pymysql://")
                 self.engine = sqlalchemy.create_engine(connection_string)
@@ -111,15 +116,12 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-            db_version = self.get_sql_schema_version()
-
+            db_version = self.get_schema_version()
             if db_version != rcdb.SQL_SCHEMA_VERSION:
                 message = "SQL schema version doesn't match. " \
-                          "Probably RCDB is connecting with wrong, empty or older/newer DB" \
                           "Retrieved DB version is {0}, required version is {1}" \
                     .format(db_version, rcdb.SQL_SCHEMA_VERSION)
                 raise rcdb.errors.SqlSchemaVersionError(message)
-
 
     # ------------------------------------------------
     # Closes connection to data
@@ -300,24 +302,73 @@ class RCDBProvider(object):
         return run
 
     # ------------------------------------------------
-    # Get run periods
+    # Returns run periods
     # ------------------------------------------------
+
     def get_run_periods(self):
-        """Returns dict with run-periods
+        """Gets all run periods as a list of RunPeriod objects
 
-        :return: dict with {"name":(run_min, run_max, description)}
+        :return: all RunPeriods in db
+        :rtype: list, [RunPeriod]
         """
-        return rcdb.model.run_periods
+        if self._run_periods_cache is not None:
+            return self._run_periods_cache
+        try:
+            self._run_periods_cache = self.session.query(RunPeriod).all()
+            return self._run_periods_cache
+        except NoResultFound:
+            return []
 
     # ------------------------------------------------
-    # Get run periods
+    # Creates run period
     # ------------------------------------------------
-    def get_run_period(self, name):
-        """Returns dict with run-periods
-        :param name: Run period name in form of YYYY-MM, like 2016-02
-        :return: dict with {"name":(run_min, run_max, description)}
+    def create_run_period(self, name, description, run_min, run_max, start_date, end_date):
         """
-        return rcdb.model.run_periods[str(name)]
+        Creates run period
+
+        :param name: Short name or run period e.g. Gluex Spring 2018
+        :type name: str
+
+        :param description: More detailed description if needed
+        :type description: str
+
+        :return: ConditionType object that corresponds to created DB record
+        :rtype: ConditionType
+        """
+
+        query = self.session.query(RunPeriod).filter(RunPeriod.run_min == run_min, RunPeriod.run_max == run_max)
+
+        if query.count():
+            # we've found a run period with this run_max and run_min
+            rp = query.first()
+            assert isinstance(rp, RunPeriod)
+
+            message = f"Run period with run_min={run_min} and run_max={run_max} already exists in DB:" \
+                      f"name={rp.name}, descr.={rp.description}, start_date={rp.start_date}, end_date={rp.end_date}"
+
+            raise ValueError(message)
+        else:
+            # no such ConditionType found in the database
+            rp = RunPeriod()
+            rp.name = name
+            rp.description = description
+            rp.start_date = start_date
+            rp.end_date = end_date
+            rp.run_min = run_min
+            rp.run_max = run_max
+
+            try:
+                self.session.add(rp)
+                self.session.commit()
+                # clear cache
+                self._run_periods_cache = None
+            except:
+                self.session.rollback()
+                raise
+
+            log_desc = f"RunPeriod created with name='{name}', run_min='{run_min}' run_max='{run_max}'"
+            self.add_log_record(rp, log_desc, 0)
+            return rp
 
     # ------------------------------------------------
     # Returns condition type
@@ -790,8 +841,16 @@ class RCDBProvider(object):
             if isinstance(value, Condition):
                 value = (value,)
             run = value[0].run
-            if eval(compiled_search_eval):
-                sel_runs.append(run)
+            try:
+                if eval(compiled_search_eval):
+                    sel_runs.append(run)
+            except Exception as ex:
+                message = 'Error evaluating search query.\n' \
+                          + '  Query: <<"{}">>, \n'.format(search_eval) \
+                          + '  Names: {}, \n'.format(names) \
+                          + '  Values: {} \n'.format(values) \
+                          + '  Error ({}): {}'.format(type(ex), ex)
+                raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
         result = RunSelectionResult(sel_runs, self)
@@ -939,7 +998,10 @@ class RCDBProvider(object):
         if runs:
             result = self.session.connection().execute(sql)  # runs are already in query
         else:
-            result = self.session.connection().execute(sql, run_max=run_max, run_min=run_min)
+
+            #sql.bindparams(run_max=run_max, run_min=run_min)
+            #result = self.session.connection().execute(sql)
+            result = self.session.connection().execute(sql, parameters={"run_min": run_min, "run_max":run_max})
 
         query_sw.stop()
 
@@ -955,7 +1017,7 @@ class RCDBProvider(object):
             compiled_search_eval = None
 
         result_table = []
-        
+
         for values in result:
             run = values[0]
             try:
@@ -966,11 +1028,16 @@ class RCDBProvider(object):
                         result_row.append(val)
                     result_table.append(result_row)
             except Exception as ex:
+                # Condition value might be NoneType if it's not added to a run
+                # TypeError arises when comparing none with value and it's OK
+                if isinstance(ex, TypeError) and "NoneType" in str(ex):
+                    continue
+
                 message = 'Error evaluating search query.\n' \
                           + '  Query: <<"{}">>, \n'.format(search_eval) \
                           + '  Names: {}, \n'.format(names) \
                           + '  Values: {} \n'.format(values) \
-                          + '  Error: {}'.format(ex)
+                          + '  Error ({}): {}'.format(type(ex), ex)
                 raise QueryEvaluationError(msg=message)
 
         selection_sw.stop()
@@ -1355,6 +1422,21 @@ def destroy_schema(db):
     rcdb.model.Base.metadata.drop_all(db.engine)
 
 
+def stamp_schema_version(db):
+    """
+    Stamp DB with current schema version.
+    It is assumed that the function is used when schema is just created or updated from older version
+    """
+
+    db.session.query(SchemaVersion).delete()
+    v = SchemaVersion()
+    v.version = rcdb.SQL_SCHEMA_VERSION
+    v.comment = "Schema V{} for RCDB>v0.9 (2023)".format(v.version)
+    db.session.add(v)
+    db.session.commit()
+    return v
+
+
 def destroy_all_create_schema(db):
     """
     Creates RCDB schema in database. Used for test purpuses
@@ -1368,9 +1450,6 @@ def destroy_all_create_schema(db):
         print("destroy_schema dropped OperationalError '{}' so it is considered that the database is empty".format(ex))
 
     rcdb.model.Base.metadata.create_all(db.engine)
+    stamp_schema_version(db)
 
-    v = SchemaVersion()
-    v.version = rcdb.SQL_SCHEMA_VERSION
-    v.comment = "Automatically created by 'def destroy_all_create_schema(db)'"
-    db.session.add(v)
-    db.session.commit()
+

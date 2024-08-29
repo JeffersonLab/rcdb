@@ -29,13 +29,12 @@ if __name__ == "__main__":
         parser.print_usage()
         exit(1)
 
-    print ("creating database:")
+    print("creating database:")
     db = rcdb.RCDBProvider(args.connection, check_version=False)
     rcdb.provider.destroy_all_create_schema(db)
     print("database created")
 
     if args.add_def_con:
-        rcdb.create_condition_types(db)
+        rcdb.create_default_condition_types(db)
         print("default conditions filled")
-
 
