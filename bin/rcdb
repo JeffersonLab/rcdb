@@ -1,3 +1,15 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-/usr/bin/env python3 $RCDB_HOME/python/rcdb/rcdb_cli "$@"
+import os
+import sys
+
+# Figure out where is python directory
+this_file_dir = os.path.dirname(os.path.abspath(__file__))
+python_dir = os.path.join(this_file_dir, '..', 'python')
+
+# Add the directory to the Python modules search path
+sys.path.insert(0, python_dir)
+
+# Import and run rcdb
+from rcdb.rcdb_cli.app import rcdb_cli
+rcdb_cli(prog_name="rcdb")

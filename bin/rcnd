@@ -1,4 +1,25 @@
-#!/bin/sh
+#!/usr/bin/env python3
 
-/usr/bin/env python $RCDB_HOME/python/rcdb/rcnd.py "$@"
+import os
+import sys
+import importlib.util
 
+# Figure out where is rcnd.py located
+this_file_dir = os.path.dirname(os.path.abspath(__file__))
+
+this_file_dir = os.path.dirname(os.path.abspath(__file__))
+python_dir = os.path.join(this_file_dir, '..', 'python')
+
+# Add the directory to the Python modules search path
+sys.path.insert(0, python_dir)
+
+module_path = os.path.join(this_file_dir, '..', 'python', 'utilites', 'rcnd.py')
+module_path = os.path.abspath(module_path)
+
+# Load the module from the specified file
+spec = importlib.util.spec_from_file_location('rcnd', module_path)
+rcnd = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(rcnd)
+
+# Now you can use functions from the module
+rcnd.main()
