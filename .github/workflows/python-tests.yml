@@ -26,4 +26,11 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/python
           python -m unittest discover -s $GITHUB_WORKSPACE/python/tests -t $GITHUB_WORKSPACE/python/tests
-          
+
+      - name: Test CLI commands
+        run: |          
+          source environment.bash
+          echo "rcnd command is running"
+          rcnd
+          echo "rcdb command is running"
+          rcdb

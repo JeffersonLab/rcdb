@@ -1,0 +1,4 @@
+#!/bin/sh
+
+/usr/bin/env python $RCDB_HOME/python/rcdb/rcnd.py "$@"
+
