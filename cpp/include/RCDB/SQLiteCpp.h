@@ -217,7 +217,7 @@ inline void invoke_with_index(F&& f, const Args& ... args)
  * @param args one or more args to bind.
  */
 template<class ...Args>
-void bind(SQLite::Statement& s, const Args& ... args)
+void bind(Statement& s, const Args& ... args)
 {
     static_assert(sizeof...(args) > 0, "please invoke bind with one or more args");
 
