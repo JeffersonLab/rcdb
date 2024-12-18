@@ -217,7 +217,7 @@ def new_run(db, run_number):
     print("Created run number {}".format(run_number))
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description=help_text, epilog=examples,
                                      formatter_class=RawDescriptionHelpFormatter)
     parser.add_argument("-c", "--connection", help="Connection string to database", metavar='<string>', default="")
@@ -320,3 +320,6 @@ if __name__ == "__main__":
         log.debug("No run_number, no condition_name. Show stats")
         print_stats(rcdb_db)
         exit(0)
+
+if __name__ == "__main__":
+    main()

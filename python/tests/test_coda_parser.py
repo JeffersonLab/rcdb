@@ -12,7 +12,7 @@ class TestCodaParser(unittest.TestCase):
     """ Tests ConditionType, ConditionValue classes and their operations in provider"""
 
     def setUp(self):
-        self.this_dir = os.path.dirname(inspect.getfile(test_get_runs))
+        self.this_dir = os.path.dirname(__file__)
         self.this_dir = os.path.normpath(self.this_dir)
 
     def test_parse_intermediate_file(self):

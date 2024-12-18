@@ -5,15 +5,15 @@ on: [push]
 jobs:
   build:
 
-    runs-on: ubuntu:20.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
@@ -26,4 +26,11 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/python
           python -m unittest discover -s $GITHUB_WORKSPACE/python/tests -t $GITHUB_WORKSPACE/python/tests
-          
+
+      - name: Test CLI commands
+        run: |          
+          source environment.bash
+          echo "rcnd command is running"
+          rcnd --help
+          echo "rcdb command is running"
+          rcdb --help
