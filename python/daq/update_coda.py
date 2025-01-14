@@ -28,7 +28,7 @@ def update_coda_conditions(context, parse_result):
 
     # Run! Run Lu.. I mean, run number is the major thing, starting with it
     if parse_result.run_number is None:
-        log.warn("parse_result.run_number is None. (!) Run. Number. Is. None!!!")
+        log.warning("parse_result.run_number is None. (!) Run. Number. Is. None!!!")
         return
 
     if context.reason == UpdateReasons.END and not db.get_run(parse_result.run_number):
