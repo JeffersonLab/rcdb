@@ -1001,7 +1001,7 @@ class RCDBProvider(object):
 
             #sql.bindparams(run_max=run_max, run_min=run_min)
             #result = self.session.connection().execute(sql)
-            result = self.session.connection().execute(sql, parameters={"run_min": run_min, "run_max":run_max})
+            result = self.session.connection().execute(sql, {"run_min": run_min, "run_max":run_max})
 
         query_sw.stop()
 
