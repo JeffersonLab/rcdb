@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, g
 from sqlalchemy import desc
 from rcdb.model import LogRecord
-from rcdb_web.pagination import Pagination
+from rcdb.web.pagination import Pagination
 
 mod = Blueprint('logs', __name__, url_prefix='/logs')
 

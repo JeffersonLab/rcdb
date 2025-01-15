@@ -1,20 +1,19 @@
 import json
 import re
 import sys
-from time import mktime, time
+from time import time
 
 import datetime
 
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for, Response, jsonify
+from flask import Blueprint, request, render_template, flash, g, redirect, url_for, Response, jsonify
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
-from collections import defaultdict
 from rcdb import DefaultConditions
-from rcdb.model import Run, Condition, ConditionType, ConfigurationFile
+from rcdb.model import Run, ConfigurationFile
 from rcdb.stopwatch import StopWatchTimer
-from rcdb_web.pagination import Pagination
+from rcdb.web.pagination import Pagination
 from sqlalchemy import func
-from sqlalchemy.orm import subqueryload, joinedload
+from sqlalchemy.orm import subqueryload
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
 

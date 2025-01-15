@@ -1,19 +1,19 @@
-from rcdb.alias import get_default_aliases_by_name
-from rcdb.model import Run, RunPeriod
-from flask import Flask, render_template, g, request, url_for
-import rcdb
+import os
 from datetime import datetime
-
-# configuration
+from flask import Flask, render_template, g, request, url_for
 from sqlalchemy.orm import subqueryload
 
+import rcdb
+from rcdb.alias import get_default_aliases_by_name
+from rcdb.model import Run, RunPeriod
+
 # register modules
-from rcdb_web.runs.views import mod as runs_module
-from rcdb_web.logs.views import mod as logs_module
-from rcdb_web.files.views import mod as files_module
-from rcdb_web.statistics.views import mod as statistics_module
-from rcdb_web.conditions.views import mod as conditions_module
-from rcdb_web.select_values.veiws import mod as select_values_module
+from rcdb.web.modules import runs_module
+from rcdb.web.modules import logs_module
+from rcdb.web.modules import files_module
+from rcdb.web.modules import statistics_module
+from rcdb.web.modules import conditions_module
+from rcdb.web.modules import select_values_module
 
 DEBUG = True
 SECRET_KEY = 'development key'
@@ -21,9 +21,14 @@ USERNAME = 'admin'
 PASSWORD = 'default'
 SQL_CONNECTION_STRING = "mysql+pymysql://rcdb@127.0.0.1/rcdb"
 
-app = Flask(__name__)
-app.config.from_object(__name__)
+# Get the current directory
+current_directory = os.path.dirname(os.path.abspath(__file__))
+template_folder=os.path.join(current_directory, 'templates')
+print(f"template_folder={template_folder}")
+# Create Flask app with custom template folder
+app = Flask(__name__, template_folder=template_folder)
 
+app.config.from_object(__name__)
 
 @app.before_request
 def before_request():

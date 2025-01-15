@@ -11,7 +11,6 @@ from .context import pass_rcdb_context
 def ls(context, search, is_long):
     """Lists conditions"""
 
-    
     db = context.db
     assert isinstance(db, RCDBProvider)
     cnd_types = db.get_condition_types_by_name()

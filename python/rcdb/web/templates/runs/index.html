@@ -22,8 +22,7 @@
     Content
 #}
 {% block container %}
-{{ search_box.run_search_box(condition_types, run_from=run_from, run_to=run_to, search_query=search_query) }}
-
+{{ search_box.run_search_box(condition_types, run_periods=run_periods, run_from=run_from, run_to=run_to, search_query=search_query) }}
 <div class="container">
 
     <div class="blog-header">

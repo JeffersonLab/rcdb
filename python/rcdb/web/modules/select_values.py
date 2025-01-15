@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, flash, g, redirect, url_for
 from rcdb.model import ConditionType, RunPeriod
-from runs.views import _parse_run_range
+from rcdb.web.modules.runs import _parse_run_range
 
 mod = Blueprint('select_values', __name__, url_prefix='/select_values')
 
