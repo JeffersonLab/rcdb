@@ -44,7 +44,7 @@ class RCDBProvider(object):
 
     def __init__(self, connection_string=None, user_name="", check_version=True):
         self._is_connected = False
-        self.path_name_regex = re.compile('^[\w\-_]+$', re.IGNORECASE)
+        self.path_name_regex = re.compile(r'^[\w\-_]+$', re.IGNORECASE)
         self._connection_string = ""
         self.logging_enabled = True
         self.engine = None
