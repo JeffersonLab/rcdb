@@ -1,0 +1,189 @@
+{% extends 'layouts/base.html' %}
+
+{% import 'default_run_table.html' as table%}
+{% from 'render_pagination.html' import render_pagination %}
+{% import 'run_search_box.html' as search_box%}
+
+
+{% set page_title = 'Runs' %}
+
+{#    Add DataTable style#}
+{% block css %}
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery.dataTables.yadcf.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/buttons.dataTables.min.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/select.dataTables.min.css') }}"/>
+    <script src=""></script>
+{% endblock %}
+
+
+{#
+    Content
+#}
+{% block container %}
+{{ search_box.run_search_box(condition_types, run_periods=run_periods, run_from=run_from, run_to=run_to, search_query=search_query) }}
+<div class="container">
+
+    <div class="blog-header">
+        <h3 class="blog-title">
+            Runs
+        </h3>
+         <div class="pull-right"> {{ render_pagination(pagination) }}</div>
+    </div>
+
+    <div class="panel panel-default">
+        <!-- Default panel contents -->
+        <div class="panel-heading">
+            {% if runs %}
+                Showing runs: {{ runs[-1].number }} -  {{ runs[0].number }}. {{ pagination.per_page }} runs per page. Total runs: {{ pagination.total_count }}
+            {% else %}
+                No runs found
+            {% endif %}
+        </div>
+        <div class="panel-body" >
+        </div>
+        {{ table.default_run_table(runs, DefaultConditions) }}
+    </div>
+    {{ render_pagination(pagination) }}
+    {% if performance %}
+        <div id="performance" class="text-muted text-center">
+
+        </div>
+    {% endif %}
+
+
+</div>
+<!-- Modal -->
+<div class="modal fade " id="selectedRunsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">Selected runs</h4>
+            </div>
+            <div class="modal-body">
+                <textarea rows="10" id="selectedRunsTextArea" class="input-medium full-width">
+
+                </textarea>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default copy-runs-btn" data-clipboard-target="#selectedRunsTextArea">Copy to clipboard</button>
+                <button type="button" class="btn btn-info copy-runs-btn " data-dismiss="modal" data-clipboard-target="#selectedRunsTextArea" >Copy & close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js_btm %}
+    {{ super() }}
+
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.select.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/dataTables.buttons.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/jquery.dataTables.yadcf.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/clipboard.min.js') }}"></script>
+    <script>
+        new Clipboard('.copy-runs-btn');
+
+        {% if performance %}
+            var perfPrepareTime = {{performance["preparation"]}}.toFixed(3);
+            var perfQueryTime = {{ performance["query"] }}.toFixed(3);
+            var perfSelectTime = {{ performance["selection"] }}.toFixed(3);
+
+
+            var perfExplanation = " Preparations=" + perfPrepareTime.toString() +
+                              " | DB query=" + perfQueryTime.toString() +
+                              " | Run selection=" + perfSelectTime.toString();
+
+            if (typeof window.performance != 'undefined') // Any scope
+            {
+                var queryStartTime = {{ performance["start_time_stamp"] }} - window.performance.timing.navigationStart;
+                var loadTime = window.performance.timing.responseEnd- window.performance.timing.navigationStart;
+                var pageRender = loadTime - perfPrepareTime - perfQueryTime - perfSelectTime;
+                perfExplanation = " Begin query at=" + (queryStartTime/1000.0).toFixed(3) + " |" + perfExplanation;
+
+                perfExplanation += " | Page generation=" + (pageRender/1000.0).toFixed(3).toString() +
+                                   " | Total=" + (loadTime/1000.0).toFixed(3).toString();
+            }
+
+            perfExplanation = "Timing:" + perfExplanation;
+
+            $("#performance").text(perfExplanation);
+        {% endif %}
+
+        var table = $('#runs-table').DataTable( {
+                responsive: true,
+                paging:   false,
+                ordering: false,
+                info:     false,
+                dom: 'Bfrtip',
+                buttons: [
+                    'selectAll',
+                    'selectNone',
+                    {
+                        text: 'Selected runs',
+                        action: function () {
+                            //var count = table.rows( { selected: true } ).count();
+                            var runs = [];
+                            $("tr[data-run-number].selected").each(function(){
+                                runs.push($(this).attr('data-run-number'));
+                            });
+                            $("#selectedRunsTextArea").val(runs.toString());
+                            $("#selectedRunsModal").modal('show');
+                        }
+                    }
+                ],
+                select: {
+                    style: 'multi'
+                }
+        } );
+
+        yadcf.init( table, [{
+                column_number: 3,
+                filter_type: "range_number"
+            },{
+                column_number: 1,
+                filter_type: "text"
+            },{
+                column_number: 4,
+                filter_type: "text"
+            },{
+                column_number: 5,
+                filter_type: "text"
+        }]);
+
+        $("#yadcf-filter-wrapper--runs-table-1 .yadcf-filter").css("width","110px");
+        $("#yadcf-filter-wrapper--runs-table-1").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-1-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-1").addClass("form-control").css("width","120px");
+
+        $("#yadcf-filter-wrapper--runs-table-3").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter-wrapper-inner--runs-table-3").addClass("input-group-sm").css("display", "inline-flex");;
+        $("#yadcf-filter-wrapper--runs-table-3 .yadcf-filter-reset-button").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-from-3").addClass("form-control").css("width","70px");
+
+        $("#yadcf-filter-wrapper-inner--runs-table-3 .yadcf-filter-range-number-seperator").hide();
+        $("#yadcf-filter-wrapper-inner--runs-table-3 #yadcf-filter--runs-table-to-3").hide();
+
+
+
+        $("#yadcf-filter-wrapper--runs-table-4").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-4-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-4").addClass("form-control").css("width","120px");
+
+        $("#yadcf-filter-wrapper--runs-table-5").addClass("input-group input-group-sm").css("display", "inline-flex");
+        $("#yadcf-filter--runs-table-5-reset").addClass("btn btn-default").wrap('<span class="input-group-btn"></span>');
+        $("#yadcf-filter--runs-table-5").addClass("form-control").css("width","120px");
+
+        $("#runs-table_filter").hide();
+    </script>
+    {{ search_box.run_search_box_scripts(condition_types) }}
+{% endblock %}
+
+
+

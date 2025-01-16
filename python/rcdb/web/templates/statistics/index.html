@@ -1,0 +1,79 @@
+{% extends 'layouts/base.html' %}
+
+{% set page_title = 'DB info' %}
+
+{% block container %}
+
+<div class="container">
+
+    <div class="blog-header"><h3 class="blog-title">Database info</h3></div>
+
+    <table class="table">
+        <!-- Run count -->
+        <tr><td>Version</td><td>Time of update</td><td>Comments</td></tr>
+        {% for db_version in db_versions %}
+            <tr>
+                <td>
+                    {% if loop.first %}
+                        <strong> {{ db_version.version }} </strong> &lt;
+                    {% else %}
+                        {{ db_version.version }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ db_version.created }}
+                </td>
+                <td>
+                    {{ db_version.comment }}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{#    Run information#}
+    <table class="table">
+        <!-- Run count -->
+        <tr><td>Run count</td><td>{{ run_count }}</td></tr>
+
+        <!-- Last run -->
+        <tr>
+            <td>Last run</td>
+            <td>
+                <a class="btn btn-default btn-sm" href="{{ url_for('runs.info', run_number=run_last.number) }}">{{ run_last.number }}</a>
+                &nbsp; Started: {{ run_last.start_time }}
+            </td>
+        </tr>
+    </table>
+<!-- Run Periods Table -->
+    <div class="mt-4">
+        <h4>Run Periods</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Run Min</th>
+                    <th>Run Max</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for period in run_periods %}
+                <tr>
+                    <td>{{ period.id }}</td>
+                    <td>{{ period.name }}</td>
+                    <td>{{ period.description }}</td>
+                    <td>{{ period.run_min }}</td>
+                    <td>{{ period.run_max }}</td>
+                    <td>{{ period.start_date }}</td>
+                    <td>{{ period.end_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% endblock %}

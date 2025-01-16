@@ -1,0 +1,158 @@
+{% extends 'layouts/base.html' %}
+{% import 'default_run_table.html' as table%}
+{% import 'run_search_box.html' as search_box%}
+
+{% set page_title = 'Home' %}
+
+{% block container %}
+{#    {{ search_box.run_search_box(condition_types) }}#}
+    <div class="container">
+        <div class="blog-header"><h3 class="blog-title">Home</h3></div>
+
+        <div id="placeholder" class="text-center" style="height:200px;">
+            <h3>Loading run statistics</h3>
+        </div>
+
+        <div class="panel panel-default ">
+            <!-- Default panel contents -->
+            <div class="panel-heading">Last 25 runs</div>
+            <div class="panel-body">
+                <p class="text-center">
+                    <span id="hoverdata"></span>
+		            <span id="clickdata"></span>
+                </p>
+            </div>
+
+            <!-- Table -->
+            {{ table.default_run_table(runs, DefaultConditions) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block js_btm %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/jquery.flot.min.js') }}"></script>
+
+    <script type="text/javascript">
+        (function($, window) {
+            var adjustAnchor = function() {
+
+                var $anchor = $(':target'),
+                        fixedElementHeight = 100;
+
+                if ($anchor.length > 0) {
+
+                    $anchor.fadeTo('slow', 0.5).fadeTo('slow', 1.0);
+
+                    $('html, body')
+                        .stop()
+                        .animate({
+                            scrollTop: $anchor.offset().top - fixedElementHeight
+                        }, 200);
+                }
+            };
+
+            $(window).on('hashchange load', function() {
+                adjustAnchor();
+            });
+
+        })(jQuery, window);
+
+
+
+        $(function () {
+            var points = [];
+            var ticks = [];
+            var runs = [];
+
+            {% for run in runs %}
+                {% set conditions_by_name =  run.get_conditions_by_name() %}
+                {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                    {% set event_count = conditions_by_name[DefaultConditions.EVENT_COUNT].value  %}
+                    points.push([{{ loop.revindex0 }}, {{ event_count }}]);
+                    ticks.push([{{ loop.revindex0 }}, {{ run.number }}]);
+                    runs.push({"number":"{{ run.number }}", "total_events":"{{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}", "start_time":"{{ run.start_time }}" });
+                {% endif %}
+            {% endfor %}
+
+            points.reverse()
+            ticks.reverse()
+            runs.reverse()
+
+            var plot = $.plot("#placeholder", [
+                { data: points, label: "Events(Run)"}
+            ], {
+                series: {
+                    lines: {
+                        show: true
+                    },
+                    points: {
+                        show: true
+                    }
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true
+                },
+                xaxis: {
+                    ticks: ticks
+                }
+            });
+
+            $("<div id='tooltip'></div>").css({
+                position: "absolute",
+                display: "none",
+                border: "1px solid #fdd",
+                padding: "2px",
+                "background-color": "#fee",
+                opacity: 0.80
+            }).appendTo("body");
+
+            $("#placeholder").bind("plothover", function (event, pos, item) {
+
+                if ($("#enablePosition:checked").length > 0) {
+                    var str = "(" + pos.x.toFixed(2) + ", " + pos.y.toFixed(2) + ")";
+                    $("#hoverdata").text(str);
+                }
+
+
+                if (item) {
+                    //var x = item.datapoint[0].toFixed(2);
+                    //var y = item.datapoint[1].toFixed(2);
+                    var index = item.dataIndex; //item.datapoint[0].toFixed(0);
+                    var run = runs[index];
+
+                    if (typeof run === "undefined") return;
+
+                    var insertion = "Run: " + run.number + "<br>Events: " + run.total_events + "<br>Started: " + run.start_time;
+                    $("#tooltip").html(insertion).css({top: item.pageY + 5, left: item.pageX + 5}).fadeIn(200);
+
+
+                } else {
+                    $("#tooltip").hide();
+                }
+
+            });
+
+            $("#placeholder").bind("plotclick", function (event, pos, item) {
+                if (item) {
+                    var run = runs[item.dataIndex];
+                    var insertion = " - click point " + item.dataIndex + " in " + item.series.label + " "
+                            + "<a class='btn btn-default btn-sm' href='runs/info/" + run.number+ "'>" + run.number+ "</a> "
+                            + "<a class='btn btn-default btn-xs btn-info' href='#run" + run.number+ "'>Scroll to</a>";
+
+                    $("#clickdata").html(insertion);
+                    plot.highlight(item.series, item.datapoint);
+                }
+            });
+
+            // Add the Flot version string to the footer
+
+            $("#footer").prepend("Flot " + $.plot.version + " &ndash; ");
+        });
+
+
+    </script>
+    {{ search_box.run_search_box_scripts(condition_types) }}
+
+{% endblock %}

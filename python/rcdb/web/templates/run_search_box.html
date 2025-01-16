@@ -1,0 +1,303 @@
+{% macro run_search_box(condition_types=[], run_periods=[], run_from=-1, run_to=-1, search_query="", form_url=url_for("runs.search"), req_conditions_str="", show_req_conditions=False) %}
+{% set run_from_str = "" if run_from == -1 else run_from %}
+{% set run_to_str = "" if run_to == -1 else run_to %}
+
+    <div class="container">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                 <form  role="search" id="main_form" action="{{ form_url }}" method="get">
+                     <div class="row ">
+                         <div class="col-md-3">
+                             <div class="row ">
+                                 <div class="col-sm-6">
+                                     <label class="small" for="run-min-inp">Run min</label>
+                                     <div class="input-group">
+                                         <input type="text" class="form-control input-sm" id="run-min-inp" name="runFrom" placeholder="0" value="{{ run_from_str }}">
+                                         <div class="input-group-btn">
+                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                             <ul class="dropdown-menu">
+                                                 <li><p class="text-center"><strong>Run periods:</strong></p></li>
+                                                 <li class="divider"></li>
+                                                 {% for period in run_periods %}
+                                                    <li>
+                                                        <a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">
+                                                            {{period.run_min}}-{{period.run_max}}&nbsp;&nbsp; {{period.name}} ({{period.description }})
+                                                        </a>
+                                                    </li>
+                                                 {% endfor %}
+                                             </ul>
+                                         </div>
+                                    </div>
+                                 </div>
+                                 <div class="col-sm-6">
+                                     <label class="small" for="run-max-inp">Run max</label>
+                                     <div class="input-group">
+                                         <input type="text" class="form-control input-sm" id="run-max-inp"  name="runTo" placeholder="inf"  value="{{ run_to_str }}">
+                                         <div class="input-group-btn">
+                                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                             <ul class="dropdown-menu">
+                                                 <li><p class="text-center"><strong>Run periods:</strong></p></li>
+                                                 <li class="divider"></li>
+                                                 {% for period in run_periods %}
+                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">
+                                                        {{period.run_min}}-{{period.run_max}}&nbsp;&nbsp; {{period.name}} ({{period.description }})
+                                                    </a></li>
+                                                 {% endfor %}
+                                             </ul>
+                                         </div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                         <div class="col-sm-9">
+                                <label class="small" for="queryInput">Search query</label>
+                             <div class="input-group ">
+                                 <input class="form-control input-sm" rows="1" id="queryInput" name="q" placeholder="event_count>10000 and @is_production ..." value="{{ search_query|safe }}"  />
+                                 <div class="input-group-btn">
+                                     <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                                     <ul class="dropdown-menu">
+                                         <li><p class="text-center"><strong>Standard search aliases:</strong></p></li>
+                                         <li class="divider"></li>
+                                         {% for rcdb_alias in rcdb_default_alias %}
+                                             <li><a class="q-alias-selector" data-alias-name="{{ rcdb_alias.name }}" href="#">{{ rcdb_alias.comment }} [@{{ rcdb_alias.name }}]</a></li>
+                                         {% endfor %}
+                                     </ul>
+                                     <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#selectConditionTypeModal">
+                                        <span class="glyphicon glyphicon-list"></span>
+                                     </button>
+                                     <button id="qGoBtn" type="submit" class="btn btn-primary btn-sm">
+                                         <span class="glyphicon glyphicon-search"  aria-hidden="true"></span>
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+                        {% if show_req_conditions %}
+                         <div class="col-md-12">
+                             <label class="small" for="req_conditions">Conditions</label>
+                             <div class="input-group">
+                                 <input class="form-control" id="req_conditions" name="cnd" placeholder="Enter conditions" value="{{ req_conditions_str|safe }}" />
+                                 <div class="input-group-btn">
+                                     <button id="toggleButton" type="button" class="toggle-button btn btn-info">
+                                        <span id="toggleIcon" class="caret"></span>
+                                     </button>
+                                 </div>
+                             </div>
+                         </div>
+                        {% endif %}
+                     </div>
+                 </form>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade " id="selectConditionTypeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                          <h4 class="modal-title" id="myModalLabel">Select conditions</h4>
+                        </div>
+                        <div class="modal-body">
+                            <table class="table table-hover ct-select-table">
+                                <tr>
+                                    <th>Name</th>
+                                    <th style="width: 5%">Type</th>
+                                    <th style="width: 70%">Description</th>
+                                </tr>
+
+                                {% for condition in condition_types %}
+                                <tr class="ct-select-tr" data-ct-name="{{ condition.name }}">
+                                    <td>{{ condition.name }}</td>
+                                    <td> <span class="label {{ condition.value_type }}-type">{{ condition.value_type }}</span></td>
+                                    <td>{{ condition.description }}</td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro run_search_box_scripts(condition_types=[], run_from=-1, run_to=-1, search_query="", req_conditions="") %}
+
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/css/autoComplete.02.min.css">
+
+
+
+
+    <script>
+/**
+ * Example of vanilla JS + autoComplete.js usage.
+ * You can adapt this to a separate .js file in /static/js/ if you prefer.
+ */
+document.addEventListener("DOMContentLoaded", function() {
+
+      // 1. Define the function that inserts text at cursor:
+  function insertAtCursor(inputOrTextarea, textToInsert) {
+    const start = inputOrTextarea.selectionStart;
+    const end = inputOrTextarea.selectionEnd;
+    const originalValue = inputOrTextarea.value;
+    inputOrTextarea.value =
+      originalValue.slice(0, start) +
+      textToInsert +
+      originalValue.slice(end);
+
+    const newCursorPos = start + textToInsert.length;
+    inputOrTextarea.selectionStart = newCursorPos;
+    inputOrTextarea.selectionEnd = newCursorPos;
+    inputOrTextarea.focus();
+  }
+
+  // 2. Attach event listeners to each alias link:
+  const aliasLinks = document.querySelectorAll(".q-alias-selector");
+  aliasLinks.forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      const aliasName = link.getAttribute("data-alias-name");
+      const queryInput = document.getElementById("queryInput");
+      if (!queryInput) return;
+
+      // Insert "@aliasName" (or adjust the text as needed)
+      const textToInsert = "@" + aliasName;
+      insertAtCursor(queryInput, textToInsert);
+    });
+  });
+
+    function handleFormSubmission(event) {
+        // Optional: If needed, store some values to localStorage
+        const runMinValue = document.getElementById("run-min-inp")?.value;
+        const runMaxValue = document.getElementById("run-max-inp")?.value;
+        const searchQueryValue = document.getElementById("queryInput")?.value;
+        const reqConditionsValue = document.getElementById("req_conditions")?.value;
+
+        localStorage.setItem("runFromValue", runMinValue || "");
+        localStorage.setItem("runToValue", runMaxValue || "");
+        localStorage.setItem("searchQueryValue", searchQueryValue || "");
+        localStorage.setItem("req_conditionsValue", reqConditionsValue || "");
+    }
+
+    // Utility to see if a string is empty/undefined/null
+    function isEmpty(value) {
+        return value === null || value === undefined || value === "";
+    }
+
+    // ------------------------------------------------------------------
+    // 2) Restore saved values from localStorage if available
+    // ------------------------------------------------------------------
+    const runMinInput = document.getElementById("run-min-inp");
+    const runMaxInput = document.getElementById("run-max-inp");
+    const queryInput = document.getElementById("queryInput");
+    const reqConditionsInput = document.getElementById("req_conditions");
+
+    if (runMinInput && isEmpty(runMinInput.value)) {
+        const savedRunFrom = localStorage.getItem("runFromValue");
+        if (!isEmpty(savedRunFrom)) runMinInput.value = savedRunFrom;
+    }
+    if (runMaxInput && isEmpty(runMaxInput.value)) {
+        const savedRunTo = localStorage.getItem("runToValue");
+        if (!isEmpty(savedRunTo)) runMaxInput.value = savedRunTo;
+    }
+    if (queryInput && isEmpty(queryInput.value)) {
+        const savedSearchQuery = localStorage.getItem("searchQueryValue");
+        if (!isEmpty(savedSearchQuery)) queryInput.value = savedSearchQuery;
+    }
+    if (reqConditionsInput && isEmpty(reqConditionsInput.value)) {
+        const savedReqConditions = localStorage.getItem("req_conditionsValue");
+        if (!isEmpty(savedReqConditions)) reqConditionsInput.value = savedReqConditions;
+    }
+
+    // ------------------------------------------------------------------
+    // 3) Replace jQuery .click(...) with vanilla addEventListener(...)
+    // ------------------------------------------------------------------
+    // Example: The run-range dropdown links that set runMin and runMax
+    document.querySelectorAll(".rr-min-selector").forEach(link => {
+        link.addEventListener("click", event => {
+            event.preventDefault();
+            const runMin = link.getAttribute("data-run-min");
+            const runMax = link.getAttribute("data-run-max");
+            if (runMinInput) runMinInput.value = runMin;
+            if (runMaxInput) runMaxInput.value = runMax;
+        });
+    });
+
+
+
+function closeModal(modal) {
+  // Remove Bootstrap's "modal" classes to hide it
+  modal.classList.remove("in");
+  modal.style.display = "none";
+
+  // Remove the modal-related backdrop and body classes
+  const backdrop = document.querySelector(".modal-backdrop");
+  if (backdrop) {
+    backdrop.parentNode.removeChild(backdrop); // Remove the backdrop element
+  }
+  document.body.classList.remove("modal-open");
+  document.body.style.removeProperty("padding-right");
+}
+
+    // Close the modal after selecting a condition
+  const conditionRows = document.querySelectorAll(".ct-select-tr");
+  conditionRows.forEach((row) => {
+    row.addEventListener("click", (event) => {
+      const queryInput = document.getElementById("queryInput");
+      if (!queryInput) return;
+
+      // Get the selected condition name
+      const conditionName = row.getAttribute("data-ct-name");
+      if (!conditionName) return;
+
+      // Add the condition name to the query input
+      insertAtCursor(queryInput, conditionName);
+
+      // Close the modal
+      const modalElement = document.getElementById("selectConditionTypeModal");
+      closeModal(modalElement);
+    });
+  });
+
+
+    // Toggle hidden table example (similar to your `toggleButton` usage)
+    const toggleButton = document.getElementById('toggleButton');
+    const hiddenTable  = document.querySelector('.hidden-table');
+    const toggleIcon   = document.getElementById('toggleIcon');
+    if (toggleButton && hiddenTable && toggleIcon) {
+        // Sync icon with initial hidden state
+        toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        toggleButton.addEventListener('click', event => {
+            event.preventDefault();
+            hiddenTable.classList.toggle('hidden');
+            toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    }
+
+    // Attach handleFormSubmission to the form's submit event
+    const mainForm = document.getElementById("main_form");
+      if (mainForm) {
+        mainForm.addEventListener("submit", handleFormSubmission);
+    }
+
+
+    // Build an array combining condition types & aliases for suggestions
+    // `condition_types` and `rcdb_default_alias` must be passed in context
+    // or embedded into the script with Jinja loops.
+    const allSuggestions = [
+        {% for condition in condition_types %}
+        { name: "{{ condition.name|escape }}", info: "{{ condition.description|default('')|escape }}" },
+        {% endfor %}
+
+        {% for alias in rcdb_default_alias %}
+        { name: "@{{ alias.name|escape }}", info: "{{ alias.comment|default('')|escape }}" },
+        {% endfor %}
+    ];
+
+}); // end DOMContentLoaded
+</script>
+
+
+{% endmacro %}

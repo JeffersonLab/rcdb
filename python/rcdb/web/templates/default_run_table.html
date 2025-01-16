@@ -1,0 +1,87 @@
+{% macro default_run_table(runs, DefaultConditions, search_boxes=false) %}
+            <!-- Table -->
+            <table class="table table-responsive table-hover" id="runs-table">
+                <thead>
+                <tr>
+                    <th id="run-column-header">Number<br/></th>
+                    <th id="start-time-column-header">Start time<br/></th>
+                    <th id="length-column-header">Length<br/></th>
+                    <th id="event-count-column-header">Events<br/></th>
+                    <th id="run-config-column-header">Run config<br/></th>
+                    <th id="run-type-column-header">Run type<br/></th>
+                    <th id="comment-column-header">Comment<br/></th>
+                </tr>
+                </thead>
+                <tbody>
+                    {% set now_time = datetime_now() %}
+                    {% for run in runs %}
+                        {% set conditions_by_name =  run.get_conditions_by_name() %}
+
+
+                        {% set is_valid_run_end = (conditions_by_name[DefaultConditions.IS_VALID_RUN_END].value)
+                                                if (DefaultConditions.IS_VALID_RUN_END in conditions_by_name)
+                                                else False%}
+                        {% set is_active_run = True
+                                               if (run.end_time and not is_valid_run_end and loop.index == 1) and (now_time - run.end_time).total_seconds()<180
+                                                else False %}
+                        <!-- now_time={{ now_time }}  run.end_time={{ run.end_time }}
+                        {% if (run.end_time) and (now_time) %}
+                             (now_time - run.end_time)= {{ (now_time - run.end_time) }} = {{ (now_time - run.end_time).total_seconds() }} is_valid_run_end={{ is_valid_run_end }}
+                        {% endif %}
+                        -->
+
+                        {% set is_crashed_run = (not is_active_run) and (not is_valid_run_end)  %}
+
+                        {% set crashed_run_class = 'crashed_run' if is_crashed_run else '' %}
+                        {% set active_run_class = 'active_run' if is_active_run else '' %}
+
+                        <tr data-run-number="{{ run.number }}">
+                            <td>
+                                <div class="btn-group " role="group" has-error  aria-label="..." style="display: flex;">
+                                    <a  name="run{{ run.number }}" class="btn btn-default btn-sm {{ crashed_run_class }} {{ active_run_class }}" href="{{ url_for('runs.info', run_number=run.number) }}">
+                                        {% if is_active_run %}<span class="glyphicon glyphicon-refresh spinning"></span>{% endif %}
+                                        &nbsp;{{ run.number }}
+                                    </a>
+
+                                    <button type="button" class="btn btn-default  dropdown-toggle  " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="caret"></span>
+                                    </button>
+
+                                    <ul class="dropdown-menu">
+
+                                    </ul>
+                                </div>
+                            </td>
+                            <td>{{ run.start_time }}</td>
+                            <td>
+                                {% if run.end_time and run.start_time %}
+                                    {{ run.end_time - run.start_time }}
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if DefaultConditions.EVENT_COUNT in conditions_by_name %}
+                                    {{ conditions_by_name[DefaultConditions.EVENT_COUNT].value }}
+                                {% else %}
+                                    -1
+                                {% endif %}
+                            </td>
+                             <td style="font-size: 0.9em; font-weight: bold">
+                                {% if DefaultConditions.RUN_CONFIG in conditions_by_name %}
+                                    {{ conditions_by_name[DefaultConditions.RUN_CONFIG].value|remove_dot_conf }}
+                                {% endif %}
+                            </td>
+                            <td style="font-size: 0.9em; font-weight: bold">
+                                {% if DefaultConditions.RUN_TYPE in conditions_by_name %}
+                                    {{ conditions_by_name[DefaultConditions.RUN_TYPE].value|remove_dot_conf }}
+                                {% endif %}
+                            </td>
+                            <td style="word-break: break-all; width: 30%; font-size: 0.8em;">
+                                {% if DefaultConditions.USER_COMMENT in conditions_by_name %}
+                                    {{ conditions_by_name[DefaultConditions.USER_COMMENT].value }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+{% endmacro %}

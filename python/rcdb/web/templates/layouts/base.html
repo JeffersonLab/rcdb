@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}{{ page_title|default('') }}{% endblock %} - RCDB</title>
+
+
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/x-icon">
+
+    {% block css %}
+        <!-- Bootstrap core CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.css') }}">
+
+        <link href="{{ url_for('static', filename='css/webintellisense.css') }}" rel="stylesheet" />
+
+        <!-- Custom styles -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
+    {% block css_style %}
+    {% endblock %}
+
+    {% block js_top %}
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+            <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    {% endblock %}
+</head>
+<body>
+    {% include "macros/_ask_user_to_update_ie.html" %}
+
+    {% block topbar %}
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">RCDB</a>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        <!-- Home -->
+                        <li {% if request.endpoint == 'index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('index') }}">Home</a>
+                        </li>
+                        <!-- Runs -->
+                        <li {% if request.endpoint == 'runs.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('runs.index') }}">Runs</a>
+                        </li>
+                        <li {% if request.endpoint == 'conditions.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('conditions.index') }}">Conditions</a>
+                        </li>
+                        <li {% if request.endpoint == 'select_values.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('select_values.index') }}">Select values</a>
+                        </li>
+
+                    </ul>
+
+                    <!-- Search form -->
+                    <form class="navbar-form navbar-left" role="search" action="{{ url_for('runs.search') }}" method="get">
+                        <div class="input-group input-group-sm" style="min-width: 500px">
+                            <input type="text" class="form-control" placeholder="Run or min-max" name="rr" style="width:28%; margin-right:4px;">
+                            <input type="text" class="form-control" placeholder="Query" name="q" style="width:70%; ">
+                            <span class="input-group-btn"><button id="qGoBtn" type="submit" class="btn btn-default">GO</button></span>
+                            <!-- Home -->
+                            <span class="input-group-btn" id="queryQuickHelp">
+                                <a href="https://github.com/JeffersonLab/rcdb/wiki/Web-quick-query" target="_blank" class="btn" data-container="body" data-placement="bottom" type="button">
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                </a>
+                            </span>
+                        </div>
+                        <div id="popover-content" class="hide" style="min-width: 300px">
+                            <p><strong>Show one run:</strong> Put run number in left box and push GO</p>
+                            <p><strong>Show runs:</strong> put run range in left box:</p>
+                            <ul>
+                                <li>4000-5000  : show runs in range</li>
+                                <li>4000-      : show all runs from 4000</li>
+                            </ul>
+                            <p><strong>Query:</strong> put run range in left box:</p>
+
+
+                        </div>
+                    </form>
+
+
+
+                    <!-- right links -->
+                    <ul class="nav navbar-nav navbar-right">
+                        <!-- Boards -->
+                        <li class="dropdown {% if request.endpoint in ['logs.index', 'statistics.index'] %} active{% endif %}">
+                            <a  href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Meta <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                           <!-- Logs -->
+                        <li {% if request.endpoint == 'logs.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('logs.index') }}">Logs</a>
+                        </li>
+
+                        <!-- Statistics -->
+                        <li {% if request.endpoint == 'statistics.index' %} class="active"{% endif %}>
+                            <a href="{{ url_for('statistics.index') }}">DB info</a>
+                        </li>
+                          <li role="separator" class="divider"></li>
+                          <li><a href="https://github.com/JeffersonLab/rcdb">GitHub page</a> </li>
+                          <li><a href="https://github.com/JeffersonLab/rcdb/issues" target="_blank">File bugs&features</a></li>
+                          <li><a href="https://github.com/JeffersonLab/rcdb/wiki" target="_blank">Documentation</a></li>
+                        </ul>
+                      </li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+        <div class="blog-below-nav"></div>
+        {##
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <div class="container">
+            <div class="navbar-header"><a class="navbar-brand" href="{{ url_for('index') }}#run3897">RCDB</a></div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <!-- Home -->
+                    <li {% if request.endpoint == 'index' %} class="active"{% endif %}>
+                        <a href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <!-- Runs -->
+                    <li {% if request.endpoint == 'runs.index' %} class="active"{% endif %}>
+                        <a href="{{ url_for('runs.index') }}">Runs</a>
+                    </li>
+                    <!-- Dropdown example
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="#">Action</a></li>
+                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Something else here</a></li>
+                            <li role="separator" class="divider"></li>
+                            <li class="dropdown-header">Nav header</li>
+                            <li><a href="#">Separated link</a></li>
+                            <li><a href="#">One more separated link</a></li>
+                        </ul>
+                    </li>
+                    -->
+                    <!-- Conditions -->
+                    <li {% if request.endpoint == 'conditions.index' %} class="active"{% endif %}>
+                        <a href="{{ url_for('conditions.index') }}">Conditions</a>
+                    </li>
+
+                    <!-- Boards -->
+                    <li {% if request.endpoint == 'boards.index' %} class="active"{% endif %}>
+                        <a href="{{ url_for('boards.index') }}">Boards</a>
+                    </li>
+                    <!-- Logs -->
+                    <li {% if request.endpoint == 'logs.index' %} class="active"{% endif %}>
+                        <a href="{{ url_for('logs.index') }}">Logs</a>
+                    </li>
+
+                    <!-- Statistics -->
+                    <li >
+                        <a href="{{ url_for('statistics.index') }}">Statistics</a>
+                    </li>
+                </ul>
+                <div class="input-group" input-group-sm>
+                  <input type="text" class="form-control" placeholder="run">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="button">GO</button>
+                  </span>
+                </div><!-- /input-group -->
+            </div>
+        </div>
+    </div>##}
+    {% endblock %}
+
+    {% block flash_message %}
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+            <div class="container">
+                <div id='flash_message_container'>
+                    {% for category, msg in messages %}
+                        <div class="alert alert-{{ category }}">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ msg }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endwith %}
+    {% endblock %}
+
+    {% block container %}
+    <div class="container">
+
+        {% block top %}
+            {% if tabs %}
+            <div>
+                <ul class="nav nav-tabs">
+                    {% for tab, link in tabs %}
+                    <li class="{% if active == tab %}active{% endif %}">
+                        <a href="{{ link }}">{{ tab|capitalize }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+        {% endblock %}
+
+        {% block body %}
+        {% endblock %}
+
+    </div>
+    {% endblock %}
+
+    <!-- FOOTER -->
+    <div class="footer navbar-fixed-bottom">
+            For help contact romanov at jlab.org
+    </div>
+
+    {% block js_btm %}
+        <script src="{{ url_for('static', filename='js/jquery-2.1.4.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script>
+        function openPopUp(urlToOpen) {
+            var popup_window=window.open(urlToOpen, '_blank');
+            try {
+              popup_window.focus();
+            }
+            catch (e) {
+              alert("Pop-up Blocker is enabled! Please add this site to your exception list.");
+            }
+        }
+
+        function showFlashMessage(message, category){
+            var html = '<div class="container"><div id="flash_message_container"><div class="alert alert-' + category + '">';
+            html +='<button type="button" class="close" data-dismiss="alert">×</button>';
+            html += message;
+            html += '</div></div></div>';
+            $( ".blog-below-nav" ).after(html);
+
+        }
+
+        jQuery.fn.highlight = function() {
+            $(this).each(function() {
+                var el = $(this);
+                el.before("<div/>")
+                el.prev()
+                    .width(el.width())
+                    .height(el.height())
+                    .css({
+                        "position": "absolute",
+                        "background-color": "#ffff99",
+                        "opacity": ".9"
+                    })
+                    .fadeOut(500);
+            });
+        }
+
+        jQuery(document).ready(function() {
+
+            var $editor = $('#editor');
+
+            {#%
+                Show help popover about how to use query window
+            %#}
+            $("#queryQuickHelp").popover({html: true, trigger: "hover", placement: "bottom",
+                content: function() {
+                      return $('#popover-content').html();
+                    }
+            }).on("show.bs.popover", function() {$(this).data("bs.popover").tip().css("width", "700px")});
+
+
+            {#%
+                This JavaScript code takes a link of a.elog-link and tries to get elog id by run-number
+                To do this, it goes to /runs/elog/<run_number> that gets elog info for the run,
+                It looks like:
+                {"stat":"ok","data":{...,"entries":[{"lognumber":"3374220",..."}}]}}
+                Then we popup to this page
+            %#}
+
+            $( ".elog-link" ).click(function( event ) {
+                event.preventDefault();
+                var lnk_btn = $(this);
+                var link = lnk_btn.attr("href");
+                var run = lnk_btn.attr("data-run");
+                var log_request= 'https://logbooks.jlab.org/api/elog/entries?book=hdrun&title='+run+'&limit=1';
+                $.getJSON(link, function (data, textStatus) {
+                    try {
+                        if (data.stat=="ok"){
+                            var log_id_str = data.data.entries[0].lognumber;
+                            var real_target = "https://logbooks.jlab.org/entry/" + log_id_str;
+                            window.open(real_target,'_blank');
+                        }
+                        else{
+                            alert(data.stat);
+                            if(data.stat=='401'){
+                                showFlashMessage("Log authentication error. Try logging in https://logbooks.jlab.org/book/hdrun   <br>or " + log_request, "danger");
+                            }
+                            else {
+                                showFlashMessage("Unable to get log enty. Server returns "+data.stat+". Try logging in https://logbooks.jlab.org/book/hdrun", "danger");
+                            }
+                        };
+                    }
+                    catch (e)
+                    {
+                        showFlashMessage("Log entry for the run is not found. Try logging in https://logbooks.jlab.org/book/hdrun   <br>or " + log_request, "danger");
+                    };
+                });
+            });
+        });
+        </script>
+    {% endblock %}
+
+    {% block ga %}
+    {#% include "macros/_google_analytics.html" %#}
+    {% endblock %}
+</body>
+</html>

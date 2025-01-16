@@ -11,6 +11,7 @@ from rcdb.model import ConfigurationFile
 from .ls import ls as ls_cmd
 from .repair import repair as repair_grp
 from .db import db as db_grp
+from .rp import rp as rp_grp
 
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
@@ -66,6 +67,10 @@ rcdb_cli.add_command(repair_grp)
 # Add 'db' group of commands
 # noinspection PyTypeChecker
 rcdb_cli.add_command(db_grp)
+
+# Add 'rp' group of commands
+# noinspection PyTypeChecker
+rcdb_cli.add_command(rp_grp)
 
 
 
