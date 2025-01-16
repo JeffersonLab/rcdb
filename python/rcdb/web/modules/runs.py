@@ -9,7 +9,7 @@ from flask import Blueprint, request, render_template, flash, g, redirect, url_f
 # from werkzeug import check_password_hash, generate_password_hash
 import rcdb
 from rcdb import DefaultConditions
-from rcdb.model import Run, ConfigurationFile
+from rcdb.model import Run, ConfigurationFile, RunPeriod
 from rcdb.stopwatch import StopWatchTimer
 from rcdb.web.pagination import Pagination
 from sqlalchemy import func
@@ -38,6 +38,8 @@ def index(page, run_from, run_to):
 
     condition_types = g.tdb.get_condition_types()
     query = g.tdb.session.query(Run)
+
+    run_periods = g.tdb.session.query(RunPeriod).all()
 
     # Run range is defined?
     if run_from != -1 and run_to != -1:
@@ -83,6 +85,7 @@ def index(page, run_from, run_to):
                            run_from=-1,
                            run_to=-1,
                            search_query="",
+                           run_periods=run_periods,
                            performance=performance)
 
 
@@ -211,6 +214,7 @@ def _parse_run_range(run_range_str):
 def search():
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
+    run_periods = g.tdb.session.query(RunPeriod).all()
 
     run_from_str = request.args.get('runFrom', '')
     run_to_str = request.args.get('runTo', '')
@@ -251,68 +255,5 @@ def search():
                            run_from=run_from,
                            run_to=run_to if run_to != sys.maxsize else -1,
                            search_query=search_query,
+                           run_periods=run_periods,
                            performance=result.performance)
-
-
-@mod.route('/search2', methods=['GET'])
-def search2():
-    run_range = request.args.get('rr', '')
-    search_query = request.args.get('q', '')
-    columns = request.args.get('c', '')
-
-    columns = columns.split(',')
-
-    run_from_str = request.args.get('runFrom', '')
-    run_to_str = request.args.get('runTo', '')
-    if run_from_str or run_to_str:
-        run_range = run_from_str + "-" + run_to_str
-
-    args = {}
-    run_from, run_to = _parse_run_range(run_range)
-
-    if not search_query or not search_query.strip():
-        if run_from is not None and run_to is not None:
-            return redirect(url_for('.index', run_from=run_from, run_to=run_to))
-        elif run_from is not None:
-            return redirect(url_for('.info', run_number=run_from))
-        else:
-            return redirect(url_for('.index'))
-
-    if run_from is None:
-        run_from = 0
-
-    if run_to is None:
-        run_to = sys.maxint
-
-    try:
-        result = g.tdb.select_runs(search_query, run_to, run_from, sort_desc=True)
-    except Exception as err:
-        flash("Error in performing request: {}".format(err), 'danger')
-        return redirect(url_for('.index'))
-        # Create pagination
-    pagination = Pagination(1, len(result.runs), len(result.runs))
-    condition_types = g.tdb.get_condition_types()
-    all_cnd_types_by_name = {cnd.name: cnd for cnd in condition_types}
-    column_condition_types = [all_cnd_types_by_name[column] for column in columns]
-
-    # Getting additional values and marking the run
-    info_rows = result.get_values([DefaultConditions.IS_VALID_RUN_END]),
-    for i, run in enumerate(result.runs):
-        is_valid_run_end, = tuple(info_rows[i])
-        run.is_valid_run_end = is_valid_run_end if is_valid_run_end is not None else False
-        if i == 0 and run.end_time and not is_valid_run_end:
-            run.is_active = True if (datetime.now() - run.end_time).total_seconds() < 120 else False
-        else:
-            run.is_active = False
-
-    return render_template("runs/custom_column.html",
-                           rows=result.get_values(columns, True),
-                           column_condition_types=column_condition_types,
-                           pagination=pagination,
-                           condition_types=condition_types,
-                           run_from=run_from,
-                           run_to=run_to if run_to != sys.maxint else -1,
-                           search_query=search_query,
-                           performance=result.performance,
-                           columns=columns)
-

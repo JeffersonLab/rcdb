@@ -19,7 +19,11 @@
                                                  <li><p class="text-center"><strong>Run periods:</strong></p></li>
                                                  <li class="divider"></li>
                                                  {% for period in run_periods %}
-                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">{{ period.description }}</a></li>
+                                                    <li>
+                                                        <a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">
+                                                            {{period.run_min}}-{{period.run_max}} {{period.name}} ({{period.description }})
+                                                        </a>
+                                                    </li>
                                                  {% endfor %}
                                              </ul>
                                          </div>
@@ -43,20 +47,10 @@
                                  </div>
                              </div>
                          </div>
-{#                     Primex, GluexI, Gluex-II, CLASS-12, CSR,#}
-{#                   <li><a class="rr-min-selector" data-run-min="70000" data-run-max="79999" href="#">[70000+] 2019-01 2020</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="60000" data-run-max="69999" href="#">[60000+] 2019-01 2019-04 – DIRC-com/PrimEx</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="50000" data-run-max="59999" href="#">[50000+] 2018-08 2018-11 – 78B GlueX-I/PrimEx-Com</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="40000" data-run-max="49999" href="#">[40000+] 2018-01 2018-05 – 145B</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="30000" data-run-max="39999" href="#">[30000+] 2017-01 2017-04 – 50B 12 GeV e-</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="20000" data-run-max="29999" href="#">[20000+] 2016-10 2016-12 – 7B  12 GeV e-</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="10000" data-run-max="19999" href="#">[10000+] 2016-02</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="3939" data-run-max="9999" href="#">[3939, 10000) 2015-12</a></li>#}
-{#                   <li><a class="rr-min-selector" data-run-min="3607" data-run-max="3939" href="#">[3607, 3939]2015-06</a></li>#}
                          <div class="col-sm-9">
                                 <label class="small" for="queryInput">Search query</label>
                              <div class="input-group ">
-                                 <input class="form-control  input-sm" rows="1" id="queryInput" name="q" placeholder="event_count>10000 ...(ctrl+space for autocomplete)" value="{{ search_query|safe }}"  />
+                                 <input class="form-control input-sm" rows="1" id="queryInput" name="q" placeholder="event_count>10000 and @is_production ..." value="{{ search_query|safe }}"  />
                                  <div class="input-group-btn">
                                      <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
                                      <ul class="dropdown-menu">
@@ -66,7 +60,7 @@
                                              <li><a class="q-alias-selector" data-alias-name="{{ rcdb_alias.name }}" href="#">{{ rcdb_alias.comment }} [@{{ rcdb_alias.name }}]</a></li>
                                          {% endfor %}
                                      </ul>
-                                     <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#slectConditionTypeModal">
+                                     <button type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#selectConditionTypeModal">
                                         <span class="glyphicon glyphicon-list"></span>
                                      </button>
                                      <button id="qGoBtn" type="submit" class="btn btn-primary btn-sm">
@@ -92,7 +86,7 @@
                  </form>
             </div>
             <!-- Modal -->
-            <div class="modal fade " id="slectConditionTypeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal fade " id="selectConditionTypeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -127,158 +121,181 @@
 {% endmacro %}
 
 {% macro run_search_box_scripts(condition_types=[], run_from=-1, run_to=-1, search_query="", req_conditions="") %}
-    <script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/webintellisense.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/webintellisense-textbox.js') }}"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/autoComplete.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.9/dist/css/autoComplete.02.min.css">
+
+
 
 
     <script>
-        function handleFormSubmission() {
+/**
+ * Example of vanilla JS + autoComplete.js usage.
+ * You can adapt this to a separate .js file in /static/js/ if you prefer.
+ */
+document.addEventListener("DOMContentLoaded", function() {
 
-            var runFromValue = document.getElementById("run-min-inp").value;
-            var runToValue = document.getElementById("run-max-inp").value;
-            var searchQueryValue = document.getElementById("queryInput").value;
-            var req_conditionsValue = document.getElementById("req_conditions").value;
+      // 1. Define the function that inserts text at cursor:
+  function insertAtCursor(inputOrTextarea, textToInsert) {
+    const start = inputOrTextarea.selectionStart;
+    const end = inputOrTextarea.selectionEnd;
+    const originalValue = inputOrTextarea.value;
+    inputOrTextarea.value =
+      originalValue.slice(0, start) +
+      textToInsert +
+      originalValue.slice(end);
 
-            console.log(req_conditionsValue);
-            localStorage.setItem("runFromValue", runFromValue);
-            localStorage.setItem("runToValue", runToValue);
-            localStorage.setItem("searchQueryValue", searchQueryValue);
-            localStorage.setItem("req_conditionsValue", req_conditionsValue);
+    const newCursorPos = start + textToInsert.length;
+    inputOrTextarea.selectionStart = newCursorPos;
+    inputOrTextarea.selectionEnd = newCursorPos;
+    inputOrTextarea.focus();
+  }
 
-        }
+  // 2. Attach event listeners to each alias link:
+  const aliasLinks = document.querySelectorAll(".q-alias-selector");
+  aliasLinks.forEach(link => {
+    link.addEventListener("click", event => {
+      event.preventDefault();
+      const aliasName = link.getAttribute("data-alias-name");
+      const queryInput = document.getElementById("queryInput");
+      if (!queryInput) return;
 
-        jQuery(document).ready(function() {
+      // Insert "@aliasName" (or adjust the text as needed)
+      const textToInsert = "@" + aliasName;
+      insertAtCursor(queryInput, textToInsert);
+    });
+  });
 
-            // Utility function to check if a value is null, undefined, or empty string
-            function isEmpty(value) {
-                return value === null || value === undefined || value === "";
-            }
+    function handleFormSubmission(event) {
+        // Optional: If needed, store some values to localStorage
+        const runMinValue = document.getElementById("run-min-inp")?.value;
+        const runMaxValue = document.getElementById("run-max-inp")?.value;
+        const searchQueryValue = document.getElementById("queryInput")?.value;
+        const reqConditionsValue = document.getElementById("req_conditions")?.value;
 
-            // Get input elements
-            var runMinInput = document.getElementById("run-min-inp");
-            var runMaxInput = document.getElementById("run-max-inp");
-            var queryInput = document.getElementById("queryInput");
-            var reqConditionsInput = document.getElementById("req_conditions");
+        localStorage.setItem("runFromValue", runMinValue || "");
+        localStorage.setItem("runToValue", runMaxValue || "");
+        localStorage.setItem("searchQueryValue", searchQueryValue || "");
+        localStorage.setItem("req_conditionsValue", reqConditionsValue || "");
+    }
 
-            // Check and set run-min-inp
-            if (isEmpty(runMinInput.value)) {
-                var savedRunFrom = localStorage.getItem("runFromValue");
-                if (!isEmpty(savedRunFrom)) {
-                    runMinInput.value = savedRunFrom;
-                }
-            }
+    // Utility to see if a string is empty/undefined/null
+    function isEmpty(value) {
+        return value === null || value === undefined || value === "";
+    }
 
-            // Check and set run-max-inp
-            if (isEmpty(runMaxInput.value)) {
-                var savedRunTo = localStorage.getItem("runToValue");
-                if (!isEmpty(savedRunTo)) {
-                    runMaxInput.value = savedRunTo;
-                }
-            }
+    // ------------------------------------------------------------------
+    // 2) Restore saved values from localStorage if available
+    // ------------------------------------------------------------------
+    const runMinInput = document.getElementById("run-min-inp");
+    const runMaxInput = document.getElementById("run-max-inp");
+    const queryInput = document.getElementById("queryInput");
+    const reqConditionsInput = document.getElementById("req_conditions");
 
-            // Check and set queryInput
-            if (isEmpty(queryInput.value)) {
-                var savedSearchQuery = localStorage.getItem("searchQueryValue");
-                if (!isEmpty(savedSearchQuery)) {
-                    queryInput.value = savedSearchQuery;
-                }
-            }
+    if (runMinInput && isEmpty(runMinInput.value)) {
+        const savedRunFrom = localStorage.getItem("runFromValue");
+        if (!isEmpty(savedRunFrom)) runMinInput.value = savedRunFrom;
+    }
+    if (runMaxInput && isEmpty(runMaxInput.value)) {
+        const savedRunTo = localStorage.getItem("runToValue");
+        if (!isEmpty(savedRunTo)) runMaxInput.value = savedRunTo;
+    }
+    if (queryInput && isEmpty(queryInput.value)) {
+        const savedSearchQuery = localStorage.getItem("searchQueryValue");
+        if (!isEmpty(savedSearchQuery)) queryInput.value = savedSearchQuery;
+    }
+    if (reqConditionsInput && isEmpty(reqConditionsInput.value)) {
+        const savedReqConditions = localStorage.getItem("req_conditionsValue");
+        if (!isEmpty(savedReqConditions)) reqConditionsInput.value = savedReqConditions;
+    }
 
-            // Check and set req_conditions
-            if (isEmpty(reqConditionsInput.value)) {
-                var savedReqConditions = localStorage.getItem("req_conditionsValue");
-                if (!isEmpty(savedReqConditions)) {
-                    reqConditionsInput.value = savedReqConditions;
-                }
-            }
-
-            $(".rr-min-selector").click(function( event ) {
-                event.preventDefault();
-                var lnk_btn = $(this);
-                var run_min = lnk_btn.attr("data-run-min");
-                var run_max =  lnk_btn.attr("data-run-max");
-                $("#run-min-inp").val(run_min);
-                $("#run-max-inp").val(run_max);
-            });
-            $(".rr-max-selector").click(function( event ) {
-                event.preventDefault();
-                var lnk_btn = $(this);
-                var run_max =  lnk_btn.attr("data-run-max");
-                $("#run-max-inp").val(run_max);
-            });
-            $(".ct-select-tr").click(function( event ) {
-                var ct_tr = $(this);
-                var input = $("#queryInput");
-                var text = input.val();
-                var ct_name = ct_tr.attr("data-ct-name");
-                input.val(text + " " + ct_name);
-                ct_tr.highlight();
-            });
-
-            // code
-            var $editor = $('#queryInput');
-            var intellisense = new TextBoxIntellisense('queryInput');
-
-            // add triggers when the user presses the `@` key
-            intellisense.addDeclarationTrigger({ keyCode: 50 });  // 50 = `@`
-            intellisense.addDeclarationTrigger({ keyCode: 50, shiftKey: true });
-            intellisense.addDeclarationTrigger({ keyCode: 32, ctrlKey: true, preventDefault: true }); // `ctrl+space`
-
-
-            // set the filter mode for the declarations list, this will search
-            // both the name and the value
-            intellisense.getDecls().setFilterMode(function (item, filterText)
-            {
-                return item.name.toLowerCase().indexOf(filterText.toLowerCase()) >= 0
-                    || item.value.toLowerCase().indexOf(filterText.toLowerCase()) >= 0;
-            });
-
-            // called when the declarations are triggered
-            intellisense.onDeclaration(function (item)
-            {
-                var cnd_types = [
-                    {% for condition in condition_types %}
-                        { glyph: 2, name: '{{ condition.name }}', value: '{{ condition.name }}' {% if condition.description %} , documentation:'{{ condition.description }}' {% endif %} },
-                    {% endfor %}
-                ];
-
-                var aliases = [
-                    {% for rcdb_alias in rcdb_default_alias %}
-                        { glyph: 3, name: '@{{ rcdb_alias.name }}', value: '{{ rcdb_alias.name }}' {% if rcdb_alias.comment %} , documentation:'{{ rcdb_alias.comment }}' {% endif %} },
-                    {% endfor %}
-                ]
-
-                 // hide when the users presses `backspace` or `)`
-                if (item.keyCode === 50 )
-                {
-                     intellisense.setDeclarations(aliases);
-                }
-                else
-                {
-                     intellisense.setDeclarations(cnd_types);
-                }
-            });
-
-            let mainForm = document.getElementById("main_form");
-            mainForm.addEventListener('submit', handleFormSubmission);
+    // ------------------------------------------------------------------
+    // 3) Replace jQuery .click(...) with vanilla addEventListener(...)
+    // ------------------------------------------------------------------
+    // Example: The run-range dropdown links that set runMin and runMax
+    document.querySelectorAll(".rr-min-selector").forEach(link => {
+        link.addEventListener("click", event => {
+            event.preventDefault();
+            const runMin = link.getAttribute("data-run-min");
+            const runMax = link.getAttribute("data-run-max");
+            if (runMinInput) runMinInput.value = runMin;
+            if (runMaxInput) runMaxInput.value = runMax;
         });
+    });
 
-        console.log("Run search box values");
-        console.log({{ search_query|safe }});
 
-        const toggleButton = document.getElementById('toggleButton');
-        if(toggleButton !== null) {
-            const hiddenTable = document.querySelector('.hidden-table');
-            const toggleIcon = document.getElementById('toggleIcon');
+
+function closeModal(modal) {
+  // Remove Bootstrap's "modal" classes to hide it
+  modal.classList.remove("in");
+  modal.style.display = "none";
+
+  // Remove the modal-related backdrop and body classes
+  const backdrop = document.querySelector(".modal-backdrop");
+  if (backdrop) {
+    backdrop.parentNode.removeChild(backdrop); // Remove the backdrop element
+  }
+  document.body.classList.remove("modal-open");
+  document.body.style.removeProperty("padding-right");
+}
+
+    // Close the modal after selecting a condition
+  const conditionRows = document.querySelectorAll(".ct-select-tr");
+  conditionRows.forEach((row) => {
+    row.addEventListener("click", (event) => {
+      const queryInput = document.getElementById("queryInput");
+      if (!queryInput) return;
+
+      // Get the selected condition name
+      const conditionName = row.getAttribute("data-ct-name");
+      if (!conditionName) return;
+
+      // Add the condition name to the query input
+      insertAtCursor(queryInput, conditionName);
+
+      // Close the modal
+      const modalElement = document.getElementById("selectConditionTypeModal");
+      closeModal(modalElement);
+    });
+  });
+
+
+    // Toggle hidden table example (similar to your `toggleButton` usage)
+    const toggleButton = document.getElementById('toggleButton');
+    const hiddenTable  = document.querySelector('.hidden-table');
+    const toggleIcon   = document.getElementById('toggleIcon');
+    if (toggleButton && hiddenTable && toggleIcon) {
+        // Sync icon with initial hidden state
+        toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        toggleButton.addEventListener('click', event => {
+            event.preventDefault();
+            hiddenTable.classList.toggle('hidden');
             toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+        });
+    }
 
-            toggleButton.addEventListener('click', function (event) {
-                event.preventDefault();
-                hiddenTable.classList.toggle('hidden');
-                toggleIcon.style.transform = hiddenTable.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
-            });
-        }
-    </script>
+    // Attach handleFormSubmission to the form's submit event
+    const mainForm = document.getElementById("main_form");
+      if (mainForm) {
+        mainForm.addEventListener("submit", handleFormSubmission);
+    }
+
+
+    // Build an array combining condition types & aliases for suggestions
+    // `condition_types` and `rcdb_default_alias` must be passed in context
+    // or embedded into the script with Jinja loops.
+    const allSuggestions = [
+        {% for condition in condition_types %}
+        { name: "{{ condition.name|escape }}", info: "{{ condition.description|default('')|escape }}" },
+        {% endfor %}
+
+        {% for alias in rcdb_default_alias %}
+        { name: "@{{ alias.name|escape }}", info: "{{ alias.comment|default('')|escape }}" },
+        {% endfor %}
+    ];
+
+}); // end DOMContentLoaded
+</script>
+
 
 {% endmacro %}

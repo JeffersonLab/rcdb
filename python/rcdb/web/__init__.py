@@ -61,15 +61,25 @@ def run_periods():
 
 @app.route('/')
 def index():
-    # Select the last 50 runs and
-    runs = g.tdb.session \
-        .query(Run) \
-        .order_by(Run.number.desc()) \
-        .options(subqueryload(Run.conditions)) \
-        .limit(50)
+    # Find the latest run period based on `end_date` (or use `id` if more appropriate)
+    latest_run_period = g.tdb.session.query(RunPeriod).order_by(RunPeriod.end_date.desc()).first()
+
+    runs_query =  g.tdb.session \
+            .query(Run) \
+            .order_by(Run.number.desc())
+
+    if latest_run_period:
+        runs_query = runs_query.filter(
+            Run.number >= latest_run_period.run_min,
+            Run.number <= latest_run_period.run_max)
+
+    runs = runs_query.options(subqueryload(Run.conditions)).limit(50)
+
     condition_types = g.tdb.get_condition_types()
 
-    return render_template("index.html", runs=runs, DefaultConditions=rcdb.DefaultConditions,
+    return render_template("index.html",
+                           runs=runs,
+                           DefaultConditions=rcdb.DefaultConditions,
                            condition_types=condition_types)
 
 
