@@ -1,4 +1,6 @@
 from flask import Blueprint, request, render_template, flash, g, redirect, url_for
+from sqlalchemy import desc
+
 from rcdb.model import ConditionType, RunPeriod
 from rcdb.web.modules.runs import _parse_run_range
 
@@ -9,7 +11,7 @@ mod = Blueprint('select_values', __name__, url_prefix='/select_values')
 def index():
     # noinspection PyUnresolvedReferences
     all_conditions = g.tdb.session.query(ConditionType).order_by(ConditionType.name.asc()).all()
-    run_periods = g.tdb.session.query(RunPeriod).all()
+    run_periods = g.tdb.session.query(RunPeriod).order_by(desc(RunPeriod.start_date)).all()
 
     run_from_str = request.args.get('runFrom', '')
     run_to_str = request.args.get('runTo', '')

@@ -6,7 +6,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from rcdb.model import LogRecord, Run, SchemaVersion
+from rcdb.model import LogRecord, Run, SchemaVersion, RunPeriod
 from sqlalchemy.sql.expression import desc
 
 mod = Blueprint('statistics', __name__, url_prefix='/statistics')
@@ -17,14 +17,12 @@ def index():
 
     run_count = g.tdb.session.query(Run).count()
     run_last = g.tdb.session.query(Run).order_by(desc(Run.number)).first()
-    boards_count = 0
-    crates_count = 0
     db_versions = g.tdb.session.query(SchemaVersion).order_by(SchemaVersion.version.desc())
+    run_periods = g.tdb.session.query(RunPeriod).order_by(desc(RunPeriod.start_date)).all()
 
     return render_template("statistics/index.html",
+                           run_periods=run_periods,
                            run_count=run_count,
                            run_last=run_last,
-                           boards_count=boards_count,
-                           crates_count=crates_count,
                            db_versions=db_versions)
     pass

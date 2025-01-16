@@ -12,7 +12,7 @@ from rcdb import DefaultConditions
 from rcdb.model import Run, ConfigurationFile, RunPeriod
 from rcdb.stopwatch import StopWatchTimer
 from rcdb.web.pagination import Pagination
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from sqlalchemy.orm import subqueryload
 
 mod = Blueprint('runs', __name__, url_prefix='/runs')
@@ -39,7 +39,7 @@ def index(page, run_from, run_to):
     condition_types = g.tdb.get_condition_types()
     query = g.tdb.session.query(Run)
 
-    run_periods = g.tdb.session.query(RunPeriod).all()
+    run_periods = g.tdb.session.query(RunPeriod).order_by(desc(RunPeriod.start_date)).all()
 
     # Run range is defined?
     if run_from != -1 and run_to != -1:
@@ -214,7 +214,7 @@ def _parse_run_range(run_range_str):
 def search():
     run_range = request.args.get('rr', '')
     search_query = request.args.get('q', '')
-    run_periods = g.tdb.session.query(RunPeriod).all()
+    run_periods = g.tdb.session.query(RunPeriod).order_by(desc(RunPeriod.start_date)).all()
 
     run_from_str = request.args.get('runFrom', '')
     run_to_str = request.args.get('runTo', '')

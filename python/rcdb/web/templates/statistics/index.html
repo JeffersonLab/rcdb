@@ -1,12 +1,12 @@
 {% extends 'layouts/base.html' %}
 
-{% set page_title = 'Statistics' %}
+{% set page_title = 'DB info' %}
 
 {% block container %}
 
 <div class="container">
 
-    <div class="blog-header"><h3 class="blog-title">Database schema version</h3></div>
+    <div class="blog-header"><h3 class="blog-title">Database info</h3></div>
 
     <table class="table">
         <!-- Run count -->
@@ -28,12 +28,9 @@
                 </td>
             </tr>
         {% endfor %}
+    </table>
 
-
-
-
-    <div class="blog-header"><h3 class="blog-title">Statistics</h3></div>
-
+{#    Run information#}
     <table class="table">
         <!-- Run count -->
         <tr><td>Run count</td><td>{{ run_count }}</td></tr>
@@ -46,13 +43,37 @@
                 &nbsp; Started: {{ run_last.start_time }}
             </td>
         </tr>
-
-        <!-- Boards count -->
-        <tr> <td>Boards in DB</td> <td>{{ boards_count }}</td> </tr>
-
-        <!-- Crates count -->
-        <tr> <td>Crates in DB</td> <td>{{ crates_count }}</td> </tr>
     </table>
+<!-- Run Periods Table -->
+    <div class="mt-4">
+        <h4>Run Periods</h4>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Run Min</th>
+                    <th>Run Max</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for period in run_periods %}
+                <tr>
+                    <td>{{ period.id }}</td>
+                    <td>{{ period.name }}</td>
+                    <td>{{ period.description }}</td>
+                    <td>{{ period.run_min }}</td>
+                    <td>{{ period.run_max }}</td>
+                    <td>{{ period.start_date }}</td>
+                    <td>{{ period.end_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 {% endblock %}

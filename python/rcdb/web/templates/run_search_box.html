@@ -21,7 +21,7 @@
                                                  {% for period in run_periods %}
                                                     <li>
                                                         <a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">
-                                                            {{period.run_min}}-{{period.run_max}} {{period.name}} ({{period.description }})
+                                                            {{period.run_min}}-{{period.run_max}}&nbsp;&nbsp; {{period.name}} ({{period.description }})
                                                         </a>
                                                     </li>
                                                  {% endfor %}
@@ -39,7 +39,9 @@
                                                  <li><p class="text-center"><strong>Run periods:</strong></p></li>
                                                  <li class="divider"></li>
                                                  {% for period in run_periods %}
-                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">{{ period.name + " " +  period.description }}</a></li>
+                                                    <li><a class="rr-min-selector" data-run-min="{{ period.run_min }}" data-run-max="{{ period.run_max }}" href="#">
+                                                        {{period.run_min}}-{{period.run_max}}&nbsp;&nbsp; {{period.name}} ({{period.description }})
+                                                    </a></li>
                                                  {% endfor %}
                                              </ul>
                                          </div>
