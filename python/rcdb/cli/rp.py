@@ -7,7 +7,7 @@ from sqlalchemy.exc import OperationalError
 import rcdb
 from rcdb import RCDBProvider
 from rcdb.model import RunPeriod
-from rcdb.rcdb_cli.context import pass_rcdb_context
+from rcdb.cli.context import pass_rcdb_context
 
 @click.group(invoke_without_command=True)
 @click.pass_context

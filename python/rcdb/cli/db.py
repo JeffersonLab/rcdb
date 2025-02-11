@@ -6,7 +6,7 @@ from sqlalchemy.exc import OperationalError
 import rcdb
 from rcdb import RCDBProvider
 from rcdb.model import SchemaVersion, Alias, RunPeriod
-from rcdb.rcdb_cli.context import pass_rcdb_context
+from rcdb.cli.context import pass_rcdb_context
 from rcdb.provider import stamp_schema_version
 
 

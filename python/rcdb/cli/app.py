@@ -12,7 +12,7 @@ from .ls import ls as ls_cmd
 from .repair import repair as repair_grp
 from .db import db as db_grp
 from .rp import rp as rp_grp
-from .web import web as web_grp
+from .web import web as web_cmd
 
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
@@ -75,7 +75,7 @@ rcdb_cli.add_command(rp_grp)
 
 # Add 'web' group of commands
 # noinspection PyTypeChecker
-rcdb_cli.add_command(web_grp)
+rcdb_cli.add_command(web_cmd)
 
 
 @rcdb_cli.command()

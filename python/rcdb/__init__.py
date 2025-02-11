@@ -1,7 +1,6 @@
 from .model import ConditionType
 from .provider import RCDBProvider
 from .provider import ConfigurationProvider
-from .rcdb_cli.app import rcdb_cli as run_rcdb_cli
 from .errors import *
 
 # This thing separates cells in data blob

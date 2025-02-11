@@ -5,7 +5,7 @@ import click
 import glob
 from rcdb.app_context import minmax_run_range, parse_run_range
 from rcdb.provider import  RCDBProvider
-from rcdb.rcdb_cli.context import pass_rcdb_context
+from rcdb.cli.context import pass_rcdb_context
 import json
 
 def sizeof_fmt(num, suffix="B"):

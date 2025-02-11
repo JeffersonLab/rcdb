@@ -41,7 +41,7 @@ dependencies = [
 
 # If you want a console script, define it in [project.scripts]
 [project.scripts]
-rcdb = "rcdb:run_rcdb_cli"
+rcdb = "rcdb.cli.api:rcdb_cli"
 
 # Tell setuptools how to find your packages if needed:
 [tool.setuptools.packages.find]
