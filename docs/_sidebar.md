@@ -1,10 +1,13 @@
 <!-- docs/_sidebar.md -->
-[Introduction](index.md "RCDB: Runs and conditions database")
+
+- [GitHub](https://github.com/JeffersonLab/JANA2 ':target=_blank')
+- [Introduction](index.md "RCDB: Runs and conditions database")
+
 
 **Get Started**:  
-- [Installation](Installation)  
-- [Select values](Select-values) (python)
-- [Query syntax](Query-syntax)  
+- [Installation](get-started/installation.md)  
+- [Select values](get-started/select-values.md) (python)
+- [Query syntax](get-started/query-syntax.md)  
 - [Add data](Python-basics) (python)  
 - [CLI Basics](rcnd)  
 

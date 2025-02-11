@@ -5,7 +5,7 @@
 - [Performance](#performance)
 - [From shell](#from-shell)
 
-## TL; DR;
+## TLDR
 
 Fastest way to select values in 3 lines:
 

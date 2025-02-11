@@ -1,8 +1,11 @@
-Queries allow to select runs using simple 'python if syntax'. Condition names and aliases are used as variables. Queries are implemented in web GUI, python API and CLI . 
+## Query syntax
+Queries allow to select runs using simple 'python if syntax'. 
+Condition names and aliases are used as variables. Queries are implemented in web GUI, python API and CLI . 
 
 **Example.** Query to get production runs with beam current around 100 uA and 'BCAL' in run_config ( here 'BCAL' is a detector / subsystem in HallD and run_config is a name of a configuration file):
 
 General/web site query:
+
 ```
 @is_production   and   80 < beam_current < 120   and   'BCAL' in run_config
 ```
@@ -11,12 +14,14 @@ General/web site query:
 
 Queries syntax are the same across API-s (which supports queries at all)
 
-python:  
+python:
+
 ```python
 runs = db.select_runs("@is_production and 80 < beam_current < 120 and 'BCAL' in run_config")
 ```
 
-CLI:  
+CLI:
+
 ```bash
 >>rcdb sel "@is_production and 80 < beam_current < 120 and 'BCAL' in run_config"
 ```
@@ -47,7 +52,8 @@ Concise version is:
 
 ## Aliases
 
-One may notice ```@is_production``` in the query example above. ```@``` means 'alias' - predefined set of conditions. For example for HallD ```@is_production``` alias is given as:
+One may notice ```@is_production``` in the query example above. ```@``` means 'alias' - predefined set of conditions. 
+For example for HallD ```@is_production``` alias is given as:
 
 ```python
 run_type in ['hd_all.tsg', 'hd_all.tsg_ps', 'hd_all.bcal_fcal_st.tsg'] and

@@ -12,12 +12,14 @@ The interfaces available are:
 - Possibly JAVA API
 
 #### Documentation:
-https://github.com/JeffersonLab/rcdb/wiki
 
-#### Web site:
+https://jeffersonlab.github.io/rcdb/
+
+#### Demo website:
 One can visit HallD RCDB Web site as demo:  
 https://halldweb.jlab.org/rcdb/
 
+
 #### SQLite db:
 Daily updated SQLite database is available here:  
-https://halldweb.jlab.org/dist/rcdb.sqlite
+https://halldweb.jlab.org/dist/rcdb2.sqlite

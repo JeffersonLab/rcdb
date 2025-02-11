@@ -79,10 +79,5 @@ def ls(context, search, is_long):
         click.echo("{0:<{1}}   {2}".format(name, longest_len, cnd_type.description))
 
 
-
-
-
-
-
 if __name__ == '__main__':
     cli(prog_name="rcdb")

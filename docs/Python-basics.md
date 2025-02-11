@@ -23,9 +23,9 @@ db.add_condition(1, "my_val", 2000, replace=True)
 # 4. Get condition from database
 condition = db.get_condition(1, "my_val")
 
-print condition
-print "value =", condition.value
-print "name  =", condition.name
+print(condition)
+print("value =", condition.value)
+print("name  =", condition.name)
 
 ```
 
@@ -76,11 +76,15 @@ $RCDB_HOME/python/example_conditions_basic.py
 
 It is assumed that 'example.db' is SQLite database, created by *create_empty_sqlite.py* script. To run it:
 
-<syntaxhighlight lang="bash">
+```bash
 python $RCDB_HOME/python/create_empty_sqlite.py example.db
 python $RCDB_HOME/python/example_conditions_basic.py
-</syntaxhighlight>
-'''(!)''' note that to run the script again you probably have to delete the database <code>rm example.db</code>
+
+# '''(!)''' note that to run the script again you probably have to delete the database 
+# rm example.db
+
+```
+
 
 The next sections will cover this example and give thorough explanation on what is here.
 

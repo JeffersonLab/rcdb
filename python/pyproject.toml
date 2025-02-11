@@ -10,11 +10,11 @@ build-backend = "setuptools.build_meta"
 name = "rcdb"
 description = "RCDB - Run Conditions DataBase"
 # If you want to read your long description from README.md, you can also do:
-readme = "../README.md"
+readme = "README.md"
 # If you'd like to keep version in rcdb.version.py, see "Dynamic version" section below.
 # Otherwise, put a fixed version here, e.g. version = "1.0.0"
 dynamic = ["version"]
-license = "MIT"
+license = { text = "MIT" }
 authors = [
     { name="Dmitry Romanov", email="romanov@jlab.org" }
 ]
@@ -22,11 +22,11 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10"
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13"
 ]
 requires-python = ">=3.9"
 dependencies = [
@@ -48,5 +48,4 @@ rcdb = "rcdb:run_rcdb_cli"
 include = ["rcdb"]
 
 [tool.setuptools.dynamic]
-# If you'd like setuptools to get __version__ from your rcdb.version file:
-version = { attr = "rcdb.version:version" }
+version = { attr = "rcdb.version.version" }

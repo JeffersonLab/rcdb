@@ -29,5 +29,12 @@
 4. Run ```test_all_rcdb```
 
 
+## Publishing on pypi
+
+```bash
+python -m pip install build twine
+python -m build
+twine upload dist/*
+```
 
 [filename](documentation.md ':include')
