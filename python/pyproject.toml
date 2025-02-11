@@ -1,0 +1,52 @@
+[build-system]
+# These tell pip or other installers how to build your project
+requires = [
+    "setuptools>=61.0",  # version 61+ supports PEP 621 metadata in pyproject.toml
+    "wheel"
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rcdb"
+description = "RCDB - Run Conditions DataBase"
+# If you want to read your long description from README.md, you can also do:
+readme = "../README.md"
+# If you'd like to keep version in rcdb.version.py, see "Dynamic version" section below.
+# Otherwise, put a fixed version here, e.g. version = "1.0.0"
+dynamic = ["version"]
+license = "MIT"
+authors = [
+    { name="Dmitry Romanov", email="romanov@jlab.org" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10"
+]
+requires-python = ">=3.9"
+dependencies = [
+    "markupsafe>=3.0",
+    "pymysql>=1.1",
+    "ply>=3.11",
+    "mako>=1.3",
+    "click>=8",
+    "sqlalchemy>=2",
+    "flask>=3.1.0"
+]
+
+# If you want a console script, define it in [project.scripts]
+[project.scripts]
+rcdb = "rcdb:run_rcdb_cli"
+
+# Tell setuptools how to find your packages if needed:
+[tool.setuptools.packages.find]
+include = ["rcdb"]
+
+[tool.setuptools.dynamic]
+# If you'd like setuptools to get __version__ from your rcdb.version file:
+version = { attr = "rcdb.version:version" }
