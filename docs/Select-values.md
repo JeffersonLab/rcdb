@@ -122,10 +122,17 @@ It took 0.14 sec
 
 ## Performance
 
-calling ```select_values``` is the fastest way to get such tables of values. Before RCDB had a chain of functions ```select_runs(...).get_values(...)``` to select values. This chain is still there but it is much slower. MUCH SLOWER. 
+```select_values``` is the fastest way to search over runs and get tables of values. Before that, RCDB had an API with a chain of functions ```select_runs(...).get_values(...)``` for this, which is still there but is much slower. MUCH SLOWER (~10 times). [More details on select_values vs select_runs comparison](https://github.com/JeffersonLab/rcdb/issues/111)
 
-More info about select runs && get values
-- [Select runs & get values](Select-runs-and-get-values) (python)  
+For the most of the use cases the new [select_values](https://github.com/JeffersonLab/rcdb/wiki/Select-values) function is faster and better than `select_runs`. 
+
+- **faster**, while using python `if` statement syntax for search queries, `select_values` relies on SQL search as much as possible and do only the 
+  final selection steps in python. Moreover, it pulls only required values, not the whole run information. 
+- **beter output**, `select_values` selects the resulting table of run-numbers and values for specified runs. The table of runs and values is what is needed in 99% of cases.  `select_runs` returns a list of `Run` SQLAlchemy objects. Manipulating over `Run`-s objects usually leads to more queries automatically (implicitly) made to DB. 
+- **better introspection**, results of `select_values` also has performance metrics and some other goodies. Not that it is needed for regular users, but
+  can help to figure out why something is slow. 
+
+More info about old select runs && get values API: [Select runs & get values DEPRECATED](Select-runs-and-get-values) (python)  
 
 <br>
 

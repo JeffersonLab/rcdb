@@ -126,3 +126,5 @@ rcdb_prereqs_version.xml
 .fleet/
 
 sql/schema.mwb.bak
+
+reqvenv/

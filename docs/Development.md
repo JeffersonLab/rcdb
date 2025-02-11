@@ -1,4 +1,4 @@
-# 1. Establishing integration tests
+[documentation.md](../../JANA2/docs/development/documentation.md)# 1. Establishing integration tests
 
 1. Create MySQL database for the test purposes
 
@@ -30,4 +30,4 @@
 
 
 
-
+[filename](documentation.md ':include')

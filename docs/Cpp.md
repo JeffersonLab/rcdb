@@ -23,7 +23,7 @@ TL; DR; version:
 Compile and run the simplest example for SQLite
 
 ```bash 
-> gcc $RCDB_HOME/api/examples/simple.api -o simple -I$RCDB_HOME/api/include/ -std=c++11 -lstdc++ -lsqlite3 -DRCDB_SQLITE 
+> gcc $RCDB_HOME/cpp/examples/simple.cpp -o simple -I$RCDB_HOME/cpp/include/ -std=c++11 -lstdc++ -lsqlite3 -DRCDB_SQLITE 
 
 > ./simple sqlite:////path/to/db/rcdb.sqlite 10452
 ```
@@ -128,7 +128,7 @@ rcdb::ValueTypes GetValueType();       /// Returns the type enum
 Examples are located in [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/master/cpp/examples) folder. To build them use `with-examples=true` scons flag:
 
 ```bash
-cd $RCDB_HOME/api
+cd $RCDB_HOME/cpp
 scons with-examples=true #...
 ```
 

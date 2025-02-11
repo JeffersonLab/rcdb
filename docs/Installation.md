@@ -1,8 +1,10 @@
+## Installation
+
 #### 0. Get rcdb
 
 Clone this repository:
 
-```
+```bash
 git clone https://github.com/JeffersonLab/rcdb.git
 ```
 
@@ -10,9 +12,9 @@ git clone https://github.com/JeffersonLab/rcdb.git
 
 #### 1. Install python requirements
 
-```
-cd rcdb
-pip install -r requirements.txt
+```bash
+cd rcdb/python
+python3 -m pip install -e .
 ```
 
 
@@ -25,6 +27,7 @@ environment variables for the of rcdb
 
 ```bash
 source environment.bash   # for bash
+source environment.csh    # for csh
 ```
 
 The script sets ***$RCDB_HOME*** to RCDB root directory, appends ***$PYTHONPATH*** and ***$PATH***. The full list of variables set by the script and how to set them manually one can [read below](#setup-environment-manually). 
@@ -33,24 +36,28 @@ The script sets ***$RCDB_HOME*** to RCDB root directory, appends ***$PYTHONPATH*
 
 #### 3. Database connection
 
-One needs so called "connection string" in order to connect to database. For now we consider to use MySQL and SQLite databases. The connection strings for them are:
+One needs so-called "connection string" in order to connect to database. 
+For now, we consider to use MySQL and SQLite databases. The connection strings for them are:
 
 ***MySQL***  
+
 ```
 mysql://user_name:password@host:port/database
 ```
 
 
 ***SQLite***
+
 ```
 sqlite:///path_to_file
 ```
 
-**(!)** Note that because SQLite doesn't have user_name and password, it starts with three slashes ///.
-And thus there should be four slashes //// in absolute path to file.
+**(!)** Note that because SQLite doesn't have user_name and password, it starts with three slashes `///`.
+And thus there should be four slashes `////` in absolute path to file.
 
-```
-sqlite:////home/user_name/rcdb.sqlite.db
+```bash
+sqlite:////home/user_name/rcdb.sqlite.db   # Absolute path - 4 slashes ////
+qlite:///../rcdb.sqlite.db                 # Relative path - 3 slashes /// 
 ```
 
 <br>  
@@ -61,7 +68,7 @@ The common way of different parts of RCDB to know the connection string is to se
 
 ```bash
 #bash: 
-export RCDB_CONNECTION="mysql://rcdb@hallddb.jlab.org/rcdb"
+export RCDB_CONNECTION="mysql://rcdb@hallddb.jlab.org/rcdb2"
 ```
 
 The other common way is to set `-c \<connection string\>` key

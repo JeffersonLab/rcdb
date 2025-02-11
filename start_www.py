@@ -15,7 +15,7 @@ if __name__ == '__main__':
     if python_folder not in sys.path:
         sys.path.insert(0, python_folder)
 
-    # import and start web site
+    # import and start website
     from rcdb import web
 
     if "RCDB_CONNECTION" in os.environ.keys():

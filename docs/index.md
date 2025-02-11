@@ -1,31 +1,16 @@
-# RCDB
+## RCDB
 
-Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc.
+Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
-One can consider two main aspects of what conceptually RCDB is designed for: 
+The interfaces available are:
+- Web site
+- Command line interface (CLI)
+- Python API
+- C++ API
+- Possibly JAVA API
 
-1. Add data to database   
-2. Provide convenient way to read, introspect and analyze DB stored data providing interfaces:
-   - Web site
-   - Command line interface (CLI)
-   - Python API
-   - C++ API
-   - Possibly JAVA API
 
-## Concepts 
-
-[daq_concepts](daq/daq_concepts.md ':include')
-
-Software wise:
-  
-   - Can work with multiple databases (MySQL, SQLite, possibly others)
-   - Data queries
-   - Administration tools
-   - DAQ module tools
-   - Introspection tools
-   
-
-## Demo:
+#### Demo:
 
 One can visit HallD RCDB Web site as demo:
 https://halldweb.jlab.org/rcdb/
@@ -75,5 +60,3 @@ What RCDB conditions are not designed for? - They are not designed for large dat
 That is because each condition value is independently saved (and attached) for each run.
 
 In the case of bulk data, it is better to save it using other RCDB options. RCDB provides the files saving mechanism as example.
-
-[//]: # (<img src="demo.png" style="max-height: 300px"/>)
