@@ -1,6 +1,6 @@
 <!-- docs/_sidebar.md -->
 
-- [GitHub](https://github.com/JeffersonLab/JANA2 ':target=_blank')
+- [GitHub](https://github.com/JeffersonLab/rcdb ':target=_blank')
 - [Introduction](index.md "RCDB: Runs and conditions database")
 
 
