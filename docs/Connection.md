@@ -72,9 +72,9 @@ db.disconnect()
 
 C++ and Java have similar class structure. The examples are:
 
-[Java simple example](https://github.com/JeffersonLab/rcdb/blob/master/java/src/javaExamples/SimpleExample.java)
+[Java simple example](https://github.com/JeffersonLab/rcdb/blob/main/java/src/javaExamples/SimpleExample.java)
 
-[C++ simple example](https://github.com/JeffersonLab/rcdb/blob/master/cpp/examples/simple.cpp)
+[C++ simple example](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp)
 
 ```c++
 // Connect has RAII approach 

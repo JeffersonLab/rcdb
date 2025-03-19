@@ -6,7 +6,7 @@
 
 C++ API is a header only library that allows to read RCDB condition values for the run. The library doesn't provide possibility of run selection queries at this point. Also it requires C++11 to compile. 
 
-C++ API code is located in [$RCDB_HOME/cpp](https://github.com/JeffersonLab/rcdb/tree/master/cpp) directory. 
+C++ API code is located in [$RCDB_HOME/cpp](https://github.com/JeffersonLab/rcdb/tree/main/cpp) directory. 
 
 <br/>
 <br/>
@@ -125,7 +125,7 @@ rcdb::ValueTypes GetValueType();       /// Returns the type enum
 
 ## Examples
 
-Examples are located in [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/master/cpp/examples) folder. To build them use `with-examples=true` scons flag:
+Examples are located in [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/main/cpp/examples) folder. To build them use `with-examples=true` scons flag:
 
 ```bash
 cd $RCDB_HOME/cpp
@@ -138,13 +138,13 @@ After examples are built they are located in `$RCDB_HOME/cpp/bin` directory name
 
 **List of examples:**
 
-* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/master/cpp/examples/simple.cpp) - Simple condition readout
-* [get_trigger_params.cpp](https://github.com/JeffersonLab/rcdb/blob/master/cpp/examples/get_trigger_params.cpp) - Versatile data readout example. It includes:  
+* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp) - Simple condition readout
+* [get_trigger_params.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_trigger_params.cpp) - Versatile data readout example. It includes:  
      * Reading conditions
      * Working with JSON serialized objects
      * Getting RCDB stored files contents
      * Working with config file parser
-* [write_conditions.cpp](https://github.com/JeffersonLab/rcdb/blob/master/cpp/examples/write_conditions.cpp) - Writing conditions to RCDB from C++. It includes:  
+* [write_conditions.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_conditions.cpp) - Writing conditions to RCDB from C++. It includes:  
      * Using WriteConnection
      * Adding condition values of different types
 

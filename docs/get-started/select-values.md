@@ -33,8 +33,11 @@ table = db.select_values(['polarization_angle','beam_current'], "@is_production"
 ## Select and filter
 
 The fastest designed way to get values from RCDB is by using ```select_values``` function. 
-The full example is here:
-[$RCDB_HOME/python/example_select_values.py](https://github.com/JeffersonLab/rcdb/blob/master/python/example_select_values.py)
+There are several related examples:
+
+- [01_select_values_simple.py](https://github.com/JeffersonLab/rcdb/blob/main/python/01_select_values_simple.py)
+- [02_select_value_extended.py](https://github.com/JeffersonLab/rcdb/blob/main/python/02_select_value_extended.py)
+- [03_select_values_custom_runs.py](https://github.com/JeffersonLab/rcdb/blob/main/python/03_select_values_custom_runs.py)
 
 The simplest usage is to put condition names and a run range:
 

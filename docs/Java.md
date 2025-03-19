@@ -6,8 +6,8 @@ Java API allows one to read RCDB condition values for the run. It doesn't provid
 ## Installation
 Java API comes as sources (in Kotlin) and as ready to use Java precompiled .jar file
 
-* Java API is located in [$RCDB_HOME/java](https://github.com/JeffersonLab/rcdb/tree/master/java) directory. 
-* Precompiled jar is located in [$RCDB_HOME/java/out/artifacts](https://github.com/JeffersonLab/rcdb/tree/master/java/out/artifacts/rcdb_jar/)
+* Java API is located in [$RCDB_HOME/java](https://github.com/JeffersonLab/rcdb/tree/main/java) directory. 
+* Precompiled jar is located in [$RCDB_HOME/java/out/artifacts](https://github.com/JeffersonLab/rcdb/tree/main/java/out/artifacts/rcdb_jar/)
 
 ---
 
@@ -43,7 +43,7 @@ org.rcdb.ValueTypes                    /// type enum
 
 ## Examples
 
-Examples are located in [$RCDB_HOME/java/src/javaExamples](https://github.com/JeffersonLab/rcdb/tree/master/java/src/javaExamples) folder. 
+Examples are located in [$RCDB_HOME/java/src/javaExamples](https://github.com/JeffersonLab/rcdb/tree/main/java/src/javaExamples) folder. 
 
 <br>
 
@@ -51,13 +51,13 @@ Examples are located in [$RCDB_HOME/java/src/javaExamples](https://github.com/Je
 
 Simple example - shows how to read values from database and lists all condition types from DB
 
-[$RCDB_HOME/java/src/javaExamples/SimpleExample.java](https://github.com/JeffersonLab/rcdb/blob/master/java/src/javaExamples/SimpleExample.java)
+[$RCDB_HOME/java/src/javaExamples/SimpleExample.java](https://github.com/JeffersonLab/rcdb/blob/main/java/src/javaExamples/SimpleExample.java)
 
 <br>
 
 #### Kotlin
 
-There are also an example written in [$RCDB_HOME/java/src/kotlinExamples/main.kt](https://github.com/JeffersonLab/rcdb/blob/master/java/src/kotlinExamples/main.kt)
+There are also an example written in [$RCDB_HOME/java/src/kotlinExamples/main.kt](https://github.com/JeffersonLab/rcdb/blob/main/java/src/kotlinExamples/main.kt)
 
 
 
