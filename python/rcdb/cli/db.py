@@ -98,8 +98,9 @@ def update(context):
 @db.command()
 @click.option('--no-defaults', is_flag=True, help="Don't create default condition types")
 @click.option('--drop-all', is_flag=True, help='Drops existing RCDB data if exists')
+@click.option('--confirm', is_flag=True, help='For CI automation and tests')
 @pass_rcdb_context
-def init(context, drop_all, no_defaults):
+def init(context, drop_all, no_defaults, confirm):
     """Database management commands."""
 
     # PRINTOUT PART
@@ -112,7 +113,7 @@ def init(context, drop_all, no_defaults):
     print("\nDB: {}\n".format(context.connection_str))
 
     # Double check user knows what will happen
-    if not click.confirm('Do you really want to continue?'):
+    if not confirm and not click.confirm('Do you really want to continue?'):
         return
 
     # That we will need for DB

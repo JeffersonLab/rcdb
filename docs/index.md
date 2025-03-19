@@ -1,6 +1,6 @@
 ## RCDB
 
-Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
+Run Configuration/Conditions Database (RCDB) stores experiments run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
 The interfaces available are:
 - Web site

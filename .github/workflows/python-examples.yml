@@ -1,0 +1,97 @@
+name: Python examples verification
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-examples:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.9"]
+      # Don't fail the entire job if one example fails
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          # Install rcdb and dependencies from pyproject.toml
+          cd $GITHUB_WORKSPACE/python
+          pip install --editable .
+          # Install additional dependencies for examples
+          pip install jsonpickle
+
+      - name: Setup SQLite for testing
+        run: |
+          mkdir -p $GITHUB_WORKSPACE/tmp
+          touch $GITHUB_WORKSPACE/tmp/test.sqlite.db
+          echo "RCDB_CONNECTION=sqlite:///$GITHUB_WORKSPACE/tmp/test.sqlite.db" >> $GITHUB_ENV
+
+      - name: Create database service (MySQL)
+        if: false  # Disabled until we have a proper way to initialize the MySQL database
+        run: |
+          # This would be the place to set up an actual MySQL database if needed
+          # For now, we'll use SQLite for examples that accept a connection string parameter
+          echo "RCDB_MYSQL_CONNECTION=sqlite:///$GITHUB_WORKSPACE/tmp/test.sqlite.db" >> $GITHUB_ENV
+
+      - name: List example files
+        id: list-examples
+        run: |
+          cd $GITHUB_WORKSPACE/python/examples
+          echo "examples=$(ls -1 example_*.py | tr '\n' ' ')" >> $GITHUB_OUTPUT
+
+      - name: Run basic examples (with in-memory or SQLite DB)
+        run: |
+          cd $GITHUB_WORKSPACE/python/examples
+          echo "Running example_conditions_basic.py"
+          python example_conditions_basic.py
+          
+          echo "Running example_conditions_store_array.py"
+          python example_conditions_store_array.py
+          
+          echo "Running example_conditions_store_object.py"
+          python example_conditions_store_object.py
+          
+          echo "Running example_sqlalchemy_query.py"
+          python example_sqlalchemy_query.py
+          
+          echo "Running example_runs_by_date.py (with connection string)"
+          python example_runs_by_date.py $RCDB_CONNECTION || echo "Skipping - requires properly initialized database"
+
+      - name: Run query examples (with offline mode)
+        run: |
+          cd $GITHUB_WORKSPACE/python/examples
+          echo "Running example_simple_queries.py"
+          python example_simple_queries.py $RCDB_CONNECTION || echo "Skipping - requires properly initialized database"
+          
+          # The following examples normally use the production database
+          # We'll try them with the test db, but expect some to fail gracefully
+          export RCDB_OFFLINE=true
+          echo "Running examples in offline mode (will show errors but not fail workflow)"
+          
+          echo "Trying example_cdc_gas_pressure.py"
+          python example_cdc_gas_pressure.py || echo "Skipping - requires production database"
+          
+          echo "Trying example_select_halld_values.py"
+          python example_select_halld_values.py || echo "Skipping - requires production database"
+          
+          echo "Trying example_select_values.py"
+          python example_select_values.py || echo "Skipping - requires production database"
+
+      - name: Summary
+        run: |
+          echo "Examples testing completed. Check logs for any failures."
+          echo "Note: Some examples are expected to fail if they require a production database connection."

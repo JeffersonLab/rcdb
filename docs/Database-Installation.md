@@ -41,17 +41,19 @@ export RCDB_CONNECTION='mysql://rcdb:password@localhost/rcdb'
 
 ## Create or update DB structure
 
-Both creating schema for the first time for a fresh database or updating the existing schema is done with
-[Alembic](https://pypi.python.org/pypi/alembic)
-
-Just run:
+The command to create DB structure is: 
 
 ```bash
-cd $RCDB_HOME
-./alembic_rcdb upgrade head
+rcdb -c sqlite:///test.sqlite db init --drop-all
+
+# For CI automation purposes --confirm flag can be added, but is discouraged for other cases  
 ```
 
-> Since there where problems with installing alembic on some machines in counting house RCDB ships a copy of it within itself; `alembic_rcdb` command runs this embedded alembic version. 
 
 
+The command to upgrade DB structure from previous RCDB versions:
+
+```bash
+rcdb -c sqlite:///test.sqlite db upgrade
+```
 

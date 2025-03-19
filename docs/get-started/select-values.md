@@ -7,14 +7,14 @@
 
 ## TLDR
 
-Fastest way to select values in 3 lines:
+Fastest way to select values in 3 lines (using HallD rcdb as example):
 
 ```python
 # import RCDB
 from rcdb.provider import RCDBProvider
 
 # connect to DB
-db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
+db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb2")
 
 # select values with query
 table = db.select_values(['polarization_angle','beam_current'], "@is_production", run_min=30000, run_max=30050)
