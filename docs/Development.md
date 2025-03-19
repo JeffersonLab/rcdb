@@ -1,4 +1,11 @@
-[documentation.md](../../JANA2/docs/development/documentation.md)# 1. Establishing integration tests
+# Development
+
+RCDB Git is available at: 
+
+https://github.com/JeffersonLab/rcdb
+
+
+## Establishing integration tests
 
 1. Create MySQL database for the test purposes
 
