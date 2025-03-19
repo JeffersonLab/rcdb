@@ -11,5 +11,5 @@ python_dir = os.path.join(this_file_dir, '..', 'python')
 sys.path.insert(0, python_dir)
 
 # Import and run rcdb
-from rcdb.cli.api import rcdb_cli
+from rcdb.cli.app import rcdb_cli
 rcdb_cli(prog_name="rcdb")
