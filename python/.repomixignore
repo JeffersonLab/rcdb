@@ -1,0 +1,15 @@
+# Add patterns to ignore here, one per line
+# Example:
+# *.log
+# tmp/
+
+rcdb/web/templates/
+rcdb/web/static/
+tests/run-5627_FCAL_BCAL_PS_m7.conf
+halld_rcdb/
+rcdb.egg-info/
+examples/prestart_example.xml
+examples/fadc250_example1.cnf
+examples/fadc250_example2.cnf
+utilites/
+daq/

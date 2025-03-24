@@ -128,3 +128,5 @@ rcdb_prereqs_version.xml
 sql/schema.mwb.bak
 
 reqvenv/
+
+python/repomix-output.txt
