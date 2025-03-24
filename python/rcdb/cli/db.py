@@ -29,7 +29,6 @@ def db(ctx):
         print("Schema version: {} - '{}'".format(schema_version.version, schema_version.comment))
 
 
-# add a command to the 'db' group
 @db.command()
 @pass_rcdb_context
 def update(context):
@@ -37,14 +36,14 @@ def update(context):
 
     # Check something exists
     if not sqlalchemy.inspect(provider.engine).has_table(SchemaVersion.__tablename__):
-        print('The schema version table does not exists. It looks like RCDB v1.')
+        print('The schema version table does not exist. It looks like RCDB v1.')
         current_version = 1
     else:
         print('Found schema version table')
         # Check schema version
         current_version = provider.get_schema_version()
 
-    if current_version !=1:
+    if current_version != 1:
         print(f"Can't update schema version. Current version is: {current_version.version}. This command can update:")
         print(f"   DB v1 --> v2")
         return
@@ -62,8 +61,6 @@ def update(context):
     if not click.confirm('Do you really want to continue?'):
         return
 
-    # TODO move next it to provider, create schema_update_v1_v2 function !!!
-
     # That we will need for DB
     metadata = rcdb.model.Base.metadata
     provider = RCDBProvider(context.connection_str, check_version=False)
@@ -74,21 +71,31 @@ def update(context):
     # Create run periods table
     RunPeriod.__table__.create(provider.engine)
 
-    with provider.engine.connect() as conn:
-        conn.execute("""
-            DROP TABLE IF EXISTS `trigger_thresholds` ;
-            DROP TABLE IF EXISTS `trigger_masks` ;
-            DROP TABLE IF EXISTS `readout_thresholds` ;
-            DROP TABLE IF EXISTS `readout_masks` ;
-            DROP TABLE IF EXISTS `dac_presets` ;
-            DROP TABLE IF EXISTS `crates` ;
-            DROP TABLE IF EXISTS `boards` ;
-            DROP TABLE IF EXISTS `board_installations_have_runs` ;
-            DROP TABLE IF EXISTS `board_installations` ;
-            DROP TABLE IF EXISTS `board_configurations_have_runs` ;
-            DROP TABLE IF EXISTS `board_configurations` ;
-            DROP TABLE IF EXISTS `alembic_version` ;
-        """)
+    # List of old tables to drop
+    tables_to_drop = [
+        'trigger_thresholds',
+        'trigger_masks',
+        'readout_thresholds',
+        'readout_masks',
+        'dac_presets',
+        'crates',
+        'boards',
+        'board_installations_have_runs',
+        'board_installations',
+        'board_configurations_have_runs',
+        'board_configurations',
+        'alembic_version'
+    ]
+
+    with provider.engine.begin() as conn:
+        inspector = sqlalchemy.inspect(conn)
+        existing_tables = inspector.get_table_names()
+
+        # Drop each table if it is present
+        for t in tables_to_drop:
+            if t in existing_tables:
+                print(f"Dropping table '{t}'")
+                conn.execute(sqlalchemy.text(f"DROP TABLE {t}"))
 
     # Set correct version
     version = stamp_schema_version(provider)
