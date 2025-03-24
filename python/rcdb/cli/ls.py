@@ -4,12 +4,12 @@ from rcdb.provider import RCDBProvider
 from .context import pass_rcdb_context
 
 
-@click.command()
+@click.command(name="ls")
 @click.argument('search', required=False)
 @click.option('--long', '-l', 'is_long', is_flag=True, help='Prints condition full information')
 @pass_rcdb_context
-def ls(context, search, is_long):
-    """Lists conditions"""
+def ls_command(context, search, is_long):
+    """List conditions"""
 
     db = context.db
     assert isinstance(db, RCDBProvider)

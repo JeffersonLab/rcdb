@@ -9,9 +9,10 @@ from rcdb import RCDBProvider
 from rcdb.model import RunPeriod
 from rcdb.cli.context import pass_rcdb_context
 
-@click.group(invoke_without_command=True)
+
+@click.group(name="rp", invoke_without_command=True)
 @click.pass_context
-def rp(context):
+def rp_command(context):
     """
     Run Periods management commands.
 
@@ -38,7 +39,7 @@ def rp(context):
     print_run_periods(run_periods)
 
 
-@rp.command()
+@rp_command.command()
 @click.option('--name', required=True, help="Name of the run period, e.g. RunPeriod-2025-01.")
 @click.option('--description', default='', help="Description of the run period.")
 @click.option('--run-min', 'run_min', required=True, type=int, help="Minimum run number in the period.")
@@ -90,7 +91,8 @@ def add(context, name, description, run_min, run_max, start_date, end_date):
 
     print(f"Added new run period: {new_period}")
 
-@rp.command()
+
+@rp_command.command()
 @click.argument('period_id', type=int)
 @click.option('--yes', is_flag=True, help="Skip prompt confirmation and remove directly.")
 @pass_rcdb_context
@@ -122,7 +124,8 @@ def rm(context, period_id, yes):
     session.commit()
     print(f"Removed run period ID={period_id} ({rp_item.name}).")
 
-@rp.command()
+
+@rp_command.command()
 @click.argument('period_id', type=int)
 @click.option('--name', default=None, help="New name of the run period.")
 @click.option('--description', default=None, help="New description of the run period.")
@@ -165,6 +168,7 @@ def update(context, period_id, name, description, run_min, run_max, start_date, 
 
     session.commit()
     print(f"Updated run period ID={period_id}: {rp_item}")
+
 
 def print_run_periods(run_periods):
     # 1) Gather data strings and compute column widths

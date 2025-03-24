@@ -8,12 +8,14 @@ from rcdb.provider import  RCDBProvider
 from rcdb.cli.context import pass_rcdb_context
 import json
 
+
 def sizeof_fmt(num, suffix="B"):
     for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
             return f"{num:3.1f}{unit}{suffix}"
         num /= 1024.0
     return f"{num:.1f}Yi{suffix}"
+
 
 def read_run_directories(mask, run_min, run_max):
     run_dirs = glob.glob(mask)
@@ -46,14 +48,14 @@ def read_run_directories(mask, run_min, run_max):
 
     return run_files
 
-@click.command()
+@click.command(name="evio-files")
 @click.option('--run-range', required=False, default=None)
 @click.option('--mask', required=False, default="/gluex/data/rawdata/all/Run*111*")
 @click.option('--save-list', required=False, default=None, help="Save found evio files to json file with this name")
 @click.option('--load-list', required=False, default=None, help="Instead of scanning, load eviofiles from a list")
 @click.option('--execute', is_flag=True, required=False, default=False, help="Instead of scanning, load eviofiles from a list")
 @pass_rcdb_context
-def evio_files(ctx, run_range, mask, save_list, load_list, execute):
+def evio_files_command(ctx, run_range, mask, save_list, load_list, execute):
     """ 
     Example of usage: 
       # search /mss and save evio files to a json file list

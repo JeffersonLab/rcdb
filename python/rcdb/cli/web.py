@@ -1,20 +1,22 @@
 import os
 import click
 
-from rcdb import web as rcdb_web
+from rcdb import web as rcdb_web, RCDBProvider
 from .context import pass_rcdb_context
 
 
 @click.command("web")
 @pass_rcdb_context
-def web(context):
+def web_command(context):
     """
     Runs the local RCDB web application using the connection string from
     either the CLI context or the RCDB_CONNECTION environment variable.
     """
     # If user provided --connection on the CLI, context.db.connection_str is set:
-    if context.db and context.db.connect_str:
-        rcdb_web.app.config["SQL_CONNECTION_STRING"] = context.db.connect_str
+    rcdb_provider = context.db
+    if rcdb_provider and rcdb_provider.connection_string:
+        assert isinstance(rcdb_provider, RCDBProvider)
+        rcdb_web.app.config["SQL_CONNECTION_STRING"] = rcdb_provider.connection_string
     elif "RCDB_CONNECTION" in os.environ:
         # Otherwise check the environment variable
         rcdb_web.app.config["SQL_CONNECTION_STRING"] = os.environ["RCDB_CONNECTION"]

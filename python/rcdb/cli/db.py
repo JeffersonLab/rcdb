@@ -10,9 +10,9 @@ from rcdb.cli.context import pass_rcdb_context
 from rcdb.provider import stamp_schema_version
 
 
-@click.group(invoke_without_command=True)
+@click.group(name="db", invoke_without_command=True)
 @click.pass_context
-def db(ctx):
+def db_command(ctx):
     """Database management commands."""
     if ctx.invoked_subcommand is None:
         connection_str = ctx.obj.connection_str
@@ -29,7 +29,7 @@ def db(ctx):
         print("Schema version: {} - '{}'".format(schema_version.version, schema_version.comment))
 
 
-@db.command()
+@db_command.command()
 @pass_rcdb_context
 def update(context):
     provider = RCDBProvider(context.connection_str, check_version=False)
@@ -102,7 +102,7 @@ def update(context):
     print("Stamped schema version: {} - '{}'".format(version.version, version.comment))
 
 
-@db.command()
+@db_command.command()
 @click.option('--no-defaults', is_flag=True, help="Don't create default condition types")
 @click.option('--drop-all', is_flag=True, help='Drops existing RCDB data if exists')
 @click.option('--confirm', is_flag=True, help='For CI automation and tests')

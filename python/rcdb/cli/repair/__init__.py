@@ -1,11 +1,12 @@
 import click
-from . import evio_files
+from .evio_files import evio_files_command
 
-@click.group()
-def repair():
-    """
-    Group of commands that help repair and consolidate RCDB
-    """
+
+@click.group(name="repair")
+def repair_command():
+    """ Group of commands that help repair and consolidate RCDB """
     pass
 
-repair.add_command(evio_files.evio_files)
+
+repair_command.add_command(evio_files_command)
+
