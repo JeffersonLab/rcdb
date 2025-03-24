@@ -8,3 +8,5 @@ exclude utilites
 
 include ../README.md
 recursive-include rcdb *.py
+recursive-include rcdb/web/static *
+recursive-include rcdb/web/templates *
