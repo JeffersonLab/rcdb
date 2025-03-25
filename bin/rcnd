@@ -13,7 +13,7 @@ python_dir = os.path.join(this_file_dir, '..', 'python')
 # Add the directory to the Python modules search path
 sys.path.insert(0, python_dir)
 
-module_path = os.path.join(this_file_dir, '..', 'python', 'utilites', 'rcnd.py')
+module_path = os.path.join(this_file_dir, '..', 'python', 'utilities', 'rcnd.py')
 module_path = os.path.abspath(module_path)
 
 # Load the module from the specified file

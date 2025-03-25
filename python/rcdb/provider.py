@@ -711,8 +711,142 @@ class RCDBProvider(object):
 
         return query.first()
 
+    """
+    RCDB data provider that uses SQLAlchemy for accessing databases
+    """
+
+    # ------------------------------------------------
+    # Adds start time
+    # ------------------------------------------------
+    def add_run_start_time(self, run, dtm):
+        """
+            Sets staring time of run
+        """
+        assert (isinstance(dtm, datetime.datetime))
+
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(int(run))
+
+        if run.start_time == dtm:
+            return
+
+        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
+
+        run.start_time = dtm
+        self.session.commit()
+
+    # ------------------------------------------------
+    # Adds end time
+    # ------------------------------------------------
+    def add_run_end_time(self, run, dtm):
+        """Adds time of run"""
+        assert (isinstance(dtm, datetime.datetime))
+
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(int(run))
+
+        if run.end_time == dtm:
+            return
+
+        log.debug(Lf("Setting end time '{}' to run '{}'", dtm, run.number))
+        run.end_time = dtm
+        self.session.commit()
+
+    # ------------------------------------------------
+    #
+    # ------------------------------------------------
+    def add_configuration_file(self, run, path, content=None, overwrite=False, importance=0):
+        """Adds configuration file to run configuration. If such file exists
+        :param importance: 0 - HIGH importance, 1 - LOWER importance. Is used to show in WEB interface
+        :param overwrite: If this flag is true, such file for this run exists but checksumm is different,
+                          file content will be overwritten
+        :param content: Content of a file. If not given, func tryes to open file by path.
+        :param path: Path of the file
+        :param run: Run number
+        """
+
+        def get_content():
+            if content:
+                return content
+            with open(path) as io_file:
+                return io_file.read()
+
+        log.debug("Processing configuration file")
+
+        if content is None:
+            log.debug(Lf("|- Content is not provided as func param, reading from FS '{}'", path))
+            check_sum = rcdb.file_archiver.get_file_sha256(path)
+        else:
+            log.debug(Lf("|- Content is NOT none, using it to put to DB", path))
+            check_sum = rcdb.file_archiver.get_string_sha256(content)
+
+        if not isinstance(run, Run):  # run is given as run number not Run object
+            run = self.create_run(run)
+
+        if overwrite:
+            # If we have to potentially overwrite the file, we have to apply another logic
+            # First, we look at file with this name in this run
+            query = self.session.query(ConfigurationFile) \
+                .filter(ConfigurationFile.runs.contains(run)) \
+                .filter(ConfigurationFile.path == path) \
+                .order_by(desc(ConfigurationFile.id))  # we want latest
+            if query.count():
+                # There are file to overwrite!
+                conf_file = query.first()
+                conf_file.sha256 = check_sum
+                conf_file.path = path
+                conf_file.content = get_content()
+                conf_file.importance = importance
+                log.debug(Lf("|- File '{}' is getting overwritten", path))
+
+                self.session.commit()
+                return conf_file
+
+        # Overwrite = false or is not possible
+        # Look, do we have a file with such name and checksumm?
+        file_query = self.session.query(ConfigurationFile) \
+            .filter(ConfigurationFile.sha256 == check_sum, ConfigurationFile.path == path)
+
+        if not file_query.count():
+            # no such file found!
+            log.debug(Lf("|- File '{}' not found in DB", path))
+
+            # create file.
+            conf_file = ConfigurationFile()
+            conf_file.sha256 = check_sum
+            conf_file.path = path
+            conf_file.content = get_content()
+            conf_file.importance = importance
+
+            # put it to DB and associate with run
+            self.session.add(conf_file)
+            self.session.commit()
+
+            conf_file.runs.append(run)
+
+            # save and exit
+            self.session.commit()
+            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run), run.number)
+            return conf_file
+
+        # such file already exists! Get it from database
+        conf_file = file_query.first()
+        log.debug(Lf("|- File '{}' found in DB by id: '{}'", path, conf_file.id))
+
+        # maybe... we even have this file in run conf?
+        if conf_file not in run.files:
+            conf_file.runs.append(run)
+            # run_conf.files.append(conf_file)
+            self.session.commit()  # save and exit
+            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run.number)
+        else:
+            log.debug(Lf("|- File already associated with run'{}'", run))
+
+        return conf_file
+
+
     def select_runs(self, search_str="", run_min=0, run_max=sys.maxsize, sort_desc=False):
-        """ Searches RCDB for runs with e
+        """ Obsolete. Searches RCDB for runs with e
 
         :param sort_desc: if True result runs will by sorted descendant by run_number, ascendant if False
         :param run_min: minimum run to search
@@ -1283,138 +1417,8 @@ class RunSelectionResult(RcdbSelectionResult):
 
 
 class ConfigurationProvider(RCDBProvider):
-    """
-    RCDB data provider that uses SQLAlchemy for accessing databases
-    """
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_run_start_time(self, run, dtm):
-        """
-            Sets staring time of run
-        """
-        assert (isinstance(dtm, datetime.datetime))
-
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(int(run))
-
-        if run.start_time == dtm:
-            return
-
-        log.debug(Lf("Setting start time '{}' to run '{}'", dtm, run.number))
-
-        run.start_time = dtm
-        self.session.commit()
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_run_end_time(self, run, dtm):
-        """Adds time of run"""
-        assert (isinstance(dtm, datetime.datetime))
-
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(int(run))
-
-        if run.end_time == dtm:
-            return
-
-        log.debug(Lf("Setting end time '{}' to run '{}'", dtm, run.number))
-        run.end_time = dtm
-        self.session.commit()
-
-    # ------------------------------------------------
-    #
-    # ------------------------------------------------
-    def add_configuration_file(self, run, path, content=None, overwrite=False, importance=0):
-        """Adds configuration file to run configuration. If such file exists
-        :param importance: 0 - HIGH importance, 1 - LOWER importance. Is used to show in WEB interface
-        :param overwrite: If this flag is true, such file for this run exists but checksumm is different,
-                          file content will be overwritten
-        :param content: Content of a file. If not given, func tryes to open file by path.
-        :param path: Path of the file
-        :param run: Run number
-        """
-
-        def get_content():
-            if content:
-                return content
-            with open(path) as io_file:
-                return io_file.read()
-
-        log.debug("Processing configuration file")
-
-        if content is None:
-            log.debug(Lf("|- Content is not provided as func param, reading from FS '{}'", path))
-            check_sum = rcdb.file_archiver.get_file_sha256(path)
-        else:
-            log.debug(Lf("|- Content is NOT none, using it to put to DB", path))
-            check_sum = rcdb.file_archiver.get_string_sha256(content)
-
-        if not isinstance(run, Run):  # run is given as run number not Run object
-            run = self.create_run(run)
-
-        if overwrite:
-            # If we have to potentially overwrite the file, we have to apply another logic
-            # First, we look at file with this name in this run
-            query = self.session.query(ConfigurationFile) \
-                .filter(ConfigurationFile.runs.contains(run)) \
-                .filter(ConfigurationFile.path == path) \
-                .order_by(desc(ConfigurationFile.id))  # we want latest
-            if query.count():
-                # There are file to overwrite!
-                conf_file = query.first()
-                conf_file.sha256 = check_sum
-                conf_file.path = path
-                conf_file.content = get_content()
-                conf_file.importance = importance
-                log.debug(Lf("|- File '{}' is getting overwritten", path))
-
-                self.session.commit()
-                return conf_file
-
-        # Overwrite = false or is not possible
-        # Look, do we have a file with such name and checksumm?
-        file_query = self.session.query(ConfigurationFile) \
-            .filter(ConfigurationFile.sha256 == check_sum, ConfigurationFile.path == path)
-
-        if not file_query.count():
-            # no such file found!
-            log.debug(Lf("|- File '{}' not found in DB", path))
-
-            # create file.
-            conf_file = ConfigurationFile()
-            conf_file.sha256 = check_sum
-            conf_file.path = path
-            conf_file.content = get_content()
-            conf_file.importance = importance
-
-            # put it to DB and associate with run
-            self.session.add(conf_file)
-            self.session.commit()
-
-            conf_file.runs.append(run)
-
-            # save and exit
-            self.session.commit()
-            self.add_log_record(conf_file, "File added to DB. Path: '{}'. Run: '{}'".format(path, run), run.number)
-            return conf_file
-
-        # such file already exists! Get it from database
-        conf_file = file_query.first()
-        log.debug(Lf("|- File '{}' found in DB by id: '{}'", path, conf_file.id))
-
-        # maybe... we even have this file in run conf?
-        if conf_file not in run.files:
-            conf_file.runs.append(run)
-            # run_conf.files.append(conf_file)
-            self.session.commit()  # save and exit
-            self.add_log_record(conf_file, "File associated. Path: '{}'. Run: '{}'".format(path, run), run.number)
-        else:
-            log.debug(Lf("|- File already associated with run'{}'", run))
-
-        return conf_file
+    """Obsolete. Still exists for backward compatibility. All methods moved to RCDBProvider"""
+    pass
 
 
 def destroy_schema(db):
