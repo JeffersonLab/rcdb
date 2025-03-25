@@ -2,7 +2,7 @@
 
 Below is a high-level overview of RCDB’s Python API
 
-## 1. Core Aspects
+## Core Aspects
 
 1. **SQLAlchemy ORM**  
    RCDB uses [SQLAlchemy](https://www.sqlalchemy.org/) under the hood for database interactions.
@@ -57,7 +57,7 @@ Below is a high-level overview of RCDB’s Python API
 
 ---
 
-## Core Classes and Their Responsibilities
+## Key Classes
 
 Below are the main classes you will encounter in the `rcdb/` directory.
 
