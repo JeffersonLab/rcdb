@@ -1,110 +1,179 @@
 # Python API
 
+### Core Technologies & Principles
+1. **Database Backend**:
+    - Supports MySQL and SQLite via SQLAlchemy ORM
+    - Uses SQLAlchemy declarative base for model definitions
+    - Schema versioning with `SchemaVersion` table
 
-## Simple Python API Example
+2. **Architecture**:
+    - Provider pattern (`RCDBProvider` as main access point)
+    - Modular update system with plugin architecture
+    - Type-safe condition value handling through `ConditionType`
 
-Create or connect to an SQLite database, define a condition type, and store some values:
+3. **Key Libraries**:
+    - SQLAlchemy for database abstraction
+    - Click for CLI interface
+    - Flask for web interface
+    - Ply for query parsing
 
+4. **Core Principles**:
+    - Run-centric data model
+    - Type-safe condition storage
+    - Audit logging through `LogRecord` table
+    - File versioning with SHA256 hashes
+
+### Key Components
+
+#### 1. Data Model (model.py)
 ```python
-from datetime import datetime
-from rcdb.provider import RCDBProvider
-from rcdb.model import ConditionType
+class Run(Base):
+    __tablename__ = 'runs'
+    number = Column(Integer, primary_key=True)
+    conditions = relationship("Condition", back_populates="run")
 
-# 1. Create/connect to an RCDB database (SQLite in this example).
-db = RCDBProvider("sqlite:///example.db", check_version=False)
+class ConditionType(Base):
+    value_type = Column(Enum(JSON_FIELD, STRING_FIELD, ...))
 
-# 2. Create a condition type -- do this only once. If it already exists, you can skip this.
-db.create_condition_type("my_val", ConditionType.INT_FIELD, "This is my value")
-
-# 3. Add data to database (run #1, "my_val" = 1000).
-db.add_condition(run=1, key="my_val", value=1000)
-
-# ...Replace previous value by passing replace=True
-db.add_condition(run=1, key="my_val", value=2000, replace=True)
-
-# 4. Get a condition from database
-condition = db.get_condition(run_number=1, key="my_val")
-
-print(condition)
-print("value =", condition.value)
-print("name  =", condition.name)
+class Condition(Base):
+    run_number = Column(Integer, ForeignKey('runs.number'))
+    text_value = Column(Text)
+    int_value = Column(Integer)
+    # ... other type-specific fields
 ```
 
-Running this script produces something like:
-
-```
-<Condition id='1', run_number='1', value=2000>
-value = 2000
-name  = my_val
-```
-
----
-
-## More Actions on Condition Types
-
-List existing condition types in the database:
-
+#### 2. Core Provider (provider.py)
 ```python
-for ct in db.get_condition_types():
-    print(ct.name, ":", ct.description)
+class RCDBProvider:
+    def connect(self, connection_string):
+        self.engine = create_engine(connection_string)
+        self.session = sessionmaker(bind=self.engine)()
+
+    def create_run(self, number):
+        run = Run(number=number)
+        self.session.add(run)
+        return run
+
+    def add_condition(self, run, key, value, replace=False):
+        # Type-safe value handling
+        ctype = self.get_condition_type(key)
+        condition = Condition(type=ctype, run=run)
+        condition.value = ctype.convert_value(value)
 ```
 
-Example output:
-
-```
-my_val : This is my value
-```
-
----
-
-## Getting Run Conditions
-
-A *Run* in RCDB is represented by the `Run` model. You can fetch a run by number and see all its
-conditions:
-
+#### 3. Query System
 ```python
-run = db.get_run(1)
-print(f"Conditions for run {run.number}:")
-for condition in run.conditions:
-    print(condition.name, "=", condition.value)
+# Complex condition queries
+result = db.select_values(
+    ['beam_current', 'polarization_angle'],
+    "run_type=='PHYSICS' and beam_energy>8.0",
+    run_min=10000,
+    run_max=20000
+)
+
+# Direct SQLAlchemy access
+query = db.session.query(Run).join(Condition)
 ```
 
-Example output:
+### Key Functions/Methods
 
+#### Data Storage
+```python
+# Create run and add conditions
+run = db.create_run(12345)
+db.add_condition(run, "beam_energy", 8.5)
+db.add_condition(run, "target_type", "LH2")
+
+# Bulk operations
+db.add_conditions(run, [
+    ("event_count", 1500000),
+    ("is_valid", True)
+])
+
+# File versioning
+db.add_configuration_file(run, "/path/to/config.conf")
 ```
-Conditions for run 1:
-my_val = 2000
+
+#### Data Retrieval
+```python
+# Get single run
+run = db.get_run(12345)
+print(run.conditions["beam_energy"].value)
+
+# Complex queries
+results = db.select_values(
+    ["beam_current", "event_count"],
+    "polarization_angle>0 and status=='VALID'",
+    run_min=10000,
+    run_max=20000
+)
 ```
 
----
+#### Update System
+```python
+# CODA log parsing
+parse_result = coda_parser.parse_file("run_12345.log")
+update_coda_conditions(db, parse_result)
 
-## Running the Example
+# EPICS updates
+epics_conditions = update_beam_conditions(run)
+db.add_conditions(run, epics_conditions)
+```
 
-1. **Create an empty SQLite** DB:
-   ```bash
-   rcdb -c sqlite:///example.db db init
+### Performance Features
+1. **Bulk Operations**:
+    - `add_conditions()` for batch updates
+    - SQLAlchemy session-based transactions
+
+2. **Caching**:
+    - Condition type caching
+    - Run period caching
+
+3. **Optimized Queries**:
+    - Hybrid properties for common queries
+    - Direct SQL access for complex operations
+
+### CLI Interface (cli/app.py)
+```bash
+# Query runs
+rcdb select "beam_current>50 and status=='VALID'" -v beam_current,run_type
+
+# Database maintenance
+rcdb db update  # Schema migrations
+rcdb repair evio-files  # Fix file associations
+```
+
+### Key Design Patterns
+1. **Unit of Work**:
+    - SQLAlchemy session management
+    - Atomic transactions for critical operations
+
+2. **Strategy Pattern**:
+    - Different update handlers (CODA/EPICS/ROC)
+    - Pluggable condition types
+
+3. **Observer Pattern**:
+    - Update reasons (start/update/end)
+    - Multi-system synchronization
+
+### Typical Workflow
+1. **Run Start**:
+   ```python
+   run = db.create_run(run_number)
+   update_coda_conditions(db, coda_parse_result)
+   update_epics_conditions(db, run)
    ```
 
-2. **Run** the sample script above (e.g. `example_conditions_basic.py`):
-   ```bash
-   python example_conditions_basic.py
+2. **During Run**:
+   ```python
+   db.add_condition(run, "event_rate", current_rate)
    ```
 
-3. **Observe** its output in the console.
-   > If you run the script multiple times and you use `replace=True`, you can overwrite old
-   condition values.  
-   > If you prefer a fresh start, remove `example.db` and re-initialize.
+3. **Run End**:
+   ```python
+   run.end_time = datetime.now()
+   update_file_associations(run)
+   db.session.commit()
+   ```
 
-
-## Summary
-
-- Use **`RCDBProvider(connection_string)`** in Python to connect to or create a DB.
-- Create condition types **once** (e.g. `db.create_condition_type("my_val", ...)`).
-- **Add conditions** to runs via `db.add_condition(run, "my_val", value, replace=True/False)`.
-- **Retrieve** conditions with `db.get_condition(run, "my_val")` or via
-  `db.get_run(run).conditions`.
-- Manage, query, and explore data with the `rcdb` command-line tool.
-
-This updated guide should help you quickly get started with creating, storing, and retrieving run
-conditions in Python 3 for RCDB 2.x. If you have a legacy RCDB 1.x database, you should migrate or
-initialize a fresh database as described in the earlier documentation.
+The RCDB API combines database rigor with experimental physics needs, providing type safety, audit capabilities, and high-performance access patterns while maintaining flexibility for complex experimental conditions.
