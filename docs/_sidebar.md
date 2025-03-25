@@ -3,46 +3,24 @@
 - [GitHub](https://github.com/JeffersonLab/rcdb ':target=_blank')
 - [Introduction](index.md "RCDB: Runs and conditions database")
 
-
 **Get Started**:  
 - [Installation](get-started/installation.md)  
 - [Select values](get-started/select-values.md) (python)
 - [Query syntax](get-started/query-syntax.md)  
-- [Add data](Python-basics) (python)  
-- [CLI Basics](rcnd)  
+- [Add data](get-started/add-value-python.md) (python)  
+- [Command line](rcdb-cli)  
 
 **RCDB Explained**:  
-- [Connection](Connection)  
-- [DB and APIs structure](DB-and-API-structure)  
-- [SQL examples](DB-and-API-structure#sql-queries)  
-- [Creating condition types](Creating-condition-types)  
-- [Adding condition values](Adding-condition-values)  
-- [Saving files](Saving-configuration-files)  
-- [SQLAlchemy](SQLAlchemy)  
-- [Logging](Logging)  
-- [Performance](Performance)  
+- [Connection](concepts/connection)  
+- [DB and APIs structure](concepts/db-and-api-structure)  
+- [SQL examples](concepts/db-and-api-structure#sql-queries)  
 
-**[C++ API](Cpp)**:  
-- [Installation](Cpp#installation)  
-- [Getting values](Cpp#getting-values)  
-- [Examples](Cpp#examples)
 
-**[Java API](Java)**:  
-- [API doc](Java)  
-- [Getting values](Java#getting-values)  
-- [Examples](Java#examples)
-- [Kotlin](Java#Kotlin)
+- [C++ API](Cpp)
+- [Java API](Java)
+- [Development guide](development/development.md)
+- [Migrate to RCDB2](development/rcdb2-migration.md)
+- [DAQ Setup](daq/daq.md)
 
-**CLI**:  
-- [rcnd](rcnd)  
 
-**[Development](Development)**
-- [DB Installation](Database-Installation)
-- [Deploy RCDB DB](Deployment)
-
-**DAQ Setup**:  
-- [Overview](DaqOverview)
-- [CODA log parser](DaqCodaParser)
-- [EPICS](DaqEpics)
-- [Config parser](DaqConfigParser)
 

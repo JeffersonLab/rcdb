@@ -20,7 +20,7 @@ Custom data modification by SQLAlchemy, like creating or deleting objects manual
 logged too, so log notification is left to user here too.
 
 
-How to left a log record:
+How to leave a log record:
 
 <syntaxhighlight lang="python">
 # set RCDB_USER environment variable to give RCDB you user name

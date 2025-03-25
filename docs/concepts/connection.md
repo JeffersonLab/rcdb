@@ -1,6 +1,8 @@
+## Connection
 
-In order to connect to data source, RCDB uses so called `connection strings`. The connection strings have the same 
-form for all API-s and the CLI tools. The general form is:
+In order to connect to data source, RCDB uses so called `connection strings`. 
+The connection strings have the same form for all API-s and the CLI tools. 
+The general form is:
 
 ```
 dialect://username:password@host:port/database
@@ -15,6 +17,7 @@ sqlite:///path_to_file
 
 ***(!)*** Note that because SQLite doesn't have user_name and password, it starts with three slashes ///.
 And thus there are 4 (four) slashes `////` in an absolute path to file.
+
 ```
 sqlite:////home/user/example.db
 ```
@@ -26,7 +29,10 @@ sqlite:////home/user/example.db
 mysql://rcdb@hallddb.jlab.org/rcdb
 ```
 
-More about connection strings could be found in [SQLAlchemy documentation](http://docs.sqlalchemy.org/en/rel_0_9/core/engines.html#database-urls%20SQLAlchemy%20documentation)
+More about connection strings could be found in:
+
+- [rfc1738](https://www.ietf.org/rfc/rfc1738.txt)
+- [SQLAlchemy documentation](https://docs.sqlalchemy.org/en/20/core/engines.html#database-urls)
 
 <br>
 
@@ -37,7 +43,10 @@ For CLI tools the standard is to have ```-c``` or ```--connection``` flag and/or
 
 ```bash
 export CCDB_CONNECTION=mysql://user_name:password@host:port/database
-rcnd
+rcdb ls
+
+# is the same as
+rcdb -c  
 ```
 
 ## Python

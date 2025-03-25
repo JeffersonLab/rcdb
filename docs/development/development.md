@@ -44,4 +44,18 @@ python -m build
 twine upload dist/*
 ```
 
-[filename](documentation.md ':include')
+[documentation.md](documentation.md ':include')
+
+
+----------------------  
+### Setup environment manually
+
+If one needs to setup environment variables ***manually***, here is the list of variables, `environment.XXX` scripts set:
+
+* `RCDB_HOME` - set to the rcdb directory (where environment.* scripts are located)
+* `PATH` -  add `"$RCDB_HOME":"$RCDB_HOME/bin":$PATH`
+
+If one wants to use C++ ***readout*** API
+* `LD_LIBRARY_PATH` - add `$RCDB_HOME/cpp/lib`
+* `CPLUS_INCLUDE_PATH` - add `$RCDB_HOME/cpp/include`
+* `PATH` - add `"$RCDB_HOME/bin"`

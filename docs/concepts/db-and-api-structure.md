@@ -1,6 +1,6 @@
 ## Database structure explained
 
-![RCDB sql schema](images/schema.png)
+![RCDB sql schema](../images/schema.png)
 
 The essential database schema is pretty simple and could be split in four groups of tables:
 
@@ -51,6 +51,8 @@ Python API data model classes resembles this structure. Most common python class
 * **Run** - represents run
 * **Condition** - stores data for the run
 * **ConditionType** - stores condition name, field type and other
+* **File** - stores configuration (presumably) file contents and hashes
+
 
 
 All classes have properties to reference each other. The main properties for conditions management are:

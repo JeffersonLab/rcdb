@@ -10,7 +10,7 @@
     "compress": true,
     "topFilesLength": 10,
     "showLineNumbers": false,
-    "copyToClipboard": false
+    "copyToClipboard": true
   },
   "include": [],
   "ignore": {

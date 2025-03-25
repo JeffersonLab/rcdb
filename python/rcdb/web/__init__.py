@@ -24,7 +24,7 @@ SQL_CONNECTION_STRING = "mysql+pymysql://rcdb@127.0.0.1/rcdb"
 # Get the current directory
 current_directory = os.path.dirname(os.path.abspath(__file__))
 template_folder=os.path.join(current_directory, 'templates')
-print(f"template_folder={template_folder}")
+
 # Create Flask app with custom template folder
 app = Flask(__name__, template_folder=template_folder)
 

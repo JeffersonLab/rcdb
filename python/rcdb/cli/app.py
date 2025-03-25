@@ -51,9 +51,15 @@ def rcdb_cli(ctx, user_config, connection, config, verbose):
     for key, value in config:
         ctx.obj.set_config(key, value)
 
+    # Bo commands given
     if ctx.invoked_subcommand is None:
-        "No command was specified"
-        click.echo(ctx.get_help())
+        # There is a connection but no subcommand
+        if connection:
+            # If user typed just `rcdb -c <db>`, call info() automatically:
+            ctx.invoke(info_command)        # => invoke the "info" command
+        else:
+            # No subcommand, no connection => show help
+            click.echo(ctx.get_help())
 
 
 # Add commands to application

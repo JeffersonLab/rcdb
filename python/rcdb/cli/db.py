@@ -1,6 +1,6 @@
 import click
 import sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, desc, select
+from sqlalchemy import create_engine, MetaData, Table, desc, select, text
 from sqlalchemy.exc import OperationalError
 
 import rcdb
@@ -27,6 +27,61 @@ def db_command(ctx):
         query = select(SchemaVersion).order_by(SchemaVersion.version.desc())
         schema_version, = provider.session.execute(query).first()
         print("Schema version: {} - '{}'".format(schema_version.version, schema_version.comment))
+
+        if connection_str.startswith("mysql"):
+            _print_mysql_table_sizes(engine=provider.engine)
+        elif connection_str.startswith("sqlite"):
+            _print_sqlite_table_sizes(engine=provider.engine)
+        else:
+            click.echo("Table size info: not supported for this database dialect")
+
+def _print_mysql_table_sizes(engine):
+    """Query MySQL information_schema to print approximate table sizes in MB."""
+    # Find which database/schema we are connected to
+    db_name = engine.url.database
+
+    sql = text(f"""
+        SELECT 
+            table_name AS tbl,
+            ROUND(((data_length + index_length) / 1024 / 1024), 2) AS size_mb
+        FROM information_schema.tables
+        WHERE table_schema = :db
+        ORDER BY size_mb DESC
+    """)
+
+    with engine.connect() as conn:
+        results = conn.execute(sql, {"db": db_name}).fetchall()
+
+    click.echo("\nTable sizes in MB (MySQL):")
+    for row in results:
+        table, size_mb = row
+        click.echo(f"  {table:30} {size_mb} MB")
+
+def _print_sqlite_table_sizes(engine):
+    """Use 'dbstat' virtual table (if available) to estimate table sizes."""
+    try:
+        with engine.connect() as conn:
+            # Enable the dbstat extension if needed
+            # conn.execute("SELECT load_extension('dbstat')")
+            # (Only if your SQLite requires explicit load_extension calls)
+
+            # dbstat vtable can be queried like this:
+            rows = conn.execute(text("""
+                SELECT
+                    name AS table_name,
+                    SUM(pgsize) as total_bytes
+                FROM dbstat
+                GROUP BY name
+                ORDER BY total_bytes DESC
+            """)).fetchall()
+
+        click.echo("\nApproximate per-table sizes (SQLite dbstat):")
+        for table_name, total_bytes in rows:
+            size_mb = round(total_bytes / 1024 / 1024, 2)
+            click.echo(f"  {table_name:30} {size_mb} MB")
+
+    except Exception as ex:
+        click.echo("\n No table size info: sqlite dbstat extension is not installed. Use sqlite3_analyzer to get table sizes")
 
 
 @db_command.command()

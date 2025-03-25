@@ -1,6 +1,8 @@
 ## Add values
 
-> A 'condition type' (defining name and type) must be created prior adding values. It is discussed in [previous chapter](Creating condition types) and is included in examples further in this chapters
+> A 'condition type' (defining name and type) must be created prior adding values. 
+> It is discussed in [previous chapter](Creating condition types) and is included in 
+> examples further in this chapters
 
 There are two functions to add condition values to DB. First one is:
 
@@ -27,7 +29,9 @@ name_values = [["name1",value1], ["name2",value2], ...]
 
 **(!) performance:** ```add_conditions``` tries to use as less transactions as possible to check and commit all values. So for it provides a big performance gain vs calling ```add_condition``` for each value separately
 
+
 ### Replace values
+
 What if the condition value for this run with this name already exists in the DB?
 
 In general, to replace value ```replace=True``` parameter should be passed to ```add_condition``` or ```add_conditions```.
