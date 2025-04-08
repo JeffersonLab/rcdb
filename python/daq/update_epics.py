@@ -90,6 +90,7 @@ def update_beam_conditions(run, log=log):
         # iterate over output
         n = 0
         for line in p.stdout:
+            #print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -98,7 +99,8 @@ def update_beam_conditions(run, log=log):
                 continue
             key = tokens[0]
             value = tokens[2]      # average value
-            if key == "IBCAD00CRCUR6":
+            if key == b'IBCAD00CRCUR6':
+                log.debug(Lf("Saving beam_current = '{}'", float(value)))
                 conditions["beam_current"] = float(value)
 
     except Exception as e:
@@ -116,7 +118,7 @@ def update_beam_conditions(run, log=log):
         # iterate over output
         n = 0
         for line in p.stdout:
-            print(line.strip())
+            #print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -125,7 +127,8 @@ def update_beam_conditions(run, log=log):
                 continue
             key = tokens[0]
             value = tokens[2]      # average value
-            if key == "IBCAD00CRCUR6":
+            if key == b"IBCAD00CRCUR6":
+                log.debug(Lf("Saving beam_on_current = '{}'", float(value)))
                 conditions["beam_on_current"] = float(value)
         log.debug("Done with beam_current")
     except Exception as e:
@@ -147,7 +150,7 @@ def update_beam_conditions(run, log=log):
         # wait process end and iterate over output
         n = 0
         for line in p.stdout:
-            print(line.strip())
+            #print(line.strip())
             n += 1
             if n == 1:     # skip header
                 continue 
@@ -164,6 +167,7 @@ def update_beam_conditions(run, log=log):
         # so let's ignore the time periods and do a simple average
         #avg_beam_energy /= float(n)
         conditions["beam_energy"] = float("%7.1f"%(avg_beam_energy / float(nentries)))
+        log.debug(Lf("Saving beam_energy = '{}'", conditions["beam_energy"]))
 
         """
         cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-c", "IBCAD00CRCUR6", "-r", "30:5000", "-l", "HALLD:p"]
@@ -209,7 +213,8 @@ def update_beam_conditions(run, log=log):
                 continue
             key = tokens[0]
             value = tokens[2]      # average value
-            if key == "RESET:i:GasPanelBarPress1":
+            if key == b"RESET:i:GasPanelBarPress1":
+                log.debug(Lf("Saving cdc_gas_pressure = '{}'", float(value)))
                 conditions["cdc_gas_pressure"] = float(value)
         log.debug("Done with cdc_gas_pressure")
     except Exception as e:
@@ -473,7 +478,7 @@ where <reason> is one of: start, update, end""")
     run_number = int(sys.argv[2])
     update_reason = sys.argv[3]
 
-    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb"%password)
+    db = rcdb.RCDBProvider("mysql://rcdb:%s@gluondb1/rcdb2"%password)
     if not db.get_run(run_number):
         raise ValueError("Run number '{}' is not found in DB", run_number)
     update_rcdb_conds(db, run_number, update_reason)
