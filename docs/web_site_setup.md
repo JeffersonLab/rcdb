@@ -1,38 +1,83 @@
 # Installing RCDB Website
 
-Here RHEL9 + Apache Server + mod_wsgi is considered as this setup is mainly used at Jefferson Lab. 
+Here RHEL9 + Apache Server + mod_wsgi is considered as this setup is mainly used at Jefferson Lab.
+
+There is a dockerfile with example Rocky Linux 9 (binary compatible with RHEL9) setup with config files:
+
+```bash
+# Assuming cwd is rcdb repo root:
+cd docker/rocky
+docker build -t rcdb-rocky:latest .
+docker run --rm -it --init -p 8888:80 rcdb-rocky:latest
+
+# site should be seen on 
+http://localhost:8888/rcdb/
+```
 
 
-## Prerequisites
-
-- RHEL9 server with Apache HTTP Server installed
+- RHEL9 (or compatible) server with Apache HTTP Server installed
 - Root access or sudo privileges
 - Python 3.9+ (default on RHEL9)
 - `mod_wsgi` package for Apache
 
-## 1. Install Required Packages
+## Install Required Packages
 
 First, install the necessary packages:
 
 ```bash
 # Install Apache and mod_wsgi
-sudo dnf install httpd python3-mod_wsgi
-
-# Install required Python packages
-sudo dnf install python3-pip python3-devel
+sudo dnf install httpd python3-mod_wsgi python3-pip python3-devel
 
 # Start and enable Apache
 sudo systemctl enable --now httpd
 ```
 
-## 2. Install RCDB Library
+There are two ways of managing rcdb and dependencies: 
+
+- Install centrally on the server e.g. via RPM
+- Install venv and use mod_wsgi with python and packages from venv
+
+Both have procs and cons. 
+Using system-wide packages simplifies centralized updates across multiple RHEL servers; 
+If you need specific package version and package isolation from system changes and 
+e.g. when multiple sites on a server require different versions of the same packages, 
+a dedicated Python virtual environment is preferable.
+
+**If you choose to use route A - RPMs***
+
+```
+# Enable EPEL and CRB
+dnf install -y epel-release 
+dnf config-manager --set-enabled epel
+dnf config-manager --set-enabled crb
+
+# Install rcdb dependendencies
+dnf install -y \
+  python3-markupsafe \
+  python3-click \
+  python3-rich \
+  python3-sqlalchemy \
+  python3-mako \
+  python3-ply \
+  python3-PyMySQL \
+  python3-pygments \
+  python3-flask
+```
+
+
+## Install RCDB Library
 
 You have two options for installing the RCDB library:
 
 ### Option A: System-wide Installation
 
 ```bash
-sudo pip3 install rcdb
+git clone --depth=1 https://github.com/JeffersonLab/rcdb.git /opt/rcdb
+
+# Install RCDB *without* re-downloading dependencies (they are from RPM)
+# The --no-deps flag ensures pip won’t try to reinstall them.
+cd /opt/rcdb/python
+python3 -m pip install --no-cache-dir --no-deps .
 ```
 
 ### Option B: Virtual Environment (Recommended)
