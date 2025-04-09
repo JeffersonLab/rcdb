@@ -2,7 +2,8 @@
 
 Here RHEL9 + Apache Server + mod_wsgi is considered as this setup is mainly used at Jefferson Lab.
 
-There is a dockerfile with example Rocky Linux 9 (binary compatible with RHEL9) setup with config files:
+There is [a dockerfile with example Rocky Linux 9](https://github.com/JeffersonLab/rcdb/tree/main/docker/rocky) 
+(binary compatible with RHEL9) setup with config files:
 
 ```bash
 # Assuming cwd is rcdb repo root:
