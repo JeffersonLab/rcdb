@@ -95,8 +95,9 @@ Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
     # Mount the RCDB web interface at /rcdb
     WSGIScriptAlias /rcdb /group/halld/www/halldwebdev/html/rcdb/rcdb_www.wsgi
     
+    # If WSGI script is using RCDB_CONNECTION environment variable (not in this example)    
     # Set the database connection string
-    SetEnv RCDB_CONNECTION "mysql://rcdb@hallddb.jlab.org/rcdb2"
+    # SetEnv RCDB_CONNECTION "mysql://rcdb@hallddb.jlab.org/rcdb2"
     
     # If using a virtual environment, specify the python-home
     # Uncomment the line below if using Option B (virtual environment)
