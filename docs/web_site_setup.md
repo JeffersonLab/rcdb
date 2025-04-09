@@ -1,9 +1,11 @@
 # Installing RCDB Website
 
-Here RHEL9 + Apache Server + mod_wsgi is considered as this setup is mainly used at Jefferson Lab.
+Instruction on how to install central RCDB website.  
+
+We use RHEL9 + Apache Server + mod_wsgi as the example, as this is what usually is used at Jefferson Lab (now is 2025).
 
 There is [a dockerfile with example Rocky Linux 9](https://github.com/JeffersonLab/rcdb/tree/main/docker/rocky) 
-(binary compatible with RHEL9) setup with config files:
+(binary compatible with RHEL9) setup with config files. To build and run it:
 
 ```bash
 # Assuming cwd is rcdb repo root:
@@ -44,7 +46,7 @@ If you need specific package version and package isolation from system changes a
 e.g. when multiple sites on a server require different versions of the same packages, 
 a dedicated Python virtual environment is preferable.
 
-**If you choose to use route A - RPMs***
+**If you choose the route A - use centrally installed RPMs**
 
 ```
 # Enable EPEL and CRB
