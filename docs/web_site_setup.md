@@ -38,17 +38,10 @@ sudo pip3 install rcdb
 ### Option B: Virtual Environment (Recommended)
 
 ```bash
-# Create a virtual environment
-cd /group/halld/www/halldwebdev/html/rcdb
-python3 -m venv venv
-
-# Activate the virtual environment
-source venv/bin/activate
-
-# Install RCDB within the virtual environment
+# Create a virtual environment, activate, install rcdb, exit
+python3 -m venv /opt/venvs/rcdb
+source /opt/venvs/rcdb/bin/activate
 pip install rcdb
-
-# Deactivate when you're done
 deactivate
 ```
 
@@ -75,27 +68,16 @@ If venv is used library:
 import sys
 import os
 
-# ===== CHOOSE ONE OF THE FOLLOWING OPTIONS =====
-
-# OPTION A: For system-wide installation
-# No additional path manipulation needed if RCDB is installed system-wide
-
-# OPTION B: For virtual environment
-venv_path = '/group/halld/www/halldwebdev/html/rcdb/venv'
+# Add where to look for RCDB
+venv_path = '/opt/venvs/rcdb/'
 site_packages = os.path.join(venv_path, 'lib', 'python3.9', 'site-packages')
 sys.path.insert(0, site_packages)
-
-# =====
 
 # Import and configure the RCDB web application
 import rcdb.web
 
-# Set the database connection string
-if "RCDB_CONNECTION" in os.environ:
-    rcdb.web.app.config["SQL_CONNECTION_STRING"] = os.environ["RCDB_CONNECTION"]
-else:
-    # Default connection string - adjust as needed
-    rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql://rcdb@hallddb.jlab.org/rcdb2"
+# Default connection string - adjust as needed
+rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql://rcdb@hallddb.jlab.org/rcdb2"
 
 # This is what mod_wsgi looks for
 application = rcdb.web.app
@@ -118,7 +100,7 @@ Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
     
     # If using a virtual environment, specify the python-home
     # Uncomment the line below if using Option B (virtual environment)
-    # WSGIDaemonProcess rcdb_www python-home=/group/halld/www/halldwebdev/html/rcdb/venv threads=5
+    # WSGIDaemonProcess rcdb_www python-home=/opt/venvs/rcdb/ threads=5
     
     # If using system-wide installation, use this instead
     WSGIDaemonProcess rcdb_www threads=5
@@ -132,90 +114,11 @@ Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
 </VirtualHost>
 ```
 
-## 5. Set Permissions
 
-Ensure Apache can access the RCDB files:
-
-```bash
-# Check ownership of the directory
-ls -la /group/halld/www/halldwebdev/html/rcdb/
-
-# Set appropriate permissions
-sudo chown -R apache:apache /group/halld/www/halldwebdev/html/rcdb/
-# OR add read permissions for others
-sudo chmod -R o+r /group/halld/www/halldwebdev/html/rcdb/
-sudo chmod o+x /group/halld/www/halldwebdev/html/rcdb/
-```
-
-## 6. Configure SELinux (if enabled)
-
-If SELinux is enabled on your system:
-
-```bash
-# Allow Apache to connect to the database
-sudo setsebool -P httpd_can_network_connect_db 1
-
-# Set proper context for the WSGI file
-sudo chcon -t httpd_sys_content_t /group/halld/www/halldwebdev/html/rcdb/rcdb_www.wsgi
-```
-
-## 7. Restart Apache
+## 5. Restart Apache
 
 ```bash
 sudo systemctl restart httpd
-```
-
-## 8. Test the Installation
-
-Visit `http://your-server/rcdb` in your web browser.
-
-If you encounter issues, check the Apache error logs:
-
-```bash
-sudo tail -f /var/log/httpd/error_log
-```
-
-## Troubleshooting
-
-### Missing Modules
-
-If you encounter missing module errors, install them with pip:
-
-```bash
-# For system-wide installation
-sudo pip3 install flask sqlalchemy pymysql
-
-# For virtual environment
-source /group/halld/www/halldwebdev/html/rcdb/venv/bin/activate
-pip install flask sqlalchemy pymysql
-deactivate
-```
-
-### Permissions Issues
-
-If you see permission denied errors:
-
-```bash
-# Check SELinux status
-sestatus
-
-# If SELinux is enforcing, try setting it to permissive temporarily for testing
-sudo setenforce 0
-
-# After testing, remember to set it back to enforcing
-sudo setenforce 1
-```
-
-### Database Connection Issues
-
-If the website loads but database connection fails:
-
-1. Verify your connection string in the Apache config and WSGI script
-2. Check if the database server allows connections from your web server
-3. Test the connection manually:
-
-```bash
-python3 -c "import pymysql; pymysql.connect(host='hallddb.jlab.org', user='rcdb', db='rcdb2')"
 ```
 
 ## Additional Notes
