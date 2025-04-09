@@ -10,7 +10,6 @@
 - [Add data](get-started/add-value-python.md)
 - [Python intro](get-started/python.md)
 
-
 **RCDB Explained**:  
 - [Connection](concepts/connection)  
 - [DB and APIs structure](concepts/db-and-api-structure)  
@@ -26,6 +25,7 @@
 - [Development guide](development/development.md)
 - [Migrate to RCDB2](development/rcdb2-migration.md)
 - [DAQ Setup](daq/daq.md)
+- [Website](web_site_setup.md)
 
 
 
