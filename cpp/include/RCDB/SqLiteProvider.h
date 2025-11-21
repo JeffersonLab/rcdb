@@ -17,25 +17,28 @@ namespace rcdb {
     public:
         SqLiteProvider(std::string dbPath) :
                 DataProvider(),
-                _db(ParseConnectionString(dbPath)),
-                _getConditionQuery(_db, "SELECT id, bool_value, float_value, int_value, text_value, time_value "
-                                        "FROM conditions WHERE run_number = ? AND condition_type_id = ?"),
-                _getFileQuery(_db, "SELECT files.id AS files_id, "
+                _db(ParseConnectionString(dbPath))
+        {
+            // define condition query
+            _getConditionQuery.reset(new SQLite::Statement(_db, "SELECT id, bool_value, float_value, int_value, text_value, time_value "
+                                        "FROM conditions WHERE run_number = ? AND condition_type_id = ?"));
+
+            // define file queries only if the necessary tables exist
+            if(TableExists("files_have_runs")) {
+                _getFileQuery.reset(new SQLite::Statement(_db, "SELECT files.id AS files_id, "
                                    "       files.path AS files_path, "
                                    "       files.sha256 AS files_sha256, "
                                    "       files.content AS files_content "
                                    "FROM files, files_have_runs AS files_have_runs_1 "
                                    "WHERE files.path = ? AND files.id = files_have_runs_1.files_id "
                                    "      AND ? = files_have_runs_1.run_number "
-                                   "ORDER BY files.id DESC"),
-                _getFileNamesQuery(_db, "SELECT files.path AS files_path "
+                                   "ORDER BY files.id DESC"));
+                _getFileNamesQuery.reset(new SQLite::Statement(_db, "SELECT files.path AS files_path "
                                     "FROM files, files_have_runs AS files_have_runs_1 "
                                     "WHERE files.id = files_have_runs_1.files_id "
                                     "AND ? = files_have_runs_1.run_number "
-                                    "ORDER BY files.id DESC")
-        {
-
-
+                                    "ORDER BY files.id DESC"));
+            }
 
             //Fill types
             SQLite::Statement query(_db, "SELECT id, name, value_type FROM condition_types");
@@ -82,41 +85,41 @@ namespace rcdb {
             uint64_t typeId = cndType.GetId();
             uint64_t run = runNumber;
 
-            _getConditionQuery.reset();
-            _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64)run);
-            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
+            _getConditionQuery->reset();
+            _getConditionQuery->clearBindings();
+            _getConditionQuery->bind(1, (sqlite3_int64)run);
+            _getConditionQuery->bind(2, (sqlite3_int64)typeId);
 
 
-            while (_getConditionQuery.executeStep()) {
-                const int id = _getConditionQuery.getColumn(0);
+            while (_getConditionQuery->executeStep()) {
+                const int id = _getConditionQuery->getColumn(0);
                 std::unique_ptr<Condition> condition(new Condition((ConditionType &) cndType));
                 condition->SetId(id);
 
                 switch (cndType.GetValueType()) {
                     case ValueTypes::Bool:
-                        if(_getConditionQuery.isColumnNull(bool_column)) return std::unique_ptr<Condition>();
-                        condition->SetBoolValue((bool)_getConditionQuery.getColumn(bool_column).getInt());
+                        if(_getConditionQuery->isColumnNull(bool_column)) return std::unique_ptr<Condition>();
+                        condition->SetBoolValue((bool)_getConditionQuery->getColumn(bool_column).getInt());
                         return condition;
                     case ValueTypes::Json:
                     case ValueTypes::String:
                     case ValueTypes::Blob:
-                        if(_getConditionQuery.isColumnNull(text_column)) return std::unique_ptr<Condition>();
-                        condition->SetTextValue(_getConditionQuery.getColumn(text_column).getText());
+                        if(_getConditionQuery->isColumnNull(text_column)) return std::unique_ptr<Condition>();
+                        condition->SetTextValue(_getConditionQuery->getColumn(text_column).getText());
                         return condition;
                     case ValueTypes::Float:
-                        if(_getConditionQuery.isColumnNull(float_column)) return std::unique_ptr<Condition>();
-                        condition->SetFloatValue(_getConditionQuery.getColumn(float_column).getDouble());
+                        if(_getConditionQuery->isColumnNull(float_column)) return std::unique_ptr<Condition>();
+                        condition->SetFloatValue(_getConditionQuery->getColumn(float_column).getDouble());
                         return condition;
                     case ValueTypes::Int:
-                        if(_getConditionQuery.isColumnNull(int_column)) return std::unique_ptr<Condition>();
-                        condition->SetIntValue(_getConditionQuery.getColumn(int_column).getInt());
+                        if(_getConditionQuery->isColumnNull(int_column)) return std::unique_ptr<Condition>();
+                        condition->SetIntValue(_getConditionQuery->getColumn(int_column).getInt());
                         return condition;
                     case ValueTypes::Time:
-                        if(_getConditionQuery.isColumnNull(time_column)) return std::unique_ptr<Condition>();
+                        if(_getConditionQuery->isColumnNull(time_column)) return std::unique_ptr<Condition>();
                         condition->SetTime(
                                 std::chrono::system_clock::from_time_t(
-                                        _getConditionQuery.getColumn(int_column).getInt64()));
+                                        _getConditionQuery->getColumn(int_column).getInt64()));
                         return condition;
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
@@ -129,17 +132,19 @@ namespace rcdb {
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         virtual std::unique_ptr<RcdbFile> GetFile(uint64_t runNumber, const std::string& name) override
         {
-            _getFileQuery.reset();
-            _getFileQuery.clearBindings();
-            _getFileQuery.bind(1, name.c_str());
-            _getFileQuery.bind(2, (sqlite3_int64)runNumber);
+            if(!_getFileQuery)
+                throw std::runtime_error("GetFile(runNumber, name) is not supported for this database");
+            _getFileQuery->reset();
+            _getFileQuery->clearBindings();
+            _getFileQuery->bind(1, name.c_str());
+            _getFileQuery->bind(2, (sqlite3_int64)runNumber);
 
 
-            while (_getFileQuery.executeStep()) {
-                const uint64_t id = _getFileQuery.getColumn(0).getInt64();
-                const std::string path(_getFileQuery.getColumn(1).getText());     // files.path AS files_path
-                const std::string sha256(_getFileQuery.getColumn(2).getText());   // files.sha256 AS files_sha256
-                const std::string content(_getFileQuery.getColumn(3).getText());  // files.content AS files_content
+            while (_getFileQuery->executeStep()) {
+                const uint64_t id = _getFileQuery->getColumn(0).getInt64();
+                const std::string path(_getFileQuery->getColumn(1).getText());     // files.path AS files_path
+                const std::string sha256(_getFileQuery->getColumn(2).getText());   // files.sha256 AS files_sha256
+                const std::string content(_getFileQuery->getColumn(3).getText());  // files.content AS files_content
 
                 std::unique_ptr<RcdbFile> file(new RcdbFile(id, path, sha256, content));
                 return file;
@@ -152,13 +157,15 @@ namespace rcdb {
         /** Gets conditions by name and run (@see GetRun and SetRun) */
         virtual std::vector<std::string> GetFileNames(uint64_t runNumber)  override
         {
-            _getFileNamesQuery.reset();
-            _getFileNamesQuery.clearBindings();
-            _getFileNamesQuery.bind(1, (sqlite3_int64)runNumber);
+            if(!_getFileNamesQuery)
+                throw std::runtime_error("GetFileNames(runNumber) is not supported for this database");
+            _getFileNamesQuery->reset();
+            _getFileNamesQuery->clearBindings();
+            _getFileNamesQuery->bind(1, (sqlite3_int64)runNumber);
 
             std::vector<std::string> filePaths;
-            while (_getFileQuery.executeStep()) {
-                filePaths.push_back(_getFileQuery.getColumn(0).getText());
+            while (_getFileQuery->executeStep()) {
+                filePaths.push_back(_getFileQuery->getColumn(0).getText());
             }
 
             return filePaths; //Empty ptr
@@ -176,41 +183,41 @@ namespace rcdb {
             uint64_t typeId = cndType.GetId();
             uint64_t run = runNumber;
 
-            _getConditionQuery.reset();
-            _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64)run);
-            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
+            _getConditionQuery->reset();
+            _getConditionQuery->clearBindings();
+            _getConditionQuery->bind(1, (sqlite3_int64)run);
+            _getConditionQuery->bind(2, (sqlite3_int64)typeId);
 
 
-            while (_getConditionQuery.executeStep()) {
-                const int id = _getConditionQuery.getColumn(0);
+            while (_getConditionQuery->executeStep()) {
+                const int id = _getConditionQuery->getColumn(0);
                 std::unique_ptr<Condition> condition(new Condition((ConditionType &) cndType));
                 condition->SetId(id);
 
                 switch (cndType.GetValueType()) {
                     case ValueTypes::Bool:
-                        if(_getConditionQuery.isColumnNull(bool_column)) return std::unique_ptr<Condition>();
-                        condition->SetBoolValue((bool)_getConditionQuery.getColumn(bool_column).getInt());
+                        if(_getConditionQuery->isColumnNull(bool_column)) return std::unique_ptr<Condition>();
+                        condition->SetBoolValue((bool)_getConditionQuery->getColumn(bool_column).getInt());
                         return condition;
                     case ValueTypes::Json:
                     case ValueTypes::String:
                     case ValueTypes::Blob:
-                        if(_getConditionQuery.isColumnNull(text_column)) return std::unique_ptr<Condition>();
-                        condition->SetTextValue(_getConditionQuery.getColumn(text_column).getText());
+                        if(_getConditionQuery->isColumnNull(text_column)) return std::unique_ptr<Condition>();
+                        condition->SetTextValue(_getConditionQuery->getColumn(text_column).getText());
                         return condition;
                     case ValueTypes::Float:
-                        if(_getConditionQuery.isColumnNull(float_column)) return std::unique_ptr<Condition>();
-                        condition->SetFloatValue(_getConditionQuery.getColumn(float_column).getDouble());
+                        if(_getConditionQuery->isColumnNull(float_column)) return std::unique_ptr<Condition>();
+                        condition->SetFloatValue(_getConditionQuery->getColumn(float_column).getDouble());
                         return condition;
                     case ValueTypes::Int:
-                        if(_getConditionQuery.isColumnNull(int_column)) return std::unique_ptr<Condition>();
-                        condition->SetIntValue(_getConditionQuery.getColumn(int_column).getInt());
+                        if(_getConditionQuery->isColumnNull(int_column)) return std::unique_ptr<Condition>();
+                        condition->SetIntValue(_getConditionQuery->getColumn(int_column).getInt());
                         return condition;
                     case ValueTypes::Time:
-                        if(_getConditionQuery.isColumnNull(time_column)) return std::unique_ptr<Condition>();
+                        if(_getConditionQuery->isColumnNull(time_column)) return std::unique_ptr<Condition>();
                         condition->SetTime(
                                 std::chrono::system_clock::from_time_t(
-                                        _getConditionQuery.getColumn(int_column).getInt64()));
+                                        _getConditionQuery->getColumn(int_column).getInt64()));
                         return condition;
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
@@ -266,10 +273,17 @@ namespace rcdb {
         SqLiteProvider(const SqLiteProvider &) = delete;             // disable Copy constructor
         SqLiteProvider &operator=(const SqLiteProvider &) = delete;  // disable Copy assignment operator
 
+        // check if table `tableName` exists
+        bool TableExists(const std::string & tableName) {
+            SQLite::Statement query(_db, "SELECT name FROM sqlite_master WHERE type='table' AND name=?");
+            query.bind(1, tableName);
+            return query.executeStep();
+        }
+
         SQLite::Database _db;
-        SQLite::Statement _getConditionQuery;
-        SQLite::Statement _getFileQuery;
-        SQLite::Statement _getFileNamesQuery;
+        std::unique_ptr<SQLite::Statement> _getConditionQuery;
+        std::unique_ptr<SQLite::Statement> _getFileQuery;
+        std::unique_ptr<SQLite::Statement> _getFileNamesQuery;
     };
 }
 
