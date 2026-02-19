@@ -130,3 +130,5 @@ sql/schema.mwb.bak
 reqvenv/
 
 python/repomix-output.txt
+
+python/uv.lock
