@@ -56,9 +56,6 @@ jobs:
       - name: "Example: 03_select_values_custom_runs"
         run: python $GITHUB_WORKSPACE/python/examples/03_select_values_custom_runs.py
 
-      - name: "Example: 04_select_cdc_gas_pressure"
-        run: python $GITHUB_WORKSPACE/python/examples/04_select_cdc_gas_pressure.py
-
       - name: "Example: 10_create_conditions_basic"
         run: python $GITHUB_WORKSPACE/python/examples/10_create_conditions_basic.py
 
