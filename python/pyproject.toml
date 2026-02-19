@@ -45,6 +45,10 @@ dependencies = [
     "rich"
 ]
 
+[project.optional-dependencies]
+examples = ["jsonpickle"]
+
+
 # If you want a console script, define it in [project.scripts]
 [project.scripts]
 rcdb = "rcdb.cli.app:rcdb_cli"

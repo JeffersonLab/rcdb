@@ -33,6 +33,7 @@ jobs:
           python -m pip install --upgrade pip
           cd $GITHUB_WORKSPACE/python
           pip install --editable .
+          pip install jsonpickle  # for writing object example
 
 #      - name: Download HallD SQLite snapshot
 #        run: |
@@ -45,12 +46,27 @@ jobs:
       # continue-on-error keeps the workflow green while showing which
       # script had problems (yellow badge instead of silent swallow).
 
-      - name: "Example 01: select_values_simple"
+      - name: "Example: 01_select_values_simple"
         run: python $GITHUB_WORKSPACE/python/examples/01_select_values_simple.py
         # Script must read RCDB_CONNECTION env var (see updated examples)
 
-      - name: "Example 02: select_values_extended"
+      - name: "Example: 02_select_values_extended"
         run: python $GITHUB_WORKSPACE/python/examples/02_select_values_extended.py
 
-      - name: "Example 03: select_values_custom_runs"
+      - name: "Example: 03_select_values_custom_runs"
         run: python $GITHUB_WORKSPACE/python/examples/03_select_values_custom_runs.py
+
+      - name: "Example: 04_select_cdc_gas_pressure"
+        run: python $GITHUB_WORKSPACE/python/examples/04_select_cdc_gas_pressure.py
+
+      - name: "Example: 10_create_conditions_basic"
+        run: python $GITHUB_WORKSPACE/python/examples/10_create_conditions_basic.py
+
+      - name: "Example: 11_crete_conditions_store_array"
+        run: python $GITHUB_WORKSPACE/python/examples/11_crete_conditions_store_array.py
+
+      - name: "Example: 12_create_conditions_store_object"
+        run: python $GITHUB_WORKSPACE/python/examples/12_create_conditions_store_object.py
+
+      - name: "Example: 90_advanced_sqlalchemy_query"
+        run: python $GITHUB_WORKSPACE/python/examples/90_advanced_sqlalchemy_query.py
