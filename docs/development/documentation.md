@@ -27,6 +27,9 @@ Here is a python one-liner that makes the site running at `localhost:3000`
 ```bash
 # assuming current working directoy is rcdb/docs 
 python3 -m http.server 3000
+
+# Using uv from rcdb repository root
+uv --project ./python --directory docs run -m http.server 3000
 ```
 
 > On windows machines you may have to use `python` instead of `python3`
