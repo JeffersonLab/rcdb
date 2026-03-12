@@ -72,6 +72,13 @@
                     <!-- Search form -->
                     <form class="navbar-form navbar-left" role="search" action="{{ url_for('runs.search') }}" method="get">
                         <div class="input-group input-group-sm" style="min-width: 500px">
+                            {% if g.available_databases %}
+                            <select id="dbSelector" class="form-control" style="width:auto; margin-right:4px;">
+                                {% for name, conn in g.available_databases.items() %}
+                                <option value="{{ name }}" {% if name == g.active_db_name %}selected{% endif %}>{{ name }} ({{ connection_hint(conn) }})</option>
+                                {% endfor %}
+                            </select>
+                            {% endif %}
                             <input type="text" class="form-control" placeholder="Run or min-max" name="rr" style="width:28%; margin-right:4px;">
                             <input type="text" class="form-control" placeholder="Query" name="q" style="width:70%; ">
                             <span class="input-group-btn"><button id="qGoBtn" type="submit" class="btn btn-default">GO</button></span>
@@ -268,6 +275,13 @@
         jQuery(document).ready(function() {
 
             var $editor = $('#editor');
+
+            // Database selector: save choice in cookie and reload
+            $("#dbSelector").on("change", function() {
+                var dbName = $(this).val();
+                document.cookie = "rcdb_database=" + encodeURIComponent(dbName) + ";path=/;max-age=31536000;SameSite=Lax";
+                location.reload();
+            });
 
             {#%
                 Show help popover about how to use query window
