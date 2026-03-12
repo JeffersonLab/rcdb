@@ -132,3 +132,5 @@ reqvenv/
 python/repomix-output.txt
 
 python/uv.lock
+
+.claude/
