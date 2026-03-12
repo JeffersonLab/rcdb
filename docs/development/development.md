@@ -36,6 +36,12 @@ https://github.com/JeffersonLab/rcdb
 4. Run ```test_all_rcdb```
 
 
+## Multi-Database Selector
+
+The web interface supports switching between multiple databases from the browser.
+See [Database Selector](development/database-selector.md) for configuration details.
+
+
 ## Publishing on pypi
 
 ```bash
