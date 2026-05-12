@@ -1,9 +1,18 @@
-# Installing RCDB Website
+# Install on server
 
 Instruction on how to install central RCDB website.  
 
-We use RHEL9 + Apache Server + mod_wsgi as the example, as this is what usually is used at Jefferson Lab (now is 2025).
+RHEL9 + Apache Server + mod_wsgi is used as the example, 
+as this is what usually is used at Jefferson Lab (now is 2025).
 
+***Notes:***
+
+- The RCDB web interface requires the proper database schema to be installed
+- For production use, consider setting up HTTPS with SSL certificates
+- Consider adjusting the number of threads in the WSGIDaemonProcess directive based on your server's capacity and expected load
+
+
+### Preinstalled docker image
 There is [a dockerfile with example Rocky Linux 9](https://github.com/JeffersonLab/rcdb/tree/main/docker/rocky) 
 (binary compatible with RHEL9) setup with config files. To build and run it:
 
@@ -17,15 +26,16 @@ docker run --rm -it --init -p 8888:80 rcdb-rocky:latest
 http://localhost:8888/rcdb/
 ```
 
-
 - RHEL9 (or compatible) server with Apache HTTP Server installed
 - Root access or sudo privileges
 - Python 3.9+ (default on RHEL9)
 - `mod_wsgi` package for Apache
 
-## Install Required Packages
+## Requirements 
 
-First, install the necessary packages:
+### System Packages
+
+Required system packages:
 
 ```bash
 # Install Apache and mod_wsgi
@@ -35,7 +45,7 @@ sudo dnf install httpd python3-mod_wsgi python3-pip python3-devel
 sudo systemctl enable --now httpd
 ```
 
-There are two ways of managing rcdb and dependencies: 
+There are two ways of managing python rcdb and dependencies: 
 
 - Install centrally on the server e.g. via RPM
 - Install venv and use mod_wsgi with python and packages from venv
@@ -68,11 +78,11 @@ dnf install -y \
 ```
 
 
-## Install RCDB Library
+### Python dependencies
 
 You have two options for installing the RCDB library:
 
-### Option A: System-wide Installation
+#### Option A: System-wide Installation
 
 ```bash
 git clone --depth=1 https://github.com/JeffersonLab/rcdb.git /opt/rcdb
@@ -93,9 +103,9 @@ pip install rcdb
 deactivate
 ```
 
-## 3. Create the WSGI Script
+## WSGI Script
 
-Create a WSGI script at `/group/halld/www/halldwebdev/html/rcdb/rcdb_www.wsgi`:
+Example HallD WSGI script is at `/group/halld/www/halldwebdev/html/rcdb/rcdb_www.wsgi`:
 
 If RCDB is installed as a system-wide library: 
 
@@ -131,7 +141,7 @@ rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql://rcdb@hallddb.jlab.org/rc
 application = rcdb.web.app
 ```
 
-## 4. Configure Apache
+## Apache Configuration
 
 Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
 
@@ -164,16 +174,10 @@ Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
 ```
 
 
-## 5. Restart Apache
+**Restart Apache**
 
 ```bash
 sudo systemctl restart httpd
 ```
-
-## Additional Notes
-
-- The RCDB web interface requires the proper database schema to be installed
-- For production use, consider setting up HTTPS with SSL certificates
-- Consider adjusting the number of threads in the WSGIDaemonProcess directive based on your server's capacity and expected load
 
 Now your RCDB web interface should be up and running on your RHEL9 Apache server!

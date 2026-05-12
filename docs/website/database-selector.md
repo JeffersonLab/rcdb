@@ -4,7 +4,7 @@ The RCDB web interface supports switching between multiple databases from the br
 When configured, a dropdown selector appears in the navbar allowing users to pick a database.
 The selection is saved in a cookie and persists across sessions.
 
-## How It Works
+### How It Works
 
 - The Flask app has two config keys: `AVAILABLE_DATABASES` (a dict of `name -> connection_string`)
   and `DEFAULT_DATABASE` (the connection string to use when no cookie is set).
@@ -14,9 +14,8 @@ The selection is saved in a cookie and persists across sessions.
   is not in the available list, it logs a warning and uses the first entry.
 - When `AVAILABLE_DATABASES` is empty (the default), all behavior is identical to a single-database setup.
 
-## Configuration
 
-### CLI (`rcdb web`)
+## CLI (`rcdb web`)
 
 Use the `--add-db` flag (repeatable) to register named databases:
 
@@ -29,6 +28,9 @@ rcdb -c mysql+pymysql://rcdb@prodhost/rcdb web \
 - Each `--add-db` value has the format `NAME=CONNECTION_STRING`.
 - The `-c` / `--connection` / `RCDB_CONNECTION` value becomes the default database.
 - If no `-c` is provided, the first `--add-db` entry is used as the default.
+
+
+## Server Configuration
 
 ### WSGI
 
