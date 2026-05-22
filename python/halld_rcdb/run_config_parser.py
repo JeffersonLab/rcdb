@@ -8,7 +8,7 @@ from rcdb.log_format import BraceMessage as F
 # Setup logger
 log = logging.getLogger('rcdb.halld.main_config_parser')  # create run configuration standard logger
 
-section_names = ["TRIGGER", "GLOBAL", "FCAL", "BCAL", "TOF", "ST", "TAGH", "TAGM", "PS",
+section_names = ["TRIGGER", "GLOBAL", "FCAL", "ECAL", "BCAL", "TOF", "ST", "TAGH", "TAGM", "PS",
                  "PSC", "TPOL", "CDC", "FDC", "DIRC", "CCAL"]
 
 
@@ -27,12 +27,15 @@ class HallDMainConfigParseResult(object):
         self.trigger_buffer_level = None    # --type int --description "BUFFERLEVEL from TRIGGER section"
         self.fcal_fadc250_mode = None       # FADC250_MODE from FCAL run config section
         self.fcal_fadc250_params = None     # some FADC250_* parameters from FCAL section of run config
+        self.ecal_fadc250_mode = None       # FADC250_MODE from ECAL run config section
+        self.ecal_fadc250_params = None     # some FADC250_* parameters from ECAL section of run config
         self.bcal_fadc250_mode = None       # int FADC250_MODE from BCAL run config section
         self.bcal_fadc250_params = None     # some FADC250_* parameters from BCAL section of run config
         self.cdc_fadc125_mode = -1
         self.cdc_fadc125_params = None      # some FADC125_* parameters from CDC section of run config
 
         self.fcal_fadc250_files_info = (None, None, None, None)
+        self.ecal_fadc250_files_info = (None, None, None, None)
         self.bcal_fadc250_files_info = (None, None, None, None)
         self.tof_fadc250_files_info = (None, None, None, None)
         self.tagh_fadc250_files_info = (None, None, None, None)
@@ -85,6 +88,7 @@ def _process_parse_result(parse_result, file_name=""):
 
     # setting COM_DIR, COM_VER, USER_DIR, USER_VER parameters for subsystems
     result.fcal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'FCAL')
+    result.ecal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'ECAL')
     result.bcal_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'BCAL')
     result.tof_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TOF')
     result.tagh_fadc250_files_info = _fill_com_user_dir_ver(parse_result, 'TAGH')
