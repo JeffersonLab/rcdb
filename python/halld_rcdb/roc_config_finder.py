@@ -134,6 +134,9 @@ def find_roc_configuration_files(parse_result):
     if parse_result.fcal_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('fcal', parse_result.fcal_fadc250_files_info))
 
+    if parse_result.ecal_fadc250_files_info:
+        infos.append(HallDFilesGrabInfo('ecal', parse_result.ecal_fadc250_files_info))
+
     if parse_result.bcal_fadc250_files_info:
         infos.append(HallDFilesGrabInfo('bcal', parse_result.bcal_fadc250_files_info))
 

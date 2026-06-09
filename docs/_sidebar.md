@@ -23,10 +23,10 @@
 
 **Advanced**:
 - [Development guide](development/development.md)
-- [Database selector](development/database-selector.md)
 - [Migrate to RCDB2](development/rcdb2-migration.md)
 - [DAQ Setup](daq/daq.md)
-- [Website](web_site_setup.md)
+- [Website install](website/install.md)
+- [Muli-Database](website/database-selector.md)
 
 
 

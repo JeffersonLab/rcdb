@@ -32,6 +32,13 @@ default_aliases = [
                                                   collimator_diameter != 'Blocking'""",
                          "Is DIRC production run"),
 
+    ConditionSearchAlias('is_dirctrd_production', """(daq_run == 'PHYSICS_DIRC' or daq_run == 'PHYSICS_DIRC_TRD') and 
+                                                  beam_current > 2 and 
+                                                  event_count > 5000000 and 
+                                                  solenoid_current > 100 and 
+                                                  collimator_diameter != 'Blocking'""",
+                         "Is DIRC/TRD production run"),
+
     ConditionSearchAlias('is_src_production', """daq_run == 'PHYSICS_SRC' and 
                                                   beam_current > 2 and 
                                                   event_count > 5000000 and 
