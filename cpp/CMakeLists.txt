@@ -1,5 +1,11 @@
-#(!) this CMake build system IS experimental and is made mostly for using CLion IDE.
-# Scons - is the main RCDB make system, so please use it in order to build rcdb.lib and examples
+# RCDB C++ is a header-only library - nothing here is required to USE it (just #include the headers
+# and link sqlite3 and/or the mysql client). This CMake project builds the unit tests and examples.
+#
+# Build & run the SQLite unit tests:
+#   cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+#   cmake --build build --target test_rcdb_cpp
+#   RCDB_TEST_CONNECTION="sqlite:///<path-to>.sqlite" ./build/test_rcdb_cpp
+# Create the test database with:  rcdb -c sqlite:///<path-to>.sqlite db init --add-cpp-tests --confirm
 
 cmake_minimum_required(VERSION 3.4)
 project(rcdb_cpp)
@@ -68,16 +74,26 @@ SET(TEST_SOURCE_FILES
         include/RCDB/StringUtils.h
         include/RCDB/ConfigParser.h
 
-        tests/test_Connection.cpp
         tests/test_ConditionType.cpp
-        tests/test_MySqlProvider.cpp
-        tests/test_SqLiteProvider.cpp
 
         tests/catch.hpp
         tests/catch.cpp
         tests/test_ConfigParser.cpp
         include/json/json.hpp
         )
+
+# Provider tests are gated by the corresponding DB backend, so an SQLite-only
+# build does not need MySQL headers (mysql.h) and a MySQL-only build does not need SQLite.
+if(WITH_MYSQL)
+    list(APPEND TEST_SOURCE_FILES tests/test_MySqlProvider.cpp)
+endif()
+
+# The Connection and SqLiteProvider tests both pull in the SQLiteCpp amalgamation,
+# whose out-of-line definitions are not `inline`. Compile them as a single unity
+# translation unit (tests/test_sqlite_unity.cpp) so the definitions appear once.
+if(WITH_SQLITE)
+    list(APPEND TEST_SOURCE_FILES tests/test_sqlite_unity.cpp)
+endif()
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
 add_executable(examples_trigger_params    examples/get_trigger_params.cpp)

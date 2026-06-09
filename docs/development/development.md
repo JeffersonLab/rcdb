@@ -5,35 +5,30 @@ RCDB Git is available at:
 https://github.com/JeffersonLab/rcdb
 
 
-## Establishing integration tests
+## Running the tests
 
-1. Create MySQL database for the test purposes
+The Python unit tests run against an in-memory SQLite database - no server or
+fixture setup required. From the `python/` directory:
 
-    ```bash
-    mysql -u root -p
-    ```
+```bash
+python -m unittest discover -s tests -t tests
+```
 
-    ```mysql
-    CREATE SCHEMA test_rcdb;
-    CREATE USER 'test_rcdb'@'localhost' IDENTIFIED BY 'test_rcdb';
-    GRANT ALL PRIVILEGES ON test_rcdb.* TO 'test_rcdb'@'localhost';
-     ```
+The C++ Catch tests need a SQLite database. Create it with the `rcdb` CLI - the
+canonical way to initialize an RCDB database - and seed the C++ fixture with
+`--add-cpp-tests`, then point `RCDB_TEST_CONNECTION` at it:
 
-2. Set RCDB_MYSQL_TEST_CONNECTION environment variable
+```bash
+rcdb -c sqlite:///cpp_test.sqlite db init --add-cpp-tests --confirm
+cd $RCDB_HOME/cpp
+cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+cmake --build build --target test_rcdb_cpp
+RCDB_TEST_CONNECTION="sqlite:///../cpp_test.sqlite" ./build/test_rcdb_cpp
+```
 
-    ```bash
-    export RCDB_MYSQL_TEST_CONNECTION="mysql://test_rcdb@localhost/test_rcdb"
-
-    ```
-
-3. run create_test_database.py
-
-    ```bash
-    python $RCDB_HOME/python/tests/create_test_database.py $RCDB_MYSQL_TEST_CONNECTION
-    ```
-
-
-4. Run ```test_all_rcdb```
+Both suites run on GitHub CI (`.github/workflows/python-tests.yml` and
+`cpp-tests.yml`). See [python/tests/README.md](https://github.com/JeffersonLab/rcdb/blob/main/python/tests/README.md)
+for more detail.
 
 
 ## Multi-Database Selector

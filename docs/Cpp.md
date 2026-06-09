@@ -68,9 +68,7 @@ In order for your code to build ensure flags/configuration:
 
 ​* Code ```#define RCDB_MYSQL```
 * Compiler arguments ```-DRCDB_MYSQL```
-* Scons ```env.Append(CPPDEFINES=['RCDB_MYSQL', 'RCDB_SQLITE'])```
-* CMAKE ```add_definitions(-DRCDB_MYSQL)```
-* SMBS ```AddRcdb()``` in SConscript
+* CMake ```-DWITH_MYSQL=ON``` (which does ```add_definitions(-DRCDB_MYSQL)```)
 
 
 ### Dependencies
@@ -123,14 +121,28 @@ rapidjson::Document ToJsonDocument();  /// For JSon document
 rcdb::ValueTypes GetValueType();       /// Returns the type enum
 ```
 
-## Examples
+## Building the tests and examples (CMake)
 
-Examples are located in [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/main/cpp/examples) folder. To build them use `with-examples=true` scons flag:
+The C++ tests and examples are built with CMake. SQLite-only is the default; add
+`-DWITH_MYSQL=ON` to also build the MySQL provider (needs `libmysqlclient-dev`).
 
 ```bash
 cd $RCDB_HOME/cpp
-scons with-examples=true #...
+cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+cmake --build build --target test_rcdb_cpp        # unit tests
+cmake --build build                               # everything, incl. examples
 ```
+
+The unit tests need a SQLite database with test data. Create one with the `rcdb` CLI
+and point `RCDB_TEST_CONNECTION` at it:
+
+```bash
+rcdb -c sqlite:///cpp_test.sqlite db init --add-cpp-tests --confirm
+RCDB_TEST_CONNECTION="sqlite:///cpp_test.sqlite" ./build/test_rcdb_cpp
+```
+
+Examples are located in the [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/main/cpp/examples) folder
+and are built as the `examples_*` targets by the `cmake --build build` command above.
 
 After examples are built they are located in `$RCDB_HOME/cpp/bin` directory named as `exmpl_<...>`
 

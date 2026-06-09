@@ -54,6 +54,6 @@ rcdb -c sqlite:///test.sqlite db init --drop-all
 The command to upgrade DB structure from previous RCDB versions:
 
 ```bash
-rcdb -c sqlite:///test.sqlite db upgrade
+rcdb -c sqlite:///test.sqlite db update
 ```
 

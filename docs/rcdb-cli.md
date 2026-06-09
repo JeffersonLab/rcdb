@@ -137,15 +137,24 @@ rcdb db [COMMAND]
     - Can optionally **drop existing** RCDB data first if `--drop-all` is provided.
 
    **Options**:
-    - `--no-defaults` (Don’t create default condition types)
-    - `--drop-all`    (Drop all existing RCDB data/tables)
-    - `--confirm`     (Skips the interactive prompt for non-production automation)
+    - `--no-defaults`   (Don’t create default condition types)
+    - `--drop-all`      (Drop all existing RCDB data/tables)
+    - `--confirm`       (Skips the interactive prompt for non-production automation)
+    - `--add-tests`     (Seed the generic unit-test dataset: condition types `a`-`g`)
+    - `--add-cpp-tests` (Seed the C++ test fixture: `int_cnd = 5` for run 1, etc.)
 
    **Example:**
    ```bash
    rcdb db init --drop-all --confirm
    ```
    > **Warning**: This will destroy all existing RCDB data in the targeted DB.
+
+   The `--add-tests` / `--add-cpp-tests` flags make `rcdb db init` the single,
+   canonical way to create *and* populate a SQLite database for testing - for
+   example the C++ test suite's fixture:
+   ```bash
+   rcdb -c sqlite:///cpp_test.sqlite db init --add-cpp-tests --confirm
+   ```
 
 2. **`rcdb db update`**  
    Updates the database schema from a previous version to a newer one.

@@ -1,0 +1,47 @@
+name: C++ tests
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+jobs:
+  cpp-sqlite:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsqlite3-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The C++ unit tests read a fixture SQLite database. We build it with the
+      # `rcdb` CLI - the single, canonical way to initialize an RCDB database -
+      # so there is no checked-in binary fixture to drift out of sync.
+      - name: Install rcdb (provides the `rcdb db init` test fixture)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --editable $GITHUB_WORKSPACE/python
+
+      - name: Create the C++ test SQLite database
+        run: |
+          rcdb -c "sqlite:////$GITHUB_WORKSPACE/cpp_test.sqlite" db init --add-cpp-tests --confirm
+
+      - name: Configure and build C++ tests (SQLite only)
+        run: |
+          cmake -S $GITHUB_WORKSPACE/cpp -B $GITHUB_WORKSPACE/cpp/build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+          cmake --build $GITHUB_WORKSPACE/cpp/build --target test_rcdb_cpp -j
+
+      - name: Run C++ tests
+        env:
+          # 4-slash form: SQLAlchemy (used to seed) and the C++ SqLiteProvider parser
+          # (strips the leading "sqlite:///") both resolve this to the same absolute path.
+          RCDB_TEST_CONNECTION: "sqlite:////${{ github.workspace }}/cpp_test.sqlite"
+        run: $GITHUB_WORKSPACE/cpp/build/test_rcdb_cpp

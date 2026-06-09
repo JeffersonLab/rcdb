@@ -161,9 +161,11 @@ def update(context):
 @click.option('--no-defaults', is_flag=True, help="Don't create default condition types")
 @click.option('--drop-all', is_flag=True, help='Drops existing RCDB data if exists')
 @click.option('--confirm', is_flag=True, help='For CI automation and tests')
+@click.option('--add-tests', is_flag=True, help="After init, seed generic unit-test data (condition types a-g)")
+@click.option('--add-cpp-tests', is_flag=True, help="After init, seed the C++ test fixture (int_cnd=5 for run 1, etc.)")
 @pass_rcdb_context
-def init(context, drop_all, no_defaults, confirm):
-    """Database management commands."""
+def init(context, drop_all, no_defaults, confirm, add_tests, add_cpp_tests):
+    """Create the RCDB schema in a database (the canonical way to initialize a DB)."""
 
     # PRINTOUT PART
     print("This command creates RCDB schema in DB")
@@ -211,3 +213,14 @@ def init(context, drop_all, no_defaults, confirm):
     else:
         rcdb.create_default_condition_types(provider)
         print("Created default conditions")
+
+    # Optionally seed test data. Imported lazily so the package import stays light.
+    if add_tests:
+        from rcdb.cli.test_data import fill_test_data
+        fill_test_data(provider)
+        print("Added generic test data (condition types a-g)")
+
+    if add_cpp_tests:
+        from rcdb.cli.test_data import fill_cpp_test_data
+        fill_cpp_test_data(provider)
+        print("Added C++ test fixture data (int_cnd=5 for run 1, etc.)")
