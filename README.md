@@ -3,6 +3,7 @@
 ![Python tests](https://github.com/JeffersonLab/rcdb/actions/workflows/python-tests.yml/badge.svg)
 [![Python examples work](https://github.com/JeffersonLab/rcdb/actions/workflows/python-examples.yml/badge.svg)](https://github.com/JeffersonLab/rcdb/actions/workflows/python-examples.yml)
 [![C++ tests](https://github.com/JeffersonLab/rcdb/actions/workflows/cpp-tests.yml/badge.svg)](https://github.com/JeffersonLab/rcdb/actions/workflows/cpp-tests.yml)
+[![Documentation](https://github.com/JeffersonLab/rcdb/actions/workflows/documentation.yml/badge.svg)](https://github.com/JeffersonLab/rcdb/actions/workflows/documentation.yml)
 
 Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
