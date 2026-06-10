@@ -1,0 +1,81 @@
+name: rcdb CLI smoke test
+
+# Installs the `rcdb` command from the Python package and exercises the common
+# CLI commands against a fresh SQLite database: create schema, add a condition
+# type and values, then query them back with info / ls / select / rp.
+# Mirrors python-examples.yml and cpp-examples.yml.
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: [main]
+
+env:
+  # The 4-slash form gives SQLAlchemy an absolute path. All steps read this env var,
+  # so no -c/--connection flag is needed.
+  RCDB_CONNECTION: "sqlite:////${{ github.workspace }}/cli_smoke.sqlite"
+
+jobs:
+  cli-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install rcdb (provides the `rcdb` command)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --editable $GITHUB_WORKSPACE/python
+
+      # ── Each command gets its own step so a failure points at the culprit ──
+
+      - name: "rcdb --version"
+        run: rcdb --version
+
+      - name: "Create schema (db init)"
+        run: rcdb db init --confirm
+
+      - name: "Add a condition type and values"
+        run: |
+          rcdb add type beam_current --type=float --description "Beam current in nA"
+          rcdb add condition 100 beam_current 12.5
+          rcdb add condition 101 beam_current 0.0
+
+      - name: "Summary (info)"
+        run: |
+          OUT=$(rcdb info)
+          echo "$OUT"
+          echo "$OUT" | grep -q "Number of runs: 2"
+
+      - name: "List condition types (ls)"
+        run: |
+          OUT=$(rcdb ls)
+          echo "$OUT"
+          echo "$OUT" | grep -q "beam_current"
+
+      - name: "Select with a query"
+        run: |
+          # beam_current > 5 must match run 100 (12.5) and exclude run 101 (0.0)
+          OUT=$(rcdb select "beam_current > 5" 100-101)
+          echo "$OUT"
+          echo "$OUT" | grep -q "100"
+          if echo "$OUT" | grep -qw "101"; then
+            echo "ERROR: run 101 (beam_current=0.0) should not match 'beam_current > 5'"
+            exit 1
+          fi
+
+      - name: "Select export view (--dump)"
+        run: |
+          OUT=$(rcdb select "beam_current > 5" 100-101 --dump)
+          echo "$OUT"
+          # dump view prepends a "#! " header line
+          echo "$OUT" | grep -q "^#!"
+
+      - name: "List run periods (rp)"
+        run: rcdb rp
