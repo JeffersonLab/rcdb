@@ -2,6 +2,26 @@
 
 Below is a high-level overview of RCDB’s Python API
 
+```python
+from rcdb import RCDBProvider
+
+# Connect (MySQL or SQLite)
+db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb2")
+
+# Select run values with a query
+table = db.select_values(["beam_current", "event_count"],
+                         "@is_production and beam_current > 100",
+                         run_min=30000, run_max=31000)
+
+for row in table:
+    run_number, beam_current, event_count = row
+    print(run_number, beam_current, event_count)
+```
+
+See [Select Values](get-started/select-values) for more on querying, or read on for a full API reference.
+
+---
+
 ## Core Aspects
 
 1. **SQLAlchemy ORM**  

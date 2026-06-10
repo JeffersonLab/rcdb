@@ -7,7 +7,7 @@
 #   RCDB_TEST_CONNECTION="sqlite:///<path-to>.sqlite" ./build/test_rcdb_cpp
 # Create the test database with:  rcdb -c sqlite:///<path-to>.sqlite db init --add-cpp-tests --confirm
 
-cmake_minimum_required(VERSION 3.4)
+cmake_minimum_required(VERSION 3.5)
 project(rcdb_cpp)
 
 option(WITH_MYSQL  "Compile with MySQL support" OFF)
@@ -96,6 +96,7 @@ if(WITH_SQLITE)
 endif()
 
 add_executable(test_rcdb_cpp ${TEST_SOURCE_FILES})
+add_executable(examples_simple            examples/simple.cpp)
 add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
 add_executable(examples_fadc_masks        examples/get_fadc_masks.cpp)
 add_executable(examples_write_conditions  examples/write_conditions.cpp)
@@ -104,6 +105,7 @@ add_executable(examples_write_objects_to_json examples/write_objects_to_json.cpp
 
 target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread sqlite3)
 target_link_libraries(examples_trigger_params ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(examples_simple            ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_fadc_masks ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
 target_link_libraries(examples_write_array_to_json ${DB_REQIRED_LIBRARIES} dl pthread)

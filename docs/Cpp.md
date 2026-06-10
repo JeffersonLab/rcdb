@@ -13,76 +13,64 @@ C++ API code is located in [$RCDB_HOME/cpp](https://github.com/JeffersonLab/rcdb
 
 ## Installation
 
-TL; DR; version:  
-
-**Just include headers and:**
-
-* define ```RCDB_MYSQL``` for MySQL,  ```RCDB_SQLITE``` for SQLite
-* Ensure libs and headers are included. 
-
-Compile and run the simplest example for SQLite
-
-```bash 
-> gcc $RCDB_HOME/cpp/examples/simple.cpp -o simple -I$RCDB_HOME/cpp/include/ -std=c++11 -lstdc++ -lsqlite3 -DRCDB_SQLITE 
-
-> ./simple sqlite:////path/to/db/rcdb.sqlite 10452
-```
-
-with MySQL support:
-```
-> gcc $RCDB_HOME/cpp/examples/simple.cpp -o simple -I$RCDB_HOME/cpp/include/ -std=c++11 -lstdc++ -DRCDB_MYSQL `mysql_config --libs --cflags --include`
-
-> ./simple mysql://rcdb@hallddb.jlab.org/rcdb 10452
-```
-
-Combine both to have MySQL and SQLite working together
-
----
-
-RCDB C++ API is a header only since 0.03. Which means there is no more librcdb and separate step for RCDB. 
-That also means that MySQL and SQLite libraries should be linked to the application which includes RCDB headers. 
-
-In order for your code to build ensure flags/configuration:
-
-* There is at least C++11 support enabled and stdc++ library linked. This means that probably minimum GCC version to be used is 4.8:
-  
-    ```-std=c++11 -lstdc++```
-
-* For MySQL:
-
-     * Define ```RCDB_MYSQL``` 
-     * Add mysql-connector includes and libs. There is useful ```mysql_config``` script:
-
-     ``` -DRCDB_MYSQL `mysql_config --libs --cflags --include` ```
-
-* For SQLite:
-
-     * Define ```RCDB_SQLITE```:
-     * Link libsqlite3 
-
-     ``` -DRCDB_SQLITE -lsqlite3 ```
-
-
-** Defining RCDB_MYSQL or RCDB_SQLITE **
-
-
-​* Code ```#define RCDB_MYSQL```
-* Compiler arguments ```-DRCDB_MYSQL```
-* CMake ```-DWITH_MYSQL=ON``` (which does ```add_definitions(-DRCDB_MYSQL)```)
-
+RCDB C++ API is **header-only** (since v0.03) — there is no separate library build step.
+The CMake project in `$RCDB_HOME/cpp` builds the unit tests and examples, and handles
+all compiler flags and library linkage for you.
 
 ### Dependencies
 
-#### Ubuntu
+#### Ubuntu / Debian
 
-* MySQL ```libmysqlclient-dev``` or ```libmariadbclient-dev```
-* SQLite ```libsqlite3-dev```
+```bash
+# SQLite
+sudo apt-get install libsqlite3-dev
 
-```sudo apt-get install libmariadbclient-dev libsqlite3-dev -y```
+# MySQL (either one)
+sudo apt-get install libmysqlclient-dev
+# or
+sudo apt-get install libmariadbclient-dev
+```
 
-#### CentOS/Fedora
+#### CentOS / Fedora
 
-... please add, somebody ...
+```bash
+sudo dnf install sqlite-devel mysql-devel
+```
+
+### SQLite only
+
+```bash
+cd $RCDB_HOME/cpp
+cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+cmake --build build --target examples_simple
+
+./build/examples_simple sqlite:////path/to/db/rcdb.sqlite 10452
+```
+
+### MySQL only
+
+```bash
+cd $RCDB_HOME/cpp
+cmake -S . -B build -DWITH_SQLITE=OFF -DWITH_MYSQL=ON
+cmake --build build --target examples_simple
+
+./build/examples_simple mysql://rcdb@hallddb.jlab.org/rcdb 10452
+```
+
+### MySQL + SQLite (both)
+
+```bash
+cd $RCDB_HOME/cpp
+cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=ON
+cmake --build build --target examples_simple
+
+# use either connection string:
+./build/examples_simple sqlite:////path/to/db/rcdb.sqlite 10452
+./build/examples_simple mysql://rcdb@hallddb.jlab.org/rcdb 10452
+```
+
+> CMake sets the required compile definitions (`-DRCDB_SQLITE`, `-DRCDB_MYSQL`) and links
+> the correct libraries automatically based on the `-DWITH_*` options.
 
 <br/>
 <br/>
@@ -151,7 +139,7 @@ targets (e.g. `examples_trigger_params`). There is no separate install step or c
 
 **List of examples:**
 
-* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp) - Simple condition readout. Note: this example has no CMake target and is not built by `cmake --build build`; compile it manually with `gcc` as shown in the Installation section.
+* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp) (target `examples_simple`) - Simple condition readout. Used as the introductory build example in the Installation section above.
 * [get_trigger_params.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_trigger_params.cpp) (target `examples_trigger_params`) - Versatile data readout example. It includes:  
      * Reading conditions
      * Working with JSON serialized objects

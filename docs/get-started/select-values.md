@@ -1,13 +1,19 @@
 - [TL;DR; aka Too long didn't read](#tl-dr)
+- [CLI: rcdb select](#cli-rcdb-select)
 - [Select and filter](#select-and-filter)
 - [All options](#all-options)
 - [Result details](#result-details)
 - [Performance](#performance)
-- [From shell](#from-shell)
+- [Shell one-liner](#shell-one-liner)
 
 ## TLDR
 
-Fastest way to select values in 3 lines (using HallD rcdb as example):
+The two ways to select run values from RCDB:
+
+- **Python API** — `db.select_values(...)` — best for scripts and analysis workflows (see below)
+- **CLI** — `rcdb select` — great for quick interactive queries and shell scripts (see [CLI: rcdb select](#cli-rcdb-select))
+
+Fastest way to select values in 3 lines using the Python API (using HallD rcdb as example):
 
 ```python
 # import RCDB
@@ -27,6 +33,24 @@ table = db.select_values(['polarization_angle','beam_current'], "@is_production"
  [30045,  45.0,  PARA   ],
 ...] 
 ```
+
+<br>
+
+## CLI: rcdb select
+
+The `rcdb select` command lets you query runs and view condition values directly from the terminal without writing a Python script:
+
+```bash
+rcdb select "@is_production and event_count>1000" 30000-31000
+```
+
+The first argument is a [selection query](query-syntax), the optional second argument is a run range (`30000-31000`). You can also specify which condition columns to display, use `--dump`/`-d` for an export-friendly output without table borders, and `--desc`/`--asc` to control the sort order:
+
+```bash
+rcdb select "@is_production" 30000-31000 "event_count beam_current" --dump --desc
+```
+
+See [`rcdb-cli`](../rcdb-cli) for the full reference.
 
 <br>
 
@@ -139,26 +163,12 @@ More info about old select runs && get values API: [Select runs & get values DEP
 
 <br>
 
-## From shell  
-(Shell one liner)
+## Shell one-liner
 
-Suppose one wants to select values in a bash script but doesn't want to create a separate python script.
-It is possible to call ```python -c "semicolon;separated;commands"```
-
-Combining everything in such one-liner:
+For embedding a quick value fetch in a bash script without a separate file, you can also use the Python one-liner form:
 
 ```bash
 python -c "import rcdb.provider;t=rcdb.provider.RCDBProvider('mysql://rcdb@hallddb.jlab.org/rcdb2').select_values(['polarization_angle','polarization_direction'], run_min=30000, run_max=31000);print('\n'.join([' '.join(map(str, r)) for r in t]))"
 ```
 
-Shouldn't be there an easier way? There is the ```rcdb select``` command doing it:
-
-```bash
-rcdb select "@is_production and event_count>1000" 30000-31000
-```
-
-The first argument is a selection query, and the optional second argument is a run range (e.g. ```30000-31000```). You can also pass view columns to display, use ```--dump```/```-d``` for an export-friendly output without table borders, and ```--desc```/```--asc``` to control the run number sort order:
-
-```bash
-rcdb select "@is_production" 30000-31000 "event_count beam_current" --dump --desc
-```
+For most shell use cases `rcdb select` (see [above](#cli-rcdb-select)) is simpler.

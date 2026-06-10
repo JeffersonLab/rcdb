@@ -1,0 +1,62 @@
+name: C++ examples verification
+
+# Builds the C++ examples with CMake and smoke-tests the simplest one against a
+# fixture SQLite database. Mirrors python-examples.yml, but for the header-only
+# C++ API. The fixture DB is built with the `rcdb` CLI (the canonical way to
+# initialize an RCDB database) so there is no checked-in binary to drift.
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+    branches: [main]
+
+env:
+  # 4-slash form: SQLAlchemy (used to seed) and the C++ SqLiteProvider parser
+  # (strips the leading "sqlite:///") both resolve this to the same absolute path.
+  RCDB_TEST_CONNECTION: "sqlite:////${{ github.workspace }}/cpp_examples.sqlite"
+
+jobs:
+  cpp-examples:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ libsqlite3-dev
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install rcdb (provides the `rcdb db init` test fixture)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --editable $GITHUB_WORKSPACE/python
+
+      # The C++ examples read from a real RCDB database. We seed a SQLite one
+      # with the cpp test fixture, then add an `event_count` value for run 1 so
+      # the `simple` example (which looks up event_count) has data to read.
+      - name: Create the example SQLite database
+        run: |
+          rcdb -c "$RCDB_TEST_CONNECTION" db init --add-cpp-tests --confirm
+          rcdb -c "$RCDB_TEST_CONNECTION" add condition 1 event_count 12345
+
+      - name: Configure and build C++ examples (SQLite only)
+        run: |
+          cmake -S $GITHUB_WORKSPACE/cpp -B $GITHUB_WORKSPACE/cpp/build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+          cmake --build $GITHUB_WORKSPACE/cpp/build -j
+
+      # ── Smoke-test the examples ───────────────────────────────────
+      # Each example that can run against the fixture DB gets its own step so
+      # failures are visible per-binary.
+
+      - name: "Example: simple (read event_count)"
+        run: |
+          OUT=$("$GITHUB_WORKSPACE/cpp/build/examples_simple" "$RCDB_TEST_CONNECTION" 1)
+          echo "$OUT"
+          echo "$OUT" | grep -q "event_count is: 12345"
