@@ -1,4 +1,4 @@
-name: C++ examples verification
+name: C++ examples
 
 # Builds the C++ examples with CMake and smoke-tests the simplest one against a
 # fixture SQLite database. Mirrors python-examples.yml, but for the header-only
@@ -7,7 +7,7 @@ name: C++ examples verification
 
 on:
   push:
-    branches: ['*']
+    branches: ["*"]
   pull_request:
     branches: [main]
 

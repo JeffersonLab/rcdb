@@ -4,11 +4,11 @@
 # Strategy: download the daily HallD SQLite snapshot so the examples
 # run against real data with a proper schema.
 
-name: Python examples verification
+name: Python examples
 
 on:
   push:
-    branches: ['*']
+    branches: ["*"]
   pull_request:
     branches: [main]
 
@@ -35,17 +35,14 @@ jobs:
           pip install --editable .
           pip install jsonpickle  # for writing object example
 
-#      - name: Download HallD SQLite snapshot
-#        run: |
-#          mkdir -p $GITHUB_WORKSPACE/tmp
-#          # Future put db creation here
-
-
+      #      - name: Download HallD SQLite snapshot
+      #        run: |
+      #          mkdir -p $GITHUB_WORKSPACE/tmp
+      #          # Future put db creation here
       # ── Run examples ──────────────────────────────────────────────
       # Each example gets its own step so failures are visible per-script.
       # continue-on-error keeps the workflow green while showing which
       # script had problems (yellow badge instead of silent swallow).
-
       - name: "Example: 01_select_values_simple"
         run: python $GITHUB_WORKSPACE/python/examples/01_select_values_simple.py
         # Script must read RCDB_CONNECTION env var (see updated examples)
