@@ -146,6 +146,11 @@ targets (e.g. `examples_trigger_params`). There is no separate install step or c
      * Getting RCDB stored files contents
      * Working with config file parser
 * [get_fadc_masks.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_fadc_masks.cpp) (target `examples_fadc_masks`) - Reading FADC masks
+
+Writing to RCDB from C++ goes through `WritingConnection`, which is **MySQL-only** (the
+SQLite provider is read-only). The following write examples are therefore built only when
+configured with `-DWITH_MYSQL=ON`:
+
 * [write_conditions.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_conditions.cpp) (target `examples_write_conditions`) - Writing conditions to RCDB from C++. It includes:  
      * Using WritingConnection
      * Adding condition values of different types

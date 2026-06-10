@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include "RCDB/WritingConnection.h"
+#include "RCDB/StringUtils.h"
 #include <tao/json.hpp>
 
 using namespace tao;
