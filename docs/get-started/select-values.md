@@ -35,23 +35,23 @@ table = db.select_values(['polarization_angle','beam_current'], "@is_production"
 The fastest designed way to get values from RCDB is by using ```select_values``` function. 
 There are several related examples:
 
-- [01_select_values_simple.py](https://github.com/JeffersonLab/rcdb/blob/main/python/01_select_values_simple.py)
-- [02_select_value_extended.py](https://github.com/JeffersonLab/rcdb/blob/main/python/02_select_value_extended.py)
-- [03_select_values_custom_runs.py](https://github.com/JeffersonLab/rcdb/blob/main/python/03_select_values_custom_runs.py)
+- [01_select_values_simple.py](https://github.com/JeffersonLab/rcdb/blob/main/python/examples/01_select_values_simple.py)
+- [02_select_values_extended.py](https://github.com/JeffersonLab/rcdb/blob/main/python/examples/02_select_values_extended.py)
+- [03_select_values_custom_runs.py](https://github.com/JeffersonLab/rcdb/blob/main/python/examples/03_select_values_custom_runs.py)
 
 The simplest usage is to put condition names and a run range:
 
 ```python
 from rcdb.provider import RCDBProvider
 
-db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
+db = RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb2")
 
 table = db.select_values(['polarization_angle','polarization_direction'], run_min=30000, run_max=30050)
 
 # Print results
 print(" run_number, polarization_angle, polarization_direction")
 for row in table:
-    print row[0], row[1], row[2]
+    print(row[0], row[1], row[2])
 ```
 
 output:
@@ -96,7 +96,7 @@ table = db.select_values(val_names=['event_count'],                          # [
 Remarks:
 1. ```val_names```. If ```val_names``` list is empty, run numbers will be selected (assuming that insert_run_number=True by default)
 
-2. ```search_str```. If ```search_str`` is empty, the function doesn't apply filters and just select values for all runs according to ['run_min' - 'run_max'] or 'runs' list
+2. ```search_str```. If ```search_str``` is empty, the function doesn't apply filters and just select values for all runs according to ['run_min' - 'run_max'] or 'runs' list
 
 
 <br>
@@ -148,7 +148,17 @@ It is possible to call ```python -c "semicolon;separated;commands"```
 Combining everything in such one-liner:
 
 ```bash
-python -c "import rcdb.provider;t=rcdb.provider.RCDBProvider('mysql://rcdb@hallddb.jlab.org/rcdb').select_values(['polarization_angle','polarization_direction'], run_min=30000, run_max=31000);print('\n'.join([' '.join(map(str, r)) for r in t]))"
+python -c "import rcdb.provider;t=rcdb.provider.RCDBProvider('mysql://rcdb@hallddb.jlab.org/rcdb2').select_values(['polarization_angle','polarization_direction'], run_min=30000, run_max=31000);print('\n'.join([' '.join(map(str, r)) for r in t]))"
 ```
 
-Shouldn't be there an easier way? It was planned to have ```rcdb sel``` command doing it. But it hasn't been fully implemented yet. If you have a spare time (or student) to contribute, please, contact me (Dmitry)
+Shouldn't be there an easier way? There is the ```rcdb select``` command doing it:
+
+```bash
+rcdb select "@is_production and event_count>1000" 30000-31000
+```
+
+The first argument is a selection query, and the optional second argument is a run range (e.g. ```30000-31000```). You can also pass view columns to display, use ```--dump```/```-d``` for an export-friendly output without table borders, and ```--desc```/```--asc``` to control the run number sort order:
+
+```bash
+rcdb select "@is_production" 30000-31000 "event_count beam_current" --dump --desc
+```

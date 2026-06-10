@@ -44,7 +44,7 @@ That also means that MySQL and SQLite libraries should be linked to the applicat
 
 In order for your code to build ensure flags/configuration:
 
-* There is at lease C++11 support enabled and stdc++ library linked. This means that probably minimum GCC version to be used is 4.8:
+* There is at least C++11 support enabled and stdc++ library linked. This means that probably minimum GCC version to be used is 4.8:
   
     ```-std=c++11 -lstdc++```
 
@@ -96,7 +96,7 @@ The example shows how to get values from RCDB:
 Connection con("mysql://rcdb@hallddb/rcdb");
 
 // Get event_count for run 10173
-auto cnd = prov.GetCondition(10173, "event_count");
+auto cnd = con.GetCondition(10173, "event_count");
 
 // Check event_count has a value for the run
 if(!cnd) {
@@ -116,7 +116,7 @@ bool ToBool();                         /// For bool or int in DB
 double ToDouble();                     /// For Double or int in DB
 std::string ToString();                /// For Json, String or Blob
 time_point<system_clock> ToTime();     /// For time value
-rapidjson::Document ToJsonDocument();  /// For JSon document
+rapidjson::Document ToJsonDocument();  /// DEPRECATED: use json ToJson() instead. For JSon document
 
 rcdb::ValueTypes GetValueType();       /// Returns the type enum
 ```
@@ -144,21 +144,25 @@ RCDB_TEST_CONNECTION="sqlite:///cpp_test.sqlite" ./build/test_rcdb_cpp
 Examples are located in the [$RCDB_HOME/cpp/examples](https://github.com/JeffersonLab/rcdb/tree/main/cpp/examples) folder
 and are built as the `examples_*` targets by the `cmake --build build` command above.
 
-After examples are built they are located in `$RCDB_HOME/cpp/bin` directory named as `exmpl_<...>`
+After examples are built they are located in the `cpp/build` directory, named after their CMake
+targets (e.g. `examples_trigger_params`). There is no separate install step or custom output directory.
 
 <br>
 
 **List of examples:**
 
-* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp) - Simple condition readout
-* [get_trigger_params.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_trigger_params.cpp) - Versatile data readout example. It includes:  
+* [simple.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/simple.cpp) - Simple condition readout. Note: this example has no CMake target and is not built by `cmake --build build`; compile it manually with `gcc` as shown in the Installation section.
+* [get_trigger_params.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_trigger_params.cpp) (target `examples_trigger_params`) - Versatile data readout example. It includes:  
      * Reading conditions
      * Working with JSON serialized objects
      * Getting RCDB stored files contents
      * Working with config file parser
-* [write_conditions.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_conditions.cpp) - Writing conditions to RCDB from C++. It includes:  
-     * Using WriteConnection
+* [get_fadc_masks.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/get_fadc_masks.cpp) (target `examples_fadc_masks`) - Reading FADC masks
+* [write_conditions.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_conditions.cpp) (target `examples_write_conditions`) - Writing conditions to RCDB from C++. It includes:  
+     * Using WritingConnection
      * Adding condition values of different types
+* [write_array_to_json.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_array_to_json.cpp) (target `examples_write_array_to_json`) - Writing an array serialized to JSON
+* [write_objects_to_json.cpp](https://github.com/JeffersonLab/rcdb/blob/main/cpp/examples/write_objects_to_json.cpp) (target `examples_write_objects_to_json`) - Writing objects serialized to JSON
 
 
 

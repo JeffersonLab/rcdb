@@ -25,9 +25,9 @@ rcdb [OPTIONS] COMMAND [ARGS]...
 - **`--help`**  
   Prints help information (including subcommands).
 
-If run with **no** subcommand, `rcdb` will either:
-1. Show the help usage, or
-2. Attempt to execute the default command (`info`) if no subcommand is given.
+If run with **no** subcommand, `rcdb` behaves as follows:
+1. If a connection string **is** provided (via `-c/--connection` or `RCDB_CONNECTION`), it automatically runs the `info` command.
+2. If **no** connection string is provided, it prints the help usage.
 
 ---
 
@@ -39,8 +39,8 @@ Below are the primary subcommands:
 2. **`ls`** - Lists existing **condition types**
 3. **`db`** - Database commands (info, init, update)
 4. **`rp`** (Run Periods) - view or manage Run periods
-5. **`run`** - Show run information
-6. **`select`** - Select values
+5. **`select`** - Select/list runs by condition logic
+6. **`add`** - Add data to the DB (types, conditions, files)
 7. **`repair`** - Maintenance commands
 8. **`web`** - Run local RCDB web
 
@@ -97,8 +97,8 @@ Lists existing **condition types** (not runs). It can optionally print more deta
 rcdb ls [SEARCH] [OPTIONS]
 ```
 
-- **`SEARCH`** *(optional)*: Currently not heavily used in the example code.
-- **`--long, -l`**: Prints fuller condition information (includes a longer description).
+- **`SEARCH`** *(optional)*: Substring filter applied to condition type names (only matching names are shown).
+- **`--long, -l`**: Accepted for backward compatibility, but **currently has no effect** — the output is identical with or without it.
 
 **Example:**
 
@@ -106,8 +106,8 @@ rcdb ls [SEARCH] [OPTIONS]
 # Basic usage
 rcdb ls
 
-# Long usage
-rcdb ls --long
+# Filter by name substring
+rcdb ls beam
 ```
 
 **Typical Output:**
@@ -238,27 +238,7 @@ If `rcdb rp` is run **without** a subcommand, it lists all existing run periods.
 
 ---
 
-### 5. `rcdb run`
-
-This command grouping can display details of runs or conditions. In the provided code, the main command seen is `ls`, although it may not be fully wired into `rcdb run` in the final distribution.
-
-**Usage (example)**:
-```bash
-rcdb run ls [RUN_INDEX] [CONDITION]
-```
-
-- **`RUN_INDEX`** *(optional)*: Run number to filter on.
-- **`CONDITION`** *(optional)*: Condition name to show.
-
-Internally, it can either:
-- Show all conditions for the specified run, or
-- Show the value of a specific condition if provided.
-
-*(Note: In some deployments, `rcdb run ls` may not be registered automatically. The code is in `rcdb/cli/run.py`; if you do not see it listed via `rcdb --help`, you may need to add it manually. Check the `rcdb_cli.add_command(...)` lines.)*
-
----
-
-### 6. `rcdb select`
+### 5. `rcdb select`
 
 Executes more advanced condition-based search queries over runs, optionally returning condition columns.
 
@@ -275,9 +255,8 @@ rcdb select [QUERY] [VIEW_OR_RUNS...] [OPTIONS]
 - **`VIEW_OR_RUNS...`**: Additional arguments that can define which conditions to show or which runs to search in. Typically a "view" can be a list of condition names to select.
 
 - **Options**:
-    - **`--dump, -d`**: Dump the table in a simpler textual output rather than a fancy table.
-    - **`--desc, -d` / `--asc, -a`**: Sort descending or ascending by run number.  
-      *(Note: the code uses `--desc/--asc` toggles but also reuses `-d`, so watch for collisions. Confirm which short option is recognized in your environment.)*
+    - **`--dump, -d`**: Display results in an export-friendly format (no borders/extra formatting) rather than the default rich table.
+    - **`--desc` / `--asc`**: Sort by run number descending or ascending. Default is ascending. These are long-only flags (no short option).
 
 **Examples:**
 
@@ -293,6 +272,54 @@ When you run `rcdb select`, it:
 1. Parses the `run_min - run_max` range (if given).
 2. Evaluates the `QUERY` expression on the conditions.
 3. Returns a table of runs and the requested conditions.
+
+If no view is given, the default columns are `event_count run_config`.
+
+---
+
+### 6. `rcdb add`
+
+Adds data to the RCDB: new condition types, condition values for runs, and configuration files attached to runs.
+
+**Usage:**
+
+```bash
+rcdb add [COMMAND]
+```
+
+#### Subcommands
+
+1. **`rcdb add type NAME`**  
+   Adds a new condition type named `NAME`.
+    - **`--type`** *(optional, default `float`)*: The data type of the condition. One of `bool`, `int`, `float`, `string`, `json`, `time`, `blob`.
+    - **`--description, -d`** *(optional)*: A description for the condition type.
+
+   **Example:**
+   ```bash
+   rcdb add type beam_current --type=float --description "Beam current in nA"
+   ```
+
+2. **`rcdb add condition RUN_NUMBER CONDITION_NAME VALUE`**  
+   Adds (or replaces) a condition value for a given run. If the run does not exist it is created. The condition type must already exist (create it first with `rcdb add type`).
+    - **`--replace, -r`** *(flag)*: Replace the existing value if one already exists for that run/condition.
+
+   **Example:**
+   ```bash
+   rcdb add condition 1000 my_value 123.4
+   rcdb add condition 1000 event_count 10000 --replace
+   ```
+
+3. **`rcdb add file RUN_NUMBER FILE_PATH`**  
+   Attaches a configuration file to a run. If the run does not exist it is created. By default the file contents are read from `FILE_PATH` on disk.
+    - **`--importance, -i`** *(default `0`)*: Importance level of the file.
+    - **`--overwrite`** *(flag)*: Overwrite existing content for the same path and run.
+    - **`--content`** *(optional)*: Provide the raw content directly instead of reading from `FILE_PATH` on disk.
+
+   **Example:**
+   ```bash
+   rcdb add file 1000 /path/to/coda_run.log
+   rcdb add file 1000 /path/to/config.txt --importance=2 --overwrite
+   ```
 
 ---
 
@@ -327,13 +354,23 @@ Starts the **Flask**-based web server to display the RCDB in a browser. Useful f
 **Usage:**
 
 ```bash
-rcdb web
+rcdb web [OPTIONS]
 ```
+
+**Options:**
+- **`--add-db NAME=CONNECTION_STRING`**: Register an additional named database, enabling a database selector in the web UI. May be specified multiple times. If no `-c/--connection` is given, the first `--add-db` entry is used as the default database.
 
 **Behavior:**
 - Loads the Flask application from `rcdb/web/__init__.py`.
-- Reads the connection string from `--connection` or environment variables.
+- Reads the connection string from `--connection` or the `RCDB_CONNECTION` environment variable.
 - Runs the web app, typically on `http://127.0.0.1:5000`.
+
+**Example:**
+```bash
+rcdb -c mysql://rcdb@host/rcdb web \
+    --add-db "Production=mysql://rcdb@prodhost/rcdb" \
+    --add-db "Test=mysql://rcdb@testhost/rcdb_test"
+```
 
 ---
 
@@ -404,8 +441,8 @@ The RCDB CLI provides a convenient way to manage and query your Run Conditions D
 - **`ls`**: Condition types listing
 - **`db`**: Schema init/update
 - **`rp`**: Manage run periods
-- **`run`**: View run info (conditions)
-- **`select`**: Filter runs by condition logic
+- **`select`**: Filter/list runs by condition logic
+- **`add`**: Add condition types, conditions, and files
 - **`repair`**: Utility fixes (like `evio-files`)
 - **`web`**: Launch a Flask UI
 

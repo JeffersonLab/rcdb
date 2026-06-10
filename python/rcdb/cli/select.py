@@ -32,7 +32,7 @@ def _process_sel_args(args):
 @click.argument('views_or_runs', nargs=-1)
 @click.option('--dump', '-d', 'is_dump_view', is_flag=True,
               help='Display results in export-friendly format without borders or extra formatting')
-@click.option('--desc/--asc', '-d/-a', 'is_descending', default=False,
+@click.option('--desc/--asc', 'is_descending', default=False,
               help="Sort order of run number descending or ascending")
 @pass_rcdb_context
 def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descending):

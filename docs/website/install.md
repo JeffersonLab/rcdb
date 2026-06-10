@@ -3,7 +3,7 @@
 Instruction on how to install central RCDB website.  
 
 RHEL9 + Apache Server + mod_wsgi is used as the example, 
-as this is what usually is used at Jefferson Lab (now is 2025).
+as this is what usually is used at Jefferson Lab.
 
 ***Notes:***
 
@@ -77,6 +77,11 @@ dnf install -y \
   python3-flask
 ```
 
+> Note: `python3-pygments` is not a direct RCDB dependency, but it is required
+> transitively by `rich`. Because the system-wide route below installs RCDB with
+> `pip install --no-deps`, transitive dependencies are not pulled in automatically,
+> so it must be installed explicitly here.
+
 
 ### Python dependencies
 
@@ -114,7 +119,7 @@ If RCDB is installed as a system-wide library:
 import rcdb.web
 
 # Connection string - adjust as needed
-rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql://rcdb@hallddb.jlab.org/rcdb2"
+rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql+pymysql://rcdb@hallddb.jlab.org/rcdb2"
 
 # 'application' is what mod_wsgi looks for
 application = rcdb.web.app
@@ -125,17 +130,20 @@ If venv is used library:
 ```python
 import sys
 import os
+import glob
 
 # Add where to look for RCDB
 venv_path = '/opt/venvs/rcdb/'
-site_packages = os.path.join(venv_path, 'lib', 'python3.9', 'site-packages')
+# Match the venv's actual Python version (RCDB supports 3.9-3.14)
+# instead of hardcoding e.g. python3.9
+site_packages = glob.glob(os.path.join(venv_path, 'lib', 'python3.*', 'site-packages'))[0]
 sys.path.insert(0, site_packages)
 
 # Import and configure the RCDB web application
 import rcdb.web
 
 # Default connection string - adjust as needed
-rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql://rcdb@hallddb.jlab.org/rcdb2"
+rcdb.web.app.config["SQL_CONNECTION_STRING"] = "mysql+pymysql://rcdb@hallddb.jlab.org/rcdb2"
 
 # This is what mod_wsgi looks for
 application = rcdb.web.app
@@ -155,7 +163,7 @@ Create an Apache configuration file at `/etc/httpd/conf.d/rcdb.conf`:
     
     # If WSGI script is using RCDB_CONNECTION environment variable (not in this example)    
     # Set the database connection string
-    # SetEnv RCDB_CONNECTION "mysql://rcdb@hallddb.jlab.org/rcdb2"
+    # SetEnv RCDB_CONNECTION "mysql+pymysql://rcdb@hallddb.jlab.org/rcdb2"
     
     # If using a virtual environment, specify the python-home
     # Uncomment the line below if using Option B (virtual environment)

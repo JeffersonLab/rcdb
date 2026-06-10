@@ -1,6 +1,6 @@
 # [DEPRECATED]
 
-Better use [select_values](https://github.com/JeffersonLab/rcdb/wiki/Select-values). See below why
+Better use [select_values](get-started/select-values.md). See below why
 
 **Contents:**  
 - [Selecting runs and getting values](#selecting-runs-and-getting-values)
@@ -19,10 +19,10 @@ Better use [select_values](https://github.com/JeffersonLab/rcdb/wiki/Select-valu
 
 
 
-For the most of the use cases the new [select_values](https://github.com/JeffersonLab/rcdb/wiki/Select-values) function is faster and better than `select_runs`. 
+For the most of the use cases the new [select_values](get-started/select-values.md) function is faster and better than `select_runs`. 
 
-- **faster**, while using python `if` statement syntaxis for search queries, `select_values` relies on SQL search query as much as possible and do only the  final selection steps in python. Moreover, it selects only required values, increasing the performance. The `select_runs` function contraty to that does a lot of filtering on python side and pulls full runs information. 
-- **beter output**, `select_values` selects the resulting table of values for specified runs. The table of runs and values is what is needed in 99% of cases.  `select_runs` returns a list of Run SQLAlchemy objects. Manipulating over Run ORM objects usually leads to more queries. 
+- **faster**, while using python `if` statement syntax for search queries, `select_values` relies on SQL search query as much as possible and do only the  final selection steps in python. Moreover, it selects only required values, increasing the performance. The `select_runs` function contrary to that does a lot of filtering on python side and pulls full runs information. 
+- **better output**, `select_values` selects the resulting table of values for specified runs. The table of runs and values is what is needed in 99% of cases.  `select_runs` returns a list of Run SQLAlchemy objects. Manipulating over Run ORM objects usually leads to more queries. 
 - **better introspection**, results of select_values also has performance metrics and some other goodies. Not that it is needed for regular users, but
   can help to figure out why something is slow. 
 
@@ -61,7 +61,7 @@ db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
 # Select runs and get values
 table = db.select_runs("@is_production")\
           .get_values(['event_count', 'beam_current'], insert_run_number=True)
-print table
+print(table)
 ```
 
 As the result one gets something like:
@@ -85,7 +85,7 @@ A nice way to iterate the values:
 ```python
 for row in table:
     event_count, beam_current = tuple(row)
-    print event_count, beam_current
+    print(event_count, beam_current)
 ```
 
 <br>
@@ -130,14 +130,14 @@ table = db.select_runs(run_min=10000, run_max=20000, sort_desc=True)\
 <br>
 
 #### Getting runs  
-```select_runs``` function returns ```RunSelectionResult``` object that contains all selected runs and some other information about how the runs where selected. The RunSelectionResult implements ```list``` interface returning ```Run`-s. Thus one can do:
+```select_runs``` function returns ```RunSelectionResult``` object that contains all selected runs and some other information about how the runs were selected. The RunSelectionResult implements ```list``` interface returning ```Run```-s. Thus one can do:
 
 ```python
 import rcdb
 db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
 result = db.select_runs("@is_production")
 for run in result:
-    print run.number
+    print(run.number)
 ```
 
 As one could guess the selected run numbers are printed as the result. 
@@ -163,7 +163,7 @@ import rcdb
 db = rcdb.RCDBProvider("mysql://rcdb@hallddb.jlab.org/rcdb")
 result = db.select_runs("@is_production")
 for run in result:
-    print run.get_condition_value('event_count')
+    print(run.get_condition_value('event_count'))
 ```
 
 
@@ -182,7 +182,7 @@ In case of iterating:
 ```
 result = db.select_runs("@is_production")
 for run in result:
-    print run.get_condition_value('event_count')
+    print(run.get_condition_value('event_count'))
 ```
 Database is queried on each get_condition_value
 

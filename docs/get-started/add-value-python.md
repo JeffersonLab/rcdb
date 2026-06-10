@@ -11,6 +11,14 @@ rcdb -c sqlite:///mydb.sqlite db init
 
 ## 2. Creating Condition Types
 
+First, connect to a database. All examples below assume a connected `db` provider:
+
+```python
+from rcdb import RCDBProvider
+
+db = RCDBProvider("sqlite:///mydb.sqlite")
+```
+
 **Condition types** define how the condition values are stored and interpreted in the database (int,
 float, string, JSON, etc.). Use `db.create_condition_type(...)` to add new ones.
 
@@ -112,21 +120,18 @@ db.add_conditions(1002, conditions_dict, replace=True)
 
 ## 5. Attaching Files to Runs
 
-To **attach files** (e.g., configuration files, CODA logs) to runs, you can use either:
+To **attach files** (e.g., configuration files, CODA logs) to runs, use `RCDBProvider`, which
+provides `add_configuration_file(...)`.
 
-- **`RCDBProvider`** + manual logic, or
-- **`ConfigurationProvider`**, which extends `RCDBProvider` and provides
-  `add_configuration_file(...)`.
+### 5.1 Using `add_configuration_file`
 
-### 5.1 Using `ConfigurationProvider`
-
-`ConfigurationProvider` is a subclass of `RCDBProvider` that adds handy methods for adding files.
+`RCDBProvider.add_configuration_file(...)` is a handy method for attaching files to runs.
 Example:
 
 ```python
-from rcdb.provider import destroy_all_create_schema, ConfigurationProvider
+from rcdb.provider import destroy_all_create_schema, RCDBProvider
 
-db = ConfigurationProvider("sqlite://", check_version=False)
+db = RCDBProvider("sqlite://", check_version=False)
 destroy_all_create_schema(db)
 
 # Create some runs
@@ -175,10 +180,15 @@ print(cond_value)  # e.g. 42
 
 ### 6.2 Searching
 
-If you need more advanced searching, see:
+If you need more advanced searching:
 
-- `db.select_runs("some logical expression", run_min, run_max, sort_desc=False)`
-- `db.select_values([...condition names...], "logical expression", ...)`
+- `db.select_values([...condition names...], "logical expression", ...)` returns matching runs and
+  their condition values programmatically.
+- From the command line, use `rcdb select "logical expression" [run_min-run_max] [view columns]`
+  (supports `--dump`, `--desc`/`--asc`).
+
+**Note**: `db.select_runs(...)` is **obsolete** (kept only for backward compatibility). Prefer
+`db.select_values(...)` or the `rcdb select` CLI command instead.
 
 ---
 
@@ -199,11 +209,11 @@ Or simply let the Python script end, and the session will be cleaned up.
 Below is a brief end-to-end snippet combining many of these steps:
 
 ```python
-from rcdb.provider import ConfigurationProvider, destroy_all_create_schema
+from rcdb.provider import RCDBProvider, destroy_all_create_schema
 from rcdb.model import ConditionType
 
 # 1) Connect to or create a new SQLite DB
-db = ConfigurationProvider("sqlite://", check_version=False)
+db = RCDBProvider("sqlite://", check_version=False)
 
 # 2) (Optional) Wipe everything and create fresh RCDB schema
 destroy_all_create_schema(db)

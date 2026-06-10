@@ -54,7 +54,7 @@ for connection selection (though it should still be set as a fallback).
 ## UI Behavior
 
 The selector appears to the left of the "Run or min-max" search box in the navbar.
-Each option shows the database name and a connection hint (e.g. `Production (rcdb@prodhost)`).
+Each option shows the database name (e.g. `Production`).
 
 When the user selects a different database:
 

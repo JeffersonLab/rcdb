@@ -19,9 +19,9 @@ RCDB python library could be considered as the main client and introspection too
 python -m pip install --upgrade rcdb
 ```
 
-RCDB available on [Python PYPI](https://pypi.org/project/rcdb-web/) after installation one has available:
+RCDB available on [Python PYPI](https://pypi.org/project/rcdb/) after installation one has available:
 
-- `rcdb` python lbrary
+- `rcdb` python library
 - `rcdb` command, to work with RCDB in terminal or 
 - `rcdb web` command for running local website
 

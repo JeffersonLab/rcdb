@@ -26,7 +26,7 @@
 - [Migrate to RCDB2](development/rcdb2-migration.md)
 - [DAQ Setup](daq/daq.md)
 - [Website install](website/install.md)
-- [Muli-Database](website/database-selector.md)
+- [Multi-Database](website/database-selector.md)
 
 
 

@@ -34,15 +34,14 @@ for more detail.
 ## Multi-Database Selector
 
 The web interface supports switching between multiple databases from the browser.
-See [Database Selector](development/database-selector.md) for configuration details.
+See [Database Selector](website/database-selector.md) for configuration details.
 
 
 ## Publishing on pypi
 
 ```bash
-python -m pip install build twine
-python -m build
-twine upload dist/*
+uv build
+uv run twine upload dist/*
 ```
 
 [documentation.md](documentation.md ':include')
@@ -54,9 +53,8 @@ twine upload dist/*
 If one needs to setup environment variables ***manually***, here is the list of variables, `environment.XXX` scripts set:
 
 * `RCDB_HOME` - set to the rcdb directory (where environment.* scripts are located)
-* `PATH` -  add `"$RCDB_HOME":"$RCDB_HOME/bin":$PATH`
+* `PYTHONPATH` - add `$RCDB_HOME/python`
+* `PATH` -  add `"$RCDB_HOME":"$RCDB_HOME/bin":"$RCDB_HOME/cpp/bin":$PATH`
 
 If one wants to use C++ ***readout*** API
 * `LD_LIBRARY_PATH` - add `$RCDB_HOME/cpp/lib`
-* `CPLUS_INCLUDE_PATH` - add `$RCDB_HOME/cpp/include`
-* `PATH` - add `"$RCDB_HOME/bin"`

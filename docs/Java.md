@@ -33,10 +33,10 @@ Here is the list of condition to[Type] functions and what values they are for:
 
 ```java
 Long toLong();                         /// For int values
-Bool toBool();                         /// For bool or int in DB
+Boolean toBoolean();                   /// For bool or int in DB
 Double toDouble();                     /// For Double or int in DB
 String toString();                     /// For Json, String or Blob
-Date   toDate();                       /// For time value
+java.sql.Time toTime();                /// For time value
 
 org.rcdb.ValueTypes                    /// type enum
 ```

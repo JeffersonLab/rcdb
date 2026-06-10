@@ -23,12 +23,12 @@ runs = db.select_runs("@is_production and 80 < beam_current < 120 and 'BCAL' in 
 CLI:
 
 ```bash
->>rcdb sel "@is_production and 80 < beam_current < 120 and 'BCAL' in run_config"
+>>rcdb select "@is_production and 80 < beam_current < 120 and 'BCAL' in run_config"
 ```
 
 ## Syntax
 
-Queries use python 'if' syntax. The full python documentation is [here](https://docs.python.org/2/library/stdtypes.html). 
+Queries use python 'if' syntax. The full python documentation is [here](https://docs.python.org/3/library/stdtypes.html). 
 
 Concise version is: 
 
@@ -57,8 +57,8 @@ For example for HallD ```@is_production``` alias is given as:
 
 ```python
 run_type in ['hd_all.tsg', 'hd_all.tsg_ps', 'hd_all.bcal_fcal_st.tsg'] and
-beam_current > 2 and
+beam_current and beam_current > 2 and
 event_count > 500000 and
-solenoid_current > 100 and
+solenoid_current and solenoid_current > 100 and
 collimator_diameter != 'Blocking'
 ```

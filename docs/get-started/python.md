@@ -6,7 +6,6 @@
 Create or connect to an SQLite database, define a condition type, and store some values:
 
 ```python
-from datetime import datetime
 from rcdb.provider import RCDBProvider
 from rcdb.model import ConditionType
 
@@ -16,13 +15,16 @@ db = RCDBProvider("sqlite:///example.db", check_version=False)
 # 2. Create a condition type -- do this only once. If it already exists, you can skip this.
 db.create_condition_type("my_val", ConditionType.INT_FIELD, "This is my value")
 
-# 3. Add data to database (run #1, "my_val" = 1000).
+# 3. Create run #1 before adding conditions to it.
+db.create_run(1)
+
+# 4. Add data to database (run #1, "my_val" = 1000).
 db.add_condition(run=1, key="my_val", value=1000)
 
 # ...Replace previous value by passing replace=True
 db.add_condition(run=1, key="my_val", value=2000, replace=True)
 
-# 4. Get a condition from database
+# 5. Get a condition from database
 condition = db.get_condition(run_number=1, key="my_val")
 
 print(condition)
@@ -85,9 +87,9 @@ my_val = 2000
    rcdb -c sqlite:///example.db db init
    ```
 
-2. **Run** the sample script above (e.g. `example_conditions_basic.py`):
+2. **Run** the sample script (`python/examples/10_create_conditions_basic.py`):
    ```bash
-   python example_conditions_basic.py
+   uv --project ./python run python python/examples/10_create_conditions_basic.py
    ```
 
 3. **Observe** its output in the console.

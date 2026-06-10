@@ -77,7 +77,7 @@ The core flow of CODA–RCDB integration looks like this:
    - It reads the CODA-generated log file (XML).
 
 3. **Parsing the CODA File**
-   - RCDB has a parser (e.g., `coda_parser.py`) that extracts the run number, times, event counts, etc.
+   - RCDB has a parser, `coda_parser.py`, which is part of the `rcdb` library package (`python/rcdb/coda_parser.py`), not a standalone DAQ script. It extracts the run number, times, event counts, etc.
    - If we are at run end, the parser obtains final totals; if at run start or update, partial information is recorded.
 
 4. **Updating RCDB**
@@ -111,6 +111,7 @@ By default, RCDB does not keep separate historical records of each partial updat
 RCDB code is structured into separate “update modules,” each with a clearly defined responsibility. Typical modules include:
 
 1. **CODA Log Parser** (`coda_parser.py`, `update_coda.py`)
+   - `coda_parser.py` lives in the `rcdb` library package (`python/rcdb/coda_parser.py`) and is imported as `from rcdb import coda_parser`, rather than being a standalone DAQ script.
    - Extracts main CODA info: run number, event count, times, user comment, etc.
    - Saves them as conditions (`run_type`, `session`, `event_count`, etc.).
 
@@ -120,6 +121,7 @@ RCDB code is structured into separate “update modules,” each with a clearly 
 
 3. **Run Configuration** (`update_run_config.py`)
    - HallD run configuration files or “main config” files are parsed to extract trigger equations, sub-system settings.
+   - The actual parsing logic lives in the separate `halld_rcdb` package: `update_run_config.py` imports `HallDMainConfigParseResult` from `halld_rcdb.run_config_parser`, and the top-level `update.py` imports `parse_file` from `halld_rcdb.run_config_parser` as well.
    - The script archives the config file in RCDB and sets conditions like `trigger_type`, `cdc_fadc125_mode`, etc.
 
 4. **ROC Config** (`update_roc.py`)

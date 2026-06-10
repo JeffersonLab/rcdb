@@ -42,11 +42,11 @@ For CLI tools the standard is to have ```-c``` or ```--connection``` flag and/or
 ```RCDB_CONNECTION``` environment variable
 
 ```bash
-export CCDB_CONNECTION=mysql://user_name:password@host:port/database
+export RCDB_CONNECTION=mysql://user_name:password@host:port/database
 rcdb ls
 
 # is the same as
-rcdb -c  
+rcdb -c mysql://user_name:password@host:port/database ls
 ```
 
 ## Python
@@ -71,7 +71,7 @@ db.connect("sqlite:///example.db")
 
 # check connection and get connection string from provider
 if db.is_connected:
-    print "connected to:", db.connection_string
+    print("connected to:", db.connection_string)
 
 #disconnect from DB
 db.disconnect()
@@ -90,7 +90,7 @@ C++ and Java have similar class structure. The examples are:
 Connection con("mysql://rcdb@hallddb/rcdb");
 
 // Get event_count for run 10173
-auto cnd = prov.GetCondition(10173, "event_count");
+auto cnd = con.GetCondition(10173, "event_count");
 ```
 
 ## All API:

@@ -51,7 +51,7 @@ Python API data model classes resembles this structure. Most common python class
 * **Run** - represents run
 * **Condition** - stores data for the run
 * **ConditionType** - stores condition name, field type and other
-* **File** - stores configuration (presumably) file contents and hashes
+* **ConfigurationFile** - stores configuration (presumably) file contents and hashes
 
 
 
@@ -81,7 +81,7 @@ class ConditionType(ModelBase):
 
 
 class Condition(ModelBase):
-    time           # datetime - time related to condition (when it occurred in example)
+    time_value     # datetime - time related to condition (when it occurred in example)
     run_number     # int - the run number
 
     @property
@@ -121,7 +121,7 @@ an appropriate **xxx_value**.
 
 One can directly use SQL queries to retrieve conditions data, extending use of RCDB for other languages than supporting and also getting the maximum performance of retrieving the data. 
 
-Examples of raw SQL queries [are located in sql/examples folder](https://github.com/JeffersonLab/rcdb/tree/dev0.9/sql/examples)
+Examples of raw SQL queries [are located in sql/examples folder](https://github.com/JeffersonLab/rcdb/tree/main/sql/examples)
 
 ### Select available conditions
 

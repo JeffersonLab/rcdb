@@ -28,7 +28,9 @@ Below is a high-level overview of RCDB’s Python API
    - ***Command line tools*** - `rcdb` command is a part of `rcdb` library. 
      It based on [Click library](https://github.com/pallets/click) 
      with a bit of [Textualize/Rich](https://github.com/Textualize/rich). 
-     CLI application lives in `rcdb.cmd` namespace
+     The user-facing installed command is `rcdb` (defined in `pyproject.toml` under
+     `[project.scripts]`). The CLI application lives in the `rcdb.cli` namespace
+     (directory `python/rcdb/cli/`, entry point `rcdb.cli.app:rcdb_cli`)
    
    - ***Flask Web GUI*** - Web browser application that can be run locally as user controlled RCDB GUI, 
      to browse runs, conditions, and run periods in a web interface. 
@@ -52,7 +54,7 @@ Below is a high-level overview of RCDB’s Python API
      [python/utilities](https://github.com/JeffersonLab/rcdb/tree/main/python/utilities).
      A collection of python scripts that were handful over the years of RCDB use and are there  
      mainly as examples and for backward compatibility. Currently, tools are being ported to  
-     `rcdb` command. E.g. look `rcdb repair` group. The notorious `rcdn` command is located at
+     `rcdb` command. E.g. look `rcdb repair` group. The notorious `rcnd` command is located at
      [python/utilities/rcnd.py](https://github.com/JeffersonLab/rcdb/tree/main/python/utilities/rcnd.py)
 
 ---
@@ -84,10 +86,10 @@ Below are the main classes you will encounter in the `rcdb/` directory.
       Closes the underlying SQLAlchemy session.
     - **`create_run(run_number)`**  
       Ensures a `Run` with the given number exists, creates it if not present.
-    - **`get_run(run_number_or_obj)`**  
+    - **`get_run(run_number)`**  
       Retrieves a `Run` object by run number or returns it unchanged if you pass in an existing `Run`
       object.
-    - **`create_condition_type(name, value_type, description="")`**  
+    - **`create_condition_type(name, value_type, description)`**  
         Registers a new condition type in the DB so you can store that condition for future runs (e.g.
         “target_type”, “beam_energy”). The `value_type` can be:
         - `ConditionType.STRING_FIELD`

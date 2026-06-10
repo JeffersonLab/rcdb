@@ -4,8 +4,8 @@ Lets look ''create_condition_type'' from the example above (we add parameter nam
 
 ```python
 db.create_condition_type(name="my_val",
-                         value_type,
-                         description)
+                         value_type=value_type,
+                         description=description)
 ```
 
 **name** - The first parameter is condition name. When we say "event_count for run 100", "event_count" is that name.
@@ -36,4 +36,4 @@ Names are just strings. RCDB doesn't provide special treatment of slashes '/' or
 More examples of how to use types are presented in the next section
 
 
-**description** - 255 chars max human readable description, that other users can see. It is optional but it is very good practice to fill it.
+**description** - 255 chars max human readable description, that other users can see. It is a required argument, and it is very good practice to fill it with something meaningful.

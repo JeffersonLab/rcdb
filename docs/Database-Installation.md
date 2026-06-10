@@ -1,5 +1,5 @@
 ## Prerequisites  
-> Evironment variables have to be set.  
+> Environment variables have to be set.  
     TL;DR; run `environment.*` script located in the RCDB root dir([more details](Installation)).  
     `RCDB_CONNECTION` must also be set (see below). 
 

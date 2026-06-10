@@ -1,4 +1,4 @@
-RCDB have a logging system which stores some information about what is going on in the same database in *'log_records'*
+RCDB have a logging system which stores some information about what is going on in the same database in *'logs'*
 table.
 
 

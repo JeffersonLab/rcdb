@@ -8,7 +8,7 @@ For example,
 ```
 Set to:
 ```python
-run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 10
+"cosmic" in run_config and beam_current < 1 and event_count > 5000
 ```
 One can use it like:
 ```python
@@ -17,11 +17,10 @@ One can use it like:
 
 When the query is executed, this expression will be expanded as:
 ```python
-(run_type == 'hd_all.tsg_cosmic' and 'COSMIC' in daq_run and beam_current < 10) and magnet_current > 800
+("cosmic" in run_config and beam_current < 1 and event_count > 5000) and magnet_current > 800
 ```
 
 
 
 ### GlueX standard search aliases
-[Awailable at GluEx wiki|]
-[Wiki](https://halldweb.jlab.org/wiki/index.php/RCDB_Standard_Searches)
+[Available at GlueX wiki](https://halldweb.jlab.org/wiki/index.php/RCDB_Standard_Searches)

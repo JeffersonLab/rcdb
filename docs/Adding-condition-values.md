@@ -13,18 +13,18 @@ def add_condition(run, name, value, replace=False)
 There is a common situation when one has a collection of values (E.g. after parsing a file), for this case there is a handy function that allows to add many conditions values at one time.
 
 ```python
-def add_conditions(run, name_values, replace=False)
+def add_conditions(run, key_values, replace=False)
 ```
 
-The ```name_values``` could be a dictionary or list of name-value pairs:
+The ```key_values``` could be a dictionary or list of name-value pairs:
 
 ```python
 # dict
-name_values = {"name1":value1, "name2":value2, ...}
+key_values = {"name1":value1, "name2":value2, ...}
 # list of tuples
-name_values = [("name1",value1), ("name2",value2), ...]
+key_values = [("name1",value1), ("name2",value2), ...]
 # list of lists
-name_values = [["name1",value1], ["name2",value2], ...]
+key_values = [["name1",value1], ["name2",value2], ...]
 ```
 
 **(!) performance:** ```add_conditions``` tries to use as less transactions as possible to check and commit all values. So for it provides a big performance gain vs calling ```add_condition``` for each value separately
@@ -69,10 +69,10 @@ Lets example it:
 db = RCDBProvider("sqlite:///example.db")
 
 # Crete condition types
-db.create_condition_type("int_val", ConditionType.INT_FIELD)
-db.create_condition_type("float_val", ConditionType.FLOAT_FIELD)
-db.create_condition_type("bool_val", ConditionType.BOOL_FIELD)
-db.create_condition_type("string_val", ConditionType.STRING_FIELD)
+db.create_condition_type("int_val", ConditionType.INT_FIELD, "Integer value example")
+db.create_condition_type("float_val", ConditionType.FLOAT_FIELD, "Float value example")
+db.create_condition_type("bool_val", ConditionType.BOOL_FIELD, "Bool value example")
+db.create_condition_type("string_val", ConditionType.STRING_FIELD, "String value example")
 
 # Add values to run 1
 db.add_condition(1, "int_val", 1000)
@@ -83,16 +83,16 @@ db.add_condition(1, "string_val", "test test")
 # Read values for run 1 and use them
 
 condition = db.get_condition(1, "int_val")
-print condition.value
+print(condition.value)
 
 condition = db.get_condition(1, "float_val")
-print condition.value
+print(condition.value)
 
 condition = db.get_condition(1, "bool_val")
-print condition.value
+print(condition.value)
 
 condition = db.get_condition(1, "string_val")
-print condition.value
+print(condition.value)
 ```
 
 The output:
@@ -110,7 +110,7 @@ ConditionType.TIME_FIELD is used for time fields. Standard python datetime is us
 
 ```python
 # Create condition type
-db.create_condition_type("my_val", ConditionType.TIME_FIELD)
+db.create_condition_type("my_val", ConditionType.TIME_FIELD, "Time value example")
 
 # Add value and time information
 db.add_condition(1, "my_val", datetime(2015, 10, 10, 15, 28, 12, 111111))
@@ -125,7 +125,7 @@ RCDB conditions API doesn't provide mechanisms of converting objects to JSON and
 For arrays it is done easily by json module.
 
 
-The example from [[https://docs.python.org/2/library/json.html python 2.7 documentation]]:
+The example from [[https://docs.python.org/3/library/json.html python documentation]]:
 
 ```
 >>> import json
@@ -133,7 +133,7 @@ The example from [[https://docs.python.org/2/library/json.html python 2.7 docume
  '["foo", {"bar": ["baz", null, 1.0, 2]}]'
 
 >>> json.loads('["foo", {"bar":["baz", null, 1.0, 2]}]')
- [u'foo', {u'bar': [u'baz', None, 1.0, 2]}]
+ ['foo', {'bar': ['baz', None, 1.0, 2]}]
 ```
 
 So, serialization is on the users side. It is done to have a better control over serialization.
@@ -151,8 +151,8 @@ from rcdb.model import ConditionType
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("list_data", ConditionType.JSON_FIELD)
-db.create_condition_type("dict_data", ConditionType.JSON_FIELD)
+db.create_condition_type("list_data", ConditionType.JSON_FIELD, "Data list")
+db.create_condition_type("dict_data", ConditionType.JSON_FIELD, "Data dict")
 
 list_to_store = [1, 2, 3]
 dict_to_store = {"x": 1, "y": 2, "z": 3}
@@ -165,19 +165,19 @@ db.add_condition(1, "dict_data", json.dumps(dict_to_store))
 restored_list = json.loads(db.get_condition(1, "list_data").value)
 restored_dict = json.loads(db.get_condition(1, "dict_data").value)
 
-print restored_list
-print restored_dict
+print(restored_list)
+print(restored_dict)
 
-print restored_dict["x"]
-print restored_dict["y"]
-print restored_dict["z"]
-python
+print(restored_dict["x"])
+print(restored_dict["y"])
+print(restored_dict["z"])
+```
 
 The output is:
 
 ```
 [1, 2, 3]
-{u'y': 2, u'x': 1, u'z': 3}
+{'y': 2, 'x': 1, 'z': 3}
 1
 2
 3
@@ -187,30 +187,28 @@ The output is:
 The example is located at
 
 ```
-$RCDB_HOME/python/example_conditions_store_array.py
+$RCDB_HOME/python/examples/11_crete_conditions_store_array.py
 ```
 
 and can be run as:
 ```bash
-python $RCDB_HOME/python/create_empty_sqlite.py example.db
-python $RCDB_HOME/python/example_conditions_store_array.py
+python $RCDB_HOME/python/examples/11_crete_conditions_store_array.py
 ```
 
-As one can mention unicode string is returned as unicode after json deserialization (look at u"x" instead of just "x").
-It is not a problem if you just work with this array, because python acts seamlessly with unicode strings.
-As you can see in example, we use usual string "x" in restored_dict["x"] and it just works.
+Run without arguments it creates an in-memory database. You can also pass a
+connection string to use a file-based SQLite database, e.g.
+`python $RCDB_HOME/python/examples/11_crete_conditions_store_array.py sqlite:///example.db`.
 
-If it is a problem, there is a
-[[http://stackoverflow.com/questions/956867/how-to-get-string-objects-instead-of-unicode-ones-from-json-in-python stackoverlow question on that]]
-
-Using pyYAML to deserialize to strings looks easy.
+In Python 3 all strings are unicode, so strings returned after json deserialization are
+ordinary `str` objects. As you can see in the example, we use the usual string "x" in
+restored_dict["x"] and it just works.
 
 
 
 ### Custom python objects
 
-To save custom python objects to database, jsonpickle package could be used. It is an open source project available
-via pip install. It is not shipped with RCDB at the moment.
+To save custom python objects to database, jsonpickle package could be used. It is an open source project
+that can be installed via the package manager. It is not shipped with RCDB at the moment.
 
 ```python
 from rcdb.provider import RCDBProvider
@@ -228,7 +226,7 @@ class Cat(object):
 db = RCDBProvider("sqlite:///example.db")
 
 # Create condition type
-db.create_condition_type("cat", ConditionType.JSON_FIELD)
+db.create_condition_type("cat", ConditionType.JSON_FIELD, "A cat object")
 
 
 # Create a cat and store in in the DB for run 1
@@ -239,11 +237,11 @@ db.add_condition(1, "cat", jsonpickle.encode(cat))
 condition = db.get_condition(1, "cat")
 loaded_cat = jsonpickle.decode(condition.value)
 
-print "How cat is stored in DB:"
-print condition.value
-print "Deserialized cat:"
-print "name:", loaded_cat.name
-print "mice_eaten:", loaded_cat.mice_eaten
+print("How cat is stored in DB:")
+print(condition.value)
+print("Deserialized cat:")
+print("name:", loaded_cat.name)
+print("mice_eaten:", loaded_cat.mice_eaten)
 ```
 
 The result:
@@ -260,6 +258,14 @@ mice_eaten: 1230
 [[http://jsonpickle.github.io jsonpickle Documentation]]
 
 jsonpickle installation:
+
+RCDB uses [uv](https://docs.astral.sh/uv/) as its package manager. To add jsonpickle to the project:
+
+```
+uv add jsonpickle
+```
+
+Alternatively, with plain pip:
 
 system level:
 

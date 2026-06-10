@@ -7,7 +7,7 @@ The interfaces available are:
 - Command line interface (CLI)
 - Python API
 - C++ API
-- Possibly JAVA API
+- JAVA API
 
 
 #### Demo:
@@ -52,9 +52,9 @@ CLI:
 ```bash
 export RCDB_CONNECTION=mysql://rcdb@localhost/rcdb
 rcdb --help                            # Gives you self descriptive help
-rcdb 1000 event_count                  # See exact value of 'event_count' for run 1000
-rcnd --write 1663 100 event_count      # Write condition value to run 100
-rcnd --search "event_count > 500"      # Select runs 
+rcdb select "event_count > 500"        # Select runs matching the query
+rcdb select "@" event_count            # Show 'event_count' column for all runs
+rcnd --write 1663 100 event_count      # Write value 1663 to run 100 for 'event_count'
 
 ```
 

@@ -1,7 +1,7 @@
 # RCDB 2.0 – What Changed?
 
 1. **Python 2 to 3**
-    - **Python 3.9+** (or at least 3.8) is now required. Python 2.x is no longer supported.
+    - **Python 3.9+** is now required. Python 2.x is no longer supported.
       RCDB now will follow [official supported python versions](https://devguide.python.org/versions/)  
     - Some code that used to be Python 2 or Python <3.8–compatible is removed.
     - Legacy utilities and examples are removed   
@@ -15,7 +15,7 @@
 3. **Schema Version & Tables**
     - The database schema changed which is the main driver of backward incompatibilities. 
       The new code checks that your DB schema is at least at version 2.       
-    - New tables have been introduced, such as `run_periods` (for grouping runs) and `alias` (for query aliases), plus changes to the existing `conditions` and `condition_types` tables.
+    - New tables have been introduced, such as `run_periods` (for grouping runs) and `aliases` (for query aliases), plus changes to the existing `conditions` and `condition_types` tables.
     - In v2, there is an official `SchemaVersion` model/table that is used to store the current schema version and a comment.
 
 4. **Website / Flask App**
@@ -73,13 +73,13 @@ like `rcdb2` and applying updates to the new cloned DB.
       rcdb -c mysql://rcdb@server/rcdb2 db init --drop-all
       ```
       depending on your site’s approach.
-    - The `db update` command attempts to detect an older schema, apply the new tables (`run_periods`, `alias`, etc.), and stamp the schema version as “2”. If your original DB was truly RCDB1, the built-in `update_v1` logic will create the new columns/tables needed.
+    - The `db update` command attempts to detect an older schema, apply the new tables (`run_periods`, `aliases`, etc.), and stamp the schema version as “2”. If your original DB was truly RCDB1, the built-in `update_v1` logic will create the new columns/tables needed.
     - Run `rcdb select ...`, `rcdb ls`, or `rcdb web` with the new `rcdb2` connection string to ensure queries function properly, conditions are intact, and the website can display data.
      
 3. **Update DAQ scripts**
     - The most important part is that after DB update, one must update DAQ side that fill the database.
       RCDB2 is compatible enough for DAQ scripts to continue working if one updates python and installs dependencies.
-    - Make sure you have Python 3.9+ (or 3.8 if tested). You can install dependencies by installing `rcdb` from pip:
+    - Make sure you have Python 3.9+. You can install dependencies by installing `rcdb` from pip:
       ```bash
       python -m pip install rcdb
       # Or if from source, python -m pip install .
@@ -93,6 +93,8 @@ like `rcdb2` and applying updates to the new cloned DB.
       import os
       import sys
       # add your project directory to the sys.path
+      # NOTE: '/home/rcdb/rcdb_current/python' is an installation-specific placeholder;
+      #       replace it with the actual path to your RCDB 'python' directory.
       sys.path.insert(0, '/home/rcdb/rcdb_current/python')
 
       # import and start web site

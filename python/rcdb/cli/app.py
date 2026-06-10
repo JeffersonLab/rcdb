@@ -16,6 +16,7 @@ from .rp import rp_command
 from .web import web_command
 from .info import info_command
 from .add import add_command
+from .select import select_command
 
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
@@ -71,4 +72,5 @@ rcdb_cli.add_command(rp_command)
 rcdb_cli.add_command(web_command)
 rcdb_cli.add_command(info_command)
 rcdb_cli.add_command(add_command)
+rcdb_cli.add_command(select_command)
 
