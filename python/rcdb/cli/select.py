@@ -59,7 +59,7 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
 
     conditions_to_show = view.split()
 
-    values = db.select_values([], query, run_min, run_max)
+    values = db.select_values(conditions_to_show, query, run_min, run_max, sort_desc=is_descending)
 
     if not is_dump_view:
 
