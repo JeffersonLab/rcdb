@@ -48,6 +48,7 @@ dependencies = [
 
 [project.optional-dependencies]
 examples = ["jsonpickle"]
+dev = ["pyflakes>=3"]
 
 
 # If you want a console script, define it in [project.scripts]
