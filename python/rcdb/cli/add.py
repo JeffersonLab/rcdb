@@ -45,7 +45,7 @@ def add_type(context, name, value_type, description):
     Example:
       rcdb add type beam_current --type=float --description "Beam current in nA"
     """
-    db = context.db
+    db = context.require_connected_db()
     actual_type = TYPE_MAP[value_type.lower()]
 
     # Create or verify
@@ -69,7 +69,7 @@ def add_condition(context, run_number, condition_name, value, replace):
       rcdb add condition 1000 my_value 123.4
       rcdb add condition 1000 event_count 10000 --replace
     """
-    db = context.db
+    db = context.require_connected_db()
 
     # 1) Ensure run exists
     run = db.get_run(run_number)
@@ -115,7 +115,7 @@ def add_file(context, run_number, file_path, importance, overwrite, content):
       rcdb add file 1000 /path/to/coda_run.log
       rcdb add file 1000 /path/to/config.txt --importance=2 --overwrite
     """
-    db = context.db
+    db = context.require_connected_db()
     run = db.get_run(run_number)
     if not run:
         run = db.create_run(run_number)

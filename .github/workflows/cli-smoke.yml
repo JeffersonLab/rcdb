@@ -38,6 +38,27 @@ jobs:
       - name: "rcdb --version"
         run: rcdb --version
 
+      - name: "No connection fails cleanly (no traceback)"
+        env:
+          RCDB_CONNECTION: ""
+        run: |
+          # A command that needs the DB must exit non-zero with a clear message,
+          # not crash with a Python traceback.
+          set +e
+          OUT=$(rcdb select "event_count > 0" 2>&1)
+          CODE=$?
+          set -e
+          echo "$OUT"
+          echo "exit code: $CODE"
+          test "$CODE" -ne 0
+          echo "$OUT" | grep -q "No database connection provided"
+          if echo "$OUT" | grep -q "Traceback"; then
+            echo "ERROR: command crashed with a traceback instead of a clean error"
+            exit 1
+          fi
+          # `--help` must still work without a connection
+          rcdb select --help >/dev/null
+
       - name: "Create schema (db init)"
         run: rcdb db init --confirm
 

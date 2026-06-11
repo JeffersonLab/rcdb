@@ -14,10 +14,25 @@ class RcdbApplicationContext(object):
         self.connection_str = connection_str
 
     @property
-    def db(self):
+    def db(self) -> RCDBProvider:
         if not self._db_instance:
             self._db_instance = RCDBProvider(self.connection_str)
         return self._db_instance
+
+    def require_connected_db(self) -> RCDBProvider:
+        """Return the RCDBProvider, or fail with a clear CLI error if no connection was given.
+
+        Commands that cannot do anything without a database call this instead of
+        using ``db`` directly: a missing connection then produces a clean error
+        message rather than crashing later on a ``None`` session. Commands that can
+        run without a connection (e.g. ``web`` with ``--add-db``) keep using ``db``.
+        """
+        if not self.connection_str:
+            raise click.UsageError(
+                "No connection provided! Provide a DB connection string via the "
+                "-c/--connection option or the RCDB_CONNECTION environment variable."
+            )
+        return self.db
 
     def set_config(self, key, value):
         self.config[key] = value

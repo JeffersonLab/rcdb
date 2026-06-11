@@ -1,6 +1,5 @@
 import click
 
-from rcdb.provider import RCDBProvider
 from .context import pass_rcdb_context
 
 
@@ -11,8 +10,7 @@ from .context import pass_rcdb_context
 def ls_command(context, search, is_long):
     """List conditions"""
 
-    db = context.db
-    assert isinstance(db, RCDBProvider)
+    db = context.require_connected_db()
     cnd_types = db.get_condition_types_by_name()
     names = sorted(cnd_types.keys())
     if search:

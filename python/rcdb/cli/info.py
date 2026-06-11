@@ -11,7 +11,7 @@ def info_command(context):
     """
     Shows various summary information about the RCDB database contents.
     """
-    db = context.db
+    db = context.require_connected_db()
 
     # Number of condition types
     cnd_type_count = db.session.query(ConditionType).count()

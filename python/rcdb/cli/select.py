@@ -2,7 +2,6 @@ import sys
 import click
 
 from rcdb.app_context import parse_run_range
-from rcdb import RCDBProvider
 from rcdb.cli.context import pass_rcdb_context
 
 
@@ -37,14 +36,14 @@ def _process_sel_args(args):
 @pass_rcdb_context
 def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descending):
     """Select runs and get their values."""
-    assert isinstance(rcdb_context.db, RCDBProvider)
+    db = rcdb_context.require_connected_db()
     args = []
     if query is not None:
         args.append(str(query))
     args.extend([str(v) for v in views_or_runs])
     run_range_str, query, view = _process_sel_args(args)
 
-    run_periods = rcdb_context.db.get_run_periods()
+    run_periods = db.get_run_periods()
     run_min, run_max = parse_run_range(run_range_str, run_periods)
 
     if run_min is None:
@@ -60,7 +59,7 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
 
     conditions_to_show = view.split()
 
-    values = rcdb_context.db.select_values([], query, run_min, run_max)
+    values = db.select_values([], query, run_min, run_max)
 
     if not is_dump_view:
 
