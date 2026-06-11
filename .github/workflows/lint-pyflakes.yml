@@ -1,0 +1,40 @@
+name: Lint (pyflakes)
+
+# Informational only: runs pyflakes over the Python sources and prints the
+# findings, but never fails the build. The codebase has known pre-existing
+# findings, plus false positives from intentional __init__.py re-exports and
+# `from rcdb.model import *`. Use this report to spot newly introduced unused
+# imports / undefined names in a pull request diff.
+
+on:
+  push:
+    branches: ["*"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pyflakes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      # pyflakes is declared in the project's `dev` optional-dependency group,
+      # so the CI and local developers use the same version.
+      - name: Install pyflakes
+        run: |
+          python -m pip install --upgrade pip
+          pip install "$GITHUB_WORKSPACE/python[dev]"
+
+      - name: Run pyflakes (informational, never fails)
+        run: |
+          # This is a report, not a gate: always exit 0.
+          pyflakes python/rcdb python/daq > pyflakes.txt 2>&1 || true
+          cat pyflakes.txt
+          echo "--------------------------------------------------"
+          echo "pyflakes findings: $(wc -l < pyflakes.txt)"

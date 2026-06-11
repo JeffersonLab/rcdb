@@ -82,10 +82,13 @@ jobs:
 
       - name: "Select with a query"
         run: |
-          # beam_current > 5 must match run 100 (12.5) and exclude run 101 (0.0)
-          OUT=$(rcdb select "beam_current > 5" 100-101)
+          # beam_current > 5 must match run 100 (12.5) and exclude run 101 (0.0).
+          # The third arg selects beam_current as a view column, so the actual
+          # VALUE must appear in the output - not just the run number.
+          OUT=$(rcdb select "beam_current > 5" 100-101 beam_current)
           echo "$OUT"
           echo "$OUT" | grep -q "100"
+          echo "$OUT" | grep -q "12.5"   # value column must be populated, not empty
           if echo "$OUT" | grep -qw "101"; then
             echo "ERROR: run 101 (beam_current=0.0) should not match 'beam_current > 5'"
             exit 1
