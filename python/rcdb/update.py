@@ -31,4 +31,5 @@ def update_v1(provider):
     # V2 differs from V1 only by 2 new tables. Create them
     rcdb.model.Base.metadata.create_all(provider.engine, tables=[Alias.__table__, RunPeriod.__table__])
     version = stamp_schema_version(provider)
+    print(f"updated to {version}")
 

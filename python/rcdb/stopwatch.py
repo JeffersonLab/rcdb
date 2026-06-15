@@ -27,6 +27,7 @@ class StopWatchTimer:
         result = self.elapsed
         self.reset()
         self.start()
+        return result
 
     def reset(self):
         self._start = None

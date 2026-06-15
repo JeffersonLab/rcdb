@@ -7,7 +7,7 @@ run_max = 1000000
 
 def run_select_runs():
     db = rcdb.RCDBProvider("mysql://rcdb@hallddb/rcdb2")
-    runs = db.select_runs(selection,run_min, run_max)
+    db.select_runs(selection, run_min, run_max)
 
 def run_select_values():
     db = rcdb.RCDBProvider("mysql://rcdb@hallddb/rcdb2")

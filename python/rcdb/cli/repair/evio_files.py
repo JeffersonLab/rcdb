@@ -29,7 +29,7 @@ def read_run_directories(mask, run_min, run_max):
         run_dir_name = path.basename(run_dir)
         try:
             run_num = int(run_dir_name[3:])
-        except Exception as ex:
+        except Exception:
             click.echo(f"Error extracting run from directory '{run_dir_name}'")
             continue
 

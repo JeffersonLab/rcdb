@@ -60,7 +60,7 @@ class TestConditions(unittest.TestCase):
         """ Tests add_condition_value funciton
         :return:None
         """
-        ct = self.db.create_condition_type("events_num", ConditionType.FLOAT_FIELD, "Number of events")
+        self.db.create_condition_type("events_num", ConditionType.FLOAT_FIELD, "Number of events")
         self.db.add_condition(1, "events_num", 1000)
         result = self.db.get_condition(1, "events_num")
         self.assertEqual(result.value, 1000)
@@ -104,7 +104,7 @@ class TestConditions(unittest.TestCase):
         :return:None
         """
         ct = self.db.create_condition_type("float_cnd", ConditionType.FLOAT_FIELD, "")
-        cnd = self.db.add_condition(1, ct, 0.15)
+        self.db.add_condition(1, ct, 0.15)
 
         # evict all database-loaded data from the session
         self.db.session.expire_all()
@@ -116,9 +116,9 @@ class TestConditions(unittest.TestCase):
         """ Tests add_condition_value funciton
         :return:None
         """
-        ct = self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
         self.db.add_condition(1, "one", 1000)
-        ct = self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
         self.db.add_condition(1, "two", 2000)
 
         run = self.db.get_run(1)
@@ -132,8 +132,8 @@ class TestConditions(unittest.TestCase):
         """ Tests add_condition_value function
         :return:None
         """
-        ct = self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
-        ct = self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("one", ConditionType.INT_FIELD, "")
+        self.db.create_condition_type("two", ConditionType.INT_FIELD, "")
 
         for i in range(101, 110):
             self.db.create_run(i)

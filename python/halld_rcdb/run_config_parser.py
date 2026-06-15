@@ -81,7 +81,7 @@ def _process_parse_result(parse_result, file_name=""):
         if 'FADC125_MODE' in cdc_section.entities:
             try:
                 result.cdc_fadc125_mode = int(cdc_section.entities['FADC125_MODE'])
-            except ValueError as ex:
+            except ValueError:
                 log.warning(F("Cant convert CDC:FADC125_MODE value '{}' to int", cdc_section.entities['FADC125_MODE']))
     else:
         log.warning(F("CDC section is not found in '{}'", file_name))

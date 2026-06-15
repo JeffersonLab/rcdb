@@ -48,7 +48,7 @@ def add_type(context, name, value_type, description):
 
     # Create or verify
     click.echo(f"Creating condition type '{name}' of type '{value_type}'")
-    ct = db.create_condition_type(name, actual_type, description)
+    db.create_condition_type(name, actual_type, description)
     click.echo("Done.")
 
 

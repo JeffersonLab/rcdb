@@ -80,7 +80,7 @@ def _print_sqlite_table_sizes(engine):
             size_mb = round(total_bytes / 1024 / 1024, 2)
             click.echo(f"  {table_name:30} {size_mb} MB")
 
-    except Exception as ex:
+    except Exception:
         click.echo("\n No table size info: sqlite dbstat extension is not installed. Use sqlite3_analyzer to get table sizes")
 
 
@@ -116,8 +116,6 @@ def update(context):
     if not click.confirm('Do you really want to continue?'):
         return
 
-    # That we will need for DB
-    metadata = rcdb.model.Base.metadata
     provider = RCDBProvider(context.connection_str, check_version=False)
 
     # Create alias table

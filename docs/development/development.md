@@ -31,6 +31,35 @@ Both suites run on GitHub CI (`.github/workflows/python-tests.yml` and
 for more detail.
 
 
+## Linting (pyflakes)
+
+The Python sources are kept **pyflakes-clean**. Pyflakes catches unused imports,
+undefined names, dead local variables and `str.format`/f-string mistakes.
+
+`pyflakes` ships in the project's `dev` optional-dependency group. From the
+`python/` directory:
+
+```bash
+# one-off, without installing the dev group into your environment:
+uv run --extra dev pyflakes rcdb daq halld_rcdb tests utilities examples
+
+# or, if you installed the project with the dev extra (pip install -e ".[dev]"):
+pyflakes rcdb daq halld_rcdb tests utilities examples
+```
+
+The command must print nothing and exit `0`. This is a **mandatory CI gate**
+(`.github/workflows/lint-pyflakes.yml`): any finding fails the build, so run it
+before pushing.
+
+A couple of conventions keep it clean without `# noqa` suppressions:
+
+- **Intentional re-exports** (e.g. `rcdb/__init__.py`,
+  `rcdb/web/modules/__init__.py`) use explicit imports plus an `__all__` list
+  instead of relying on `import *`.
+- Prefer explicit imports over `from module import *` so undefined-name checks
+  keep working.
+
+
 ## Multi-Database Selector
 
 The web interface supports switching between multiple databases from the browser.

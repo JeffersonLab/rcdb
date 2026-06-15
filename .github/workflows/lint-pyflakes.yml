@@ -1,10 +1,9 @@
 name: Lint (pyflakes)
 
-# Informational only: runs pyflakes over the Python sources and prints the
-# findings, but never fails the build. The codebase has known pre-existing
-# findings, plus false positives from intentional __init__.py re-exports and
-# `from rcdb.model import *`. Use this report to spot newly introduced unused
-# imports / undefined names in a pull request diff.
+# Mandatory gate: runs pyflakes over the Python sources and FAILS the build on
+# any finding (unused imports, undefined names, dead locals, format bugs, ...).
+# The codebase is pyflakes-clean; intentional re-exports use explicit imports
+# plus `__all__`, so there are no false positives to suppress.
 
 on:
   push:
@@ -31,10 +30,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install "$GITHUB_WORKSPACE/python[dev]"
 
-      - name: Run pyflakes (informational, never fails)
+      - name: Run pyflakes (fails on any finding)
+        working-directory: python
         run: |
-          # This is a report, not a gate: always exit 0.
-          pyflakes python/rcdb python/daq > pyflakes.txt 2>&1 || true
-          cat pyflakes.txt
-          echo "--------------------------------------------------"
-          echo "pyflakes findings: $(wc -l < pyflakes.txt)"
+          pyflakes rcdb daq halld_rcdb tests utilities examples

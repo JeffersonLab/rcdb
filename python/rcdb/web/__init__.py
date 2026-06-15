@@ -121,11 +121,6 @@ def sample():
     return render_template('index.html')
 
 
-@app.route('/run_periods')
-def run_periods():
-    run_periods = g.tdb.session.query(RunPeriod).all()
-
-
 @app.route('/')
 def index():
     # Find the latest run period based on `end_date` (or use `id` if more appropriate)

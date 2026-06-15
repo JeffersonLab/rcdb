@@ -54,6 +54,5 @@ def info_command(context):
         click.echo(f"  End Date:    {last_rp.end_date}")
 
     # Finally, show all possible commands (help):
-    ctx = click.get_current_context()
     click.echo("\nrun 'rcdb --help' for the list of available commands")
 

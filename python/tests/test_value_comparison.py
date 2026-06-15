@@ -21,7 +21,7 @@ class TestValueComparison(unittest.TestCase):
 
         # Create condition type
         ctf = self.db.create_condition_type("test_float", ConditionType.FLOAT_FIELD, "This is a test")
-        cti = self.db.create_condition_type("test_int", ConditionType.INT_FIELD, "This is a test")
+        self.db.create_condition_type("test_int", ConditionType.INT_FIELD, "This is a test")
         cts = self.db.create_condition_type("test_string", ConditionType.STRING_FIELD, "This is a test")
 
         self.assertFalse(cts.values_are_equal("ha", "ra"))

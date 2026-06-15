@@ -219,7 +219,6 @@ def search():
     if run_from_str or run_to_str:
         run_range = run_from_str + "-" + run_to_str
 
-    args = {}
     run_from, run_to = _parse_run_range(run_range)
 
     if not search_query or not search_query.strip():

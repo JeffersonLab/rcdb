@@ -433,7 +433,6 @@ def setup_run_conds(run):
 def update_rcdb_conds(db, run, reason):
     log.debug(Lf("Running 'update_rcdb_conds(db={},   run={})'", db, run))
 
-    TOLERANCE = 1.e-5  # constant used for comparisons
     # Run can be a rcdb.Run object or a run number
     if not isinstance(run, Run):
         log.debug(Lf("Getting run by number={}", run))
