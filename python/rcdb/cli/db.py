@@ -40,8 +40,8 @@ def _print_mysql_table_sizes(engine):
     # Find which database/schema we are connected to
     db_name = engine.url.database
 
-    sql = text(f"""
-        SELECT 
+    sql = text("""
+        SELECT
             table_name AS tbl,
             ROUND(((data_length + index_length) / 1024 / 1024), 2) AS size_mb
         FROM information_schema.tables
@@ -100,7 +100,7 @@ def update(context):
 
     if current_version != 1:
         print(f"Can't update schema version. Current version is: {current_version.version}. This command can update:")
-        print(f"   DB v1 --> v2")
+        print("   DB v1 --> v2")
         return
     else:
         print("Found DB v1. Will do v1 --> v2 update")

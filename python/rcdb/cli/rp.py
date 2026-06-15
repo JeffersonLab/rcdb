@@ -1,6 +1,6 @@
 # rp.py
 import click
-import sqlalchemy
+from datetime import datetime
 
 from rcdb import RCDBProvider
 from rcdb.model import RunPeriod
@@ -64,14 +64,14 @@ def add(context, name, description, run_min, run_max, start_date, end_date):
 
     if start_date:
         try:
-            s_date = sqlalchemy.sql.func.DATE(start_date)  # or use datetime.strptime
+            s_date = datetime.strptime(start_date, '%Y-%m-%d').date()
         except ValueError:
             print(f"ERROR: Invalid start-date format '{start_date}'. Should be YYYY-MM-DD.")
             exit(1)
 
     if end_date:
         try:
-            e_date = sqlalchemy.sql.func.DATE(end_date)
+            e_date = datetime.strptime(end_date, '%Y-%m-%d').date()
         except ValueError:
             print(f"ERROR: Invalid end-date format '{end_date}'. Should be YYYY-MM-DD.")
             exit(1)
@@ -81,8 +81,8 @@ def add(context, name, description, run_min, run_max, start_date, end_date):
                            description=description,
                            run_min=run_min,
                            run_max=run_max,
-                           start_date=start_date,
-                           end_date=end_date)
+                           start_date=s_date,
+                           end_date=e_date)
     session.add(new_period)
     session.commit()
 

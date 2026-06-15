@@ -227,7 +227,7 @@ def parse_files():
     # >oO DEBUG log message
     now_clock = time.process_time()
     db.add_log_record("", "'{}':Parsed coda_xml_log_file='{}'. run='{}', run_config_file='{}', clocks='{}', time: '{}'"
-                      .format(script_name, coda_xml_log_file, run_number, run_config_file, run_number,
+                      .format(script_name, coda_xml_log_file, run_number, run_config_file,
                               now_clock - script_start_clock, datetime.now()), run_number)
 
     # Conditions from coda file save to DB

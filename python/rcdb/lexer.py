@@ -387,23 +387,3 @@ def tokenize(text):
         if token is None:
             return
         yield token
-
-
-if __name__ == '__main__':
-    def print_all(text):
-        lexer = get_lexer()
-        lexer.input(text)
-
-        while 1:
-            tok = lexer.token()
-            if tok is None:
-                print (tok)
-                break
-            print (tok)
-
-    while 1:
-        try:
-            text = raw_input('text > ')
-        except EOFError:
-            break
-        print_all(text)

@@ -82,17 +82,6 @@ def list_to_db_text(values):
     return " ".join([str(value) for value in values])
 
 
-def make_threshold_preset(db, board, values):
-    """
-    checks if values
-    :param values:
-    :return:
-    """
-
-    if isinstance(values, list):
-        text_values = list_to_db_text(values)
-
-
 class DefaultConditions(object):
     """
     Holds common names for conditions and can ensure database have them

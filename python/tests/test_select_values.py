@@ -96,7 +96,7 @@ class TestRun(unittest.TestCase):
         result = self.db.select_values(['a', 'd'], run_min=4)
         self.assertEqual(result.rows, [[4, 4, u'hoho'], [5, None, u'bang'], [9, 9, u'mew']])
 
-    def test_select_values_no_filter(self):
+    def test_select_values_no_filter_no_run_number(self):
         """Test of Run in db function"""
         result = self.db.select_values(['a', 'd'], run_min=4, insert_run_number=False)
         self.assertEqual(result.rows, [[4, u'hoho'], [None, u'bang'], [9, u'mew']])

@@ -46,9 +46,9 @@ def info_command(context):
     click.echo("Last 5 runs saved: " + ", ".join(str(r.number) for r in last_5_runs) if last_5_runs else "No runs")
     click.echo(f"Number of run periods: {rp_count}")
     if last_rp:
-        click.echo(f"Last Run Period:")
+        click.echo("Last Run Period:")
         click.echo(f"  Name:        {last_rp.name}")
-        click.echo(f"  Description: {last_rp.name}")
+        click.echo(f"  Description: {last_rp.description}")
         click.echo(f"  Run Range:   {last_rp.run_min} - {last_rp.run_max}")
         click.echo(f"  Start Date:  {last_rp.start_date}")
         click.echo(f"  End Date:    {last_rp.end_date}")
