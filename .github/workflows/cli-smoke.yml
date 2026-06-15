@@ -51,7 +51,7 @@ jobs:
           echo "$OUT"
           echo "exit code: $CODE"
           test "$CODE" -ne 0
-          echo "$OUT" | grep -q "No database connection provided"
+          echo "$OUT" | grep -q "No connection provided"
           if echo "$OUT" | grep -q "Traceback"; then
             echo "ERROR: command crashed with a traceback instead of a clean error"
             exit 1
