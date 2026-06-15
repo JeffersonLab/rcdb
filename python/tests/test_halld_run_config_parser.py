@@ -1,6 +1,5 @@
 import inspect
 import os
-from datetime import datetime
 #import test_get_runs
 import unittest
 from rcdb.halld_daq_config_parser import parse_file, CodaRunLogParseResult

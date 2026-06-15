@@ -7,7 +7,7 @@ import sys
 from pprint import pprint
 from rcdb.errors import OverrideConditionValueError
 from rcdb import RCDBProvider
-from rcdb.model import ConditionType, Run
+from rcdb.model import ConditionType
 from rcdb import DefaultConditions
 
 if __name__ == "__main__":

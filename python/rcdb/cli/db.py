@@ -1,6 +1,6 @@
 import click
 import sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, desc, select, text
+from sqlalchemy import select, text
 from sqlalchemy.exc import OperationalError
 
 import rcdb

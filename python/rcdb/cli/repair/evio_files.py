@@ -1,6 +1,4 @@
-from os import walk
 from os import path
-import os
 import click
 import glob
 from rcdb.app_context import minmax_run_range, parse_run_range

@@ -2,7 +2,7 @@ import unittest
 
 import rcdb
 import rcdb.model
-from rcdb.model import Run, ConditionType
+from rcdb.model import ConditionType
 
 
 class TestRun(unittest.TestCase):

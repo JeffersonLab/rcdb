@@ -2,9 +2,7 @@ from datetime import datetime
 import unittest
 import rcdb
 import rcdb.model
-from rcdb.model import ConditionType, Condition, Run
-
-import logging
+from rcdb.model import ConditionType
 
 # logging.basicConfig()
 # logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)

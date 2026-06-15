@@ -1,8 +1,4 @@
 import logging
-import os
-import xml.etree.ElementTree as Et
-from datetime import datetime
-from rcdb.log_format import BraceMessage as Lf
 
 # Setup logger
 log = logging.getLogger('rcdb.coda_parser')         # create run configuration standard logger

@@ -1,11 +1,6 @@
-import json
-import re
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+from flask import Blueprint, render_template, g
 # from werkzeug import check_password_hash, generate_password_hash
-import rcdb
-from collections import defaultdict
-from rcdb.model import Run, Condition, ConditionType
-from sqlalchemy.orm import subqueryload
+from rcdb.model import ConditionType
 
 mod = Blueprint('conditions', __name__, url_prefix='/conditions')
 

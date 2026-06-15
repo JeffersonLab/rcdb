@@ -1,7 +1,7 @@
 import logging
 import sys
 from pprint import pprint
-from update_epics import setup_run_conds, update_beam_conditions
+from update_epics import setup_run_conds
 import rcdb
 
 if __name__ == "__main__":

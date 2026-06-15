@@ -39,10 +39,10 @@
 #      Updated: 28 Jan. 2016 (sdobbs)
 #
 import logging
-import os,sys
+import sys
 import rcdb
-from rcdb.model import ConditionType, Condition, Run
-from epics import caget,caput
+from rcdb.model import Run
+from epics import caget
 import subprocess
 import datetime
 from rcdb.log_format import BraceMessage as Lf

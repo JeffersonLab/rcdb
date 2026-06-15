@@ -1,6 +1,6 @@
 import sys
 import rcdb
-from rcdb.model import ConditionType, Run, Condition
+from rcdb.model import Condition
 
 
 def print_usage():

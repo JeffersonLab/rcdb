@@ -1,3 +1,1 @@
-from rcdb import RCDBProvider, ConditionType
-from rcdb.model import Condition
-from rcdb.stopwatch import StopWatchTimer
+"""Placeholder for a MySQL-only query utility (no implementation yet)."""

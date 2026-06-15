@@ -7,7 +7,6 @@ from flask import Flask, render_template, g, request, url_for
 from sqlalchemy.orm import subqueryload
 
 import rcdb
-from rcdb.alias import get_default_aliases_by_name
 from rcdb.model import Run, RunPeriod
 
 # register modules

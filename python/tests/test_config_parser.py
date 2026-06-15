@@ -1,7 +1,7 @@
 import inspect
 import os
 import unittest
-from rcdb.config_parser import parse_file, ConfigFileParseResult
+from rcdb.config_parser import parse_file
 
 
 class TestCodaParser(unittest.TestCase):

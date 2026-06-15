@@ -2,7 +2,6 @@ import unittest
 import os
 import tempfile
 from click.testing import CliRunner
-import rcdb
 from rcdb.cli.app import rcdb_cli
 from rcdb.provider import RCDBProvider
 from rcdb.model import ConfigurationFile

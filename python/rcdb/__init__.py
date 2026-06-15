@@ -1,7 +1,28 @@
 from .model import ConditionType
-from .provider import RCDBProvider
-from .provider import ConfigurationProvider
-from .errors import *
+from .provider import RCDBProvider, ConfigurationProvider
+from .errors import (
+    OverrideConditionTypeError,
+    NoConditionTypeFound,
+    OverrideConditionValueError,
+    NoRunFoundError,
+    QueryFormatError,
+    QueryEvaluationError,
+    SqlSchemaVersionError,
+)
+
+# Names re-exported as part of rcdb's public API (e.g. rcdb.RCDBProvider)
+__all__ = [
+    "ConditionType",
+    "RCDBProvider",
+    "ConfigurationProvider",
+    "OverrideConditionTypeError",
+    "NoConditionTypeFound",
+    "OverrideConditionValueError",
+    "NoRunFoundError",
+    "QueryFormatError",
+    "QueryEvaluationError",
+    "SqlSchemaVersionError",
+]
 
 # This thing separates cells in data blob
 blob_delimiter = "|"

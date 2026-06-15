@@ -1,4 +1,4 @@
-from rcdb.model import SchemaVersion, Alias, RunPeriod
+from rcdb.model import Alias, RunPeriod
 
 mysql_v1_to_v2 = """
 CREATE TABLE IF NOT EXISTS `aliases` (

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, flash, g, session, redirect, url_for
+from flask import Blueprint, render_template, g
 #from werkzeug import check_password_hash, generate_password_hash
 
 #from app import db
@@ -6,7 +6,7 @@ from flask import Blueprint, request, render_template, flash, g, session, redire
 #from app.users.decorators import requires_login
 
 #from app.users.models import User
-from rcdb.model import LogRecord, Run, SchemaVersion, RunPeriod
+from rcdb.model import Run, SchemaVersion, RunPeriod
 from sqlalchemy.sql.expression import desc
 
 mod = Blueprint('statistics', __name__, url_prefix='/statistics')

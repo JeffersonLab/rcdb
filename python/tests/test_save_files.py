@@ -4,7 +4,7 @@ import unittest
 
 import rcdb
 from rcdb.model import ConfigurationFile
-from rcdb.provider import RCDBProvider, destroy_all_create_schema
+from rcdb.provider import destroy_all_create_schema
 
 
 class TestSaveFiles(unittest.TestCase):

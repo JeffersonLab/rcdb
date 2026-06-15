@@ -1,5 +1,4 @@
 import click
-import datetime
 from .context import pass_rcdb_context
 from rcdb.model import Condition, Run, ConfigurationFile, RunPeriod
 from .. import ConditionType

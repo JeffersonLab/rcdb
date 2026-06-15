@@ -4,12 +4,9 @@ import datetime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import Column, ForeignKey, Table
-from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, UnicodeText, Date
-from sqlalchemy.orm import sessionmaker, reconstructor, object_session
-from sqlalchemy.orm import relationship, backref
-from sqlalchemy.sql.expression import desc
-from sqlalchemy.ext.declarative import declared_attr
-from sqlalchemy.sql.expression import func
+from sqlalchemy.types import Integer, String, Text, DateTime, Enum, Float, Boolean, Date
+from sqlalchemy.orm import reconstructor, object_session
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 

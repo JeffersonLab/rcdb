@@ -2,7 +2,7 @@ import unittest
 
 import rcdb
 import rcdb.model
-from rcdb.model import Run, ConditionType
+from rcdb.model import ConditionType
 from rcdb.provider import destroy_all_create_schema
 
 

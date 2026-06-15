@@ -1,10 +1,7 @@
 # rp.py
 import click
 import sqlalchemy
-from sqlalchemy import select
-from sqlalchemy.exc import OperationalError
 
-import rcdb
 from rcdb import RCDBProvider
 from rcdb.model import RunPeriod
 from rcdb.cli.context import pass_rcdb_context
