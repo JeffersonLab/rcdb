@@ -47,7 +47,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-examples = ["jsonpickle"]
+examples = ["jsonpickle", "pandas"]
 dev = ["pyflakes>=3"]
 
 

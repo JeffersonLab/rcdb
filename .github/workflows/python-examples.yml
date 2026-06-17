@@ -34,6 +34,7 @@ jobs:
           cd $GITHUB_WORKSPACE/python
           pip install --editable .
           pip install jsonpickle  # for writing object example
+          pip install pandas      # for the DataFrame examples (04, 05)
 
       #      - name: Download HallD SQLite snapshot
       #        run: |
@@ -52,6 +53,12 @@ jobs:
 
       - name: "Example: 03_select_values_custom_runs"
         run: python $GITHUB_WORKSPACE/python/examples/03_select_values_custom_runs.py
+
+      - name: "Example: 04_conditions_dataframe_run_period"
+        run: python $GITHUB_WORKSPACE/python/examples/04_conditions_dataframe_run_period.py
+
+      - name: "Example: 05_conditions_dataframe_last_runs"
+        run: python $GITHUB_WORKSPACE/python/examples/05_conditions_dataframe_last_runs.py
 
       - name: "Example: 10_create_conditions_basic"
         run: python $GITHUB_WORKSPACE/python/examples/10_create_conditions_basic.py
