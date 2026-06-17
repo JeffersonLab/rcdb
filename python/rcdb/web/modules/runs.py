@@ -229,6 +229,19 @@ def search():
         else:
             return redirect(url_for('.index'))
 
+    # The search box is for condition queries. A bare run number or range typed there
+    # (instead of the 'Run or min-max' box) can't be evaluated as a query and used to
+    # raise an internal error. Give a friendly hint and show the runs they meant. (gh #96)
+    typed_run_from, typed_run_to = _parse_run_range(search_query.strip())
+    if typed_run_from is not None:
+        flash("It looks like you entered a run number or range in the search box. "
+              "Run numbers and ranges go in the 'Run or min-max' box on the left; "
+              "the search box is for condition queries like "
+              "\"@is_production and beam_current > 2\".", 'warning')
+        if typed_run_to is not None:
+            return redirect(url_for('.index', run_from=typed_run_from, run_to=typed_run_to))
+        return redirect(url_for('.info', run_number=typed_run_from))
+
     if run_from is None:
         run_from = 0
 
@@ -240,7 +253,17 @@ def search():
     except Exception as err:
         flash("Error in performing request: {}".format(err), 'danger')
         return redirect(url_for('.index'))
-        # Create pagination
+
+    # select_runs returns None when the query references no known condition (e.g. a bare
+    # number or expression typed into the search box). Guard against it so such input
+    # can't raise an AttributeError on result.runs below. (gh #96)
+    if result is None:
+        flash("Your search didn't reference any known condition. The search box expects a "
+              "condition query like \"@is_production and beam_current > 2\"; run numbers and "
+              "ranges go in the 'Run or min-max' box on the left.", 'warning')
+        return redirect(url_for('.index'))
+
+    # Create pagination
     pagination = Pagination(1, len(result.runs), len(result.runs))
     condition_types = g.tdb.get_condition_types()
 

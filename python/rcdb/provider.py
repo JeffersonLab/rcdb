@@ -123,8 +123,14 @@ class RCDBProvider(object):
             db_version = self.get_schema_version()
             if db_version != rcdb.SQL_SCHEMA_VERSION:
                 message = "SQL schema version doesn't match. " \
-                          "Retrieved DB version is {0}, required version is {1}" \
+                          "Retrieved DB version is {0}, required version is {1}. " \
                     .format(db_version, rcdb.SQL_SCHEMA_VERSION)
+                if db_version is not None and db_version < rcdb.SQL_SCHEMA_VERSION:
+                    message += "The database schema is older than this RCDB version. " \
+                               "Run 'rcdb db update' to migrate the database to the current schema."
+                else:
+                    message += "The database schema is newer than this RCDB version. " \
+                               "Update your RCDB installation to match the database."
                 raise rcdb.errors.SqlSchemaVersionError(message)
 
     # ------------------------------------------------
