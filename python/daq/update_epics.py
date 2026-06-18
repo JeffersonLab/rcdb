@@ -197,7 +197,14 @@ def update_beam_conditions(run, log=log):
 
     try: 
         # also, get the average CDC gas pressure
-        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-l", "RESET:i:GasPanelBarPress1"]
+        cmds = ["myStats", "-b", begin_time_str, "-e", end_time_str, "-l", "RESET:i:GasPanelBarPress1,GAS:i::CDC_Temps-CDC_D1_Temp,GAS:i::CDC_Temps-CDC_D2_Temp,GAS:i::CDC_Temps-CDC_D3_Temp,GAS:i::CDC_Temps-CDC_D4_Temp,GAS:i::CDC_Temps-CDC_D5_Temp"]
+
+        cdc_temp_1 = -10.
+        cdc_temp_2 = -10.
+        cdc_temp_3 = -10.
+        cdc_temp_4 = -10.
+        cdc_temp_5 = -10.
+        
         log.debug(Lf("Requesting cdc_gas_pressure subprocess flags: '{}'", cmds))
         # execute external command
         p = subprocess.Popen(cmds, stdout=subprocess.PIPE)
@@ -216,11 +223,42 @@ def update_beam_conditions(run, log=log):
             if key == b"RESET:i:GasPanelBarPress1":
                 log.debug(Lf("Saving cdc_gas_pressure = '{}'", float(value)))
                 conditions["cdc_gas_pressure"] = float(value)
-        log.debug("Done with cdc_gas_pressure")
+            if key == "GAS:i::CDC_Temps-CDC_D1_Temp":
+                cdc_temp_1 = float(value)
+            if key == "GAS:i::CDC_Temps-CDC_D2_Temp":
+                cdc_temp_2 = float(value)
+            if key == "GAS:i::CDC_Temps-CDC_D3_Temp":
+                cdc_temp_3 = float(value)
+            if key == "GAS:i::CDC_Temps-CDC_D4_Temp":
+                cdc_temp_4 = float(value)
+            if key == "GAS:i::CDC_Temps-CDC_D5_Temp":
+                cdc_temp_5 = float(value)
+            log.debug("Done with cdc_gas_pressure")
     except Exception as e:
         log.warn(Lf("Error in a cdc_gas_pressure request : '{}'", e))
         conditions["cdc_gas_pressure"] = -1.
 
+    ## calculate P/T for CDC
+    if(conditions["cdc_gas_pressure"] > 0.):
+        # average and check ranges
+        ntemps = 0
+        temp_avg = 0.
+        temps = [cdc_temp_1, cdc_temp_2, cdc_temp_3, cdc_temp_4, cdc_temp_5]
+        for temp in temps:
+            if(temp > 20. and temp < 30.):
+                ntemps += 1
+                temp_avg += (temp+273.)  # don't forget to convert deg C -> deg K
+
+        if ntemps > 0:
+            temp_avg /= float(ntemps)
+
+            # do calc
+            conditions["cdc_povert"] = cdc_gas_pressure / temp_avg
+        else:
+            conditions["cdc_povert"] = -1.
+    else:
+        conditions["cdc_povert"] = -1.
+        
     return conditions
 
 
