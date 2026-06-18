@@ -253,7 +253,7 @@ def update_beam_conditions(run, log=log):
             temp_avg /= float(ntemps)
 
             # do calc
-            conditions["cdc_povert"] = cdc_gas_pressure / temp_avg
+            conditions["cdc_povert"] = conditions["cdc_gas_pressure"] / temp_avg
         else:
             conditions["cdc_povert"] = -1.
     else:
