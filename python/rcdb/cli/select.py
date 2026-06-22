@@ -3,27 +3,7 @@ import click
 
 from rcdb.app_context import parse_run_range
 from rcdb.cli.context import pass_rcdb_context
-
-
-def _process_sel_args(args):
-    """
-    Process the argument list and extract a run range string, query and view.
-    :param args: list of user arguments.
-    :return: (run_range_str, query, view)
-    """
-    run_range_str = ''
-    for arg in args:
-        if '-' in arg:
-            run_range_str = arg
-            args = [a for a in args if a != arg]
-            break
-
-    if len(args) == 0:
-        return run_range_str, None, None
-    if len(args) == 1:
-        return run_range_str, args[0], None
-
-    return run_range_str, args[0], args[1]
+from rcdb.provider import RcdbSelectionResult
 
 
 @click.command(name="select")
@@ -33,8 +13,9 @@ def _process_sel_args(args):
               help='Display results in export-friendly format without borders or extra formatting')
 @click.option('--desc/--asc', 'is_descending', default=False,
               help="Sort order of run number descending or ascending")
+@click.option("--verbose", "-v", "is_verbose", default=False, is_flag=True, help="Verbose output")
 @pass_rcdb_context
-def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descending):
+def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descending, is_verbose):
     """Select runs and get their values."""
     db = rcdb_context.require_connected_db()
     args = []
@@ -61,12 +42,19 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
     if query == '@' or query is None:
         query = ''
 
+    if "," in view:
+        view = view.replace(",", " ")
     if not view:
         view = "event_count run_config"
 
     conditions_to_show = view.split()
 
+    if is_verbose:
+        print_selection_input(conditions_to_show, query, run_min, run_max, is_descending)
     values = db.select_values(conditions_to_show, query, run_min, run_max, sort_desc=is_descending)
+
+    if is_verbose:
+        print_performance(values)
 
     if not is_dump_view:
 
@@ -88,3 +76,40 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
     click.echo("#! " + header)
     for row in values:
         click.echo(" ".join(map(str, row)))
+
+def _process_sel_args(args):
+    """
+    Process the argument list and extract a run range string, query and view.
+    :param args: list of user arguments.
+    :return: (run_range_str, query, view)
+    """
+    run_range_str = ''
+    for arg in args:
+        if '-' in arg:
+            run_range_str = arg
+            args = [a for a in args if a != arg]
+            break
+
+    if len(args) == 0:
+        return run_range_str, None, None
+    if len(args) == 1:
+        return run_range_str, args[0], None
+
+    return run_range_str, args[0], args[1]
+
+
+def print_selection_input(conditions_to_show, query, run_min, run_max, is_descending):
+    print("Conditions to show:", conditions_to_show)
+    print(f"Query: {query}")
+    print(f"Run range: {run_min} - {run_max}")
+    print(f"Order: {"desc" if is_descending else "asc" }")
+    pass
+
+def print_performance(result):
+    assert isinstance(result, RcdbSelectionResult)
+    print("Query time:")
+    print(f"   preparation      : {result.performance["preparation"]}")
+    print(f"   query            : {result.performance["query"]}")
+    print(f"   selection        : {result.performance["selection"]}")
+    print(f"   start_time_stamp : {result.performance["start_time_stamp"]}")
+    print(f"   total            : {result.performance["total"]}")
