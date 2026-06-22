@@ -1194,7 +1194,9 @@ class RCDBProvider(object):
 
         result_table = []
 
-        for values in result:
+        # for SQLite iterrows are extremly slow. The next helps like 20% performance by telling you need all
+        all_rows = result.all()
+        for values in all_rows:
             run = values[0]
             try:
                 if not search_eval or eval(compiled_search_eval):
