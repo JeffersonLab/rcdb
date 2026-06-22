@@ -102,7 +102,7 @@ def print_selection_input(conditions_to_show, query, run_min, run_max, is_descen
     print("Conditions to show:", conditions_to_show)
     print(f"Query: {query}")
     print(f"Run range: {run_min} - {run_max}")
-    print(f"Order: {"desc" if is_descending else "asc" }")
+    print(f"Order: {'desc' if is_descending else 'asc' }")
     pass
 
 def print_performance(result):
