@@ -42,10 +42,11 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
     if query == '@' or query is None:
         query = ''
 
-    if "," in view:
-        view = view.replace(",", " ")
     if not view:
         view = "event_count run_config"
+
+    if "," in view:
+        view = view.replace(",", " ")
 
     conditions_to_show = view.split()
 
