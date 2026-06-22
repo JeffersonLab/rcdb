@@ -11,8 +11,9 @@ import sys
 import datetime
 from time import mktime
 from collections.abc import MutableSequence
+from typing import Optional, Literal
 
-from sqlalchemy import text, desc
+from sqlalchemy import text, desc, asc
 from sqlalchemy.exc import OperationalError, NoResultFound
 
 from ply.lex import LexToken
@@ -80,6 +81,18 @@ class RCDBProvider(object):
             .first()
 
         return schema_version
+
+    # -------------------------------------------------
+    # Clears object caches
+    # -------------------------------------------------
+    def clear_caches(self):
+        """RCDBProvider caches certain objects. This function clears the caches
+
+        This function is intended for tests. Caching must perform automatically in production
+        """
+        self._cnd_types_cache = None
+        self._cnd_types_by_name = None
+        self._run_periods_cache = None
 
     # ------------------------------------------------
     # Connects to database using connection string
@@ -315,19 +328,38 @@ class RCDBProvider(object):
     # Returns run periods
     # ------------------------------------------------
 
-    def get_run_periods(self):
+    def get_run_periods(self, sort: Optional[Literal["asc", "desc"]] = None) -> list["RunPeriod"]:
         """Gets all run periods as a list of RunPeriod objects
 
         :return: all RunPeriods in db
+        :sort: "asc"|"desc"|false sorts by RunPeriod start_date
         :rtype: list, [RunPeriod]
         """
         if self._run_periods_cache is not None:
+            assert isinstance(self._run_periods_cache, list)
+
+            # Ascending or descending?
+            if sort == "asc":
+                self._run_periods_cache.sort(key=lambda r: r.start_date)
+            elif sort == "desc":
+                self._run_periods_cache.sort(key=lambda r: r.start_date, reverse=True)
             return self._run_periods_cache
         try:
-            self._run_periods_cache = self.session.query(RunPeriod).all()
+            query = self.session.query(RunPeriod)       # initial query no sort
+
+            if sort == "asc":
+                # Ascending
+                query = query.order_by(asc(RunPeriod.start_date))
+            elif sort == "desc":
+                # Descending
+                query = query.order_by(desc(RunPeriod.start_date))
+
+            self._run_periods_cache = query.all()
             return self._run_periods_cache
+
         except NoResultFound:
             return []
+
 
     # ------------------------------------------------
     # Creates run period

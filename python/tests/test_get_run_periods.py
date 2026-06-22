@@ -52,6 +52,12 @@ class TestRunPeriod(unittest.TestCase):
                                   39999,
                                   datetime.date(2017,1, 23),
                                   datetime.date(2017, 3, 13))
+        self.db.create_run_period("Gluex 2015-01",
+                                  "12 GeV e-",
+                                  10000,
+                                  19999,
+                                  datetime.date(2015,1, 23),
+                                  datetime.date(2015, 3, 13))
 
         self.db.create_run_period("Gluex 2016-02",
                                   "End of GlueX phase",
@@ -59,8 +65,30 @@ class TestRunPeriod(unittest.TestCase):
                                   29999,
                                   datetime.date(2016,9, 15),
                                   datetime.date(2016, 12, 21))
+
+        # These actually will sort run periods cache
         rps = self.db.get_run_periods()
-        self.assertEqual(len(rps), 2)
+        self.assertEqual(len(rps), 3)
+
+        rps = self.db.get_run_periods(sort="asc")
+        self.assertEqual(rps[0].run_min, 10000)     # RR "Gluex 2015-01" must be the first now
+
+        rps = self.db.get_run_periods(sort="desc")
+        self.assertEqual(rps[0].run_min, 30000)     # RR "The latest 2017-01" must be the first now
+        self.assertEqual(rps[0].run_max, 39999)  # RR "The latest 2017-01" must be the first now
+        self.assertEqual(rps[0].name, "Gluex 2017-01")  # RR "The latest 2017-01" must be the first now
+        self.assertEqual(rps[0].description, "12 GeV e-")  # RR "The latest 2017-01" must be the first now
+
+        # With clearing caches this will always sort in DB
+        self.db.clear_caches()
+        rps = self.db.get_run_periods(sort="asc")
+        self.assertEqual(rps[0].run_min, 10000)     # RR "Gluex 2015-01" must be the first now
+
+        self.db.clear_caches()
+        rps = self.db.get_run_periods(sort="desc")
+        self.assertEqual(rps[0].run_min, 30000)     # RR "The latest 2017-01" must be the first now
+
+
 
 
 if __name__ == '__main__':

@@ -43,8 +43,15 @@ def select_command(rcdb_context, query, views_or_runs, is_dump_view, is_descendi
     args.extend([str(v) for v in views_or_runs])
     run_range_str, query, view = _process_sel_args(args)
 
-    run_periods = db.get_run_periods()
+    run_periods = db.get_run_periods(sort="desc")
     run_min, run_max = parse_run_range(run_range_str, run_periods)
+
+
+    # No run min or max. But! We use the latest run period
+    if run_min is None and run_max is None and run_periods:
+        # get the last run period?
+        run_min = run_periods[0].run_min
+        run_max = run_periods[0].run_max
 
     if run_min is None:
         run_min = 0
