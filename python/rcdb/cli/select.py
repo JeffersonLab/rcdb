@@ -108,8 +108,8 @@ def print_selection_input(conditions_to_show, query, run_min, run_max, is_descen
 def print_performance(result):
     assert isinstance(result, RcdbSelectionResult)
     print("Query time:")
-    print(f"   preparation      : {result.performance["preparation"]}")
-    print(f"   query            : {result.performance["query"]}")
-    print(f"   selection        : {result.performance["selection"]}")
-    print(f"   start_time_stamp : {result.performance["start_time_stamp"]}")
-    print(f"   total            : {result.performance["total"]}")
+    print(f"   preparation      : {result.performance['preparation']}")
+    print(f"   query            : {result.performance['query']}")
+    print(f"   selection        : {result.performance['selection']}")
+    print(f"   start_time_stamp : {result.performance['start_time_stamp']}")
+    print(f"   total            : {result.performance['total']}")
