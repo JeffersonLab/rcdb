@@ -61,6 +61,13 @@ def get_usage():
             --modules=<module1,module2,...> - adds modules to call (example: --modules=update_epics)
             --udl=<udl> - sets UDL link to sent warnings to
 
+        --update flag:" 
+           coda   - information from coda file (file is required anyway to get run) 
+           config - run configuration file in HallD format 
+           roc    - roc configuration files (taken from run configuration file)
+                    this option is run only if config is given
+           epics  - epics variables 
+        Update of everything looks like: --update=coda,config,roc,epics
 
     <db_connection_string> - is optional. But if it is not set, RCDB_CONNECTION environment variable should be set
 
