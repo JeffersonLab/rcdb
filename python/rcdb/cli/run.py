@@ -1,78 +1,84 @@
 import click
-from sqlalchemy import asc
 
 from rcdb.provider import RCDBProvider
-from rcdb.model import Run, Condition, ConditionType
+from rcdb.model import ConfigurationFile
 from .context import pass_rcdb_context
 
 
-@click.command()
-@click.argument('run_index', required=False)
-@click.argument('condition', required=False)
-@pass_rcdb_context
-def ls(context, run_index, condition):
-    """Lists conditions"""
+# Maximum number of characters shown for a condition value.
+_MAX_VALUE_LEN = 50
 
-    db = context.db
+
+def format_condition_value(value):
+    """Flatten a condition value to a single line and truncate it.
+
+    New lines are replaced by spaces and the result is cut to the first
+    ``_MAX_VALUE_LEN`` characters, appending ``...`` when truncation happened.
+    """
+    text = str(value).replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
+    if len(text) > _MAX_VALUE_LEN:
+        return text[:_MAX_VALUE_LEN] + "..."
+    return text
+
+
+@click.command(name="run")
+@click.argument("run_number", type=int)
+@click.option("-i", "--info", "show_info", is_flag=True, default=False,
+              help="Show only the run info line (start - end).")
+@click.option("-c", "--conditions", "show_conditions", is_flag=True, default=False,
+              help="Show only conditions (without the CONDITIONS title).")
+@click.option("-f", "--files", "show_files", is_flag=True, default=False,
+              help="Show only files (without the FILES title).")
+@pass_rcdb_context
+def run_command(context, run_number, show_info, show_conditions, show_files):
+    """Show information about a single run: its time span, conditions and files.
+
+    `rcdb <run number>` is a shortcut for `rcdb run <run number>`.
+
+    With no -i/-c/-f flag the full report is printed. Passing one or more flags
+    limits the output to just those sections (and drops the section titles).
+    """
+    db = context.require_connected_db()
     assert isinstance(db, RCDBProvider)
 
-
-
-def show_value(db, run_number, name):
-    """
-    Shows condition value for run
-
-    :param db: RCDBProvider to database
-    :type db: RCDBProvider
-    :param run_number: The run number
-    :param name: Condition type name
-    :return:
-    """
-
     run = db.get_run(run_number)
     if not run:
-        print("Run number '{}' is not found in DB".format(run_number))
-        exit(1)
+        click.echo("Run {} is not found in DB.".format(run_number), err=True)
+        raise click.Abort()
 
-    ct = db.get_condition_type(name)
+    # No flag => full report with titles. Any flag => only those sections.
+    full = not (show_info or show_conditions or show_files)
 
-    result = db.get_condition(run, ct)
-    if not result:
-        return
+    # ---- Info -----------------------------------------------------------
+    if full or show_info:
+        start = run.start_time if run.start_time is not None else "?"
+        end = run.end_time if run.end_time is not None else "?"
+        click.echo("Run {}: {} - {}".format(run.number, start, end))
 
-    condition = result
-    print(condition.value)
+    # ---- Conditions -----------------------------------------------------
+    if full or show_conditions:
+        if full:
+            click.echo("")
+            click.echo("CONDITIONS:")
+        conditions = sorted(run.conditions, key=lambda c: c.name)
+        if conditions:
+            for condition in conditions:
+                click.echo("   {} - {}".format(condition.name, format_condition_value(condition.value)))
+        elif full:
+            click.echo("   (none)")
 
+    # ---- Files ----------------------------------------------------------
+    if full or show_files:
+        important = sorted(f.path for f in run.files
+                           if f.importance == ConfigurationFile.IMPORTANCE_HIGH)
+        other = sorted(f.path for f in run.files
+                       if f.importance != ConfigurationFile.IMPORTANCE_HIGH)
 
-def show_run_conditions(db, run_number):
-    """
-
-    :param db: RCDBProvider to database
-    :type db: RCDBProvider
-    :param run_number: The run number
-    :return:
-    """
-
-    run = db.get_run(run_number)
-    if not run:
-        print("Run number {} is not found in DB".format(run_number))
-        exit(1)
-
-    conditions = db.session.query(Condition).join(Run).join(ConditionType) \
-        .order_by(asc(ConditionType.name)) \
-        .filter(Run.number == run_number) \
-        .all()
-
-    for condition in conditions:
-        condition_type = condition.type
-
-        if condition_type.value_type in [ConditionType.INT_FIELD,
-                                         ConditionType.BOOL_FIELD,
-                                         ConditionType.FLOAT_FIELD]:
-            print("{} = {}".format(condition_type.name, condition.value))
-        elif condition_type.value_type == ConditionType.STRING_FIELD:
-            print("{} = '{}'".format(condition_type.name, condition.value))
-        else:
-            # it is something big...
-            value = str(condition.value).replace('\n', "")[:50]
-            print("{} = ({}){}...".format(condition_type.name, condition_type.value_type, value))
+        if full:
+            click.echo("FILES")
+        click.echo("   important:")
+        for path in important:
+            click.echo("        {}".format(path))
+        click.echo("   other files:")
+        for path in other:
+            click.echo("        {}".format(path))

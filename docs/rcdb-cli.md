@@ -40,10 +40,11 @@ Below are the primary subcommands:
 3. **`db`** - Database commands (info, init, update)
 4. **`rp`** (Run Periods) - view or manage Run periods
 5. **`select`** - Select/list runs by condition logic
-6. **`add`** - Add data to the DB (types, conditions, files)
-7. **`file`** - Inspect stored configuration/log files and their versions
-8. **`repair`** - Maintenance commands
-9. **`web`** - Run local RCDB web
+6. **`run`** - Show conditions and files of a single run
+7. **`add`** - Add data to the DB (types, conditions, files)
+8. **`file`** - Inspect stored configuration/log files and their versions
+9. **`repair`** - Maintenance commands
+10. **`web`** - Run local RCDB web
 
 Each command may also have its own subcommands and additional options.
 
@@ -278,7 +279,58 @@ If no view is given, the default columns are `event_count run_config`.
 
 ---
 
-### 6. `rcdb add`
+### 6. `rcdb run`
+
+Shows information about a **single run**: its time span, its conditions and the
+files attached to it.
+
+**Usage:**
+
+```bash
+rcdb run RUN_NUMBER [OPTIONS]
+```
+
+As a shortcut, `rcdb RUN_NUMBER` (a bare number) is treated as `rcdb run RUN_NUMBER`.
+
+By default the full report is printed:
+
+```
+Run 1000: 2025-03-10 11:00:00 - 2025-03-10 12:30:00
+
+CONDITIONS:
+   beam_current - 12.5
+   comment - line one line two that is really really really lon...
+FILES
+   important:
+        /conf/daq.conf
+   other files:
+        /conf/notes.log
+```
+
+String condition values are flattened (new lines replaced by spaces) and
+truncated to the first 50 characters, with `...` appended when truncated.
+Files are split into **important** (importance `0`) and **other files**.
+
+**Options** (passing one or more limits the output to just those sections and
+drops the section titles):
+
+- **`-i`, `--info`**: Show only the run info line (`start - end`).
+- **`-c`, `--conditions`**: Show only conditions (without the `CONDITIONS:` title).
+- **`-f`, `--files`**: Show only files (without the `FILES` title).
+
+**Examples:**
+
+```bash
+rcdb run 1000          # full report
+rcdb 1000              # same thing (shortcut)
+rcdb run 1000 -i       # just the time span
+rcdb run 1000 -c       # just the conditions
+rcdb 1000 -f           # just the files
+```
+
+---
+
+### 7. `rcdb add`
 
 Adds data to the RCDB: new condition types, condition values for runs, and configuration files attached to runs.
 
@@ -324,7 +376,7 @@ rcdb add [COMMAND]
 
 ---
 
-### 7. `rcdb file`
+### 8. `rcdb file`
 
 Inspects configuration and log files stored in the RCDB. A single logical file
 (identified by its **path**) can have several **versions** over time: every time
@@ -426,7 +478,7 @@ rcdb file [COMMAND]
 
 ---
 
-### 8. `rcdb repair`
+### 9. `rcdb repair`
 
 A grouping of commands to fix or backfill data. One subcommand is:
 
@@ -450,7 +502,7 @@ Common options:
 
 ---
 
-### 9. `rcdb web`
+### 10. `rcdb web`
 
 Starts the **Flask**-based web server to display the RCDB in a browser. Useful for local inspection or a lightweight official deployment.
 
@@ -545,6 +597,7 @@ The RCDB CLI provides a convenient way to manage and query your Run Conditions D
 - **`db`**: Schema init/update
 - **`rp`**: Manage run periods
 - **`select`**: Filter/list runs by condition logic
+- **`run`**: Show a single run's conditions and files (`rcdb <number>` shortcut)
 - **`add`**: Add condition types, conditions, and files
 - **`file`**: Inspect stored files, versions, and content
 - **`repair`**: Utility fixes (like `evio-files`)

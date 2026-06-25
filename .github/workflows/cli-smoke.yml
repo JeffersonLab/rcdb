@@ -173,3 +173,44 @@ jobs:
           fi
           # Search is case-insensitive: an upper-case pattern still matches.
           rcdb file search DAQ | grep -q "/conf/daq.conf"
+
+      # ── run command: full report, shortcut, and -i/-c/-f sections ──
+      - name: "run (full report for a run)"
+        run: |
+          # Run 100 has beam_current=12.5 and the daq.conf / other.conf files.
+          OUT=$(rcdb run 100)
+          echo "$OUT"
+          echo "$OUT" | grep -q "Run 100:"
+          echo "$OUT" | grep -q "CONDITIONS:"
+          echo "$OUT" | grep -q "beam_current - 12.5"
+          echo "$OUT" | grep -q "FILES"
+          echo "$OUT" | grep -q "/conf/daq.conf"
+
+      - name: "run number shortcut (rcdb <number> == rcdb run <number>)"
+        run: |
+          test "$(rcdb 100)" = "$(rcdb run 100)"
+
+      - name: "run -c / -i / -f section flags"
+        run: |
+          # -c: conditions only, no CONDITIONS title
+          OUT=$(rcdb run 100 -c)
+          echo "$OUT"
+          echo "$OUT" | grep -q "beam_current - 12.5"
+          if echo "$OUT" | grep -q "CONDITIONS:"; then
+            echo "ERROR: -c should not print the CONDITIONS title"; exit 1
+          fi
+          if echo "$OUT" | grep -q "Run 100:"; then
+            echo "ERROR: -c should not print the info line"; exit 1
+          fi
+          # -i: info line only
+          rcdb run 100 -i | grep -q "Run 100:"
+          if rcdb run 100 -i | grep -q "beam_current"; then
+            echo "ERROR: -i should not print conditions"; exit 1
+          fi
+          # -f: files only, no FILES title
+          OUT=$(rcdb run 100 -f)
+          echo "$OUT"
+          echo "$OUT" | grep -q "/conf/daq.conf"
+          if echo "$OUT" | grep -q "^FILES"; then
+            echo "ERROR: -f should not print the FILES title"; exit 1
+          fi

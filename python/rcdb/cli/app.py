@@ -13,6 +13,7 @@ from .info import info_command
 from .add import add_command
 from .select import select_command
 from .file import file_command
+from .run import run_command
 
 
 pass_rcdb_context = click.make_pass_decorator(RcdbApplicationContext)
@@ -22,7 +23,18 @@ def get_default_config_path():
     return os.path.join(os.path.expanduser('~'), '.rcdb_user')
 
 
-@click.group(invoke_without_command=True)
+class RcdbGroup(click.Group):
+    """Top level group that treats `rcdb <number>` as `rcdb run <number>`."""
+
+    def resolve_command(self, ctx, args):
+        # If the first token is not a known command but looks like a run number,
+        # dispatch to the `run` command, i.e. `rcdb 1000` == `rcdb run 1000`.
+        if args and args[0] not in self.commands and args[0].isdigit():
+            args = ["run"] + args
+        return super().resolve_command(ctx, args)
+
+
+@click.group(cls=RcdbGroup, invoke_without_command=True)
 @click.option('--user-config', envvar='RCDB_USER_CONFIG', default=get_default_config_path, metavar='PATH', help='Changes the user config location.')
 @click.option('--connection', '-c', envvar='RCDB_CONNECTION', help='Database connection string', default=None, required=False)
 @click.option('--config', nargs=2, multiple=True, metavar='KEY VALUE', help='Overrides a config key/value pair.')
@@ -69,4 +81,5 @@ rcdb_cli.add_command(info_command)
 rcdb_cli.add_command(add_command)
 rcdb_cli.add_command(select_command)
 rcdb_cli.add_command(file_command)
+rcdb_cli.add_command(run_command)
 
