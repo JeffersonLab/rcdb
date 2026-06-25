@@ -60,6 +60,9 @@ jobs:
       - name: "Example: 05_conditions_dataframe_last_runs"
         run: python $GITHUB_WORKSPACE/python/examples/05_conditions_dataframe_last_runs.py
 
+      - name: "Example: 06_files_dataframe_last_runs"
+        run: python $GITHUB_WORKSPACE/python/examples/06_files_dataframe_last_runs.py
+
       - name: "Example: 10_create_conditions_basic"
         run: python $GITHUB_WORKSPACE/python/examples/10_create_conditions_basic.py
 

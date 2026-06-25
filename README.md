@@ -6,10 +6,11 @@
 [![C++ examples](https://github.com/JeffersonLab/rcdb/actions/workflows/cpp-examples.yml/badge.svg)](https://github.com/JeffersonLab/rcdb/actions/workflows/cpp-examples.yml)
 [![Documentation](https://github.com/JeffersonLab/rcdb/actions/workflows/documentation.yml/badge.svg)](https://github.com/JeffersonLab/rcdb/actions/workflows/documentation.yml)
 
-Run Configuration/Conditions Database (RCDB) stores run related information and conditions. It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
+Run Configuration/Conditions Database (RCDB) stores run related information and conditions. 
+It uses MySQL or SQLite databases to store information about runs and provides interfaces to search runs, manage data, automatic CODA integration, etc. 
 
 The interfaces available are:  
-- Web site
+- Web
 - Command line interface (CLI)
 - Python API
 - C++ API
@@ -26,4 +27,4 @@ https://halldweb.jlab.org/rcdb/
 
 #### SQLite db:
 Daily updated SQLite database is available here:  
-https://halldweb.jlab.org/dist/rcdb2.sqlite
+https://halldweb.jlab.org/dist/rcdb.sqlite
