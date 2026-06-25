@@ -60,6 +60,12 @@ def rcdb_cli(ctx, user_config, connection, config, verbose):
     for key, value in config:
         ctx.obj.set_config(key, value)
 
+    # Dispose the DB engine deterministically when the command finishes, rather
+    # than leaving it to garbage collection. On Python 3.13+ a lingering, GC'd
+    # SQLite connection emits "ResourceWarning: unclosed database" at an
+    # unpredictable time, which can leak into command output captured by tests.
+    ctx.call_on_close(ctx.obj.close)
+
     # Bo commands given
     if ctx.invoked_subcommand is None:
         # There is a connection but no subcommand

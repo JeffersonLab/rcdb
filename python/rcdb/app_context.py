@@ -19,6 +19,18 @@ class RcdbApplicationContext(object):
             self._db_instance = RCDBProvider(self.connection_str)
         return self._db_instance
 
+    def close(self):
+        """Disconnect the database if one was opened.
+
+        Safe to call when no connection was ever made. The CLI registers this on
+        the Click context so the engine is disposed deterministically when the
+        command finishes, instead of waiting for garbage collection (which on
+        Python 3.13+ leaks a ``ResourceWarning: unclosed database``).
+        """
+        if self._db_instance is not None:
+            self._db_instance.disconnect()
+            self._db_instance = None
+
     def require_connected_db(self) -> RCDBProvider:
         """Return the RCDBProvider, or fail with a clear CLI error if no connection was given.
 

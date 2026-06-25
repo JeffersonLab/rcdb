@@ -150,9 +150,19 @@ class RCDBProvider(object):
     # Closes connection to data
     # ------------------------------------------------
     def disconnect(self):
-        """Closes connection to database"""
+        """Closes connection to database.
+
+        Closes the ORM session and disposes the SQLAlchemy engine so the
+        underlying connection pool releases its DBAPI connections. Without the
+        ``engine.dispose()`` the pooled SQLite/MySQL connection stays open until
+        the engine is garbage collected, which on Python 3.13+ surfaces as a
+        ``ResourceWarning: unclosed database`` at an unpredictable time.
+        """
         self._is_connected = False
-        self.session.close()
+        if self.session is not None:
+            self.session.close()
+        if self.engine is not None:
+            self.engine.dispose()
 
     # -------------------------------------------------
     # indicates ether the connection is open or not
