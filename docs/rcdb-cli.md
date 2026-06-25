@@ -41,8 +41,9 @@ Below are the primary subcommands:
 4. **`rp`** (Run Periods) - view or manage Run periods
 5. **`select`** - Select/list runs by condition logic
 6. **`add`** - Add data to the DB (types, conditions, files)
-7. **`repair`** - Maintenance commands
-8. **`web`** - Run local RCDB web
+7. **`file`** - Inspect stored configuration/log files and their versions
+8. **`repair`** - Maintenance commands
+9. **`web`** - Run local RCDB web
 
 Each command may also have its own subcommands and additional options.
 
@@ -323,7 +324,109 @@ rcdb add [COMMAND]
 
 ---
 
-### 7. `rcdb repair`
+### 7. `rcdb file`
+
+Inspects configuration and log files stored in the RCDB. A single logical file
+(identified by its **path**) can have several **versions** over time: every time
+its content changes, a new version with a new `sha256` content hash is stored and
+associated with the runs that used it.
+
+File names are matched by **exact path**. Use `rcdb file search` to discover the
+exact path from a substring.
+
+**Usage:**
+
+```bash
+rcdb file [COMMAND]
+```
+
+#### Subcommands
+
+1. **`rcdb file vers FILE_NAME`**
+   Shows all versions stored for a file, one per line, as:
+
+   ```
+   <sha256 hash> - <last run number this version is used>
+   ```
+
+   Versions are sorted by their last used run number, descending.
+
+   **Example:**
+   ```bash
+   rcdb file vers /gluex/calib/main.conf
+   ```
+
+2. **`rcdb file cat FILE_NAME [RUN]`**
+   Dumps the raw content of a single version of a file (suitable for piping to
+   e.g. `grep`). Exactly one selector must be given:
+    - a run number, positionally or via `--run` - prints the version used in that run,
+    - `--hash=<hash>` - prints the version with that content hash (a unique **prefix** is accepted).
+
+   **Examples:**
+   ```bash
+   rcdb file cat /gluex/calib/main.conf 1000
+   rcdb file cat /gluex/calib/main.conf --run=1000
+   rcdb file cat /gluex/calib/main.conf --hash=7aQaXd3M
+   rcdb file cat /gluex/calib/main.conf 1000 | grep TRIGGER
+   ```
+
+3. **`rcdb file runs FILE_NAME [RUN FILTERS]`**
+   Lists every run that uses a file and the version (hash) used in each run, as:
+
+   ```
+   <run number> - <file hash>
+   ```
+
+    - **Run filters** (all optional): `--run-min`, `--run-max` (a range), `--run` (a single run),
+      `--run-period` (a run period name). The range (`--run-min`/`--run-max`), `--run`, and
+      `--run-period` are mutually exclusive. With no filter, all runs are listed.
+    - **`--asc` / `--desc`**: Sort by run number. Default is `--desc`.
+    - **`--limit N`**: Limit the number of rows.
+
+   **Example:**
+   ```bash
+   # The last 10 runs that used this file
+   rcdb file runs /gluex/calib/main.conf --desc --limit=10
+   ```
+
+4. **`rcdb file ls [RUN_SPEC] [RUN FILTERS]`**
+   Lists all files attached to the selected runs, sorted by file name, as:
+
+   ```
+   <file hash> - <file name>
+   ```
+
+   The runs can be given either as a single positional `RUN_SPEC` or with the
+   same run-filter options as `rcdb file runs` (`--run-min`, `--run-max`,
+   `--run`, `--run-period`). The positional form and the options cannot be mixed.
+   With no filter, all files are listed.
+
+   `RUN_SPEC` is interpreted in this order:
+    - a **run number** (e.g. `1000`) - same as `--run=1000`,
+    - a **run range** (e.g. `1000-2000`, `1000-`, `-2000`) - same as `--run-min`/`--run-max`,
+    - otherwise a **run period name** (which may itself contain `-`, e.g. `RunPeriod-2025-01`).
+
+   **Example:**
+   ```bash
+   rcdb file ls 1000                 # files for run 1000
+   rcdb file ls 1000-2000            # files for runs 1000..2000
+   rcdb file ls RunPeriod-2025-01    # files for a run period
+   rcdb file ls --run-period=RunPeriod-2025-01
+   ```
+
+5. **`rcdb file search PATTERN`**
+   Prints all distinct file names whose path contains `PATTERN` as a substring.
+   Matching is case-insensitive.
+
+   **Example:**
+   ```bash
+   rcdb file search main.conf
+   rcdb file search MAIN.CONF
+   ```
+
+---
+
+### 8. `rcdb repair`
 
 A grouping of commands to fix or backfill data. One subcommand is:
 
@@ -347,7 +450,7 @@ Common options:
 
 ---
 
-### 8. `rcdb web`
+### 9. `rcdb web`
 
 Starts the **Flask**-based web server to display the RCDB in a browser. Useful for local inspection or a lightweight official deployment.
 
@@ -443,6 +546,7 @@ The RCDB CLI provides a convenient way to manage and query your Run Conditions D
 - **`rp`**: Manage run periods
 - **`select`**: Filter/list runs by condition logic
 - **`add`**: Add condition types, conditions, and files
+- **`file`**: Inspect stored files, versions, and content
 - **`repair`**: Utility fixes (like `evio-files`)
 - **`web`**: Launch a Flask UI
 

@@ -103,3 +103,73 @@ jobs:
 
       - name: "List run periods (rp)"
         run: rcdb rp
+
+      # ── file command group: vers / cat / runs / ls / search ──
+      - name: "Add file versions for the file commands"
+        run: |
+          # One logical file (/conf/daq.conf) with two versions:
+          #   "TRIGGER v1" on runs 100, 101
+          #   "TRIGGER v2 CHANGED" on run 102
+          # Plus a second file so `ls` / `search` have something to distinguish.
+          rcdb add file 100 /conf/daq.conf --content "TRIGGER v1"
+          rcdb add file 101 /conf/daq.conf --content "TRIGGER v1"
+          rcdb add file 102 /conf/daq.conf --content "TRIGGER v2 CHANGED"
+          rcdb add file 100 /conf/other.conf --content "unrelated content"
+
+      - name: "file vers (versions of a file)"
+        run: |
+          OUT=$(rcdb file vers /conf/daq.conf)
+          echo "$OUT"
+          # Two distinct versions, the newer one last used on run 102.
+          test "$(echo "$OUT" | grep -c .)" -eq 2
+          echo "$OUT" | grep -q -- "- 102"
+
+      - name: "file cat (pipe to grep)"
+        run: |
+          # The version used in run 102 must contain the changed marker.
+          rcdb file cat /conf/daq.conf 102 | grep -q "CHANGED"
+          # The version used in run 100 must NOT contain it.
+          if rcdb file cat /conf/daq.conf 100 | grep -q "CHANGED"; then
+            echo "ERROR: run 100 should have the v1 content, not the changed one"
+            exit 1
+          fi
+
+      - name: "file runs (per-run versions, sorted desc, limited)"
+        run: |
+          OUT=$(rcdb file runs /conf/daq.conf --desc --limit=2)
+          echo "$OUT"
+          # Last two runs descending => 102 then 101.
+          test "$(echo "$OUT" | sed -n '1p' | cut -d' ' -f1)" = "102"
+          test "$(echo "$OUT" | sed -n '2p' | cut -d' ' -f1)" = "101"
+
+      - name: "file ls (all files for a run)"
+        run: |
+          OUT=$(rcdb file ls --run=100)
+          echo "$OUT"
+          echo "$OUT" | grep -q "/conf/daq.conf"
+          echo "$OUT" | grep -q "/conf/other.conf"
+
+      - name: "file ls positional run / range"
+        run: |
+          # `ls 100` is shorthand for `ls --run=100`
+          rcdb file ls 100 | grep -q "/conf/daq.conf"
+          # `ls 102-103` is a run range: only daq.conf (v2) spans it, not other.conf
+          OUT=$(rcdb file ls 102-103)
+          echo "$OUT"
+          echo "$OUT" | grep -q "/conf/daq.conf"
+          if echo "$OUT" | grep -q "/conf/other.conf"; then
+            echo "ERROR: other.conf (run 100 only) should not appear in range 102-103"
+            exit 1
+          fi
+
+      - name: "file search (substring of file name)"
+        run: |
+          OUT=$(rcdb file search daq)
+          echo "$OUT"
+          echo "$OUT" | grep -q "/conf/daq.conf"
+          if echo "$OUT" | grep -q "/conf/other.conf"; then
+            echo "ERROR: 'daq' search should not match /conf/other.conf"
+            exit 1
+          fi
+          # Search is case-insensitive: an upper-case pattern still matches.
+          rcdb file search DAQ | grep -q "/conf/daq.conf"
