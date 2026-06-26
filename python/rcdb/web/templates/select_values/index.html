@@ -10,7 +10,7 @@
 <div class="container">
 
     <div class="blog-header"><h3 class="blog-title">Custom table</h3></div>
-    <div class="hidden-table">
+    <div class="hidden-table hidden">
         <form id="condition-form">
             <table class="table condition-table">
                 <tr>
@@ -33,7 +33,12 @@
     </div>
     <div class="row">
         <div class="col-md-4">
-            <table class="table">
+            {% if table %}
+            <button id="export-csv-btn" type="button" class="btn btn-default btn-sm" style="margin-bottom: 10px;">
+                <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> Export to CSV
+            </button>
+            {% endif %}
+            <table id="results-table" class="table">
                 <thead>
                     <tr>
                         <th>Run</th>
@@ -113,7 +118,50 @@
             });
         });
 
-        
+        // Wrap a CSV field in quotes when it contains a comma, quote or newline
+        function csvEscape(value) {
+            value = (value === null || value === undefined) ? '' : String(value);
+            if (/[",\n\r]/.test(value)) {
+                value = '"' + value.replace(/"/g, '""') + '"';
+            }
+            return value;
+        }
+
+        function tableToCsv(table) {
+            var lines = [];
+            var rows = table.querySelectorAll('tr');
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].querySelectorAll('th, td');
+                var fields = [];
+                for (var j = 0; j < cells.length; j++) {
+                    fields.push(csvEscape(cells[j].textContent.trim()));
+                }
+                lines.push(fields.join(','));
+            }
+            return lines.join('\r\n');
+        }
+
+        function exportCsv() {
+            var table = document.getElementById('results-table');
+            if (!table) return;
+
+            var csv = tableToCsv(table);
+            var blob = new Blob([csv], {type: 'text/csv;charset=utf-8;'});
+            var url = URL.createObjectURL(blob);
+
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = 'rcdb_select_values.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        var exportBtn = document.getElementById('export-csv-btn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', exportCsv);
+        }
 
     </script>
     {{ search_box.run_search_box_scripts(condition_types, run_periods) }}
