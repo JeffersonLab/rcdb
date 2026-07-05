@@ -50,8 +50,11 @@ dependencies = [
 examples = ["jsonpickle", "pandas"]
 dev = ["pyflakes>=3"]
 
+[project.urls]
+Homepage = "https://github.com/JeffersonLab/rcdb"
+Documentation = "https://jeffersonlab.github.io/rcdb"
+Repository = "https://github.com/JeffersonLab/rcdb.git"
 
-# If you want a console script, define it in [project.scripts]
 [project.scripts]
 rcdb = "rcdb.cli.app:rcdb_cli"
 
