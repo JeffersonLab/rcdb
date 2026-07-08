@@ -5,10 +5,10 @@ or setup data updating scripts. Reconstruction frameworks in C++ or JAVA would l
 RCDB API and use it. Developers and system administrators - install RCDB development database, 
 install website on hosting etc. We can split installation into chapters: 
 
-1. [**Python** (library, command line interface, user GUI (local website))](./python)
-2. [**C++ library** compilation](../Cpp)
-3. [**Java library** compilation](../Java)
-4. [**Development install** (git clone, MySQL setup, server management)](../development/development)
+1. [**Python** (library, command line interface, user GUI (local website))](get-started/python)
+2. [**C++ library** compilation](Cpp)
+3. [**Java library** compilation](Java)
+4. [**Development install** (git clone, MySQL setup, server management)](development/development)
 
 
 ## Python
@@ -43,8 +43,8 @@ python -c "import rcdb"
 
 See also:
 
-- [Connection strings](../concepts/connection)
-- [Select values](./select-values)
+- [Connection strings](concepts/connection)
+- [Select values](get-started/select-values)
 - 
 
 ### Further experimenting

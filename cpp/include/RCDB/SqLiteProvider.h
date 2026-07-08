@@ -6,7 +6,7 @@
 #define RCDB_CPP_SQLITEPROVIDER_H
 
 #include <sqlite3.h>
-#include "SQLiteCpp.h"
+#include <SQLiteCpp/SQLiteCpp.h>
 #include <iostream>
 #include <memory>
 #include "DataProvider.h"
@@ -84,8 +84,8 @@ namespace rcdb {
 
             _getConditionQuery.reset();
             _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64)run);
-            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
+            _getConditionQuery.bind(1, (int64_t)run);
+            _getConditionQuery.bind(2, (int64_t)typeId);
 
 
             while (_getConditionQuery.executeStep()) {
@@ -132,7 +132,7 @@ namespace rcdb {
             _getFileQuery.reset();
             _getFileQuery.clearBindings();
             _getFileQuery.bind(1, name.c_str());
-            _getFileQuery.bind(2, (sqlite3_int64)runNumber);
+            _getFileQuery.bind(2, (int64_t)runNumber);
 
 
             while (_getFileQuery.executeStep()) {
@@ -154,7 +154,7 @@ namespace rcdb {
         {
             _getFileNamesQuery.reset();
             _getFileNamesQuery.clearBindings();
-            _getFileNamesQuery.bind(1, (sqlite3_int64)runNumber);
+            _getFileNamesQuery.bind(1, (int64_t)runNumber);
 
             std::vector<std::string> filePaths;
             while (_getFileQuery.executeStep()) {
@@ -178,8 +178,8 @@ namespace rcdb {
 
             _getConditionQuery.reset();
             _getConditionQuery.clearBindings();
-            _getConditionQuery.bind(1, (sqlite3_int64)run);
-            _getConditionQuery.bind(2, (sqlite3_int64)typeId);
+            _getConditionQuery.bind(1, (int64_t)run);
+            _getConditionQuery.bind(2, (int64_t)typeId);
 
 
             while (_getConditionQuery.executeStep()) {
