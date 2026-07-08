@@ -43,6 +43,10 @@ if(WITH_SQLITE)
     else()
         message(STATUS "Fetching SQLiteCpp ${SQLITECPP_FETCH_TAG}")
         include(FetchContent)
+        # By default SQLiteCpp compiles its own bundled SQLite3 amalgamation. We forward
+        # this knob (keeping SQLiteCpp's own default, ON) so it can be turned off to link
+        # the platform's libsqlite3 instead: -DSQLITECPP_INTERNAL_SQLITE=OFF
+        set(SQLITECPP_INTERNAL_SQLITE ON CACHE BOOL "Compile SQLiteCpp's bundled SQLite3 (OFF links system libsqlite3)")
         set(SQLITECPP_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
         set(SQLITECPP_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
         set(SQLITECPP_RUN_CPPLINT    OFF CACHE BOOL "" FORCE)

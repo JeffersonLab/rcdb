@@ -30,16 +30,17 @@ cmake --build build
 | `WITH_MYSQL` | `OFF` | Build the MySQL/MariaDB backend (read + write). |
 | `SQLiteCpp_ROOT` | *(unset)* | Install prefix of an existing SQLiteCpp. If set, that install is used instead of fetching one. |
 | `SQLITECPP_FETCH_TAG` | `3.3.3` | SQLiteCpp git tag fetched with `FetchContent` (used unless `SQLiteCpp_ROOT` is given). |
+| `SQLITECPP_INTERNAL_SQLITE` | `ON` | When fetching SQLiteCpp: `ON` compiles its bundled SQLite3; `OFF` links the system `libsqlite3`. Forwarded to SQLiteCpp with its own default. |
 
 **Dependencies** (backend-dependent, system-independent)
 
-| Dependency | Needed for | How it's provided |
-|------------|-----------|-------------------|
-| C++11 compiler, CMake ≥ 3.14 | always | your toolchain |
-| [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) ≥ 3.x | `WITH_SQLITE` | auto-fetched, or use `-DSQLiteCpp_ROOT` |
-| SQLite3 C library | `WITH_SQLITE` | comes with SQLiteCpp (or system `libsqlite3`) |
-| MySQL/MariaDB client library | `WITH_MYSQL` | system package (`libmysqlclient` / `libmariadb`) |
-| `pthread`, `dl` | always | system |
+| Dependency | Needed for | How provided                                     |
+|------------|-----------|--------------------------------------------------|
+| C++11 , CMake ≥ 3.14 | always | system                                           |
+| [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) ≥ 3.x | `WITH_SQLITE` | auto-fetched, or use `-DSQLiteCpp_ROOT`          |
+| SQLite3 C library | `WITH_SQLITE` | comes with SQLiteCpp (or system `libsqlite3`)    |
+| MySQL/MariaDB client | `WITH_MYSQL` | system package (`libmysqlclient` / `libmariadb`) |
+| `pthread`, `dl` | always | system                                           |
 
 RCDB's own headers are header-only; the database backends above are the only things you link.
 Read on for OS-specific package names and full build/run instructions.
@@ -64,6 +65,10 @@ in one of two ways:
 1. **Fetched automatically** (default). CMake pulls the pinned tag (`SQLITECPP_FETCH_TAG`,
    default `3.3.3`) with `FetchContent` and builds it as part of the project. Override the
    tag with `-DSQLITECPP_FETCH_TAG=<git-tag>`.
+
+   By default the fetched SQLiteCpp compiles its own bundled SQLite3 (SQLiteCpp's default).
+   To link the platform's SQLite instead — e.g. to share one SQLite with the rest of your
+   software stack — pass `-DSQLITECPP_INTERNAL_SQLITE=OFF` (needs `libsqlite3` dev headers).
 
 2. **An existing install**, by pointing CMake at its prefix (used when your environment
    already provides SQLiteCpp, e.g. gluex):
