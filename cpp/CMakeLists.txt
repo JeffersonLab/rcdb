@@ -1,5 +1,7 @@
-# RCDB C++ is a header-only library - nothing here is required to USE it (just #include the headers
-# and link sqlite3 and/or the mysql client). This CMake project builds the unit tests and examples.
+# CMake project for the RCDB C++ tests and examples.
+#
+# SQLiteCpp is fetched automatically (pinned by SQLITECPP_FETCH_TAG). To build against an
+# already-installed copy instead, pass its location: -DSQLiteCpp_ROOT=/install/prefix
 #
 # Build & run the SQLite unit tests:
 #   cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
@@ -7,18 +9,18 @@
 #   RCDB_TEST_CONNECTION="sqlite:///<path-to>.sqlite" ./build/test_rcdb_cpp
 # Create the test database with:  rcdb -c sqlite:///<path-to>.sqlite db init --add-cpp-tests --confirm
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.14)   # FetchContent_MakeAvailable
 project(rcdb_cpp)
 
 option(WITH_MYSQL  "Compile with MySQL support" OFF)
 option(WITH_SQLITE "Compile with SQLite support" ON)
 
+set(SQLITECPP_FETCH_TAG "3.3.3" CACHE STRING "SQLiteCpp git tag to fetch (used unless -DSQLiteCpp_ROOT is given)")
 
 # Location of additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -O0")
-
 
 include_directories(include)
 
@@ -28,24 +30,38 @@ if(WITH_MYSQL)
     add_definitions(-DRCDB_MYSQL)
     include_directories(/usr/include/mysql)
     set(DB_REQIRED_LIBRARIES mysqlclient ${DB_REQIRED_LIBRARIES})
-
 endif()
-
-
 
 if(WITH_SQLITE)
     add_definitions(-DRCDB_SQLITE)
-    include_directories(include/SQLiteCpp)
-    set(DB_REQIRED_LIBRARIES sqlite3 ${DB_REQIRED_LIBRARIES})
+
+    # Fetch a known-good SQLiteCpp by default. If the user points CMake at an existing
+    # install (-DSQLiteCpp_ROOT=/prefix, CMake's standard package-location hint), use that.
+    if(SQLiteCpp_ROOT)
+        find_package(SQLiteCpp CONFIG REQUIRED)
+        message(STATUS "Using SQLiteCpp from ${SQLiteCpp_ROOT}")
+    else()
+        message(STATUS "Fetching SQLiteCpp ${SQLITECPP_FETCH_TAG}")
+        include(FetchContent)
+        set(SQLITECPP_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+        set(SQLITECPP_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
+        set(SQLITECPP_RUN_CPPLINT    OFF CACHE BOOL "" FORCE)
+        set(SQLITECPP_RUN_CPPCHECK   OFF CACHE BOOL "" FORCE)
+        FetchContent_Declare(SQLiteCpp
+                GIT_REPOSITORY https://github.com/SRombauts/SQLiteCpp.git
+                GIT_TAG        ${SQLITECPP_FETCH_TAG})
+        FetchContent_MakeAvailable(SQLiteCpp)
+    endif()
+
+    # The SQLiteCpp target carries its own sqlite3 dependency and include dirs
+    # (transitively exposing <sqlite3.h>), so we do not link a separate sqlite3.
+    set(DB_REQIRED_LIBRARIES SQLiteCpp ${DB_REQIRED_LIBRARIES})
 endif()
 
 MESSAGE(STATUS "WITH_MYSQL  " ${WITH_MYSQL})
 MESSAGE(STATUS "WITH_SQLITE " ${WITH_SQLITE})
 
-
-set(SOURCE_FILES
-        /usr/include/sqlite3.h
-        include/RCDB/SQLiteCpp.h
+set(RCDB_HEADERS
         include/RCDB/ConditionType.h
         include/RCDB/MySqlProvider.h
         include/RCDB/SqLiteProvider.h
@@ -59,20 +75,8 @@ set(SOURCE_FILES
         include/RCDB/RcdbFile.h
         )
 
-
 SET(TEST_SOURCE_FILES
-        ${SOURCE_FILES}
-
-        include/RCDB/ConditionType.h
-        include/RCDB/MySqlProvider.h
-        include/RCDB/SqLiteProvider.h
-        include/RCDB/DataProvider.h
-        include/RCDB/Condition.h
-        include/RCDB/Exceptions.h
-        include/RCDB/MySqlConnectionInfo.h
-        include/RCDB/Connection.h
-        include/RCDB/StringUtils.h
-        include/RCDB/ConfigParser.h
+        ${RCDB_HEADERS}
 
         tests/test_ConditionType.cpp
 
@@ -88,11 +92,8 @@ if(WITH_MYSQL)
     list(APPEND TEST_SOURCE_FILES tests/test_MySqlProvider.cpp)
 endif()
 
-# The Connection and SqLiteProvider tests both pull in the SQLiteCpp amalgamation,
-# whose out-of-line definitions are not `inline`. Compile them as a single unity
-# translation unit (tests/test_sqlite_unity.cpp) so the definitions appear once.
 if(WITH_SQLITE)
-    list(APPEND TEST_SOURCE_FILES tests/test_sqlite_unity.cpp)
+    list(APPEND TEST_SOURCE_FILES tests/test_SqLiteProvider.cpp tests/test_Connection.cpp)
 endif()
 
 # Read examples and tests build with either backend (SQLite is the default).
@@ -101,10 +102,10 @@ add_executable(examples_simple            examples/simple.cpp)
 add_executable(examples_trigger_params    examples/get_trigger_params.cpp)
 add_executable(examples_fadc_masks        examples/get_fadc_masks.cpp)
 
-target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES} dl pthread sqlite3)
-target_link_libraries(examples_trigger_params ${DB_REQIRED_LIBRARIES} dl pthread)
-target_link_libraries(examples_simple            ${DB_REQIRED_LIBRARIES} dl pthread)
-target_link_libraries(examples_fadc_masks ${DB_REQIRED_LIBRARIES} dl pthread)
+target_link_libraries(test_rcdb_cpp ${DB_REQIRED_LIBRARIES})
+target_link_libraries(examples_trigger_params ${DB_REQIRED_LIBRARIES})
+target_link_libraries(examples_simple         ${DB_REQIRED_LIBRARIES})
+target_link_libraries(examples_fadc_masks ${DB_REQIRED_LIBRARIES})
 
 # Writing to RCDB from C++ goes through WritingConnection, which is MySQL-only
 # (the SQLite provider is read-only). So the write examples are built only when
@@ -114,7 +115,7 @@ if(WITH_MYSQL)
     add_executable(examples_write_array_to_json examples/write_array_to_json.cpp)
     add_executable(examples_write_objects_to_json examples/write_objects_to_json.cpp)
 
-    target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES} dl pthread)
-    target_link_libraries(examples_write_array_to_json ${DB_REQIRED_LIBRARIES} dl pthread)
-    target_link_libraries(examples_write_objects_to_json ${DB_REQIRED_LIBRARIES} dl pthread)
+    target_link_libraries(examples_write_conditions ${DB_REQIRED_LIBRARIES})
+    target_link_libraries(examples_write_array_to_json ${DB_REQIRED_LIBRARIES})
+    target_link_libraries(examples_write_objects_to_json ${DB_REQIRED_LIBRARIES})
 endif()

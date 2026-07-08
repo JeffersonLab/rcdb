@@ -13,16 +13,76 @@ C++ API code is located in [$RCDB_HOME/cpp](https://github.com/JeffersonLab/rcdb
 
 ## Installation
 
-RCDB C++ API is **header-only** (since v0.03) — there is no separate library build step.
-The CMake project in `$RCDB_HOME/cpp` builds the unit tests and examples, and handles
-all compiler flags and library linkage for you.
+### Quick reference
+
+Build with CMake from `$RCDB_HOME/cpp`. Default configure line:
+
+```bash
+cmake -S . -B build -DWITH_SQLITE=ON -DWITH_MYSQL=OFF
+cmake --build build
+```
+
+**CMake options**
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `WITH_SQLITE` | `ON` | Build the SQLite backend (read-only). |
+| `WITH_MYSQL` | `OFF` | Build the MySQL/MariaDB backend (read + write). |
+| `SQLiteCpp_ROOT` | *(unset)* | Install prefix of an existing SQLiteCpp. If set, that install is used instead of fetching one. |
+| `SQLITECPP_FETCH_TAG` | `3.3.3` | SQLiteCpp git tag fetched with `FetchContent` (used unless `SQLiteCpp_ROOT` is given). |
+
+**Dependencies** (backend-dependent, system-independent)
+
+| Dependency | Needed for | How it's provided |
+|------------|-----------|-------------------|
+| C++11 compiler, CMake ≥ 3.14 | always | your toolchain |
+| [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) ≥ 3.x | `WITH_SQLITE` | auto-fetched, or use `-DSQLiteCpp_ROOT` |
+| SQLite3 C library | `WITH_SQLITE` | comes with SQLiteCpp (or system `libsqlite3`) |
+| MySQL/MariaDB client library | `WITH_MYSQL` | system package (`libmysqlclient` / `libmariadb`) |
+| `pthread`, `dl` | always | system |
+
+RCDB's own headers are header-only; the database backends above are the only things you link.
+Read on for OS-specific package names and full build/run instructions.
+
+<br/>
+
+RCDB's own C++ code is **header-only** — you just `#include` the headers. The database
+backends are external libraries you link against:
+
+* **SQLite backend** → the [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp) library
+  (RCDB no longer vendors its own copy — see below).
+* **MySQL backend** → the MySQL/MariaDB client library.
+
+The CMake project in `$RCDB_HOME/cpp` builds the unit tests and examples and handles
+compiler flags and library linkage for you.
+
+### SQLiteCpp dependency
+
+The SQLite backend uses [SQLiteCpp](https://github.com/SRombauts/SQLiteCpp), resolved
+in one of two ways:
+
+1. **Fetched automatically** (default). CMake pulls the pinned tag (`SQLITECPP_FETCH_TAG`,
+   default `3.3.3`) with `FetchContent` and builds it as part of the project. Override the
+   tag with `-DSQLITECPP_FETCH_TAG=<git-tag>`.
+
+2. **An existing install**, by pointing CMake at its prefix (used when your environment
+   already provides SQLiteCpp, e.g. gluex):
+
+   ```bash
+   cmake -S . -B build -DSQLiteCpp_ROOT=/install/prefix
+   ```
+
+> For consumers that do **not** use CMake (such as `halld_recon`): make your build's
+> SQLiteCpp headers (`<SQLiteCpp/SQLiteCpp.h>`) and library visible the same way you do
+> for any other dependency. RCDB includes SQLiteCpp headers by their canonical
+> `<SQLiteCpp/SQLiteCpp.h>` path and does not bundle its own copy.
 
 ### Dependencies
 
 #### Ubuntu / Debian
 
 ```bash
-# SQLite
+# SQLite (the C library; SQLiteCpp is fetched or provided via -DSQLiteCpp_ROOT)
 sudo apt-get install libsqlite3-dev
 
 # MySQL (either one)
@@ -46,6 +106,9 @@ cmake --build build --target examples_simple
 
 ./build/examples_simple sqlite:////path/to/db/rcdb.sqlite 10452
 ```
+
+> Add `-DSQLiteCpp_ROOT=/install/prefix` to reuse an existing SQLiteCpp
+> instead of fetching one.
 
 ### MySQL only
 
