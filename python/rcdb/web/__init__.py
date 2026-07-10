@@ -4,6 +4,7 @@ from datetime import datetime
 from urllib.parse import urlparse
 
 from flask import Flask, render_template, g, request, url_for
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import subqueryload
 
 import rcdb
@@ -60,8 +61,13 @@ app = Flask(__name__, template_folder=template_folder)
 
 app.config.from_object(__name__)
 
-@app.before_request
-def before_request():
+def _resolve_active_database():
+    """Pick the connection string for this request and expose selector state.
+
+    Sets ``g.active_db_name`` / ``g.available_databases`` (used by the navbar DB
+    selector) and returns the connection string to connect to. Does not touch
+    the database -- only reads config and the ``rcdb_database`` cookie.
+    """
     available_dbs = app.config.get("AVAILABLE_DATABASES", {})
 
     if available_dbs:
@@ -90,25 +96,94 @@ def before_request():
             # No default set, use first available
             active_name = next(iter(available_dbs))
 
-        connection_string = available_dbs[active_name]
         g.active_db_name = active_name
         g.available_databases = available_dbs
-    else:
-        # Original single-database behavior
-        connection_string = app.config["SQL_CONNECTION_STRING"]
-        g.active_db_name = None
-        g.available_databases = {}
+        return available_dbs[active_name]
 
-    g.tdb = rcdb.ConfigurationProvider()
-    g.tdb.connect(connection_string)
+    # Original single-database behavior
+    g.active_db_name = None
+    g.available_databases = {}
+    return app.config["SQL_CONNECTION_STRING"]
+
+
+@app.before_request
+def before_request():
+    # Never gate static assets on the database -- the graceful DB-error page
+    # below still needs its CSS/JS to load when the DB is unreachable.
+    if request.endpoint == "static":
+        return None
+
     app.jinja_env.globals['datetime_now'] = datetime.now
+
+    # Resolve the selector state first so the navbar (and the DB-error page)
+    # can render even if the connection below fails.
+    connection_string = _resolve_active_database()
+
+    # Connect fresh, per request. A DB access/connection failure (access
+    # denied, too many connections, timeout, host down, ...) must degrade
+    # gracefully instead of surfacing a raw 500 -- and must not poison any
+    # cookie or cached engine, so a later reload recovers once the DB is back.
+    try:
+        g.tdb = rcdb.ConfigurationProvider()
+        g.tdb.connect(connection_string)
+    except SQLAlchemyError:
+        return _render_db_error(connection_string)
+
+    return None
+
+
+def _render_db_error(connection_string):
+    """Log the full failure detail and render the sanitized DB-error page.
+
+    The *log* gets everything an admin needs (which database, the underlying
+    pymysql/SQLAlchemy error code + message, and the stack trace). The *page*
+    gets none of it -- no connection string, host, user, or exception text --
+    only a red "DB connection failure" strip with the top menu (and the DB
+    selector) intact so the visitor can switch to a working database.
+    """
+    logger.exception(
+        "DB connection/access failure for database '%s' (%s); serving graceful "
+        "error page instead of a 500.",
+        getattr(g, "active_db_name", None) or "<default>",
+        _connection_hint(connection_string),
+    )
+
+    # Drop the half-built provider so its engine/pool is released now rather
+    # than lingering as a broken cached connection -- the teardown below only
+    # disposes fully-connected providers.
+    broken = getattr(g, "tdb", None)
+    if broken is not None:
+        try:
+            broken.disconnect()
+        except Exception:
+            logger.debug("Ignoring error while disposing failed DB engine.",
+                         exc_info=True)
+        g.tdb = None
+
+    # 503 Service Unavailable: the failure is transient-friendly (e.g. "too
+    # many connections" recovers), so signal a retryable condition rather than
+    # a 200 or a permanent error. A plain reload after recovery renders fine.
+    return render_template("db_error.html"), 503
+
+
+@app.errorhandler(SQLAlchemyError)
+def handle_db_error(error):
+    """Catch DB errors raised while a view runs (not just at connect time).
+
+    ``before_request`` already handles the common case (``connect()`` exercises
+    the connection via the schema-version check), but a lazily-issued query in
+    a view can still raise. Route those through the same graceful page instead
+    of a 500. ``g.active_db_name`` / ``g.available_databases`` were set by
+    ``before_request`` before the failure, so the selector still renders.
+    """
+    return _render_db_error(getattr(g.get("tdb", None), "connection_string", ""))
 
 
 @app.teardown_request
 def teardown_request(exception):
-    tdb = getattr(g, 'db', None)
-    if tdb:
-        tdb.close()
+    tdb = getattr(g, 'tdb', None)
+    if tdb is not None:
+        tdb.disconnect()
 
 
 @app.errorhandler(404)
