@@ -157,8 +157,11 @@ def elog(run_number):
         from urllib.request import urlopen
         from urllib.error import HTTPError
     try:
-        elog_json = urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
-                            .format(run_number)).read()
+        # Context-manage the response so the underlying socket is closed
+        # deterministically instead of leaking until GC.
+        with urlopen('https://logbooks.jlab.org/api/elog/entries?book=hdrun&title=Run_{}&limit=1'
+                     .format(run_number)) as response:
+            elog_json = response.read()
     except HTTPError as e:
         return jsonify(stat=str(e.code))
 

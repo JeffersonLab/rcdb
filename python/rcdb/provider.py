@@ -133,18 +133,28 @@ class RCDBProvider(object):
         self._connection_string = connection_string
 
         if check_version:
-            db_version = self.get_schema_version()
-            if db_version != rcdb.SQL_SCHEMA_VERSION:
-                message = "SQL schema version doesn't match. " \
-                          "Retrieved DB version is {0}, required version is {1}. " \
-                    .format(db_version, rcdb.SQL_SCHEMA_VERSION)
-                if db_version is not None and db_version < rcdb.SQL_SCHEMA_VERSION:
-                    message += "The database schema is older than this RCDB version. " \
-                               "Run 'rcdb db update' to migrate the database to the current schema."
-                else:
-                    message += "The database schema is newer than this RCDB version. " \
-                               "Update your RCDB installation to match the database."
-                raise rcdb.errors.SqlSchemaVersionError(message)
+            # This version query is the first statement that actually opens a
+            # DB connection. If it fails (unreachable host, access denied, wrong
+            # schema, ...) the engine/session we just built must be disposed
+            # here: the exception propagates out of connect()/__init__, so the
+            # caller never receives this provider to disconnect() it themselves,
+            # and the engine's open connection would otherwise leak until GC.
+            try:
+                db_version = self.get_schema_version()
+                if db_version != rcdb.SQL_SCHEMA_VERSION:
+                    message = "SQL schema version doesn't match. " \
+                              "Retrieved DB version is {0}, required version is {1}. " \
+                        .format(db_version, rcdb.SQL_SCHEMA_VERSION)
+                    if db_version is not None and db_version < rcdb.SQL_SCHEMA_VERSION:
+                        message += "The database schema is older than this RCDB version. " \
+                                   "Run 'rcdb db update' to migrate the database to the current schema."
+                    else:
+                        message += "The database schema is newer than this RCDB version. " \
+                                   "Update your RCDB installation to match the database."
+                    raise rcdb.errors.SqlSchemaVersionError(message)
+            except Exception:
+                self.disconnect()
+                raise
 
     # ------------------------------------------------
     # Closes connection to data
@@ -163,6 +173,11 @@ class RCDBProvider(object):
             self.session.close()
         if self.engine is not None:
             self.engine.dispose()
+
+    # ``close`` is an alias for ``disconnect``: a lot of calling code (and other
+    # resource-holding objects) expects a ``close()`` method, while existing
+    # RCDB code and users rely on the historical ``disconnect()`` name. Keep both.
+    close = disconnect
 
     # -------------------------------------------------
     # indicates ether the connection is open or not
