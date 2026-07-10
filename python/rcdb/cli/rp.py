@@ -55,7 +55,7 @@ def add(context, name, description, run_min, run_max, start_date, end_date):
 
     provider = RCDBProvider()
     provider.connect(connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
     session = provider.session
 
     # Convert date strings to Date objects if provided
@@ -105,7 +105,7 @@ def rm(context, period_id, yes):
 
     provider = RCDBProvider()
     provider.connect(connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
     session = provider.session
 
     rp_item = session.query(RunPeriod).filter(RunPeriod.id == period_id).one_or_none()
@@ -144,7 +144,7 @@ def update(context, period_id, name, description, run_min, run_max, start_date, 
 
     provider = RCDBProvider()
     provider.connect(connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
     session = provider.session
 
     rp_item = session.query(RunPeriod).filter(RunPeriod.id == period_id).one_or_none()
