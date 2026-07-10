@@ -154,7 +154,7 @@ def _render_db_error(connection_string):
     broken = getattr(g, "tdb", None)
     if broken is not None:
         try:
-            broken.disconnect()
+            broken.close()
         except Exception:
             logger.debug("Ignoring error while disposing failed DB engine.",
                          exc_info=True)
@@ -183,7 +183,7 @@ def handle_db_error(error):
 def teardown_request(exception):
     tdb = getattr(g, 'tdb', None)
     if tdb is not None:
-        tdb.disconnect()
+        tdb.close()
 
 
 @app.errorhandler(404)

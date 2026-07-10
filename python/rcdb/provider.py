@@ -153,13 +153,13 @@ class RCDBProvider(object):
                                    "Update your RCDB installation to match the database."
                     raise rcdb.errors.SqlSchemaVersionError(message)
             except Exception:
-                self.disconnect()
+                self.close()
                 raise
 
     # ------------------------------------------------
     # Closes connection to data
     # ------------------------------------------------
-    def disconnect(self):
+    def close(self):
         """Closes connection to database.
 
         Closes the ORM session and disposes the SQLAlchemy engine so the
@@ -174,10 +174,10 @@ class RCDBProvider(object):
         if self.engine is not None:
             self.engine.dispose()
 
-    # ``close`` is an alias for ``disconnect``: a lot of calling code (and other
-    # resource-holding objects) expects a ``close()`` method, while existing
-    # RCDB code and users rely on the historical ``disconnect()`` name. Keep both.
-    close = disconnect
+    # ``disconnect`` is the historical name for ``close``; kept as an alias so
+    # existing RCDB code and users keep working while new code standardizes on
+    # ``close()`` (the conventional name other resource-holding objects use).
+    disconnect = close
 
     # -------------------------------------------------
     # indicates ether the connection is open or not

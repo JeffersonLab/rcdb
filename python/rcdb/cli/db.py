@@ -24,7 +24,7 @@ def db_command(ctx):
             print("ERROR connection string is missing.")
             exit(1)
         provider.connect(connection_str, check_version=False)
-        ctx.call_on_close(provider.disconnect)
+        ctx.call_on_close(provider.close)
         query = select(SchemaVersion).order_by(SchemaVersion.version.desc())
         schema_version, = provider.session.execute(query).first()
         print("Schema version: {} - '{}'".format(schema_version.version, schema_version.comment))
@@ -89,7 +89,7 @@ def _print_sqlite_table_sizes(engine):
 @pass_rcdb_context
 def update(context):
     provider = RCDBProvider(context.connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
 
     # Check something exists
     if not sqlalchemy.inspect(provider.engine).has_table(SchemaVersion.__tablename__):
@@ -119,7 +119,7 @@ def update(context):
         return
 
     provider = RCDBProvider(context.connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
 
     # Create alias table
     Alias.__table__.create(provider.engine)
@@ -184,7 +184,7 @@ def init(context, drop_all, no_defaults, confirm, add_tests, add_cpp_tests):
     # That we will need for DB
     metadata = rcdb.model.Base.metadata
     provider = RCDBProvider(context.connection_str, check_version=False)
-    click.get_current_context().call_on_close(provider.disconnect)
+    click.get_current_context().call_on_close(provider.close)
 
     # Drop all if needed
     if drop_all:

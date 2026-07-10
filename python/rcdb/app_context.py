@@ -28,7 +28,7 @@ class RcdbApplicationContext(object):
         Python 3.13+ leaks a ``ResourceWarning: unclosed database``).
         """
         if self._db_instance is not None:
-            self._db_instance.disconnect()
+            self._db_instance.close()
             self._db_instance = None
 
     def require_connected_db(self) -> RCDBProvider:
