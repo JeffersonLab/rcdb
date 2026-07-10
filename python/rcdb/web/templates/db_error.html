@@ -1,0 +1,20 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Database unavailable{% endblock %}
+
+{#
+    Graceful page shown when the selected database cannot be reached or used
+    (access denied, too many connections, timeout, host down, ...). The top
+    menu -- including the database selector -- is inherited from base.html so
+    the visitor can switch to a working database and reload. No connection
+    string, host, user, or exception text is exposed here; the full detail is
+    written to the application log instead.
+#}
+
+{% block body %}
+    <div class="alert alert-danger"
+         role="alert"
+         style="text-align: center; font-weight: bold; margin-top: 20px;">
+        DB connection failure
+    </div>
+{% endblock %}
