@@ -40,6 +40,7 @@
 
 #include "RCDB/Connection.h"
 #include "RCDB/ConfigParser.h"
+#include <tao/json.hpp>
 
 
 using namespace std;
@@ -59,9 +60,9 @@ rcdb::ConfigFileParseResult GetMainConfigParsed(rcdb::Connection &connection, in
     }
 
 
-    auto json = rtvsCondition->ToJsonDocument();                        // The CODA rtvs is serialized as JSon dictionary.
+    auto json = tao::json::from_string(rtvsCondition->ToString());      // The CODA rtvs is serialized as JSon dictionary.
 
-    string fileName(json["%(config)"].GetString());                     // We need item with name '%(config)'
+    string fileName = json.at("%(config)").get_string();                // We need item with name '%(config)'
     // That is our file name
 
 
@@ -146,7 +147,7 @@ int main ( int argc, char *argv[] )
 
     // get all file names for this run
     cout<<"All files saved for run "<<runNumber<<endl;
-    for (int i = 0; i < runFileNames.size(); ++i) {
+    for (size_t i = 0; i < runFileNames.size(); ++i) {
         cout<<"    "<<runFileNames[i]<<endl;
     }
 
@@ -163,7 +164,7 @@ int main ( int argc, char *argv[] )
     auto comValues = comParseResult.SectionsBySlotNumber[3].NameVectors["FADC250_ALLCH_THR"];  // Parse it and return
 
     cout<<"FADC250_ALLCH_THR for slot 3 is:"<<endl;
-    for (int i = 0; i < comValues.size(); ++i) {
+    for (size_t i = 0; i < comValues.size(); ++i) {
         cout<<"    "<<comValues[i]<<endl;
     }
 
@@ -181,7 +182,7 @@ int main ( int argc, char *argv[] )
     auto userValues = userParseResult.SectionsBySlotNumber[3].NameVectors["FADC250_TRG_MASK"];  // Parse it and return
 
     cout<<"FADC250_TRG_MASK for slot 3 is:"<<endl;
-    for (int i = 0; i < userValues.size(); ++i) {
+    for (size_t i = 0; i < userValues.size(); ++i) {
         cout<<"    "<<userValues[i]<<endl;
     }
  // Lets say we want to get values for roc8

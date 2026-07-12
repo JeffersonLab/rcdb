@@ -38,6 +38,7 @@
 
 #include "RCDB/Connection.h"
 #include "RCDB/ConfigParser.h"
+#include <tao/json.hpp>
 
 using namespace std;
 
@@ -76,9 +77,9 @@ int main ( int argc, char *argv[] )
     }
 
 
-    auto json = rtvsCondition->ToJsonDocument();                        // The CODA rtvs is serialized as JSon dictionary.
+    auto json = tao::json::from_string(rtvsCondition->ToString());      // The CODA rtvs is serialized as JSon dictionary.
 
-    string fileName(json["%(config)"].GetString());                     // We need item with name '%(config)'
+    string fileName = json.at("%(config)").get_string();                // We need item with name '%(config)'
                                                                         // That is our file name
 
 

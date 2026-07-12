@@ -15,6 +15,11 @@
 #include <cctype>
 #include <locale>
 
+#include <chrono>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,6 +39,28 @@ public:
 
     static inline std::string GetFormattedTime(std::time_t time) {
         return GetFormattedTime(*localtime(&time));
+    }
+
+    /** Parses an RCDB datetime string into a system_clock time_point.
+     *
+     *  RCDB stores time-valued conditions (e.g. run_start_time) as a naive
+     *  wall-clock string "YYYY-MM-DD HH:MM:SS" (SQLite may append fractional
+     *  seconds, which are ignored). The naive value is interpreted as UTC so the
+     *  result is deterministic regardless of the reader's timezone --
+     *  system_clock::to_time_t() + gmtime() round-trips the stored fields. On an
+     *  unparseable string the epoch is returned.
+     */
+    static inline std::chrono::system_clock::time_point ParseTime(const std::string &formatted) {
+        std::tm tm = {};
+        std::istringstream ss(formatted);
+        ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+        if (ss.fail()) {
+            return std::chrono::system_clock::time_point{};   // epoch on bad input
+        }
+        // timegm() interprets the tm as UTC; available on Linux and macOS
+        // (RCDB C++ does not target Windows).
+        const std::time_t t = timegm(&tm);
+        return std::chrono::system_clock::from_time_t(t);
     }
 
     // trim from start (in place)

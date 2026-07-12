@@ -83,6 +83,7 @@ SET(TEST_SOURCE_FILES
         ${RCDB_HEADERS}
 
         tests/test_ConditionType.cpp
+        tests/test_Condition.cpp
 
         tests/catch.hpp
         tests/catch.cpp

@@ -1,22 +1,20 @@
 /**
- *  This is very simple example of how to save array to JSON using rapidjson
- *  Full RapidJson documentation is available here:
- *  http://rapidjson.org/index.html
+ *  This is very simple example of how to save an array to JSON.
+ *  RCDB bundles the taocpp/json library:
+ *  https://github.com/taocpp/json
  */
 #include <string>
 #include <iostream>
 
 #include "RCDB/WritingConnection.h"
 
-
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
+#include <tao/json.hpp>
 
 
 int main ( int argc, char *argv[] )
 {
     using namespace std;
-    using namespace rapidjson;
+    using namespace tao;
 
     // Get a connection string from arguments
     if ( argc != 2 ) {
@@ -60,19 +58,14 @@ int main ( int argc, char *argv[] )
     // P A R T   1 - w r i t i n g   a r r a y
 
     //We want to store some value and array to JSON file
-    Document document;
-    document.SetArray();                                // document must be SetArray or SetObject
-    auto& allocator = document.GetAllocator();          // You... just need this allocator. Imagine this is mantra
+    auto document = json::value::array({});             // a JSON value holding an (empty) array
     for(int i=-5; i<5; i++)
     {
-        document.PushBack(Value().SetInt(i), allocator);  // Put array values
+        document.emplace_back(i);                       // Put array values
     }
 
     // Convert document to string
-    StringBuffer buffer;
-    Writer<StringBuffer> writer(buffer);
-    document.Accept(writer);
-    string output = buffer.GetString();
+    string output = tao::json::to_string(document);
 
     // Print the JSon we've got
     cout<<"Resulting json is:"<<endl;
@@ -83,14 +76,12 @@ int main ( int argc, char *argv[] )
 
     // P A R T   2 - r e a d i n g   a r r a y
     auto cnd = connection.GetCondition(999, "json_cnd");
-    auto json = cnd->ToJsonDocument();
-
-    //string fileName(json["%(config)"].GetString());                     // We need item with name '%(config)'
+    auto json = tao::json::from_string(cnd->ToString());
 
     // since we saved json as array, we can iterate it directly
-    for(int i=0; i<json.Size(); i++)
+    for(const auto& item : json.get_array())
     {
-        std::cout<<" "<< json[i].GetInt();
+        std::cout<<" "<< item.get_signed();
     }
     std::cout<<endl;
 

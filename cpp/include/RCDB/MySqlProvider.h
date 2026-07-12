@@ -136,11 +136,15 @@ namespace rcdb {
                         if (row[int_column] == nullptr) return std::unique_ptr<Condition>();
                         condition->SetIntValue(stoi(row[int_column]));
                         return condition;
-                    case ValueTypes::Time:
+                    case ValueTypes::Time: {
+                        // time is stored as a datetime string in time_value (col 5),
+                        // NOT as an integer in int_value -- read and parse the string.
                         if (row[time_column] == nullptr) return std::unique_ptr<Condition>();
-                        condition->SetTime(
-                                chrono::system_clock::from_time_t(stoul(row[int_column])));
+                        const std::string timeStr = row[time_column];
+                        condition->SetTextValue(timeStr);   // keep raw value for ToString()
+                        condition->SetTime(StringUtils::ParseTime(timeStr));
                         return condition;
+                    }
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
                 }

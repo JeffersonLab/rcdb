@@ -9,7 +9,7 @@
 #include "Exceptions.h"
 #include <chrono>
 #include <string>
-#include "rapidjson/document.h"
+#include <tao/json.hpp>   // ToJsonDocument() returns a tao::json::value (was rapidjson)
 
 class DataProvder;
 
@@ -74,32 +74,41 @@ namespace rcdb {
 
             if (GetValueType() != ValueTypes::Json &&
                 GetValueType() != ValueTypes::String &&
-                GetValueType() != ValueTypes::Blob) {
-                throw rcdb::ValueFormatError("Value type of the condition is not String, Json or Blob");
+                GetValueType() != ValueTypes::Blob &&
+                GetValueType() != ValueTypes::Time) {
+                throw rcdb::ValueFormatError("Value type of the condition is not String, Json, Blob or Time");
             }
 
+            // For Time values this is the raw stored datetime string
+            // ("YYYY-MM-DD HH:MM:SS"); use ToTime() for a parsed time_point.
             return _text_value;
         }
 
 
-        /// @deprecated use json ToJson() instead
-        rapidjson::Document ToJsonDocument()
+        /** Returns the condition value parsed as a JSON document.
+         *
+         *  Only valid when the condition's value type is Json (e.g. the CODA 'rtvs'
+         *  dictionary). This is a drop-in for the historical rapidjson implementation:
+         *  the same text is parsed into the same JSON structure/values -- only the
+         *  returned type changed from rapidjson::Document to tao::json::value, so the
+         *  header no longer depends on rapidjson. Callers keep `auto json = ...;` but
+         *  use tao's accessors (e.g. json.at("%(config)").get_string()) instead of
+         *  rapidjson's (json["%(config)"].GetString()).
+         *
+         *  Throws rcdb::ValueFormatError if the value type is not Json, or the text is
+         *  not parseable JSON -- the same error contract as the old implementation.
+         */
+        tao::json::value ToJsonDocument()
         {
-            using namespace rapidjson;
-
             if (GetValueType() != ValueTypes::Json) {
                 throw rcdb::ValueFormatError("Value type of the condition is not Json");
             }
 
-            Document document;  // Default template parameter uses UTF8 and MemoryPoolAllocator.
-
-
-            // "normal" parsing, decode strings to new buffers. Can use other input stream via ParseStream().
-            if (document.Parse(_text_value.c_str()).HasParseError()) {
+            try {
+                return tao::json::from_string(_text_value);
+            } catch (const std::exception &) {
                 throw rcdb::ValueFormatError("Error while parsing JSon");
             }
-
-            return document;
         }
 
 
@@ -123,36 +132,36 @@ namespace rcdb {
         rcdb::ValueTypes GetValueType() { return _type.GetValueType(); }
 
 
-        void SetId(unsigned long _id) {
-            Condition::_id = _id;
+        void SetId(unsigned long id) {
+            _id = id;
         }
 
         unsigned long GetId() {
             return _id;
         }
 
-        void SetRunNumber(unsigned long _runNumber) {
-            Condition::_runNumber = _runNumber;
+        void SetRunNumber(unsigned long runNumber) {
+            _runNumber = runNumber;
         }
 
-        void SetTextValue(const std::string &_text_value) {
-            Condition::_text_value = _text_value;
+        void SetTextValue(const std::string &text_value) {
+            _text_value = text_value;
         }
 
-        void SetIntValue(int _int_value) {
-            Condition::_int_value = _int_value;
+        void SetIntValue(int int_value) {
+            _int_value = int_value;
         }
 
-        void SetFloatValue(double _float_value) {
-            Condition::_float_value = _float_value;
+        void SetFloatValue(double float_value) {
+            _float_value = float_value;
         }
 
-        void SetBoolValue(bool _bool_value) {
-            Condition::_bool_value = _bool_value;
+        void SetBoolValue(bool bool_value) {
+            _bool_value = bool_value;
         }
 
-        void SetTime(std::chrono::time_point<std::chrono::system_clock> _time) {
-            Condition::_time = _time;
+        void SetTime(std::chrono::time_point<std::chrono::system_clock> time) {
+            _time = time;
         }
 
     private:

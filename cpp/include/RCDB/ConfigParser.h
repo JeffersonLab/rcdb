@@ -38,9 +38,9 @@ namespace rcdb
     {
     public:
 
-        ConfigFileParseResult(std::vector<std::string> SectionNames)
+        ConfigFileParseResult(std::vector<std::string> sectionNames)
         {
-            for(auto sectionName: SectionNames) {
+            for(auto sectionName: sectionNames) {
                 this->SectionNames.push_back(sectionName);
             }
         }
