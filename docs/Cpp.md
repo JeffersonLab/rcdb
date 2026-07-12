@@ -172,10 +172,18 @@ bool ToBool();                         /// For bool or int in DB
 double ToDouble();                     /// For Double or int in DB
 std::string ToString();                /// For Json, String or Blob
 time_point<system_clock> ToTime();     /// For time value
-rapidjson::Document ToJsonDocument();  /// DEPRECATED: use json ToJson() instead. For JSon document
-
+tao::json::value ToJsonDocument();     /// For Json values: parsed JSON document
 rcdb::ValueTypes GetValueType();       /// Returns the type enum
 ```
+
+> **Note on `ToJsonDocument()`:** it now returns a `tao::json::value` (the bundled
+> [taocpp/json](https://github.com/taocpp/json) library) instead of a
+> `rapidjson::Document` — rapidjson has been removed so the public headers no longer
+> pull it in. The parsed structure/values are identical; only the accessor API changes,
+> e.g. `json.at("%(config)").get_string()` (tao) instead of
+> `json["%(config)"].GetString()` (rapidjson). It throws `rcdb::ValueFormatError` if the
+> value type is not Json or the text is not valid JSON. You can also use `ToString()` and
+> parse with your own library.
 
 ## Building the tests and examples (CMake)
 

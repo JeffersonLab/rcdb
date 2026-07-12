@@ -14,7 +14,6 @@ using namespace tao;
 
 int main(int argc, char *argv[]) {
     using namespace std;
-    using namespace rapidjson;
 
     // Get a connection string from arguments
     if (argc != 2) {
@@ -144,7 +143,7 @@ id      name           value_type      created              description
     // explicit data conversion
     auto trigger = data["daq_trigger"].get_string();
 
-    cout<<"trigger= "<<trigger<<"   start_time="<<data["start_time"]<<endl;
+    cout<<"event_count= "<<ev_cnt<<"   trigger= "<<trigger<<"   start_time="<<data["start_time"]<<endl;
 
     return 0;
 }

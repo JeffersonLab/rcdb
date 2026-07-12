@@ -11,6 +11,7 @@
 #include <memory>
 #include "DataProvider.h"
 #include "RcdbFile.h"
+#include "StringUtils.h"
 
 namespace rcdb {
     class SqLiteProvider : public DataProvider {
@@ -112,12 +113,15 @@ namespace rcdb {
                         if(_getConditionQuery.isColumnNull(int_column)) return std::unique_ptr<Condition>();
                         condition->SetIntValue(_getConditionQuery.getColumn(int_column).getInt());
                         return condition;
-                    case ValueTypes::Time:
+                    case ValueTypes::Time: {
+                        // time is stored as a datetime string in time_value (col 5),
+                        // NOT as an integer in int_value -- read and parse the string.
                         if(_getConditionQuery.isColumnNull(time_column)) return std::unique_ptr<Condition>();
-                        condition->SetTime(
-                                std::chrono::system_clock::from_time_t(
-                                        _getConditionQuery.getColumn(int_column).getInt64()));
+                        const std::string timeStr = _getConditionQuery.getColumn(time_column).getText();
+                        condition->SetTextValue(timeStr);   // keep raw value for ToString()
+                        condition->SetTime(StringUtils::ParseTime(timeStr));
                         return condition;
+                    }
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
                 }
@@ -206,12 +210,15 @@ namespace rcdb {
                         if(_getConditionQuery.isColumnNull(int_column)) return std::unique_ptr<Condition>();
                         condition->SetIntValue(_getConditionQuery.getColumn(int_column).getInt());
                         return condition;
-                    case ValueTypes::Time:
+                    case ValueTypes::Time: {
+                        // time is stored as a datetime string in time_value (col 5),
+                        // NOT as an integer in int_value -- read and parse the string.
                         if(_getConditionQuery.isColumnNull(time_column)) return std::unique_ptr<Condition>();
-                        condition->SetTime(
-                                std::chrono::system_clock::from_time_t(
-                                        _getConditionQuery.getColumn(int_column).getInt64()));
+                        const std::string timeStr = _getConditionQuery.getColumn(time_column).getText();
+                        condition->SetTextValue(timeStr);   // keep raw value for ToString()
+                        condition->SetTime(StringUtils::ParseTime(timeStr));
                         return condition;
+                    }
                     default:
                         throw std::logic_error("ValueTypes type is something different than one of possible values");
                 }
