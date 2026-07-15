@@ -1,5 +1,5 @@
 # String version. Used both for setup.py and for internal code
-version = '2.3.2'
+version = '2.4.0'
 
 # version as the tuple of ints
 version_tuple = tuple(int(val) for val in version.split('.'))
